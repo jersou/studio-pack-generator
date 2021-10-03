@@ -1,0 +1,183 @@
+# Studio-Pack-Generator
+
+This project convert a tree file or RSS URL to
+[Studio](https://github.com/marian-m12l/studio) pack zip, see file structure
+below.
+
+## Quick start
+
+```shell
+studio-pack-generator "my story folder"
+or studio-pack-generator "http...RSS....xml"
+→ "my story folder-xxxxxxxxxx.zip" will be generated
+```
+
+Examples:
+
+- `studio-pack-generator http://radiofrance-podcast.net/podcast09/rss_19721.xml`
+- `studio-pack-generator "Musics"`
+- `studio-pack-generator "Encore une histoire"`
+
+## Optional dependencies
+
+- **ffmpeg** : used to extract images from story mp3 files, increase volume of
+  files, convert to the right format.
+  <br>→ Use `--skip-audio-convert` and `--skip-extract-image-from-mp3` to avoid
+  this usage.
+- **imagemagick** : used to generate menu image files.
+  <br>→ Use `--skip-image-item-gen` to avoid this usage.
+- **picoTTS** : used to generate menu audio files.
+  <br>→ Use `--skip-audio-item-gen` to avoid this usage.
+
+Install optional dependencies:
+
+- from Debian/Ubuntu : `sudo apt install ffmpeg libttspico-utils imagemagick`
+- or from Windows wsl :
+  `wsl sudo apt install ffmpeg libttspico-utils imagemagick`
+
+Use "-miva" option to skip all generations that use these tools.
+
+studio-pack-generator can use these tools from Windows by using the
+[WSL](https://docs.microsoft.com/fr-fr/windows/wsl/install)
+
+## Install
+
+### Install binary from [release page](https://github.com/jersou/studio-pack-generator/releases) and run it :
+
+```
+studio-pack-generator-x86_64-linux        "my story folder or rss url"
+or  studio-pack-generator-x86_64-windows.exe  "my story folder or rss url"
+or  studio-pack-generator-aarch64-apple       "my story folder or rss url"
+or  studio-pack-generator-x86_64-apple        "my story folder or rss url"
+```
+
+### Or use [Deno](https://deno.land/)
+
+This project is written in Typescript for [deno](https://deno.land/) runtime.
+Install deno : https://deno.land/#installation
+
+#### Run from web directly (will be cached for the next launches) :
+
+```
+deno run -A https://raw.githubusercontent.com/jersou/studio-pack-generator/main/studio_pack_generator.ts "my story folder or rss url"
+```
+
+#### Or install with deno :
+
+```
+deno install --name studio-pack-generator -A --unstable -f https://raw.githubusercontent.com/jersou/studio-pack-generator/main/studio_pack_generator.ts
+→ and then run :  studio-pack-generator "my story folder or rss url"
+```
+
+#### Or clone the repo and run with deno :
+
+```
+git clone https://github.com/jersou/studio-pack-generator
+cd studio-pack-generator
+deno run -A studio_pack_generator.ts "my story folder or rss url"
+```
+
+## Story folder structure :
+
+Simple, without audio/image menus/items
+
+```shell
+📂 Story folder
+└── 📂 Choose a character            ← 📂 first menu
+    ├── 📂 Alice                     ← 📂 first choice of the first menu
+    │   └── 📂 Choose a place        ← 📂 second menu
+    │       ├── 🎵 the city.mp3      ← 📗 audio story
+    │       └── 🎵 the jungle.mp3    ← 📗 audio story
+    └── 📂 Bob                       ← 📂 second choice of the first menu
+        └── 📂 Choose a place        ← 📂 second menu
+            ├── 🎵 the desert.mp3    ← 📗 audio story
+            └── 🎵 the jungle.mp3    ← 📗 audio story
+```
+
+studio-pack-generator will generate menu files, they could be overwritten, the
+next studio-pack-generator run will not regenerate these files :
+
+```shell
+📂 Story folder
+├── 🎵 0-item.mp3                         ← ⏩ story audio title, generated if missing
+├── 🔳 0-item.png                         ← ⏩ story image title, generated if missing
+└── 📂 Choose a character                 ← 📂 first menu
+    ├── 🎵 0-item.mp3                     ← ⏩ audio menu, generated if missing
+    ├── 📂 Alice                          ← 📂 first choice of the first menu
+    │   ├── 🎵 0-item.mp3                 ← ⏩ audio choice, generated if missing
+    │   ├── 🔳 0-item.png                 ← ⏩ image choice, generated if missing
+    │   └── 📂 Choose a place             ← 📂 second menu
+    │       ├── 🎵 0-item.mp3             ← ⏩ audio menu, generated if missing
+    │       ├── 🔳 0-item.png             ← ⏩ audio menu, generated if missing
+    │       ├── 🎵 the city.item.mp3      ← ⏩ audio story title, generated if missing
+    │       ├── 🔳 the city.item.png      ← ⏩ image story title, generated if missing
+    │       ├── 🎵 the city.mp3           ← 📗 audio story
+    │       ├── 🎵 the jungle.item.mp3    ← ⏩ audio story title, generated if missing
+    │       ├── 🔳 the jungle.item.png    ← ⏩ image story title, generated if missing
+    │       └── 🎵 the jungle.mp3         ← 📗 audio story
+    └── 📂 Bob                            ← 📂 second choice of the first menu
+        ├── 🎵 0-item.mp3                 ← ⏩ audio choice, generated if missing
+        ├── 🔳 0-item.png                 ← ⏩ image choice, generated if missing
+        └── Choose a place                ← 📂 second menu
+            ├── 🔳 0-item.mp3             ← ⏩ audio menu, generated if missing
+            ├── 🔳 0-item.png             ← ⏩ audio menu, generated if missing
+            ├── 🎵 the desert.item.mp3    ← ⏩ audio story title, generated if missing
+            ├── 🔳 the desert.item.png    ← ⏩ image story title, generated if missing
+            ├── 🎵 the desert.mp3         ← 📗 audio story
+            ├── 🎵 the jungle.item.mp3    ← ⏩ audio story title, generated if missing
+            ├── 🔳 the jungle.item.png    ← ⏩ image story title, generated if missing
+            └── 🎵 the jungle.mp3         ← 📗 audio story
+```
+
+There is no limit to the nesting of menus, for example :
+
+```shell
+📂 Story folder
+└── 📂 Choose a character                   ← 📂 first menu
+    ├── 📂 Alice                            ← 📂 first choice of the first menu
+    │   └── 📂 Choose a place               ← 📂 second menu
+    │       └── 📂 Building                 ← 📂 second choice of the first menu
+    │       │   └── 📂 Choose the floor     ← 📂 third menu
+    │       │       ├── 🎵 the floor 1.mp3  ← 📗 audio story
+    │       │       └── 🎵 the floor 2.mp3  ← 📗 audio story
+    │       ├── 🎵 the city.mp3             ← 📗 audio story : mix menus/stories is possible
+    │       └── 🎵 the jungle.mp3           ← 📗 audio story : mix menus/stories is possible
+    ├── 🎵 Bob.mp3                          ← 📗 audio story : mix menus/stories is possible
+    ...
+```
+
+## Tips
+
+- The first digit of file/folder name are ignored, it's useful to sort
+  stories/menus.
+- To keep numbers in generated items : "- 3 petits cochons.mp3" or "12 - 3
+  petits cochons.mp3".
+- Image formats : png, jpg, bmp.
+- Audio formats : mp3, ogg, wav.
+
+## Usage
+
+```
+deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack
+
+Options:
+      --help                         Show help                                                                 [boolean]
+  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
+  -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
+  -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
+  -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
+  -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
+  -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
+  -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
+```
+
+## Features
+
+- Generate studio pack from file tree.
+- Generate menu image/audio file if missing.
+- Extract image from mp3 file as story image in menu.
+- Increase audio volume of stories if needed.
+- Download podcast from RSS url and generate the story tree, cut by parts of 10
+  stories.
+- Convert mp3 files to right format.
+- Generate story thumbnail.

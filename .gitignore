@@ -1,0 +1,7 @@
+/**/.idea/workspace.xml
+/tmp
+/test_data/tmp-*.zip
+/test_data/tmp*
+/.DENO_DIR/gen/
+/.cov_profile
+/dist/*.zip

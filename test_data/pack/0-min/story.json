@@ -1,0 +1,66 @@
+{
+  "title": "Pack title",
+  "description": "",
+  "format": "v1",
+  "version": 1,
+  "nightModeAvailable": false,
+  "actionNodes": [
+    {
+      "id": "97a4cfcc-d1eb-449f-8ce7-3c54e676b2b2",
+      "name": "Action node",
+      "options": [
+        "a6be50af-ae71-4cd3-be6d-ff1372a6236b"
+      ],
+      "position": {
+        "x": 315,
+        "y": 100.16667175292969
+      }
+    }
+  ],
+  "stageNodes": [
+    {
+      "audio": "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+      "controlSettings": {
+        "autoplay": false,
+        "home": false,
+        "ok": true,
+        "pause": false,
+        "wheel": true
+      },
+      "homeTransition": null,
+      "image": "5f667e756ba42748a9eea3b0a217579bee960164.png",
+      "name": "Cover node",
+      "okTransition": {
+        "actionNode": "97a4cfcc-d1eb-449f-8ce7-3c54e676b2b2",
+        "optionIndex": 0
+      },
+      "position": {
+        "x": 102,
+        "y": 121.16667175292969
+      },
+      "squareOne": true,
+      "type": "cover",
+      "uuid": "09e8e5fb-5a8c-4686-819a-cd993f5fd597"
+    },
+    {
+      "audio": "46fe70d98b9763ab70b7e7cea4627e4f8b7c585a.ogg",
+      "controlSettings": {
+        "autoplay": false,
+        "home": true,
+        "ok": false,
+        "pause": true,
+        "wheel": false
+      },
+      "homeTransition": null,
+      "image": null,
+      "name": "alice-city",
+      "okTransition": null,
+      "position": {
+        "x": 511,
+        "y": 106.16667175292969
+      },
+      "type": "stage",
+      "uuid": "a6be50af-ae71-4cd3-be6d-ff1372a6236b"
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "title": "Pack title",
+  "description": "",
+  "format": "v1",
+  "version": 1,
+  "nightModeAvailable": false,
+  "actionNodes": [
+    {
+      "id": "97a4cfcc-d1eb-449f-8ce7-3c54e676b2b2",
+      "name": "Action node",
+      "options": [
+        "a9bb3696-7374-447f-8f44-4162dfc24f6e"
+      ],
+      "position": {
+        "x": 381,
+        "y": 223.1666717529297
+      }
+    },
+    {
+      "id": "01ac9dd6-79a6-4003-9218-ec24b2959e00",
+      "name": "Action node",
+      "options": [
+        "345d4ed2-5ce9-4bd1-8e4e-954cf151b054",
+        "de2f86b5-1a3d-49f5-8db9-7213fd7c6fc5"
+      ],
+      "position": {
+        "x": 827,
+        "y": 219.1666717529297
+      }
+    },
+    {
+      "id": "8c6bbac7-6495-4750-9b15-a95ca4bbb545",
+      "name": "Action node",
+      "options": [
+        "94b1af54-9303-4dd4-a706-4e45b793b661"
+      ],
+      "position": {
+        "x": 1332,
+        "y": 110.16667175292969
+      }
+    },
+    {
+      "id": "e764c355-9198-4b1a-8813-ff0032870309",
+      "name": "Action node",
+      "options": [
+        "8ac43240-ea5e-4e48-8db7-eccb0a99356c"
+      ],
+      "position": {
+        "x": 1333,
+        "y": 293.1666717529297
+      }
+    }
+  ],
+  "stageNodes": [
+    {
+      "audio": "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+      "controlSettings": {
+        "autoplay": false,
+        "home": false,
+        "ok": true,
+        "pause": false,
+        "wheel": true
+      },
+      "homeTransition": null,
+      "image": "5f667e756ba42748a9eea3b0a217579bee960164.png",
+      "name": "Cover node",
+      "okTransition": {
+        "actionNode": "97a4cfcc-d1eb-449f-8ce7-3c54e676b2b2",
+        "optionIndex": 0
+      },
+      "position": {
+        "x": 179,
+        "y": 226.1666717529297
+      },
+      "squareOne": true,
+      "type": "cover",
+      "uuid": "09e8e5fb-5a8c-4686-819a-cd993f5fd597"
+    },
+    {
+      "audio": "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+      "controlSettings": {
+        "autoplay": true,
+        "home": false,
+        "ok": true,
+        "pause": false,
+        "wheel": false
+      },
+      "homeTransition": null,
+      "image": null,
+      "name": "Choose a place",
+      "okTransition": {
+        "actionNode": "01ac9dd6-79a6-4003-9218-ec24b2959e00",
+        "optionIndex": 0
+      },
+      "position": {
+        "x": 581,
+        "y": 218.1666717529297
+      },
+      "type": "stage",
+      "uuid": "a9bb3696-7374-447f-8f44-4162dfc24f6e"
+    },
+    {
+      "audio": "5e6cb53d9acef28a6f57edf317c31bda673d64ed.ogg",
+      "controlSettings": {
+        "autoplay": false,
+        "home": true,
+        "ok": true,
+        "pause": false,
+        "wheel": true
+      },
+      "homeTransition": null,
+      "image": "5e36825dd492cd428ec8408f55f8dddfe6a1248a.png",
+      "name": "Stage node",
+      "okTransition": {
+        "actionNode": "8c6bbac7-6495-4750-9b15-a95ca4bbb545",
+        "optionIndex": 0
+      },
+      "position": {
+        "x": 1069,
+        "y": 140.1666717529297
+      },
+      "type": "stage",
+      "uuid": "345d4ed2-5ce9-4bd1-8e4e-954cf151b054"
+    },
+    {
+      "audio": "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+      "controlSettings": {
+        "autoplay": false,
+        "home": true,
+        "ok": true,
+        "pause": false,
+        "wheel": true
+      },
+      "homeTransition": null,
+      "image": "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+      "name": "Stage node",
+      "okTransition": {
+        "actionNode": "e764c355-9198-4b1a-8813-ff0032870309",
+        "optionIndex": 0
+      },
+      "position": {
+        "x": 1070,
+        "y": 299.1666717529297
+      },
+      "type": "stage",
+      "uuid": "de2f86b5-1a3d-49f5-8db9-7213fd7c6fc5"
+    },
+    {
+      "audio": "46fe70d98b9763ab70b7e7cea4627e4f8b7c585a.ogg",
+      "controlSettings": {
+        "autoplay": true,
+        "home": true,
+        "ok": false,
+        "pause": true,
+        "wheel": false
+      },
+      "homeTransition": null,
+      "image": null,
+      "name": "Stage node",
+      "okTransition": null,
+      "position": {
+        "x": 1546,
+        "y": 94.16667175292969
+      },
+      "type": "stage",
+      "uuid": "94b1af54-9303-4dd4-a706-4e45b793b661"
+    },
+    {
+      "audio": "f493d4e986a1278ca7db3f7c65bf8ee32535b2e4.ogg",
+      "controlSettings": {
+        "autoplay": true,
+        "home": true,
+        "ok": false,
+        "pause": true,
+        "wheel": false
+      },
+      "homeTransition": null,
+      "image": null,
+      "name": "Stage node",
+      "okTransition": null,
+      "position": {
+        "x": 1540,
+        "y": 289.1666717529297
+      },
+      "type": "stage",
+      "uuid": "8ac43240-ea5e-4e48-8db7-eccb0a99356c"
+    }
+  ]
+}
