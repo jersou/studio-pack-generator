@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "cache-control": "public, max-age=31536000, immutable",
+    "access-control-allow-origin": "*",
+    "etag": "\"d9beb09115095df014f0edac59a89fb5\"",
+    "x-amz-id-2": "oaSr6K3eKCoXJsAhaCspsrR4EwHrsYRTDji6AQgA8xbhWItRu6xcL/GVvo9tniHJ0/TAjipE+cY=",
+    "x-amz-request-id": "1EY76JD88WVJPK21",
+    "content-type": "application/javascript",
+    "x-amz-version-id": "b9v5lK5VIU6_tLNDGzI3mxGFr64TdwS2",
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
+    "content-length": "28369",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "server": "deploy/europe-west1-b"
+  },
+  "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/zip-writer.js"
+}

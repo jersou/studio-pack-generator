@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-amz-version-id": "kt2851SgswBMNIzmp06uRTrv0Yq7T2jC",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-amz-id-2": "cLtptQGCYtswh+vmWv0R0MAXeLEHfUGE/LedIj3lq6A3vB6GzqQTmDmK7dp6C+GBGyLThc+kKBk=",
+    "content-length": "22607",
+    "etag": "\"f2e6c9c7194274cac0e7dae18ff69e29\"",
+    "access-control-allow-origin": "*",
+    "content-type": "application/javascript",
+    "server": "deploy/europe-west1-b",
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
+    "x-amz-request-id": "1EYCA3B6FSS3SA8X"
+  },
+  "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/zip-reader.js"
+}

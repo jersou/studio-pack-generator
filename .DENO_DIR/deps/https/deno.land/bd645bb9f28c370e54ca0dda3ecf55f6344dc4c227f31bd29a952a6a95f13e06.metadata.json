@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-amz-id-2": "WIkFhgpkmLYfFUjCEQF9ipfHm4mpLBs8oP6vB+oJC7MhbUWOT1KR7AHtwJ6HMDaaF8OJJyssvk8=",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "content-length": "6431",
+    "cache-control": "public, max-age=31536000, immutable",
+    "etag": "\"901c3c5aa487d2950183052a465efa7e\"",
+    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
+    "server": "deploy/europe-west1-b",
+    "x-amz-request-id": "1EY9DCEYZQQ3B6RF",
+    "access-control-allow-origin": "*",
+    "x-amz-version-id": "hHBWzaPYlaZQ_RPEnkrHvTLuMqtMTceD",
+    "content-type": "application/javascript"
+  },
+  "url": "https://deno.land/x/i18next@v21.2.4/BackendConnector.js"
+}

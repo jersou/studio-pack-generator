@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "access-control-allow-origin": "*",
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-amz-id-2": "YjZAdBBilC/d4vTaDYVQPVKuhrpFZQIm0b0RyyU1yB/iowwcjyvSduGMDj5UjBltU/XWeErsjMU=",
+    "x-amz-version-id": "GctcmEobY3Wqzm546xurK8fyY9uND75k",
+    "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
+    "server": "deploy/europe-west1-b",
+    "x-amz-request-id": "1EYE7NS96JT1ZKVT",
+    "content-type": "application/javascript",
+    "content-length": "321",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "etag": "\"53c810708a6dc5141d16acf4cec7d468\""
+  },
+  "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/utils/which-module.js"
+}

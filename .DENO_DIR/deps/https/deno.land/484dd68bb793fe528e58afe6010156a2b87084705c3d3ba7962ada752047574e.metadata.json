@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-amz-version-id": "n88lws2cpGSruuiMFFl2cTF0ehH.68u9",
+    "x-amz-request-id": "1EY48QBBK4W3NFME",
+    "content-type": "application/javascript",
+    "etag": "\"013c4bda8ae279796debc40b26301291\"",
+    "last-modified": "Sun, 08 Nov 2020 23:59:36 GMT",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "server": "deploy/europe-west1-b",
+    "content-length": "1011",
+    "access-control-allow-origin": "*",
+    "x-amz-id-2": "3l6K0Xxhbyf/CrQFEvfrS1x35TkqFfNS/dMH9hK7OQ25e5EdmAd7ByIpaBeas27PoNhhOKVe/ig="
+  },
+  "url": "https://deno.land/x/cliui@v7.0.4-deno/build/lib/string-utils.js"
+}

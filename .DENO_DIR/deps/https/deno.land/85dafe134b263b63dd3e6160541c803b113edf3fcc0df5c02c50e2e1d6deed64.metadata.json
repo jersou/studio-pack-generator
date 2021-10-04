@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-amz-request-id": "1EY24G8MNB6FP3ZX",
+    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
+    "server": "deploy/europe-west1-b",
+    "cache-control": "public, max-age=31536000, immutable",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "etag": "\"e864ef96d39c185f148439cddf7d77ca\"",
+    "content-length": "5126",
+    "content-type": "application/javascript",
+    "x-amz-version-id": "BM.XDF8F4l141Ws0wUnSwaXeWnkSBwHt",
+    "access-control-allow-origin": "*",
+    "x-amz-id-2": "6nQ6apLNyzhlMmZ03pDA8c7akyn8g9vGLVp6Q+WY6LmBhOahmKXMWcfTjZrFsvW6wI9O8pg8Z9c="
+  },
+  "url": "https://deno.land/x/i18next@v21.2.4/ResourceStore.js"
+}

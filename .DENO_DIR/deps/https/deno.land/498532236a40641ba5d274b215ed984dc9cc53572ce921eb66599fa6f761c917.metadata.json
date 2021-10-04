@@ -1,0 +1,10 @@
+{
+  "headers": {
+    "x-deno-warning": "Implicitly using latest version (0.109.0) for https://deno.land/std/fmt/printf.ts",
+    "content-length": "0",
+    "location": "/std@0.109.0/fmt/printf.ts",
+    "server": "deploy/europe-west1-b",
+    "date": "Mon, 04 Oct 2021 19:08:27 GMT"
+  },
+  "url": "https://deno.land/std/fmt/printf.ts"
+}

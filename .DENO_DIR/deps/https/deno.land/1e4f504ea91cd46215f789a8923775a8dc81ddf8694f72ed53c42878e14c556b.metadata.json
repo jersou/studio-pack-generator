@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-amz-request-id": "1EY5TJ41DXKE1XF7",
+    "x-amz-id-2": "AK5b0FrZQXRCcrzoEnzyw6cHr3LBlm/9etGwsOvjelMbO698MsnpmTadPZryfl5ZxhwMjsYIqhE=",
+    "x-amz-version-id": "aEsTsban5MRb7fmrYPU1FGtJCEntUtx2",
+    "access-control-allow-origin": "*",
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
+    "content-length": "2770",
+    "etag": "\"73c2148760df3863cf143a3f87713cb9\"",
+    "server": "deploy/europe-west1-b",
+    "cache-control": "public, max-age=31536000, immutable",
+    "content-type": "application/javascript",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT"
+  },
+  "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/util/stream-codec-shim.js"
+}

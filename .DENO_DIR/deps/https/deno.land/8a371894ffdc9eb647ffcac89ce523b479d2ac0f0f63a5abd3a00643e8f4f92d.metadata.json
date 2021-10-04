@@ -1,0 +1,10 @@
+{
+  "headers": {
+    "location": "/std@0.109.0/testing/asserts.ts",
+    "date": "Mon, 04 Oct 2021 19:08:27 GMT",
+    "x-deno-warning": "Implicitly using latest version (0.109.0) for https://deno.land/std/testing/asserts.ts",
+    "content-length": "0",
+    "server": "deploy/europe-west1-b"
+  },
+  "url": "https://deno.land/std/testing/asserts.ts"
+}

@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "etag": "\"aa73de80110117f55ff35e3045eb1c7f\"",
+    "content-type": "application/javascript",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "cache-control": "public, max-age=31536000, immutable",
+    "server": "deploy/europe-west1-b",
+    "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
+    "content-length": "75994",
+    "x-amz-id-2": "Z6g4j1djQKLDCrpOOX7F2OAdSvFIIprOm6Qhh7TAgpUivJRX5lLLTQArt3ZlFUC+6flPybwH39Y=",
+    "x-amz-version-id": "v3o7DMfMKRz7ReFIQxPB6te6cBb9pHWD",
+    "x-amz-request-id": "1EYFPWBKA59C8KPC",
+    "access-control-allow-origin": "*"
+  },
+  "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/yargs-factory.js"
+}

@@ -1,0 +1,10 @@
+{
+  "headers": {
+    "location": "/std@0.109.0/path/mod.ts",
+    "date": "Mon, 04 Oct 2021 19:08:27 GMT",
+    "x-deno-warning": "Implicitly using latest version (0.109.0) for https://deno.land/std/path/mod.ts",
+    "server": "deploy/europe-west1-b",
+    "content-length": "0"
+  },
+  "url": "https://deno.land/std/path/mod.ts"
+}

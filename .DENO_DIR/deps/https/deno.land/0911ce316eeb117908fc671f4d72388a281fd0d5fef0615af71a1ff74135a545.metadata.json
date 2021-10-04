@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "access-control-allow-origin": "*",
+    "cache-control": "public, max-age=31536000, immutable",
+    "content-type": "application/javascript",
+    "x-amz-request-id": "1EYFKSY246TV4Y80",
+    "content-length": "918",
+    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "etag": "\"8e90654adf0aca43ace877c32164103d\"",
+    "x-amz-version-id": "7HDGpJxpKL9JACIo5die5R26FZ4LC6eH",
+    "x-amz-id-2": "hECasDqwIJnbKKQ8K5MCJUqM+FURhK5SOcOd882XYt9GIbZuSKGVwfsIib4IxrcdcZ5KNeE7XhU=",
+    "server": "deploy/europe-west1-b"
+  },
+  "url": "https://deno.land/x/i18next@v21.2.4/EventEmitter.js"
+}

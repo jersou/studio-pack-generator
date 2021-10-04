@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "server": "deploy/europe-west1-b",
+    "access-control-allow-origin": "*",
+    "content-type": "application/javascript",
+    "x-amz-version-id": "uWfiJNJCP17P8Jay6Hj6amrf3c5_I882",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "x-amz-id-2": "qjtdfzheIxd/8W6R609fm/N5LHM6K9Jc95x4ygVIxBFLrC8HxpQQnlFZsWsUu920nR3Kg692fCI=",
+    "cache-control": "public, max-age=31536000, immutable",
+    "content-length": "66636",
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
+    "etag": "\"455604eafea7efe56cdb86e0876345d0\"",
+    "x-amz-request-id": "1EY254506D8E2MBS"
+  },
+  "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/codecs/deflate.js"
+}

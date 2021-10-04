@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "server": "deploy/europe-west1-b",
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
+    "x-amz-id-2": "B6jxplUr0dDdMgaCg0rttbsPLs6xRK3p/cGBW+AsKEW/jRJykwzIN1S8ANt4GYSuDuYpnm+jusM=",
+    "access-control-allow-origin": "*",
+    "cache-control": "public, max-age=31536000, immutable",
+    "etag": "\"28c2b2279c689906b0c540d06b6551e2\"",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "content-length": "4508",
+    "content-type": "application/javascript",
+    "x-amz-request-id": "1EY77VP721K5EHNG",
+    "x-amz-version-id": "rU.seTYRQEYNujuryNHV2fZ0vWKaxoU2"
+  },
+  "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/codecs/zip-crypto.js"
+}

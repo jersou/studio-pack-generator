@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "content-length": "386",
+    "etag": "\"80c6987b460b5ccba2996bcba20dfb04\"",
+    "server": "deploy/europe-west1-b",
+    "x-amz-id-2": "y32TxKD8TC8SaBRfiEhroX+0XwG96Rk2ffy0HrooSPtIxlmHZfdlCkX3LEP90afdLS+MtySxYv0=",
+    "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
+    "cache-control": "public, max-age=31536000, immutable",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "x-amz-request-id": "1EY0885T48Z1RN9C",
+    "x-amz-version-id": "qKw2727qf21O1DfnwVqOI6lAtWHcEa.b",
+    "access-control-allow-origin": "*",
+    "content-type": "application/javascript"
+  },
+  "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/utils/set-blocking.js"
+}

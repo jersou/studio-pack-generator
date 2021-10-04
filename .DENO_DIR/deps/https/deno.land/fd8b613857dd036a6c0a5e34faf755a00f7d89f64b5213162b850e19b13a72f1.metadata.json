@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-amz-id-2": "pEl6Jwbsb57tczgy/k8cZDcz6aBcMmMj9499O1cNcKn96q7YyxZ5HHMAq1sG4/L2UAjOMXUGfpI=",
+    "x-amz-version-id": "vbjDk2IwmprrmYb_ejOG_MhI6ndPIyzr",
+    "content-type": "application/typescript; charset=utf-8",
+    "access-control-allow-origin": "*",
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-amz-request-id": "1EYCEFKK7VWWJQJ2",
+    "content-length": "293",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "etag": "\"0c167e12b5c9d79f7a73dba33dca4a55\"",
+    "last-modified": "Tue, 28 Sep 2021 13:44:01 GMT",
+    "server": "deploy/europe-west1-b"
+  },
+  "url": "https://deno.land/std@0.109.0/hash/hasher.ts"
+}

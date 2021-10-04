@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "cache-control": "public, max-age=31536000, immutable",
+    "content-type": "application/typescript; charset=utf-8",
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "x-amz-request-id": "1EYDWKKX20FRT9V4",
+    "etag": "\"77a61fd77091b7a09c16d3c235f48f0c\"",
+    "access-control-allow-origin": "*",
+    "x-amz-version-id": "14cpPha5WLkcy8zF0AqYMGDxfhxGUKnE",
+    "content-length": "1102",
+    "last-modified": "Sun, 08 Nov 2020 23:59:36 GMT",
+    "server": "deploy/europe-west1-b",
+    "x-amz-id-2": "9P9b78Yg6SwrKndgx21EX0V4h6jQw2KBSLmGfNbicR14huqSYkY8TDvE3XhnE33kGdG7TFR+/aI="
+  },
+  "url": "https://deno.land/x/cliui@v7.0.4-deno/build/lib/index.d.ts"
+}

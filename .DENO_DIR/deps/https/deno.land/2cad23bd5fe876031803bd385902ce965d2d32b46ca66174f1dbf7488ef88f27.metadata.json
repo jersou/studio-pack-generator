@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "content-length": "1060",
+    "server": "deploy/europe-west1-b",
+    "content-type": "application/javascript",
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-amz-request-id": "1EY2MW5J81MCY19F",
+    "etag": "\"6387e2780300f55c8f8bc45f7d080df5\"",
+    "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
+    "x-amz-id-2": "6eWa+ZPL0Uu7rP8bXYvWr9/5/ska2FbYzdPszP80lQVKSQ8WhPE02BS7MMhXNTKtW/qbJGBEE30=",
+    "access-control-allow-origin": "*",
+    "x-amz-version-id": "sJSTQNuWKoBITrSOaPM0A0UAA0bBbL3U"
+  },
+  "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/parse-command.js"
+}
