@@ -1,15 +1,19 @@
 # Studio-Pack-Generator
 
 This project convert a folder or a RSS URL to
-[Studio](https://github.com/marian-m12l/studio) pack zip, see file structure below.
+[Studio](https://github.com/marian-m12l/studio) pack zip, see file structure
+below.
+
+Supported OS: Windows(using WSL) / Linux / MacOS
 
 ## Quick start
 
 ```shell
-studio-pack-generator "my story folder"
-or studio-pack-generator "http...RSS....xml"
-→ "my story folder-xxxxxxxxxx.zip" will be generated
+studio-pack-generator "my story folder OR a RSS URL"
 ```
+
+will generate "my story folder-xxxxxxxxxx.zip" that can be imported in
+[Studio](https://github.com/marian-m12l/studio)
 
 Examples:
 
@@ -19,25 +23,25 @@ Examples:
 
 ## Optional dependencies
 
-- **ffmpeg** : used to extract images from story mp3 files, increase volume of files, convert to the right format.
-  <br>→ Use `--skip-audio-convert` and `--skip-extract-image-from-mp3` to avoid this usage.
+- **ffmpeg** : used to extract images from story mp3 files, increase volume of
+  files, convert to the right format.
+  <br>→ Use `--skip-audio-convert` and `--skip-extract-image-from-mp3` to avoid
+  this usage.
 - **imagemagick** : used to generate menu image files.
   <br>→ Use `--skip-image-item-gen` to avoid this usage.
 - **picoTTS** : used to generate menu audio files.
   <br>→ Use `--skip-audio-item-gen` to avoid this usage.
 
-Install optional dependencies:
+Install optional dependencies :
+`sudo apt install ffmpeg libttspico-utils imagemagick`
 
-- from Debian/Ubuntu : `sudo apt install ffmpeg libttspico-utils imagemagick`
-- or from Windows wsl :
-  `wsl sudo apt install ffmpeg libttspico-utils imagemagick`
+studio-pack-generator can use these tools from **Windows** by using the
+[WSL](https://docs.microsoft.com/fr-fr/windows/wsl/install) :
+`wsl sudo apt install ffmpeg libttspico-utils imagemagick`
 
 Use "-miva" option to skip all generations that use these tools.
 
-studio-pack-generator can use these tools from Windows by using the
-[WSL](https://docs.microsoft.com/fr-fr/windows/wsl/install)
-
-## Install
+## Install studio-pack-generator
 
 ### Install binary from [release page](https://github.com/jersou/studio-pack-generator/releases) and run it :
 
@@ -50,8 +54,8 @@ or  studio-pack-generator-x86_64-apple        "my story folder or a rss url"
 
 ### Or use [Deno](https://deno.land/)
 
-This project is written in Typescript for [deno](https://deno.land/) runtime. Install
-deno : https://deno.land/#installation
+This project is written in Typescript for [deno](https://deno.land/) runtime.
+Install deno : https://deno.land/#installation
 
 #### Run from web directly (will be cached for the next launches) :
 
@@ -101,8 +105,9 @@ Simple example, 2 levels of menus, without audio/image of menus/items :
             └── 🎵 the jungle.mp3        ← 📗 audio story
 ```
 
-studio-pack-generator will generate menu files, they could be manually overwritten, and the next studio-pack-generator
-run will not regenerate these files :
+studio-pack-generator will generate menu files, they could be manually
+overwritten, and the next studio-pack-generator run will not regenerate these
+files :
 
 ```shell
 📂 Story folder
@@ -125,7 +130,7 @@ run will not regenerate these files :
     └── 📂 Bob                          ← 📂 second choice of the first menu
         ├── 🎵 0-item.mp3                 ← ⏩ audio choice, generated if missing
         ├── 🔳 0-item.png                 ← ⏩ image choice, generated if missing
-        └── Choose a place                ← 📂 second menu
+        └── 📂 Choose a place                ← 📂 second menu
             ├── 🔳 0-item.mp3               ← ⏩ audio menu, generated if missing
             ├── 🔳 0-item.png               ← ⏩ audio menu, generated if missing
             ├── 🎵 the desert.item.mp3      ← ⏩ audio story title, generated if missing
@@ -155,8 +160,10 @@ There is no limit to the nesting of menus, for example :
 
 ## Tips
 
-- The first digit of file/folder name are ignored, it's useful to sort stories/menus.
-- To keep numbers in generated items : "- 3 petits cochons.mp3" or "12 - 3 petits cochons.mp3".
+- The first digit of file/folder name are ignored, it's useful to sort
+  stories/menus.
+- To keep numbers in generated items : "- 3 petits cochons.mp3" or "12 - 3
+  petits cochons.mp3".
 - Image formats : png, jpg, bmp.
 - Audio formats : mp3, ogg, wav.
 
@@ -182,6 +189,7 @@ Options:
 - Generate menu image/audio file if missing.
 - Extract image from mp3 file as story image in menu.
 - Increase audio volume of stories if needed.
-- Download podcast from a RSS url and generate the story tree, cut by parts of 10 stories.
+- Download podcast from a RSS url and generate the story tree, cut by parts of
+  10 stories.
 - Convert mp3 files to right format.
 - Generate story thumbnail.
