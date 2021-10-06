@@ -1,0 +1,41 @@
+# Velociraptor is a script runner for Deno: https://velociraptor.run/docs/installation/
+
+scripts:
+  start: deno run -A  --unstable studio_pack_generator.ts
+
+  test: deno test -A
+
+  test-watch: deno test -A --watch --unstable
+
+  lint: deno lint --ignore=.DENO_DIR,dist
+
+  fmt: deno fmt --ignore=.DENO_DIR,dist,.lock.json
+
+  bundle: deno bundle studio_pack_generator.ts dist/studio_pack_generator.js
+
+  bak-dep:
+    env: DENO_DIR=./.DENO_DIR
+    cmd: deno cache --lock=.lock.json --lock-write studio_pack_generator.ts deps.ts test_deps.ts
+
+  gen-bin:
+    - rm -f dist/*.zip
+    - mkdir -p dist/
+    - deno compile --target x86_64-unknown-linux-gnu --allow-all --output dist/studio-pack-generator-x86_64-linux --unstable ./studio_pack_generator.ts
+    - (cd dist && zip -r studio-pack-generator-x86_64-linux.zip studio-pack-generator-x86_64-linux)
+    - rm dist/studio-pack-generator-x86_64-linux
+    - deno compile --target x86_64-pc-windows-msvc   --allow-all --output dist/studio-pack-generator-x86_64-windows --unstable ./studio_pack_generator.ts
+    - (cd dist && zip -r studio-pack-generator-x86_64-windows.zip studio-pack-generator-x86_64-windows.exe)
+    - rm dist/studio-pack-generator-x86_64-windows.exe
+    - deno compile --target x86_64-apple-darwin      --allow-all --output dist/studio-pack-generator-x86_64-apple --unstable ./studio_pack_generator.ts
+    - (cd dist && zip -r studio-pack-generator-x86_64-apple.zip studio-pack-generator-x86_64-apple)
+    - rm dist/studio-pack-generator-x86_64-apple
+    - deno compile --target aarch64-apple-darwin     --allow-all --output dist/studio-pack-generator-aarch64-apple --unstable ./studio_pack_generator.ts
+    - (cd dist && zip -r studio-pack-generator-aarch64-apple.zip studio-pack-generator-aarch64-apple)
+    - rm dist/studio-pack-generator-aarch64-apple
+
+  gen-cov:
+    - rm -rf .cov_profile
+    - deno test --coverage=.cov_profile -A
+    - deno coverage .cov_profile --lcov > .cov_profile/cov_profile.lcov
+    - genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov
+

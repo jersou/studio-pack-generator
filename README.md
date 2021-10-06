@@ -193,3 +193,22 @@ Options:
   10 stories.
 - Convert mp3 files to right format.
 - Generate story thumbnail.
+
+## Development
+
+The folder `.DENO_DIR` and `.lock.json` are **not** necessary for the project to
+work, it just allows to save its dependencies.
+
+Some dev command are listed in the scripts.yaml file, this file can be use with
+[Velociraptor](https://velociraptor.run/docs/installation/) :
+
+- start: run studio_pack_generator.ts
+- test: launch tests
+- test-watch: launch tests on file change
+- lint: lint the code
+- fmt: format the code
+- bundle: bundle the project and its dependencies to
+  dist/studio_pack_generator.js
+- bak-dep: backup the dependencies to `.DENO_DIR` and update `.lock.json`
+- gen-bin: generate the binaries
+- gen-cov: generate the test coverage

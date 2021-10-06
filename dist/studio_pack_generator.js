@@ -24320,7 +24320,7 @@ function parseArgs(args) {
     }).version(false).demandCommand(1).parse();
 }
 const importMeta2 = {
-    url: "file:///data/Projets/Logiciels/github/studio-pack-generator/studio_pack_generator.ts",
+    url: "file://./studio_pack_generator.ts",
     main: import.meta.main
 };
 if (importMeta2.main) {
