@@ -13,6 +13,7 @@ import {
   checkRunPermission,
   convertToImageItem,
   folderImageItemRegEx,
+  sanitize,
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 
@@ -83,6 +84,7 @@ export async function generatePack(opt: ModOptions) {
         `Done (${(Date.now() - start) /
           1000} sec) :  ${opt.storyPath} → ${zipPath}`,
       );
+      sanitize();
     }
   }
 }

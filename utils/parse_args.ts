@@ -1,12 +1,12 @@
 #!/usr/bin/env -S deno run --allow-run --allow-read --allow-write
 
 import { yargs } from "../deps.ts";
-import { generatePack } from "../gen_pack.ts";
+import { generatePack, ModOptions } from "../gen_pack.ts";
 
-export function parseArgs(args: string[]) {
+export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
   // deno-lint-ignore no-explicit-any
-  (yargs(args) as any)
+  await (yargs(args) as any)
     .command(
       "$0 [options] <story-path>",
       "convert a folder to Studio pack zip",
@@ -21,7 +21,7 @@ export function parseArgs(args: string[]) {
         }
         return y.wrap(width);
       },
-      generatePack,
+      async (opts: ModOptions) => await generatePack(opts),
     )
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",

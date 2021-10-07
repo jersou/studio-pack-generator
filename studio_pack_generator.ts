@@ -3,5 +3,5 @@
 import { parseArgs } from "./utils/parse_args.ts";
 
 if (import.meta.main) {
-  parseArgs(Deno.args);
+  await parseArgs(Deno.args);
 }
