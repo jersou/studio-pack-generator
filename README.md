@@ -1,7 +1,7 @@
 # Studio-Pack-Generator
 
 This project convert a folder or a RSS URL to
-[Studio](https://github.com/marian-m12l/studio) pack zip, see file structure
+[Studio](https://github.com/marian-m12l/studio) pack zip for Lunii device, see file structure
 below.
 
 Supported OS: Windows(using WSL) / Linux / MacOS
