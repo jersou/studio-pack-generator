@@ -25619,7 +25619,7 @@ async function getLang() {
         }
     }
     let lang;
-    const langRegex = /^([a-zA-Z_]+)\./;
+    const langRegex = /^([a-zA-Z_-]+)\.?/;
     if (LANG && langRegex.test(LANG)) {
         lang = langRegex.exec(LANG)[1].replace(/_/g, "-");
     }
