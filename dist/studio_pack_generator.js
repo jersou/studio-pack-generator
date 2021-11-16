@@ -8,58 +8,30 @@ function code(open, close) {
         regexp: new RegExp(`\\x1b\\[${close}m`, "g")
     };
 }
-function run(str, code) {
+function run3(str, code) {
     return enabled ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
 }
-function bold(str) {
-    return run(str, code([
-        1
-    ], 22));
-}
-function red(str) {
-    return run(str, code([
-        31
-    ], 39));
-}
-function green(str) {
-    return run(str, code([
-        32
-    ], 39));
-}
 function yellow(str) {
-    return run(str, code([
+    return run3(str, code([
         33
     ], 39));
 }
-function white(str) {
-    return run(str, code([
-        37
-    ], 39));
-}
-function gray(str) {
-    return brightBlack(str);
-}
-function brightBlack(str) {
-    return run(str, code([
-        90
-    ], 39));
-}
 function bgRed(str) {
-    return run(str, code([
+    return run3(str, code([
         41
     ], 49));
 }
 function bgGreen(str) {
-    return run(str, code([
+    return run3(str, code([
         42
     ], 49));
 }
 function bgBlue(str) {
-    return run(str, code([
+    return run3(str, code([
         44
     ], 49));
 }
-const ANSI_PATTERN = new RegExp([
+new RegExp([
     "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
     "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))", 
 ].join("|"), "g");
@@ -138,7 +110,7 @@ const base64abc = [
     "8",
     "9",
     "+",
-    "/"
+    "/", 
 ];
 function encode(data) {
     const uint8 = typeof data === "string" ? new TextEncoder().encode(data) : data instanceof Uint8Array ? data : new Uint8Array(data);
@@ -2646,6 +2618,19 @@ function assert(expr, msg = "") {
         throw new DenoStdInternalError(msg);
     }
 }
+function concat(...buf) {
+    let length = 0;
+    for (const b of buf){
+        length += b.length;
+    }
+    const output = new Uint8Array(length);
+    let index = 0;
+    for (const b1 of buf){
+        output.set(b1, index);
+        index += b1.length;
+    }
+    return output;
+}
 function copy(src, dst, off = 0) {
     off = Math.max(0, Math.min(off, dst.byteLength));
     const dstBytesAvailable = dst.byteLength - off;
@@ -2789,480 +2774,6 @@ class Buffer {
         }
     }
 }
-var DiffType;
-(function(DiffType) {
-    DiffType["removed"] = "removed";
-    DiffType["common"] = "common";
-    DiffType["added"] = "added";
-})(DiffType || (DiffType = {
-}));
-const REMOVED = 1;
-const COMMON = 2;
-const ADDED = 3;
-function createCommon(A, B, reverse) {
-    const common = [];
-    if (A.length === 0 || B.length === 0) return [];
-    for(let i = 0; i < Math.min(A.length, B.length); i += 1){
-        if (A[reverse ? A.length - i - 1 : i] === B[reverse ? B.length - i - 1 : i]) {
-            common.push(A[reverse ? A.length - i - 1 : i]);
-        } else {
-            return common;
-        }
-    }
-    return common;
-}
-function diff(A, B) {
-    const prefixCommon = createCommon(A, B);
-    const suffixCommon = createCommon(A.slice(prefixCommon.length), B.slice(prefixCommon.length), true).reverse();
-    A = suffixCommon.length ? A.slice(prefixCommon.length, -suffixCommon.length) : A.slice(prefixCommon.length);
-    B = suffixCommon.length ? B.slice(prefixCommon.length, -suffixCommon.length) : B.slice(prefixCommon.length);
-    const swapped = B.length > A.length;
-    [A, B] = swapped ? [
-        B,
-        A
-    ] : [
-        A,
-        B
-    ];
-    const M = A.length;
-    const N = B.length;
-    if (!M && !N && !suffixCommon.length && !prefixCommon.length) return [];
-    if (!N) {
-        return [
-            ...prefixCommon.map((c)=>({
-                    type: DiffType.common,
-                    value: c
-                })
-            ),
-            ...A.map((a)=>({
-                    type: swapped ? DiffType.added : DiffType.removed,
-                    value: a
-                })
-            ),
-            ...suffixCommon.map((c)=>({
-                    type: DiffType.common,
-                    value: c
-                })
-            ), 
-        ];
-    }
-    const offset = N;
-    const delta = M - N;
-    const size = M + N + 1;
-    const fp = new Array(size).fill({
-        y: -1
-    });
-    const routes = new Uint32Array((M * N + size + 1) * 2);
-    const diffTypesPtrOffset = routes.length / 2;
-    let ptr = 0;
-    let p = -1;
-    function backTrace(A, B, current, swapped) {
-        const M = A.length;
-        const N = B.length;
-        const result = [];
-        let a = M - 1;
-        let b = N - 1;
-        let j = routes[current.id];
-        let type = routes[current.id + diffTypesPtrOffset];
-        while(true){
-            if (!j && !type) break;
-            const prev = j;
-            if (type === 1) {
-                result.unshift({
-                    type: swapped ? DiffType.removed : DiffType.added,
-                    value: B[b]
-                });
-                b -= 1;
-            } else if (type === 3) {
-                result.unshift({
-                    type: swapped ? DiffType.added : DiffType.removed,
-                    value: A[a]
-                });
-                a -= 1;
-            } else {
-                result.unshift({
-                    type: DiffType.common,
-                    value: A[a]
-                });
-                a -= 1;
-                b -= 1;
-            }
-            j = routes[prev];
-            type = routes[prev + diffTypesPtrOffset];
-        }
-        return result;
-    }
-    function createFP(slide, down, k, M) {
-        if (slide && slide.y === -1 && down && down.y === -1) {
-            return {
-                y: 0,
-                id: 0
-            };
-        }
-        if (down && down.y === -1 || k === M || (slide && slide.y) > (down && down.y) + 1) {
-            const prev = slide.id;
-            ptr++;
-            routes[ptr] = prev;
-            routes[ptr + diffTypesPtrOffset] = ADDED;
-            return {
-                y: slide.y,
-                id: ptr
-            };
-        } else {
-            const prev = down.id;
-            ptr++;
-            routes[ptr] = prev;
-            routes[ptr + diffTypesPtrOffset] = REMOVED;
-            return {
-                y: down.y + 1,
-                id: ptr
-            };
-        }
-    }
-    function snake(k, slide, down, _offset, A, B) {
-        const M = A.length;
-        const N = B.length;
-        if (k < -N || M < k) return {
-            y: -1,
-            id: -1
-        };
-        const fp = createFP(slide, down, k, M);
-        while(fp.y + k < M && fp.y < N && A[fp.y + k] === B[fp.y]){
-            const prev = fp.id;
-            ptr++;
-            fp.id = ptr;
-            fp.y += 1;
-            routes[ptr] = prev;
-            routes[ptr + diffTypesPtrOffset] = COMMON;
-        }
-        return fp;
-    }
-    while(fp[delta + offset].y < N){
-        p = p + 1;
-        for(let k = -p; k < delta; ++k){
-            fp[k + offset] = snake(k, fp[k - 1 + offset], fp[k + 1 + offset], offset, A, B);
-        }
-        for(let k1 = delta + p; k1 > delta; --k1){
-            fp[k1 + offset] = snake(k1, fp[k1 - 1 + offset], fp[k1 + 1 + offset], offset, A, B);
-        }
-        fp[delta + offset] = snake(delta, fp[delta - 1 + offset], fp[delta + 1 + offset], offset, A, B);
-    }
-    return [
-        ...prefixCommon.map((c)=>({
-                type: DiffType.common,
-                value: c
-            })
-        ),
-        ...backTrace(A, B, fp[delta + offset], swapped),
-        ...suffixCommon.map((c)=>({
-                type: DiffType.common,
-                value: c
-            })
-        ), 
-    ];
-}
-function diffstr(A, B) {
-    function tokenize(string, { wordDiff =false  } = {
-    }) {
-        if (wordDiff) {
-            const tokens = string.split(/([^\S\r\n]+|[()[\]{}'"\r\n]|\b)/);
-            const words = /^[a-zA-Z\u{C0}-\u{FF}\u{D8}-\u{F6}\u{F8}-\u{2C6}\u{2C8}-\u{2D7}\u{2DE}-\u{2FF}\u{1E00}-\u{1EFF}]+$/u;
-            for(let i = 0; i < tokens.length - 1; i++){
-                if (!tokens[i + 1] && tokens[i + 2] && words.test(tokens[i]) && words.test(tokens[i + 2])) {
-                    tokens[i] += tokens[i + 2];
-                    tokens.splice(i + 1, 2);
-                    i--;
-                }
-            }
-            return tokens.filter((token)=>token
-            );
-        } else {
-            const tokens = [], lines = string.split(/(\n|\r\n)/);
-            if (!lines[lines.length - 1]) {
-                lines.pop();
-            }
-            for(let i = 0; i < lines.length; i++){
-                if (i % 2) {
-                    tokens[tokens.length - 1] += lines[i];
-                } else {
-                    tokens.push(lines[i]);
-                }
-            }
-            return tokens;
-        }
-    }
-    function createDetails(line, tokens) {
-        return tokens.filter(({ type  })=>type === line.type || type === DiffType.common
-        ).map((result, i, t)=>{
-            if (result.type === DiffType.common && t[i - 1] && t[i - 1]?.type === t[i + 1]?.type && /\s+/.test(result.value)) {
-                result.type = t[i - 1].type;
-            }
-            return result;
-        });
-    }
-    const diffResult = diff(tokenize(`${A}\n`), tokenize(`${B}\n`));
-    const added = [], removed = [];
-    for (const result of diffResult){
-        if (result.type === DiffType.added) {
-            added.push(result);
-        }
-        if (result.type === DiffType.removed) {
-            removed.push(result);
-        }
-    }
-    const aLines = added.length < removed.length ? added : removed;
-    const bLines = aLines === removed ? added : removed;
-    for (const a of aLines){
-        let tokens = [], b;
-        while(bLines.length){
-            b = bLines.shift();
-            tokens = diff(tokenize(a.value, {
-                wordDiff: true
-            }), tokenize(b?.value ?? "", {
-                wordDiff: true
-            }));
-            if (tokens.some(({ type , value  })=>type === DiffType.common && value.trim().length
-            )) {
-                break;
-            }
-        }
-        a.details = createDetails(a, tokens);
-        if (b) {
-            b.details = createDetails(b, tokens);
-        }
-    }
-    return diffResult;
-}
-const CAN_NOT_DISPLAY = "[Cannot display]";
-class AssertionError extends Error {
-    name = "AssertionError";
-    constructor(message1){
-        super(message1);
-    }
-}
-function _format(v) {
-    const { Deno  } = globalThis;
-    return typeof Deno?.inspect === "function" ? Deno.inspect(v, {
-        depth: Infinity,
-        sorted: true,
-        trailingComma: true,
-        compact: false,
-        iterableLimit: Infinity
-    }) : `"${String(v).replace(/(?=["\\])/g, "\\")}"`;
-}
-function createColor(diffType, { background =false  } = {
-}) {
-    switch(diffType){
-        case DiffType.added:
-            return (s)=>background ? bgGreen(white(s)) : green(bold(s))
-            ;
-        case DiffType.removed:
-            return (s)=>background ? bgRed(white(s)) : red(bold(s))
-            ;
-        default:
-            return white;
-    }
-}
-function createSign(diffType) {
-    switch(diffType){
-        case DiffType.added:
-            return "+   ";
-        case DiffType.removed:
-            return "-   ";
-        default:
-            return "    ";
-    }
-}
-function buildMessage(diffResult, { stringDiff =false  } = {
-}) {
-    const messages = [], diffMessages = [];
-    messages.push("");
-    messages.push("");
-    messages.push(`    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${green(bold("Expected"))}`);
-    messages.push("");
-    messages.push("");
-    diffResult.forEach((result)=>{
-        const c = createColor(result.type);
-        const line = result.details?.map((detail)=>detail.type !== DiffType.common ? createColor(detail.type, {
-                background: true
-            })(detail.value) : detail.value
-        ).join("") ?? result.value;
-        diffMessages.push(c(`${createSign(result.type)}${line}`));
-    });
-    messages.push(...stringDiff ? [
-        diffMessages.join("")
-    ] : diffMessages);
-    messages.push("");
-    return messages;
-}
-function isKeyedCollection(x) {
-    return [
-        Symbol.iterator,
-        "size"
-    ].every((k)=>k in x
-    );
-}
-function equal(c, d) {
-    const seen = new Map();
-    return (function compare(a, b) {
-        if (a && b && (a instanceof RegExp && b instanceof RegExp || a instanceof URL && b instanceof URL)) {
-            return String(a) === String(b);
-        }
-        if (a instanceof Date && b instanceof Date) {
-            const aTime = a.getTime();
-            const bTime = b.getTime();
-            if (Number.isNaN(aTime) && Number.isNaN(bTime)) {
-                return true;
-            }
-            return a.getTime() === b.getTime();
-        }
-        if (Object.is(a, b)) {
-            return true;
-        }
-        if (a && typeof a === "object" && b && typeof b === "object") {
-            if (a && b && !constructorsEqual(a, b)) {
-                return false;
-            }
-            if (a instanceof WeakMap || b instanceof WeakMap) {
-                if (!(a instanceof WeakMap && b instanceof WeakMap)) return false;
-                throw new TypeError("cannot compare WeakMap instances");
-            }
-            if (a instanceof WeakSet || b instanceof WeakSet) {
-                if (!(a instanceof WeakSet && b instanceof WeakSet)) return false;
-                throw new TypeError("cannot compare WeakSet instances");
-            }
-            if (seen.get(a) === b) {
-                return true;
-            }
-            if (Object.keys(a || {
-            }).length !== Object.keys(b || {
-            }).length) {
-                return false;
-            }
-            if (isKeyedCollection(a) && isKeyedCollection(b)) {
-                if (a.size !== b.size) {
-                    return false;
-                }
-                let unmatchedEntries = a.size;
-                for (const [aKey, aValue] of a.entries()){
-                    for (const [bKey, bValue] of b.entries()){
-                        if (aKey === aValue && bKey === bValue && compare(aKey, bKey) || compare(aKey, bKey) && compare(aValue, bValue)) {
-                            unmatchedEntries--;
-                        }
-                    }
-                }
-                return unmatchedEntries === 0;
-            }
-            const merged = {
-                ...a,
-                ...b
-            };
-            for (const key of [
-                ...Object.getOwnPropertyNames(merged),
-                ...Object.getOwnPropertySymbols(merged), 
-            ]){
-                if (!compare(a && a[key], b && b[key])) {
-                    return false;
-                }
-                if (key in a && !(key in b) || key in b && !(key in a)) {
-                    return false;
-                }
-            }
-            seen.set(a, b);
-            if (a instanceof WeakRef || b instanceof WeakRef) {
-                if (!(a instanceof WeakRef && b instanceof WeakRef)) return false;
-                return compare(a.deref(), b.deref());
-            }
-            return true;
-        }
-        return false;
-    })(c, d);
-}
-function constructorsEqual(a, b) {
-    return a.constructor === b.constructor || a.constructor === Object && !b.constructor || !a.constructor && b.constructor === Object;
-}
-function assertNotEquals(actual, expected, msg) {
-    if (!equal(actual, expected)) {
-        return;
-    }
-    let actualString;
-    let expectedString;
-    try {
-        actualString = String(actual);
-    } catch  {
-        actualString = "[Cannot display]";
-    }
-    try {
-        expectedString = String(expected);
-    } catch  {
-        expectedString = "[Cannot display]";
-    }
-    if (!msg) {
-        msg = `actual: ${actualString} expected: ${expectedString}`;
-    }
-    throw new AssertionError(msg);
-}
-function assertStrictEquals(actual, expected, msg) {
-    if (actual === expected) {
-        return;
-    }
-    let message;
-    if (msg) {
-        message = msg;
-    } else {
-        const actualString = _format(actual);
-        const expectedString = _format(expected);
-        if (actualString === expectedString) {
-            const withOffset = actualString.split("\n").map((l)=>`    ${l}`
-            ).join("\n");
-            message = `Values have the same structure but are not reference-equal:\n\n${red(withOffset)}\n`;
-        } else {
-            try {
-                const stringDiff = typeof actual === "string" && typeof expected === "string";
-                const diffResult = stringDiff ? diffstr(actual, expected) : diff(actualString.split("\n"), expectedString.split("\n"));
-                const diffMsg = buildMessage(diffResult, {
-                    stringDiff
-                }).join("\n");
-                message = `Values are not strictly equal:\n${diffMsg}`;
-            } catch  {
-                message = `\n${red(CAN_NOT_DISPLAY)} + \n\n`;
-            }
-        }
-    }
-    throw new AssertionError(message);
-}
-const DEFAULT_BUFFER_SIZE = 32 * 1024;
-async function writeAll(w, arr) {
-    let nwritten = 0;
-    while(nwritten < arr.length){
-        nwritten += await w.write(arr.subarray(nwritten));
-    }
-}
-function writeAllSync(w, arr) {
-    let nwritten = 0;
-    while(nwritten < arr.length){
-        nwritten += w.writeSync(arr.subarray(nwritten));
-    }
-}
-async function copy1(src, dst, options) {
-    let n = 0;
-    const bufSize = options?.bufSize ?? DEFAULT_BUFFER_SIZE;
-    const b = new Uint8Array(bufSize);
-    let gotEOF = false;
-    while(gotEOF === false){
-        const result = await src.read(b);
-        if (result === null) {
-            gotEOF = true;
-        } else {
-            let nwritten = 0;
-            while(nwritten < result){
-                nwritten += await dst.write(b.subarray(nwritten, result));
-            }
-            n += nwritten;
-        }
-    }
-    return n;
-}
 const DEFAULT_BUF_SIZE = 4096;
 const MIN_BUF_SIZE = 16;
 const CR = "\r".charCodeAt(0);
@@ -3270,9 +2781,9 @@ const LF = "\n".charCodeAt(0);
 class BufferFullError extends Error {
     partial;
     name = "BufferFullError";
-    constructor(partial1){
+    constructor(partial){
         super("Buffer full");
-        this.partial = partial1;
+        this.partial = partial;
     }
 }
 class PartialReadError extends Error {
@@ -3291,11 +2802,11 @@ class BufReader {
     static create(r, size = 4096) {
         return r instanceof BufReader ? r : new BufReader(r, size);
     }
-    constructor(rd1, size = 4096){
+    constructor(rd, size = 4096){
         if (size < 16) {
             size = MIN_BUF_SIZE;
         }
-        this._reset(new Uint8Array(size), rd1);
+        this._reset(new Uint8Array(size), rd);
     }
     size() {
         return this.buf.byteLength;
@@ -3417,6 +2928,7 @@ class BufReader {
             if (!(err instanceof BufferFullError)) {
                 throw err;
             }
+            partial = err.partial;
             if (!this.eof && partial && partial.byteLength > 0 && partial[partial.byteLength - 1] === CR) {
                 assert(this.r > 0, "bufio: tried to rewind past start of buffer");
                 this.r--;
@@ -3547,13 +3059,13 @@ class BufWriter extends AbstractBufBase {
     static create(writer, size = 4096) {
         return writer instanceof BufWriter ? writer : new BufWriter(writer, size);
     }
-    constructor(writer1, size1 = 4096){
+    constructor(writer, size = 4096){
         super();
-        this.writer = writer1;
-        if (size1 <= 0) {
-            size1 = DEFAULT_BUF_SIZE;
+        this.writer = writer;
+        if (size <= 0) {
+            size = DEFAULT_BUF_SIZE;
         }
-        this.buf = new Uint8Array(size1);
+        this.buf = new Uint8Array(size);
     }
     reset(w) {
         this.err = null;
@@ -3564,7 +3076,11 @@ class BufWriter extends AbstractBufBase {
         if (this.err !== null) throw this.err;
         if (this.usedBufferBytes === 0) return;
         try {
-            await writeAll(this.writer, this.buf.subarray(0, this.usedBufferBytes));
+            const p = this.buf.subarray(0, this.usedBufferBytes);
+            let nwritten = 0;
+            while(nwritten < p.length){
+                nwritten += await this.writer.write(p.subarray(nwritten));
+            }
         } catch (e) {
             if (e instanceof Error) {
                 this.err = e;
@@ -3608,13 +3124,13 @@ class BufWriterSync extends AbstractBufBase {
     static create(writer, size = 4096) {
         return writer instanceof BufWriterSync ? writer : new BufWriterSync(writer, size);
     }
-    constructor(writer2, size2 = 4096){
+    constructor(writer, size = 4096){
         super();
-        this.writer = writer2;
-        if (size2 <= 0) {
-            size2 = DEFAULT_BUF_SIZE;
+        this.writer = writer;
+        if (size <= 0) {
+            size = DEFAULT_BUF_SIZE;
         }
-        this.buf = new Uint8Array(size2);
+        this.buf = new Uint8Array(size);
     }
     reset(w) {
         this.err = null;
@@ -3625,7 +3141,11 @@ class BufWriterSync extends AbstractBufBase {
         if (this.err !== null) throw this.err;
         if (this.usedBufferBytes === 0) return;
         try {
-            writeAllSync(this.writer, this.buf.subarray(0, this.usedBufferBytes));
+            const p = this.buf.subarray(0, this.usedBufferBytes);
+            let nwritten = 0;
+            while(nwritten < p.length){
+                nwritten += this.writer.writeSync(p.subarray(nwritten));
+            }
         } catch (e) {
             if (e instanceof Error) {
                 this.err = e;
@@ -3664,50 +3184,26 @@ class BufWriterSync extends AbstractBufBase {
         return totalBytesWritten;
     }
 }
-class StringReader extends Buffer {
-    constructor(s){
-        super(new TextEncoder().encode(s).buffer);
+async function* readLines(reader, decoderOpts) {
+    const bufReader = new BufReader(reader);
+    let chunks = [];
+    const decoder = new TextDecoder(decoderOpts?.encoding, decoderOpts);
+    while(true){
+        const res = await bufReader.readLine();
+        if (!res) {
+            if (chunks.length > 0) {
+                yield decoder.decode(concat(...chunks));
+            }
+            break;
+        }
+        chunks.push(res.line);
+        if (!res.more) {
+            yield decoder.decode(concat(...chunks));
+            chunks = [];
+        }
     }
 }
-class MultiReader {
-    readers;
-    currentIndex = 0;
-    constructor(...readers1){
-        this.readers = readers1;
-    }
-    async read(p) {
-        const r = this.readers[this.currentIndex];
-        if (!r) return null;
-        const result = await r.read(p);
-        if (result === null) {
-            this.currentIndex++;
-            return 0;
-        }
-        return result;
-    }
-}
-class LimitedReader {
-    reader;
-    limit;
-    constructor(reader1, limit1){
-        this.reader = reader1;
-        this.limit = limit1;
-    }
-    async read(p) {
-        if (this.limit <= 0) {
-            return null;
-        }
-        if (p.length > this.limit) {
-            p = p.subarray(0, this.limit);
-        }
-        const n = await this.reader.read(p);
-        if (n == null) {
-            return null;
-        }
-        this.limit -= n;
-        return n;
-    }
-}
+const DEFAULT_BUFFER_SIZE = 32 * 1024;
 function readerFromStreamReader(streamReader) {
     const buffer = new Buffer();
     return {
@@ -3723,41 +3219,40 @@ function readerFromStreamReader(streamReader) {
         }
     };
 }
-const decoder = new TextDecoder();
-class StringWriter {
-    base;
-    chunks = [];
-    byteLength = 0;
-    cache;
-    constructor(base1 = ""){
-        this.base = base1;
-        const c = new TextEncoder().encode(base1);
-        this.chunks.push(c);
-        this.byteLength += c.byteLength;
-    }
-    write(p) {
-        return Promise.resolve(this.writeSync(p));
-    }
-    writeSync(p) {
-        this.chunks.push(p);
-        this.byteLength += p.byteLength;
-        this.cache = undefined;
-        return p.byteLength;
-    }
-    toString() {
-        if (this.cache) {
-            return this.cache;
-        }
-        const buf = new Uint8Array(this.byteLength);
-        let offs = 0;
-        for (const chunk of this.chunks){
-            buf.set(chunk, offs);
-            offs += chunk.byteLength;
-        }
-        this.cache = decoder.decode(buf);
-        return this.cache;
+async function writeAll(w, arr) {
+    let nwritten = 0;
+    while(nwritten < arr.length){
+        nwritten += await w.write(arr.subarray(nwritten));
     }
 }
+async function copy1(src, dst, options) {
+    let n = 0;
+    const bufSize = options?.bufSize ?? DEFAULT_BUFFER_SIZE;
+    const b = new Uint8Array(bufSize);
+    let gotEOF = false;
+    while(gotEOF === false){
+        const result = await src.read(b);
+        if (result === null) {
+            gotEOF = true;
+        } else {
+            let nwritten = 0;
+            while(nwritten < result){
+                nwritten += await dst.write(b.subarray(nwritten, result));
+            }
+            n += nwritten;
+        }
+    }
+    return n;
+}
+var DiffType;
+(function(DiffType) {
+    DiffType["removed"] = "removed";
+    DiffType["common"] = "common";
+    DiffType["added"] = "added";
+})(DiffType || (DiffType = {
+}));
+BigInt(Number.MAX_SAFE_INTEGER);
+new TextDecoder();
 const osType = (()=>{
     const { Deno  } = globalThis;
     if (typeof Deno?.build?.os === "string") {
@@ -3839,7 +3334,7 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
     }
     return res;
 }
-function _format1(sep, pathObject) {
+function _format(sep, pathObject) {
     const dir = pathObject.dir || pathObject.root;
     const base = pathObject.base || (pathObject.name || "") + (pathObject.ext || "");
     if (!dir) return base;
@@ -3879,7 +3374,7 @@ function resolve(...pathSegments) {
             if (typeof Deno?.env?.get !== "function" || typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a relative path without a CWD.");
             }
-            path = Deno.env.get(`=${resolvedDevice}`) || Deno.cwd();
+            path = Deno.cwd();
             if (path === undefined || path.slice(0, 3).toLowerCase() !== `${resolvedDevice.toLowerCase()}\\`) {
                 path = `${resolvedDevice}\\`;
             }
@@ -4345,11 +3840,11 @@ function extname(path) {
     }
     return path.slice(startDot, end);
 }
-function format4(pathObject) {
+function format1(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
-    return _format1("\\", pathObject);
+    return _format("\\", pathObject);
 }
 function parse(path) {
     assertPath(path);
@@ -4479,25 +3974,23 @@ function toFileUrl(path) {
     }
     return url;
 }
-const mod = function() {
-    return {
-        sep: sep,
-        delimiter: delimiter,
-        resolve: resolve,
-        normalize: normalize,
-        isAbsolute: isAbsolute,
-        join: join,
-        relative: relative,
-        toNamespacedPath: toNamespacedPath,
-        dirname: dirname,
-        basename: basename,
-        extname: extname,
-        format: format4,
-        parse: parse,
-        fromFileUrl: fromFileUrl,
-        toFileUrl: toFileUrl
-    };
-}();
+const mod = {
+    sep: sep,
+    delimiter: delimiter,
+    resolve: resolve,
+    normalize: normalize,
+    isAbsolute: isAbsolute,
+    join: join,
+    relative: relative,
+    toNamespacedPath: toNamespacedPath,
+    dirname: dirname,
+    basename: basename,
+    extname: extname,
+    format: format1,
+    parse: parse,
+    fromFileUrl: fromFileUrl,
+    toFileUrl: toFileUrl
+};
 const sep1 = "/";
 const delimiter1 = ":";
 function resolve1(...pathSegments) {
@@ -4725,11 +4218,11 @@ function extname1(path) {
     }
     return path.slice(startDot, end);
 }
-function format1(pathObject) {
+function format2(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
-    return _format1("/", pathObject);
+    return _format("/", pathObject);
 }
 function parse1(path) {
     assertPath(path);
@@ -4812,27 +4305,27 @@ function toFileUrl1(path) {
     url.pathname = encodeWhitespace(path.replace(/%/g, "%25").replace(/\\/g, "%5C"));
     return url;
 }
-const mod1 = function() {
-    return {
-        sep: sep1,
-        delimiter: delimiter1,
-        resolve: resolve1,
-        normalize: normalize1,
-        isAbsolute: isAbsolute1,
-        join: join1,
-        relative: relative1,
-        toNamespacedPath: toNamespacedPath1,
-        dirname: dirname1,
-        basename: basename1,
-        extname: extname1,
-        format: format1,
-        parse: parse1,
-        fromFileUrl: fromFileUrl1,
-        toFileUrl: toFileUrl1
-    };
-}();
+const mod1 = {
+    sep: sep1,
+    delimiter: delimiter1,
+    resolve: resolve1,
+    normalize: normalize1,
+    isAbsolute: isAbsolute1,
+    join: join1,
+    relative: relative1,
+    toNamespacedPath: toNamespacedPath1,
+    dirname: dirname1,
+    basename: basename1,
+    extname: extname1,
+    format: format2,
+    parse: parse1,
+    fromFileUrl: fromFileUrl1,
+    toFileUrl: toFileUrl1
+};
 const path = isWindows ? mod : mod1;
-const { basename: basename2 , delimiter: delimiter2 , dirname: dirname2 , extname: extname2 , format: format2 , fromFileUrl: fromFileUrl2 , isAbsolute: isAbsolute2 , join: join2 , normalize: normalize2 , parse: parse2 , relative: relative2 , resolve: resolve2 , sep: sep2 , toFileUrl: toFileUrl2 , toNamespacedPath: toNamespacedPath2 ,  } = path;
+const { join: join2 , normalize: normalize2  } = path;
+const path1 = isWindows ? mod : mod1;
+const { basename: basename2 , delimiter: delimiter2 , dirname: dirname2 , extname: extname2 , format: format3 , fromFileUrl: fromFileUrl2 , isAbsolute: isAbsolute2 , join: join3 , normalize: normalize3 , parse: parse2 , relative: relative2 , resolve: resolve2 , sep: sep2 , toFileUrl: toFileUrl2 , toNamespacedPath: toNamespacedPath2 ,  } = path1;
 const consoleLogger = {
     type: 'logger',
     log (args) {
@@ -4849,9 +4342,9 @@ const consoleLogger = {
     }
 };
 class Logger {
-    constructor(concreteLogger, options2 = {
+    constructor(concreteLogger, options = {
     }){
-        this.init(concreteLogger, options2);
+        this.init(concreteLogger, options);
     }
     init(concreteLogger, options = {
     }) {
@@ -5088,7 +4581,7 @@ function deepFind(obj, path, keySeparator = '.') {
     return current;
 }
 class ResourceStore extends EventEmitter {
-    constructor(data, options1 = {
+    constructor(data, options = {
         ns: [
             'translation'
         ],
@@ -5100,7 +4593,7 @@ class ResourceStore extends EventEmitter {
         }
         this.data = data || {
         };
-        this.options = options1;
+        this.options = options;
         if (this.options.keySeparator === undefined) {
             this.options.keySeparator = '.';
         }
@@ -5240,7 +4733,7 @@ const __default1 = {
 const checkedLoadedFor = {
 };
 class Translator extends EventEmitter {
-    constructor(services, options3 = {
+    constructor(services, options = {
     }){
         super();
         if (isIE10) {
@@ -5255,7 +4748,7 @@ class Translator extends EventEmitter {
             'i18nFormat',
             'utils', 
         ], services, this);
-        this.options = options3;
+        this.options = options;
         if (this.options.keySeparator === undefined) {
             this.options.keySeparator = '.';
         }
@@ -5571,8 +5064,8 @@ function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 class LanguageUtil {
-    constructor(options4){
-        this.options = options4;
+    constructor(options){
+        this.options = options;
         this.supportedLngs = this.options.supportedLngs || false;
         this.logger = __default.create('languageUtils');
     }
@@ -6149,10 +5642,10 @@ function createRules() {
     return rules;
 }
 class PluralResolver {
-    constructor(languageUtils, options5 = {
+    constructor(languageUtils, options = {
     }){
         this.languageUtils = languageUtils;
-        this.options = options5;
+        this.options = options;
         this.logger = __default.create('pluralResolver');
         if ((!this.options.compatibilityJSON || this.options.compatibilityJSON === 'v4') && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
             this.options.compatibilityJSON = 'v3';
@@ -6243,13 +5736,13 @@ class PluralResolver {
     }
 }
 class Interpolator {
-    constructor(options6 = {
+    constructor(options = {
     }){
         this.logger = __default.create('interpolator');
-        this.options = options6;
-        this.format = options6.interpolation && options6.interpolation.format || ((value)=>value
+        this.options = options;
+        this.format = options.interpolation && options.interpolation.format || ((value)=>value
         );
-        this.init(options6);
+        this.init(options);
     }
     init(options = {
     }) {
@@ -6425,7 +5918,7 @@ function remove(arr, what) {
     }
 }
 class Connector extends EventEmitter {
-    constructor(backend, store, services1, options7 = {
+    constructor(backend, store, services, options = {
     }){
         super();
         if (isIE10) {
@@ -6433,15 +5926,15 @@ class Connector extends EventEmitter {
         }
         this.backend = backend;
         this.store = store;
-        this.services = services1;
-        this.languageUtils = services1.languageUtils;
-        this.options = options7;
+        this.services = services;
+        this.languageUtils = services.languageUtils;
+        this.options = options;
         this.logger = __default.create('backendConnector');
         this.state = {
         };
         this.queue = [];
         if (this.backend && this.backend.init) {
-            this.backend.init(services1, options7.backend, options7);
+            this.backend.init(services, options.backend, options);
         }
     }
     queueLoad(languages, namespaces, options, callback) {
@@ -6680,26 +6173,26 @@ function transformOptions(options) {
 function noop() {
 }
 class I18n extends EventEmitter {
-    constructor(options8 = {
+    constructor(options = {
     }, callback){
         super();
         if (isIE10) {
             EventEmitter.call(this);
         }
-        this.options = transformOptions(options8);
+        this.options = transformOptions(options);
         this.services = {
         };
         this.logger = __default;
         this.modules = {
             external: []
         };
-        if (callback && !this.isInitialized && !options8.isClone) {
+        if (callback && !this.isInitialized && !options.isClone) {
             if (!this.options.initImmediate) {
-                this.init(options8, callback);
+                this.init(options, callback);
                 return this;
             }
             setTimeout(()=>{
-                this.init(options8, callback);
+                this.init(options, callback);
             }, 0);
         }
     }
@@ -7197,7 +6690,7 @@ const ENTITIES_DEC = /&#(?<code>\d+);/g;
 const ENTITIES_HEX = /&#x(?<code>\d+);/g;
 function parse3(xml, options = {
 }) {
-    return format3({
+    return format4({
         xml: parseXML({
             xml
         }, options)
@@ -7303,7 +6796,7 @@ function consume(document, regex) {
     return matched.groups ?? {
     };
 }
-function format3(result, options) {
+function format4(result, options) {
     for (let [key, value] of Object.entries(result)){
         if (Array.isArray(value) && value.length === 1) {
             result[key] = value = value.shift();
@@ -7319,7 +6812,7 @@ function format3(result, options) {
             ).length > 1) {
                 delete value.$;
             }
-            result[key] = format3(value, options);
+            result[key] = format4(value, options);
         } else {
             result[key] = revive(value, options);
         }
@@ -7344,6 +6837,1450 @@ function revive(value, { reviveBooleans =true , reviveNumbers =true , emptyToNul
             return value;
     }
 }
+const noColor1 = globalThis.Deno?.noColor ?? true;
+let enabled1 = !noColor1;
+function code1(open, close) {
+    return {
+        open: `\x1b[${open.join(";")}m`,
+        close: `\x1b[${close}m`,
+        regexp: new RegExp(`\\x1b\\[${close}m`, "g")
+    };
+}
+function run1(str, code) {
+    return enabled1 ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
+}
+function bold(str) {
+    return run1(str, code1([
+        1
+    ], 22));
+}
+function red(str) {
+    return run1(str, code1([
+        31
+    ], 39));
+}
+function green(str) {
+    return run1(str, code1([
+        32
+    ], 39));
+}
+function white(str) {
+    return run1(str, code1([
+        37
+    ], 39));
+}
+function gray(str) {
+    return brightBlack(str);
+}
+function brightBlack(str) {
+    return run1(str, code1([
+        90
+    ], 39));
+}
+new RegExp([
+    "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
+    "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))", 
+].join("|"), "g");
+var DiffType1;
+(function(DiffType) {
+    DiffType["removed"] = "removed";
+    DiffType["common"] = "common";
+    DiffType["added"] = "added";
+})(DiffType1 || (DiffType1 = {
+}));
+const REMOVED = 1;
+const COMMON = 2;
+const ADDED = 3;
+function createCommon(A, B, reverse) {
+    const common = [];
+    if (A.length === 0 || B.length === 0) return [];
+    for(let i = 0; i < Math.min(A.length, B.length); i += 1){
+        if (A[reverse ? A.length - i - 1 : i] === B[reverse ? B.length - i - 1 : i]) {
+            common.push(A[reverse ? A.length - i - 1 : i]);
+        } else {
+            return common;
+        }
+    }
+    return common;
+}
+function diff(A, B) {
+    const prefixCommon = createCommon(A, B);
+    const suffixCommon = createCommon(A.slice(prefixCommon.length), B.slice(prefixCommon.length), true).reverse();
+    A = suffixCommon.length ? A.slice(prefixCommon.length, -suffixCommon.length) : A.slice(prefixCommon.length);
+    B = suffixCommon.length ? B.slice(prefixCommon.length, -suffixCommon.length) : B.slice(prefixCommon.length);
+    const swapped = B.length > A.length;
+    [A, B] = swapped ? [
+        B,
+        A
+    ] : [
+        A,
+        B
+    ];
+    const M = A.length;
+    const N = B.length;
+    if (!M && !N && !suffixCommon.length && !prefixCommon.length) return [];
+    if (!N) {
+        return [
+            ...prefixCommon.map((c)=>({
+                    type: DiffType1.common,
+                    value: c
+                })
+            ),
+            ...A.map((a)=>({
+                    type: swapped ? DiffType1.added : DiffType1.removed,
+                    value: a
+                })
+            ),
+            ...suffixCommon.map((c)=>({
+                    type: DiffType1.common,
+                    value: c
+                })
+            ), 
+        ];
+    }
+    const offset = N;
+    const delta = M - N;
+    const size = M + N + 1;
+    const fp = new Array(size).fill({
+        y: -1
+    });
+    const routes = new Uint32Array((M * N + size + 1) * 2);
+    const diffTypesPtrOffset = routes.length / 2;
+    let ptr = 0;
+    let p = -1;
+    function backTrace(A, B, current, swapped) {
+        const M = A.length;
+        const N = B.length;
+        const result = [];
+        let a = M - 1;
+        let b = N - 1;
+        let j = routes[current.id];
+        let type = routes[current.id + diffTypesPtrOffset];
+        while(true){
+            if (!j && !type) break;
+            const prev = j;
+            if (type === 1) {
+                result.unshift({
+                    type: swapped ? DiffType1.removed : DiffType1.added,
+                    value: B[b]
+                });
+                b -= 1;
+            } else if (type === 3) {
+                result.unshift({
+                    type: swapped ? DiffType1.added : DiffType1.removed,
+                    value: A[a]
+                });
+                a -= 1;
+            } else {
+                result.unshift({
+                    type: DiffType1.common,
+                    value: A[a]
+                });
+                a -= 1;
+                b -= 1;
+            }
+            j = routes[prev];
+            type = routes[prev + diffTypesPtrOffset];
+        }
+        return result;
+    }
+    function createFP(slide, down, k, M) {
+        if (slide && slide.y === -1 && down && down.y === -1) {
+            return {
+                y: 0,
+                id: 0
+            };
+        }
+        if (down && down.y === -1 || k === M || (slide && slide.y) > (down && down.y) + 1) {
+            const prev = slide.id;
+            ptr++;
+            routes[ptr] = prev;
+            routes[ptr + diffTypesPtrOffset] = ADDED;
+            return {
+                y: slide.y,
+                id: ptr
+            };
+        } else {
+            const prev = down.id;
+            ptr++;
+            routes[ptr] = prev;
+            routes[ptr + diffTypesPtrOffset] = REMOVED;
+            return {
+                y: down.y + 1,
+                id: ptr
+            };
+        }
+    }
+    function snake(k, slide, down, _offset, A, B) {
+        const M = A.length;
+        const N = B.length;
+        if (k < -N || M < k) return {
+            y: -1,
+            id: -1
+        };
+        const fp = createFP(slide, down, k, M);
+        while(fp.y + k < M && fp.y < N && A[fp.y + k] === B[fp.y]){
+            const prev = fp.id;
+            ptr++;
+            fp.id = ptr;
+            fp.y += 1;
+            routes[ptr] = prev;
+            routes[ptr + diffTypesPtrOffset] = COMMON;
+        }
+        return fp;
+    }
+    while(fp[delta + offset].y < N){
+        p = p + 1;
+        for(let k = -p; k < delta; ++k){
+            fp[k + offset] = snake(k, fp[k - 1 + offset], fp[k + 1 + offset], offset, A, B);
+        }
+        for(let k1 = delta + p; k1 > delta; --k1){
+            fp[k1 + offset] = snake(k1, fp[k1 - 1 + offset], fp[k1 + 1 + offset], offset, A, B);
+        }
+        fp[delta + offset] = snake(delta, fp[delta - 1 + offset], fp[delta + 1 + offset], offset, A, B);
+    }
+    return [
+        ...prefixCommon.map((c)=>({
+                type: DiffType1.common,
+                value: c
+            })
+        ),
+        ...backTrace(A, B, fp[delta + offset], swapped),
+        ...suffixCommon.map((c)=>({
+                type: DiffType1.common,
+                value: c
+            })
+        ), 
+    ];
+}
+const CAN_NOT_DISPLAY = "[Cannot display]";
+class AssertionError extends Error {
+    constructor(message){
+        super(message);
+        this.name = "AssertionError";
+    }
+}
+function _format1(v) {
+    return globalThis.Deno ? Deno.inspect(v, {
+        depth: Infinity,
+        sorted: true,
+        trailingComma: true,
+        compact: false,
+        iterableLimit: Infinity
+    }) : `"${String(v).replace(/(?=["\\])/g, "\\")}"`;
+}
+function createColor(diffType) {
+    switch(diffType){
+        case DiffType1.added:
+            return (s)=>green(bold(s))
+            ;
+        case DiffType1.removed:
+            return (s)=>red(bold(s))
+            ;
+        default:
+            return white;
+    }
+}
+function createSign(diffType) {
+    switch(diffType){
+        case DiffType1.added:
+            return "+   ";
+        case DiffType1.removed:
+            return "-   ";
+        default:
+            return "    ";
+    }
+}
+function buildMessage(diffResult) {
+    const messages = [];
+    messages.push("");
+    messages.push("");
+    messages.push(`    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${green(bold("Expected"))}`);
+    messages.push("");
+    messages.push("");
+    diffResult.forEach((result)=>{
+        const c = createColor(result.type);
+        messages.push(c(`${createSign(result.type)}${result.value}`));
+    });
+    messages.push("");
+    return messages;
+}
+function isKeyedCollection(x) {
+    return [
+        Symbol.iterator,
+        "size"
+    ].every((k)=>k in x
+    );
+}
+function equal(c, d) {
+    const seen = new Map();
+    return (function compare(a, b) {
+        if (a && b && (a instanceof RegExp && b instanceof RegExp || a instanceof URL && b instanceof URL)) {
+            return String(a) === String(b);
+        }
+        if (a instanceof Date && b instanceof Date) {
+            const aTime = a.getTime();
+            const bTime = b.getTime();
+            if (Number.isNaN(aTime) && Number.isNaN(bTime)) {
+                return true;
+            }
+            return a.getTime() === b.getTime();
+        }
+        if (Object.is(a, b)) {
+            return true;
+        }
+        if (a && typeof a === "object" && b && typeof b === "object") {
+            if (seen.get(a) === b) {
+                return true;
+            }
+            if (Object.keys(a || {
+            }).length !== Object.keys(b || {
+            }).length) {
+                return false;
+            }
+            if (isKeyedCollection(a) && isKeyedCollection(b)) {
+                if (a.size !== b.size) {
+                    return false;
+                }
+                let unmatchedEntries = a.size;
+                for (const [aKey, aValue] of a.entries()){
+                    for (const [bKey, bValue] of b.entries()){
+                        if (aKey === aValue && bKey === bValue && compare(aKey, bKey) || compare(aKey, bKey) && compare(aValue, bValue)) {
+                            unmatchedEntries--;
+                        }
+                    }
+                }
+                return unmatchedEntries === 0;
+            }
+            const merged = {
+                ...a,
+                ...b
+            };
+            for(const key in merged){
+                if (!compare(a && a[key], b && b[key])) {
+                    return false;
+                }
+            }
+            seen.set(a, b);
+            return true;
+        }
+        return false;
+    })(c, d);
+}
+function assertNotEquals(actual, expected, msg) {
+    if (!equal(actual, expected)) {
+        return;
+    }
+    let actualString;
+    let expectedString;
+    try {
+        actualString = String(actual);
+    } catch (e) {
+        actualString = "[Cannot display]";
+    }
+    try {
+        expectedString = String(expected);
+    } catch (e1) {
+        expectedString = "[Cannot display]";
+    }
+    if (!msg) {
+        msg = `actual: ${actualString} expected: ${expectedString}`;
+    }
+    throw new AssertionError(msg);
+}
+function assertStrictEquals(actual, expected, msg) {
+    if (actual === expected) {
+        return;
+    }
+    let message;
+    if (msg) {
+        message = msg;
+    } else {
+        const actualString = _format1(actual);
+        const expectedString = _format1(expected);
+        if (actualString === expectedString) {
+            const withOffset = actualString.split("\n").map((l)=>`    ${l}`
+            ).join("\n");
+            message = `Values have the same structure but are not reference-equal:\n\n${red(withOffset)}\n`;
+        } else {
+            try {
+                const diffResult = diff(actualString.split("\n"), expectedString.split("\n"));
+                const diffMsg = buildMessage(diffResult).join("\n");
+                message = `Values are not strictly equal:\n${diffMsg}`;
+            } catch (e) {
+                message = `\n${red(CAN_NOT_DISPLAY)} + \n\n`;
+            }
+        }
+    }
+    throw new AssertionError(message);
+}
+const osType1 = (()=>{
+    if (globalThis.Deno != null) {
+        return Deno.build.os;
+    }
+    const navigator = globalThis.navigator;
+    if (navigator?.appVersion?.includes?.("Win") ?? false) {
+        return "windows";
+    }
+    return "linux";
+})();
+const isWindows1 = osType1 === "windows";
+const CHAR_FORWARD_SLASH1 = 47;
+function assertPath1(path) {
+    if (typeof path !== "string") {
+        throw new TypeError(`Path must be a string. Received ${JSON.stringify(path)}`);
+    }
+}
+function isPosixPathSeparator1(code) {
+    return code === 47;
+}
+function isPathSeparator1(code) {
+    return isPosixPathSeparator1(code) || code === 92;
+}
+function isWindowsDeviceRoot1(code) {
+    return code >= 97 && code <= 122 || code >= 65 && code <= 90;
+}
+function normalizeString1(path, allowAboveRoot, separator, isPathSeparator) {
+    let res = "";
+    let lastSegmentLength = 0;
+    let lastSlash = -1;
+    let dots = 0;
+    let code;
+    for(let i = 0, len = path.length; i <= len; ++i){
+        if (i < len) code = path.charCodeAt(i);
+        else if (isPathSeparator(code)) break;
+        else code = CHAR_FORWARD_SLASH1;
+        if (isPathSeparator(code)) {
+            if (lastSlash === i - 1 || dots === 1) {
+            } else if (lastSlash !== i - 1 && dots === 2) {
+                if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 || res.charCodeAt(res.length - 2) !== 46) {
+                    if (res.length > 2) {
+                        const lastSlashIndex = res.lastIndexOf(separator);
+                        if (lastSlashIndex === -1) {
+                            res = "";
+                            lastSegmentLength = 0;
+                        } else {
+                            res = res.slice(0, lastSlashIndex);
+                            lastSegmentLength = res.length - 1 - res.lastIndexOf(separator);
+                        }
+                        lastSlash = i;
+                        dots = 0;
+                        continue;
+                    } else if (res.length === 2 || res.length === 1) {
+                        res = "";
+                        lastSegmentLength = 0;
+                        lastSlash = i;
+                        dots = 0;
+                        continue;
+                    }
+                }
+                if (allowAboveRoot) {
+                    if (res.length > 0) res += `${separator}..`;
+                    else res = "..";
+                    lastSegmentLength = 2;
+                }
+            } else {
+                if (res.length > 0) res += separator + path.slice(lastSlash + 1, i);
+                else res = path.slice(lastSlash + 1, i);
+                lastSegmentLength = i - lastSlash - 1;
+            }
+            lastSlash = i;
+            dots = 0;
+        } else if (code === 46 && dots !== -1) {
+            ++dots;
+        } else {
+            dots = -1;
+        }
+    }
+    return res;
+}
+function _format2(sep, pathObject) {
+    const dir = pathObject.dir || pathObject.root;
+    const base = pathObject.base || (pathObject.name || "") + (pathObject.ext || "");
+    if (!dir) return base;
+    if (dir === pathObject.root) return dir + base;
+    return dir + sep + base;
+}
+class DenoStdInternalError1 extends Error {
+    constructor(message){
+        super(message);
+        this.name = "DenoStdInternalError";
+    }
+}
+function assert1(expr, msg = "") {
+    if (!expr) {
+        throw new DenoStdInternalError1(msg);
+    }
+}
+const sep3 = "\\";
+const delimiter3 = ";";
+function resolve3(...pathSegments) {
+    let resolvedDevice = "";
+    let resolvedTail = "";
+    let resolvedAbsolute = false;
+    for(let i = pathSegments.length - 1; i >= -1; i--){
+        let path;
+        if (i >= 0) {
+            path = pathSegments[i];
+        } else if (!resolvedDevice) {
+            if (globalThis.Deno == null) {
+                throw new TypeError("Resolved a drive-letter-less path without a CWD.");
+            }
+            path = Deno.cwd();
+        } else {
+            if (globalThis.Deno == null) {
+                throw new TypeError("Resolved a relative path without a CWD.");
+            }
+            path = Deno.env.get(`=${resolvedDevice}`) || Deno.cwd();
+            if (path === undefined || path.slice(0, 3).toLowerCase() !== `${resolvedDevice.toLowerCase()}\\`) {
+                path = `${resolvedDevice}\\`;
+            }
+        }
+        assertPath1(path);
+        const len = path.length;
+        if (len === 0) continue;
+        let rootEnd = 0;
+        let device = "";
+        let isAbsolute = false;
+        const code = path.charCodeAt(0);
+        if (len > 1) {
+            if (isPathSeparator1(code)) {
+                isAbsolute = true;
+                if (isPathSeparator1(path.charCodeAt(1))) {
+                    let j = 2;
+                    let last = j;
+                    for(; j < len; ++j){
+                        if (isPathSeparator1(path.charCodeAt(j))) break;
+                    }
+                    if (j < len && j !== last) {
+                        const firstPart = path.slice(last, j);
+                        last = j;
+                        for(; j < len; ++j){
+                            if (!isPathSeparator1(path.charCodeAt(j))) break;
+                        }
+                        if (j < len && j !== last) {
+                            last = j;
+                            for(; j < len; ++j){
+                                if (isPathSeparator1(path.charCodeAt(j))) break;
+                            }
+                            if (j === len) {
+                                device = `\\\\${firstPart}\\${path.slice(last)}`;
+                                rootEnd = j;
+                            } else if (j !== last) {
+                                device = `\\\\${firstPart}\\${path.slice(last, j)}`;
+                                rootEnd = j;
+                            }
+                        }
+                    }
+                } else {
+                    rootEnd = 1;
+                }
+            } else if (isWindowsDeviceRoot1(code)) {
+                if (path.charCodeAt(1) === 58) {
+                    device = path.slice(0, 2);
+                    rootEnd = 2;
+                    if (len > 2) {
+                        if (isPathSeparator1(path.charCodeAt(2))) {
+                            isAbsolute = true;
+                            rootEnd = 3;
+                        }
+                    }
+                }
+            }
+        } else if (isPathSeparator1(code)) {
+            rootEnd = 1;
+            isAbsolute = true;
+        }
+        if (device.length > 0 && resolvedDevice.length > 0 && device.toLowerCase() !== resolvedDevice.toLowerCase()) {
+            continue;
+        }
+        if (resolvedDevice.length === 0 && device.length > 0) {
+            resolvedDevice = device;
+        }
+        if (!resolvedAbsolute) {
+            resolvedTail = `${path.slice(rootEnd)}\\${resolvedTail}`;
+            resolvedAbsolute = isAbsolute;
+        }
+        if (resolvedAbsolute && resolvedDevice.length > 0) break;
+    }
+    resolvedTail = normalizeString1(resolvedTail, !resolvedAbsolute, "\\", isPathSeparator1);
+    return resolvedDevice + (resolvedAbsolute ? "\\" : "") + resolvedTail || ".";
+}
+function normalize4(path) {
+    assertPath1(path);
+    const len = path.length;
+    if (len === 0) return ".";
+    let rootEnd = 0;
+    let device;
+    let isAbsolute = false;
+    const code = path.charCodeAt(0);
+    if (len > 1) {
+        if (isPathSeparator1(code)) {
+            isAbsolute = true;
+            if (isPathSeparator1(path.charCodeAt(1))) {
+                let j = 2;
+                let last = j;
+                for(; j < len; ++j){
+                    if (isPathSeparator1(path.charCodeAt(j))) break;
+                }
+                if (j < len && j !== last) {
+                    const firstPart = path.slice(last, j);
+                    last = j;
+                    for(; j < len; ++j){
+                        if (!isPathSeparator1(path.charCodeAt(j))) break;
+                    }
+                    if (j < len && j !== last) {
+                        last = j;
+                        for(; j < len; ++j){
+                            if (isPathSeparator1(path.charCodeAt(j))) break;
+                        }
+                        if (j === len) {
+                            return `\\\\${firstPart}\\${path.slice(last)}\\`;
+                        } else if (j !== last) {
+                            device = `\\\\${firstPart}\\${path.slice(last, j)}`;
+                            rootEnd = j;
+                        }
+                    }
+                }
+            } else {
+                rootEnd = 1;
+            }
+        } else if (isWindowsDeviceRoot1(code)) {
+            if (path.charCodeAt(1) === 58) {
+                device = path.slice(0, 2);
+                rootEnd = 2;
+                if (len > 2) {
+                    if (isPathSeparator1(path.charCodeAt(2))) {
+                        isAbsolute = true;
+                        rootEnd = 3;
+                    }
+                }
+            }
+        }
+    } else if (isPathSeparator1(code)) {
+        return "\\";
+    }
+    let tail;
+    if (rootEnd < len) {
+        tail = normalizeString1(path.slice(rootEnd), !isAbsolute, "\\", isPathSeparator1);
+    } else {
+        tail = "";
+    }
+    if (tail.length === 0 && !isAbsolute) tail = ".";
+    if (tail.length > 0 && isPathSeparator1(path.charCodeAt(len - 1))) {
+        tail += "\\";
+    }
+    if (device === undefined) {
+        if (isAbsolute) {
+            if (tail.length > 0) return `\\${tail}`;
+            else return "\\";
+        } else if (tail.length > 0) {
+            return tail;
+        } else {
+            return "";
+        }
+    } else if (isAbsolute) {
+        if (tail.length > 0) return `${device}\\${tail}`;
+        else return `${device}\\`;
+    } else if (tail.length > 0) {
+        return device + tail;
+    } else {
+        return device;
+    }
+}
+function isAbsolute3(path) {
+    assertPath1(path);
+    const len = path.length;
+    if (len === 0) return false;
+    const code = path.charCodeAt(0);
+    if (isPathSeparator1(code)) {
+        return true;
+    } else if (isWindowsDeviceRoot1(code)) {
+        if (len > 2 && path.charCodeAt(1) === 58) {
+            if (isPathSeparator1(path.charCodeAt(2))) return true;
+        }
+    }
+    return false;
+}
+function join4(...paths) {
+    const pathsCount = paths.length;
+    if (pathsCount === 0) return ".";
+    let joined;
+    let firstPart = null;
+    for(let i = 0; i < pathsCount; ++i){
+        const path = paths[i];
+        assertPath1(path);
+        if (path.length > 0) {
+            if (joined === undefined) joined = firstPart = path;
+            else joined += `\\${path}`;
+        }
+    }
+    if (joined === undefined) return ".";
+    let needsReplace = true;
+    let slashCount = 0;
+    assert1(firstPart != null);
+    if (isPathSeparator1(firstPart.charCodeAt(0))) {
+        ++slashCount;
+        const firstLen = firstPart.length;
+        if (firstLen > 1) {
+            if (isPathSeparator1(firstPart.charCodeAt(1))) {
+                ++slashCount;
+                if (firstLen > 2) {
+                    if (isPathSeparator1(firstPart.charCodeAt(2))) ++slashCount;
+                    else {
+                        needsReplace = false;
+                    }
+                }
+            }
+        }
+    }
+    if (needsReplace) {
+        for(; slashCount < joined.length; ++slashCount){
+            if (!isPathSeparator1(joined.charCodeAt(slashCount))) break;
+        }
+        if (slashCount >= 2) joined = `\\${joined.slice(slashCount)}`;
+    }
+    return normalize4(joined);
+}
+function relative3(from, to) {
+    assertPath1(from);
+    assertPath1(to);
+    if (from === to) return "";
+    const fromOrig = resolve3(from);
+    const toOrig = resolve3(to);
+    if (fromOrig === toOrig) return "";
+    from = fromOrig.toLowerCase();
+    to = toOrig.toLowerCase();
+    if (from === to) return "";
+    let fromStart = 0;
+    let fromEnd = from.length;
+    for(; fromStart < fromEnd; ++fromStart){
+        if (from.charCodeAt(fromStart) !== 92) break;
+    }
+    for(; fromEnd - 1 > fromStart; --fromEnd){
+        if (from.charCodeAt(fromEnd - 1) !== 92) break;
+    }
+    const fromLen = fromEnd - fromStart;
+    let toStart = 0;
+    let toEnd = to.length;
+    for(; toStart < toEnd; ++toStart){
+        if (to.charCodeAt(toStart) !== 92) break;
+    }
+    for(; toEnd - 1 > toStart; --toEnd){
+        if (to.charCodeAt(toEnd - 1) !== 92) break;
+    }
+    const toLen = toEnd - toStart;
+    const length = fromLen < toLen ? fromLen : toLen;
+    let lastCommonSep = -1;
+    let i = 0;
+    for(; i <= length; ++i){
+        if (i === length) {
+            if (toLen > length) {
+                if (to.charCodeAt(toStart + i) === 92) {
+                    return toOrig.slice(toStart + i + 1);
+                } else if (i === 2) {
+                    return toOrig.slice(toStart + i);
+                }
+            }
+            if (fromLen > length) {
+                if (from.charCodeAt(fromStart + i) === 92) {
+                    lastCommonSep = i;
+                } else if (i === 2) {
+                    lastCommonSep = 3;
+                }
+            }
+            break;
+        }
+        const fromCode = from.charCodeAt(fromStart + i);
+        const toCode = to.charCodeAt(toStart + i);
+        if (fromCode !== toCode) break;
+        else if (fromCode === 92) lastCommonSep = i;
+    }
+    if (i !== length && lastCommonSep === -1) {
+        return toOrig;
+    }
+    let out = "";
+    if (lastCommonSep === -1) lastCommonSep = 0;
+    for(i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i){
+        if (i === fromEnd || from.charCodeAt(i) === 92) {
+            if (out.length === 0) out += "..";
+            else out += "\\..";
+        }
+    }
+    if (out.length > 0) {
+        return out + toOrig.slice(toStart + lastCommonSep, toEnd);
+    } else {
+        toStart += lastCommonSep;
+        if (toOrig.charCodeAt(toStart) === 92) ++toStart;
+        return toOrig.slice(toStart, toEnd);
+    }
+}
+function toNamespacedPath3(path) {
+    if (typeof path !== "string") return path;
+    if (path.length === 0) return "";
+    const resolvedPath = resolve3(path);
+    if (resolvedPath.length >= 3) {
+        if (resolvedPath.charCodeAt(0) === 92) {
+            if (resolvedPath.charCodeAt(1) === 92) {
+                const code = resolvedPath.charCodeAt(2);
+                if (code !== 63 && code !== 46) {
+                    return `\\\\?\\UNC\\${resolvedPath.slice(2)}`;
+                }
+            }
+        } else if (isWindowsDeviceRoot1(resolvedPath.charCodeAt(0))) {
+            if (resolvedPath.charCodeAt(1) === 58 && resolvedPath.charCodeAt(2) === 92) {
+                return `\\\\?\\${resolvedPath}`;
+            }
+        }
+    }
+    return path;
+}
+function dirname3(path) {
+    assertPath1(path);
+    const len = path.length;
+    if (len === 0) return ".";
+    let rootEnd = -1;
+    let end = -1;
+    let matchedSlash = true;
+    let offset = 0;
+    const code = path.charCodeAt(0);
+    if (len > 1) {
+        if (isPathSeparator1(code)) {
+            rootEnd = offset = 1;
+            if (isPathSeparator1(path.charCodeAt(1))) {
+                let j = 2;
+                let last = j;
+                for(; j < len; ++j){
+                    if (isPathSeparator1(path.charCodeAt(j))) break;
+                }
+                if (j < len && j !== last) {
+                    last = j;
+                    for(; j < len; ++j){
+                        if (!isPathSeparator1(path.charCodeAt(j))) break;
+                    }
+                    if (j < len && j !== last) {
+                        last = j;
+                        for(; j < len; ++j){
+                            if (isPathSeparator1(path.charCodeAt(j))) break;
+                        }
+                        if (j === len) {
+                            return path;
+                        }
+                        if (j !== last) {
+                            rootEnd = offset = j + 1;
+                        }
+                    }
+                }
+            }
+        } else if (isWindowsDeviceRoot1(code)) {
+            if (path.charCodeAt(1) === 58) {
+                rootEnd = offset = 2;
+                if (len > 2) {
+                    if (isPathSeparator1(path.charCodeAt(2))) rootEnd = offset = 3;
+                }
+            }
+        }
+    } else if (isPathSeparator1(code)) {
+        return path;
+    }
+    for(let i = len - 1; i >= offset; --i){
+        if (isPathSeparator1(path.charCodeAt(i))) {
+            if (!matchedSlash) {
+                end = i;
+                break;
+            }
+        } else {
+            matchedSlash = false;
+        }
+    }
+    if (end === -1) {
+        if (rootEnd === -1) return ".";
+        else end = rootEnd;
+    }
+    return path.slice(0, end);
+}
+function basename3(path, ext = "") {
+    if (ext !== undefined && typeof ext !== "string") {
+        throw new TypeError('"ext" argument must be a string');
+    }
+    assertPath1(path);
+    let start = 0;
+    let end = -1;
+    let matchedSlash = true;
+    let i;
+    if (path.length >= 2) {
+        const drive = path.charCodeAt(0);
+        if (isWindowsDeviceRoot1(drive)) {
+            if (path.charCodeAt(1) === 58) start = 2;
+        }
+    }
+    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
+        if (ext.length === path.length && ext === path) return "";
+        let extIdx = ext.length - 1;
+        let firstNonSlashEnd = -1;
+        for(i = path.length - 1; i >= start; --i){
+            const code = path.charCodeAt(i);
+            if (isPathSeparator1(code)) {
+                if (!matchedSlash) {
+                    start = i + 1;
+                    break;
+                }
+            } else {
+                if (firstNonSlashEnd === -1) {
+                    matchedSlash = false;
+                    firstNonSlashEnd = i + 1;
+                }
+                if (extIdx >= 0) {
+                    if (code === ext.charCodeAt(extIdx)) {
+                        if (--extIdx === -1) {
+                            end = i;
+                        }
+                    } else {
+                        extIdx = -1;
+                        end = firstNonSlashEnd;
+                    }
+                }
+            }
+        }
+        if (start === end) end = firstNonSlashEnd;
+        else if (end === -1) end = path.length;
+        return path.slice(start, end);
+    } else {
+        for(i = path.length - 1; i >= start; --i){
+            if (isPathSeparator1(path.charCodeAt(i))) {
+                if (!matchedSlash) {
+                    start = i + 1;
+                    break;
+                }
+            } else if (end === -1) {
+                matchedSlash = false;
+                end = i + 1;
+            }
+        }
+        if (end === -1) return "";
+        return path.slice(start, end);
+    }
+}
+function extname3(path) {
+    assertPath1(path);
+    let start = 0;
+    let startDot = -1;
+    let startPart = 0;
+    let end = -1;
+    let matchedSlash = true;
+    let preDotState = 0;
+    if (path.length >= 2 && path.charCodeAt(1) === 58 && isWindowsDeviceRoot1(path.charCodeAt(0))) {
+        start = startPart = 2;
+    }
+    for(let i = path.length - 1; i >= start; --i){
+        const code = path.charCodeAt(i);
+        if (isPathSeparator1(code)) {
+            if (!matchedSlash) {
+                startPart = i + 1;
+                break;
+            }
+            continue;
+        }
+        if (end === -1) {
+            matchedSlash = false;
+            end = i + 1;
+        }
+        if (code === 46) {
+            if (startDot === -1) startDot = i;
+            else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+            preDotState = -1;
+        }
+    }
+    if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+        return "";
+    }
+    return path.slice(startDot, end);
+}
+function format5(pathObject) {
+    if (pathObject === null || typeof pathObject !== "object") {
+        throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
+    }
+    return _format2("\\", pathObject);
+}
+function parse4(path) {
+    assertPath1(path);
+    const ret = {
+        root: "",
+        dir: "",
+        base: "",
+        ext: "",
+        name: ""
+    };
+    const len = path.length;
+    if (len === 0) return ret;
+    let rootEnd = 0;
+    let code = path.charCodeAt(0);
+    if (len > 1) {
+        if (isPathSeparator1(code)) {
+            rootEnd = 1;
+            if (isPathSeparator1(path.charCodeAt(1))) {
+                let j = 2;
+                let last = j;
+                for(; j < len; ++j){
+                    if (isPathSeparator1(path.charCodeAt(j))) break;
+                }
+                if (j < len && j !== last) {
+                    last = j;
+                    for(; j < len; ++j){
+                        if (!isPathSeparator1(path.charCodeAt(j))) break;
+                    }
+                    if (j < len && j !== last) {
+                        last = j;
+                        for(; j < len; ++j){
+                            if (isPathSeparator1(path.charCodeAt(j))) break;
+                        }
+                        if (j === len) {
+                            rootEnd = j;
+                        } else if (j !== last) {
+                            rootEnd = j + 1;
+                        }
+                    }
+                }
+            }
+        } else if (isWindowsDeviceRoot1(code)) {
+            if (path.charCodeAt(1) === 58) {
+                rootEnd = 2;
+                if (len > 2) {
+                    if (isPathSeparator1(path.charCodeAt(2))) {
+                        if (len === 3) {
+                            ret.root = ret.dir = path;
+                            return ret;
+                        }
+                        rootEnd = 3;
+                    }
+                } else {
+                    ret.root = ret.dir = path;
+                    return ret;
+                }
+            }
+        }
+    } else if (isPathSeparator1(code)) {
+        ret.root = ret.dir = path;
+        return ret;
+    }
+    if (rootEnd > 0) ret.root = path.slice(0, rootEnd);
+    let startDot = -1;
+    let startPart = rootEnd;
+    let end = -1;
+    let matchedSlash = true;
+    let i = path.length - 1;
+    let preDotState = 0;
+    for(; i >= rootEnd; --i){
+        code = path.charCodeAt(i);
+        if (isPathSeparator1(code)) {
+            if (!matchedSlash) {
+                startPart = i + 1;
+                break;
+            }
+            continue;
+        }
+        if (end === -1) {
+            matchedSlash = false;
+            end = i + 1;
+        }
+        if (code === 46) {
+            if (startDot === -1) startDot = i;
+            else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+            preDotState = -1;
+        }
+    }
+    if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+        if (end !== -1) {
+            ret.base = ret.name = path.slice(startPart, end);
+        }
+    } else {
+        ret.name = path.slice(startPart, startDot);
+        ret.base = path.slice(startPart, end);
+        ret.ext = path.slice(startDot, end);
+    }
+    if (startPart > 0 && startPart !== rootEnd) {
+        ret.dir = path.slice(0, startPart - 1);
+    } else ret.dir = ret.root;
+    return ret;
+}
+function fromFileUrl3(url) {
+    url = url instanceof URL ? url : new URL(url);
+    if (url.protocol != "file:") {
+        throw new TypeError("Must be a file URL.");
+    }
+    let path = decodeURIComponent(url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25")).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
+    if (url.hostname != "") {
+        path = `\\\\${url.hostname}${path}`;
+    }
+    return path;
+}
+function toFileUrl3(path) {
+    if (!isAbsolute3(path)) {
+        throw new TypeError("Must be an absolute path.");
+    }
+    const [, hostname, pathname] = path.match(/^(?:[/\\]{2}([^/\\]+)(?=[/\\][^/\\]))?(.*)/);
+    const url = new URL("file:///");
+    url.pathname = pathname.replace(/%/g, "%25");
+    if (hostname != null) {
+        url.hostname = hostname;
+        if (!url.hostname) {
+            throw new TypeError("Invalid hostname.");
+        }
+    }
+    return url;
+}
+const mod2 = {
+    sep: sep3,
+    delimiter: delimiter3,
+    resolve: resolve3,
+    normalize: normalize4,
+    isAbsolute: isAbsolute3,
+    join: join4,
+    relative: relative3,
+    toNamespacedPath: toNamespacedPath3,
+    dirname: dirname3,
+    basename: basename3,
+    extname: extname3,
+    format: format5,
+    parse: parse4,
+    fromFileUrl: fromFileUrl3,
+    toFileUrl: toFileUrl3
+};
+const sep4 = "/";
+const delimiter4 = ":";
+function resolve4(...pathSegments) {
+    let resolvedPath = "";
+    let resolvedAbsolute = false;
+    for(let i = pathSegments.length - 1; i >= -1 && !resolvedAbsolute; i--){
+        let path;
+        if (i >= 0) path = pathSegments[i];
+        else {
+            if (globalThis.Deno == null) {
+                throw new TypeError("Resolved a relative path without a CWD.");
+            }
+            path = Deno.cwd();
+        }
+        assertPath1(path);
+        if (path.length === 0) {
+            continue;
+        }
+        resolvedPath = `${path}/${resolvedPath}`;
+        resolvedAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH1;
+    }
+    resolvedPath = normalizeString1(resolvedPath, !resolvedAbsolute, "/", isPosixPathSeparator1);
+    if (resolvedAbsolute) {
+        if (resolvedPath.length > 0) return `/${resolvedPath}`;
+        else return "/";
+    } else if (resolvedPath.length > 0) return resolvedPath;
+    else return ".";
+}
+function normalize5(path) {
+    assertPath1(path);
+    if (path.length === 0) return ".";
+    const isAbsolute = path.charCodeAt(0) === 47;
+    const trailingSeparator = path.charCodeAt(path.length - 1) === 47;
+    path = normalizeString1(path, !isAbsolute, "/", isPosixPathSeparator1);
+    if (path.length === 0 && !isAbsolute) path = ".";
+    if (path.length > 0 && trailingSeparator) path += "/";
+    if (isAbsolute) return `/${path}`;
+    return path;
+}
+function isAbsolute4(path) {
+    assertPath1(path);
+    return path.length > 0 && path.charCodeAt(0) === 47;
+}
+function join5(...paths) {
+    if (paths.length === 0) return ".";
+    let joined;
+    for(let i = 0, len = paths.length; i < len; ++i){
+        const path = paths[i];
+        assertPath1(path);
+        if (path.length > 0) {
+            if (!joined) joined = path;
+            else joined += `/${path}`;
+        }
+    }
+    if (!joined) return ".";
+    return normalize5(joined);
+}
+function relative4(from, to) {
+    assertPath1(from);
+    assertPath1(to);
+    if (from === to) return "";
+    from = resolve4(from);
+    to = resolve4(to);
+    if (from === to) return "";
+    let fromStart = 1;
+    const fromEnd = from.length;
+    for(; fromStart < fromEnd; ++fromStart){
+        if (from.charCodeAt(fromStart) !== 47) break;
+    }
+    const fromLen = fromEnd - fromStart;
+    let toStart = 1;
+    const toEnd = to.length;
+    for(; toStart < toEnd; ++toStart){
+        if (to.charCodeAt(toStart) !== 47) break;
+    }
+    const toLen = toEnd - toStart;
+    const length = fromLen < toLen ? fromLen : toLen;
+    let lastCommonSep = -1;
+    let i = 0;
+    for(; i <= length; ++i){
+        if (i === length) {
+            if (toLen > length) {
+                if (to.charCodeAt(toStart + i) === 47) {
+                    return to.slice(toStart + i + 1);
+                } else if (i === 0) {
+                    return to.slice(toStart + i);
+                }
+            } else if (fromLen > length) {
+                if (from.charCodeAt(fromStart + i) === 47) {
+                    lastCommonSep = i;
+                } else if (i === 0) {
+                    lastCommonSep = 0;
+                }
+            }
+            break;
+        }
+        const fromCode = from.charCodeAt(fromStart + i);
+        const toCode = to.charCodeAt(toStart + i);
+        if (fromCode !== toCode) break;
+        else if (fromCode === 47) lastCommonSep = i;
+    }
+    let out = "";
+    for(i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i){
+        if (i === fromEnd || from.charCodeAt(i) === 47) {
+            if (out.length === 0) out += "..";
+            else out += "/..";
+        }
+    }
+    if (out.length > 0) return out + to.slice(toStart + lastCommonSep);
+    else {
+        toStart += lastCommonSep;
+        if (to.charCodeAt(toStart) === 47) ++toStart;
+        return to.slice(toStart);
+    }
+}
+function toNamespacedPath4(path) {
+    return path;
+}
+function dirname4(path) {
+    assertPath1(path);
+    if (path.length === 0) return ".";
+    const hasRoot = path.charCodeAt(0) === 47;
+    let end = -1;
+    let matchedSlash = true;
+    for(let i = path.length - 1; i >= 1; --i){
+        if (path.charCodeAt(i) === 47) {
+            if (!matchedSlash) {
+                end = i;
+                break;
+            }
+        } else {
+            matchedSlash = false;
+        }
+    }
+    if (end === -1) return hasRoot ? "/" : ".";
+    if (hasRoot && end === 1) return "//";
+    return path.slice(0, end);
+}
+function basename4(path, ext = "") {
+    if (ext !== undefined && typeof ext !== "string") {
+        throw new TypeError('"ext" argument must be a string');
+    }
+    assertPath1(path);
+    let start = 0;
+    let end = -1;
+    let matchedSlash = true;
+    let i;
+    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
+        if (ext.length === path.length && ext === path) return "";
+        let extIdx = ext.length - 1;
+        let firstNonSlashEnd = -1;
+        for(i = path.length - 1; i >= 0; --i){
+            const code = path.charCodeAt(i);
+            if (code === 47) {
+                if (!matchedSlash) {
+                    start = i + 1;
+                    break;
+                }
+            } else {
+                if (firstNonSlashEnd === -1) {
+                    matchedSlash = false;
+                    firstNonSlashEnd = i + 1;
+                }
+                if (extIdx >= 0) {
+                    if (code === ext.charCodeAt(extIdx)) {
+                        if (--extIdx === -1) {
+                            end = i;
+                        }
+                    } else {
+                        extIdx = -1;
+                        end = firstNonSlashEnd;
+                    }
+                }
+            }
+        }
+        if (start === end) end = firstNonSlashEnd;
+        else if (end === -1) end = path.length;
+        return path.slice(start, end);
+    } else {
+        for(i = path.length - 1; i >= 0; --i){
+            if (path.charCodeAt(i) === 47) {
+                if (!matchedSlash) {
+                    start = i + 1;
+                    break;
+                }
+            } else if (end === -1) {
+                matchedSlash = false;
+                end = i + 1;
+            }
+        }
+        if (end === -1) return "";
+        return path.slice(start, end);
+    }
+}
+function extname4(path) {
+    assertPath1(path);
+    let startDot = -1;
+    let startPart = 0;
+    let end = -1;
+    let matchedSlash = true;
+    let preDotState = 0;
+    for(let i = path.length - 1; i >= 0; --i){
+        const code = path.charCodeAt(i);
+        if (code === 47) {
+            if (!matchedSlash) {
+                startPart = i + 1;
+                break;
+            }
+            continue;
+        }
+        if (end === -1) {
+            matchedSlash = false;
+            end = i + 1;
+        }
+        if (code === 46) {
+            if (startDot === -1) startDot = i;
+            else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+            preDotState = -1;
+        }
+    }
+    if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+        return "";
+    }
+    return path.slice(startDot, end);
+}
+function format6(pathObject) {
+    if (pathObject === null || typeof pathObject !== "object") {
+        throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
+    }
+    return _format2("/", pathObject);
+}
+function parse5(path) {
+    assertPath1(path);
+    const ret = {
+        root: "",
+        dir: "",
+        base: "",
+        ext: "",
+        name: ""
+    };
+    if (path.length === 0) return ret;
+    const isAbsolute = path.charCodeAt(0) === 47;
+    let start;
+    if (isAbsolute) {
+        ret.root = "/";
+        start = 1;
+    } else {
+        start = 0;
+    }
+    let startDot = -1;
+    let startPart = 0;
+    let end = -1;
+    let matchedSlash = true;
+    let i = path.length - 1;
+    let preDotState = 0;
+    for(; i >= start; --i){
+        const code = path.charCodeAt(i);
+        if (code === 47) {
+            if (!matchedSlash) {
+                startPart = i + 1;
+                break;
+            }
+            continue;
+        }
+        if (end === -1) {
+            matchedSlash = false;
+            end = i + 1;
+        }
+        if (code === 46) {
+            if (startDot === -1) startDot = i;
+            else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+            preDotState = -1;
+        }
+    }
+    if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+        if (end !== -1) {
+            if (startPart === 0 && isAbsolute) {
+                ret.base = ret.name = path.slice(1, end);
+            } else {
+                ret.base = ret.name = path.slice(startPart, end);
+            }
+        }
+    } else {
+        if (startPart === 0 && isAbsolute) {
+            ret.name = path.slice(1, startDot);
+            ret.base = path.slice(1, end);
+        } else {
+            ret.name = path.slice(startPart, startDot);
+            ret.base = path.slice(startPart, end);
+        }
+        ret.ext = path.slice(startDot, end);
+    }
+    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);
+    else if (isAbsolute) ret.dir = "/";
+    return ret;
+}
+function fromFileUrl4(url) {
+    url = url instanceof URL ? url : new URL(url);
+    if (url.protocol != "file:") {
+        throw new TypeError("Must be a file URL.");
+    }
+    return decodeURIComponent(url.pathname.replace(/%(?![0-9A-Fa-f]{2})/g, "%25"));
+}
+function toFileUrl4(path) {
+    if (!isAbsolute4(path)) {
+        throw new TypeError("Must be an absolute path.");
+    }
+    const url = new URL("file:///");
+    url.pathname = path.replace(/%/g, "%25").replace(/\\/g, "%5C");
+    return url;
+}
+const mod3 = {
+    sep: sep4,
+    delimiter: delimiter4,
+    resolve: resolve4,
+    normalize: normalize5,
+    isAbsolute: isAbsolute4,
+    join: join5,
+    relative: relative4,
+    toNamespacedPath: toNamespacedPath4,
+    dirname: dirname4,
+    basename: basename4,
+    extname: extname4,
+    format: format6,
+    parse: parse5,
+    fromFileUrl: fromFileUrl4,
+    toFileUrl: toFileUrl4
+};
+const path2 = isWindows1 ? mod2 : mod3;
+const { basename: basename5 , delimiter: delimiter5 , dirname: dirname5 , extname: extname5 , format: format7 , fromFileUrl: fromFileUrl5 , isAbsolute: isAbsolute5 , join: join6 , normalize: normalize6 , parse: parse6 , relative: relative5 , resolve: resolve5 , sep: sep5 , toFileUrl: toFileUrl5 , toNamespacedPath: toNamespacedPath5 ,  } = path2;
+'use strict';
 const align = {
     right: alignRight,
     center: alignCenter
@@ -7650,15 +8587,15 @@ function toItems(dir) {
     return list;
 }
 function __default3(start, callback) {
-    let dir = resolve2('.', start);
+    let dir = resolve5('.', start);
     let stats = Deno.statSync(dir);
     if (!stats.isDirectory) {
-        dir = dirname2(dir);
+        dir = dirname5(dir);
     }
     while(true){
         let tmp = callback(dir, toItems(dir));
-        if (tmp) return resolve2(dir, tmp);
-        dir = dirname2(tmp = dir);
+        if (tmp) return resolve5(dir, tmp);
+        dir = dirname5(tmp = dir);
         if (tmp === dir) break;
     }
 }
@@ -8587,8 +9524,8 @@ const parser = new YargsParser({
     format: (str, arg)=>{
         return str.replace('%s', arg);
     },
-    normalize: mod1.normalize,
-    resolve: mod1.resolve,
+    normalize: mod3.normalize,
+    resolve: mod3.resolve,
     require: (path)=>{
         if (!path.match(/\.json$/)) {
             throw Error('only .json config files are supported in Deno');
@@ -8609,13 +9546,13 @@ yargsParser.decamelize = decamelize;
 yargsParser.looksLikeNumber = looksLikeNumber;
 let shim;
 class Y18N {
-    constructor(opts1){
-        opts1 = opts1 || {
+    constructor(opts){
+        opts = opts || {
         };
-        this.directory = opts1.directory || './locales';
-        this.updateFiles = typeof opts1.updateFiles === 'boolean' ? opts1.updateFiles : true;
-        this.locale = opts1.locale || 'en';
-        this.fallbackToLanguage = typeof opts1.fallbackToLanguage === 'boolean' ? opts1.fallbackToLanguage : true;
+        this.directory = opts.directory || './locales';
+        this.updateFiles = typeof opts.updateFiles === 'boolean' ? opts.updateFiles : true;
+        this.locale = opts.locale || 'en';
+        this.fallbackToLanguage = typeof opts.fallbackToLanguage === 'boolean' ? opts.fallbackToLanguage : true;
         this.cache = {
         };
         this.writeQueue = [];
@@ -8811,10 +9748,10 @@ class Printf {
     flags = new Flags();
     haveSeen;
     tmpError;
-    constructor(format5, ...args1){
-        this.format = format5;
-        this.args = args1;
-        this.haveSeen = new Array(args1.length);
+    constructor(format, ...args){
+        this.format = format;
+        this.args = args;
+        this.haveSeen = new Array(args.length);
         this.i = 0;
     }
     doPrintf() {
@@ -9155,7 +10092,7 @@ class Printf {
         let s = "";
         try {
             s = String.fromCodePoint(n);
-        } catch  {
+        } catch (RangeError) {
             s = UNICODE_REPLACEMENT_CHARACTER;
         }
         return this.pad(s);
@@ -9336,7 +10273,7 @@ const __default4 = {
     format: sprintf,
     resolve: (base, p1, p2)=>{
         try {
-            return mod1.resolve(base, p1, p2);
+            return mod3.resolve(base, p1, p2);
         } catch (err) {
         }
     },
@@ -9380,13 +10317,13 @@ try {
         throw err1;
     }
 }
-const path1 = {
-    basename: basename2,
-    dirname: dirname2,
-    extname: extname2,
+const path3 = {
+    basename: basename5,
+    dirname: dirname5,
+    extname: extname5,
     relative: (p1, p2)=>{
         try {
-            return mod1.relative(p1, p2);
+            return mod3.relative(p1, p2);
         } catch (err) {
             if (err.name !== 'PermissionDenied') {
                 throw err;
@@ -9394,7 +10331,7 @@ const path1 = {
             return p1;
         }
     },
-    resolve: mod1.resolve
+    resolve: mod3.resolve
 };
 const __default5 = {
     assert: {
@@ -9414,7 +10351,7 @@ const __default5 = {
     },
     mainFilename: cwd,
     Parser: yargsParser,
-    path: path1,
+    path: path3,
     process: {
         argv: ()=>argv
         ,
@@ -9446,7 +10383,7 @@ const __default5 = {
         ].length;
     },
     y18n: y18n1({
-        directory: mod1.resolve(__dirname, '../../locales'),
+        directory: mod3.resolve(__dirname, '../../locales'),
         updateFiles: false
     })
 };
@@ -10249,7 +11186,6 @@ function usage(yargs, shim) {
         return `${string}]`;
     }
     function windowWidth() {
-        const maxWidth = 80;
         if (shim.process.stdColumns) {
             return Math.min(80, shim.process.stdColumns);
         } else {
@@ -10749,17 +11685,17 @@ function isYargsInstance(y) {
     return !!y && typeof y.getInternalMethods === 'function';
 }
 class CommandInstance {
-    constructor(usage1, validation1, globalMiddleware, shim2){
+    constructor(usage, validation, globalMiddleware, shim){
         this.requireCache = new Set();
         this.handlers = {
         };
         this.aliasMap = {
         };
         this.frozens = [];
-        this.shim = shim2;
-        this.usage = usage1;
+        this.shim = shim;
+        this.usage = usage;
         this.globalMiddleware = globalMiddleware;
-        this.validation = validation1;
+        this.validation = validation;
     }
     addDirectory(dir, req, callerFile, opts) {
         opts = opts || {
@@ -11123,7 +12059,7 @@ class CommandInstance {
         return this;
     }
 }
-function command(usage, validation, globalMiddleware, shim) {
+function command1(usage, validation, globalMiddleware, shim) {
     return new CommandInstance(usage, validation, globalMiddleware, shim);
 }
 function isCommandBuilderDefinition(builder) {
@@ -11137,16 +12073,16 @@ function isCommandBuilderCallback(builder) {
     return typeof builder === 'function';
 }
 class Completion {
-    constructor(yargs1, usage2, command1, shim3){
-        var _a1, _b, _c;
-        this.yargs = yargs1;
-        this.usage = usage2;
-        this.command = command1;
-        this.shim = shim3;
+    constructor(yargs, usage, command, shim){
+        var _a, _b, _c;
+        this.yargs = yargs;
+        this.usage = usage;
+        this.command = command;
+        this.shim = shim;
         this.completionKey = 'get-yargs-completions';
         this.aliases = null;
         this.customCompletionFunction = null;
-        this.zshShell = (_c = ((_a1 = this.shim.getEnv('SHELL')) === null || _a1 === void 0 ? void 0 : _a1.includes('zsh')) || ((_b = this.shim.getEnv('ZSH_NAME')) === null || _b === void 0 ? void 0 : _b.includes('zsh'))) !== null && _c !== void 0 ? _c : false;
+        this.zshShell = (_c = ((_a = this.shim.getEnv('SHELL')) === null || _a === void 0 ? void 0 : _a.includes('zsh')) || ((_b = this.shim.getEnv('ZSH_NAME')) === null || _b === void 0 ? void 0 : _b.includes('zsh'))) !== null && _c !== void 0 ? _c : false;
     }
     defaultCompletion(args, argv, current, done) {
         const handlers = this.command.getCommandHandlers();
@@ -11303,7 +12239,7 @@ function completion(yargs, usage, command, shim) {
     return new Completion(yargs, usage, command, shim);
 }
 class YargsInstance {
-    constructor(processArgs = [], cwd1, parentRequire, shim4){
+    constructor(processArgs = [], cwd, parentRequire, shim){
         this.customScriptName = false;
         this.parsed = false;
         _YargsInstance_command.set(this, void 0);
@@ -11347,9 +12283,9 @@ class YargsInstance {
         _YargsInstance_usage.set(this, void 0);
         _YargsInstance_versionOpt.set(this, null);
         _YargsInstance_validation.set(this, void 0);
-        __classPrivateFieldSet(this, _YargsInstance_shim, shim4, "f");
+        __classPrivateFieldSet(this, _YargsInstance_shim, shim, "f");
         __classPrivateFieldSet(this, _YargsInstance_processArgs, processArgs, "f");
-        __classPrivateFieldSet(this, _YargsInstance_cwd, cwd1, "f");
+        __classPrivateFieldSet(this, _YargsInstance_cwd, cwd, "f");
         __classPrivateFieldSet(this, _YargsInstance_parentRequire, parentRequire, "f");
         __classPrivateFieldSet(this, _YargsInstance_globalMiddleware, new GlobalMiddleware(this), "f");
         this.$0 = this[kGetDollarZero]();
@@ -12656,7 +13592,7 @@ class YargsInstance {
         __classPrivateFieldSet(this, _YargsInstance_options, tmpOptions, "f");
         __classPrivateFieldSet(this, _YargsInstance_usage, __classPrivateFieldGet(this, _YargsInstance_usage, "f") ? __classPrivateFieldGet(this, _YargsInstance_usage, "f").reset(localLookup) : usage(this, __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
         __classPrivateFieldSet(this, _YargsInstance_validation, __classPrivateFieldGet(this, _YargsInstance_validation, "f") ? __classPrivateFieldGet(this, _YargsInstance_validation, "f").reset(localLookup) : validation(this, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
-        __classPrivateFieldSet(this, _YargsInstance_command, __classPrivateFieldGet(this, _YargsInstance_command, "f") ? __classPrivateFieldGet(this, _YargsInstance_command, "f").reset() : command(__classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_validation, "f"), __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
+        __classPrivateFieldSet(this, _YargsInstance_command, __classPrivateFieldGet(this, _YargsInstance_command, "f") ? __classPrivateFieldGet(this, _YargsInstance_command, "f").reset() : command1(__classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_validation, "f"), __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
         if (!__classPrivateFieldGet(this, _YargsInstance_completion, "f")) __classPrivateFieldSet(this, _YargsInstance_completion, completion(this, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_command, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
         __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").reset();
         __classPrivateFieldSet(this, _YargsInstance_completionCommand, null, "f");
@@ -12849,6 +13785,7 @@ function isFallbackCompletionFunction(completionFunction) {
     return completionFunction.length > 3;
 }
 const Yargs = YargsFactory(__default5);
+"use strict";
 const MAX_BITS = 15;
 const D_CODES = 30;
 const BL_CODES = 19;
@@ -15015,6 +15952,7 @@ function ZipDeflate(options) {
 function getMaximumCompressedSize(uncompressedSize) {
     return uncompressedSize + 5 * (Math.floor(uncompressedSize / 16383) + 1);
 }
+"use strict";
 const MAX_BITS1 = 15;
 const Z_OK1 = 0;
 const Z_STREAM_END1 = 1;
@@ -18396,6 +19334,7 @@ function ZipInflate(options) {
         z.inflateEnd();
     };
 }
+"use strict";
 const DEFAULT_CONFIGURATION = {
     chunkSize: 512 * 1024,
     maxWorkers: typeof navigator != "undefined" && navigator.hardwareConcurrency || 2,
@@ -18403,53 +19342,54 @@ const DEFAULT_CONFIGURATION = {
     useWebWorkers: true,
     workerScripts: undefined
 };
-const config = Object.assign({
+const config1 = Object.assign({
 }, DEFAULT_CONFIGURATION);
 function getConfiguration() {
-    return config;
+    return config1;
 }
 function configure(configuration) {
     if (configuration.chunkSize !== undefined) {
-        config.chunkSize = configuration.chunkSize;
+        config1.chunkSize = configuration.chunkSize;
     }
     if (configuration.maxWorkers !== undefined) {
-        config.maxWorkers = configuration.maxWorkers;
+        config1.maxWorkers = configuration.maxWorkers;
     }
     if (configuration.terminateWorkerTimeout !== undefined) {
-        config.terminateWorkerTimeout = configuration.terminateWorkerTimeout;
+        config1.terminateWorkerTimeout = configuration.terminateWorkerTimeout;
     }
     if (configuration.useWebWorkers !== undefined) {
-        config.useWebWorkers = configuration.useWebWorkers;
+        config1.useWebWorkers = configuration.useWebWorkers;
     }
     if (configuration.Deflate !== undefined) {
-        config.Deflate = configuration.Deflate;
+        config1.Deflate = configuration.Deflate;
     }
     if (configuration.Inflate !== undefined) {
-        config.Inflate = configuration.Inflate;
+        config1.Inflate = configuration.Inflate;
     }
     if (configuration.workerScripts !== undefined) {
         if (configuration.workerScripts.deflate) {
             if (!Array.isArray(configuration.workerScripts.deflate)) {
                 throw new Error("workerScripts.deflate must be an array");
             }
-            if (!config.workerScripts) {
-                config.workerScripts = {
+            if (!config1.workerScripts) {
+                config1.workerScripts = {
                 };
             }
-            config.workerScripts.deflate = configuration.workerScripts.deflate;
+            config1.workerScripts.deflate = configuration.workerScripts.deflate;
         }
         if (configuration.workerScripts.inflate) {
             if (!Array.isArray(configuration.workerScripts.inflate)) {
                 throw new Error("workerScripts.inflate must be an array");
             }
-            if (!config.workerScripts) {
-                config.workerScripts = {
+            if (!config1.workerScripts) {
+                config1.workerScripts = {
                 };
             }
-            config.workerScripts.inflate = configuration.workerScripts.inflate;
+            config1.workerScripts.inflate = configuration.workerScripts.inflate;
         }
     }
 }
+"use strict";
 const table = {
     "application": {
         "andrew-inset": "ez",
@@ -20027,7 +20967,7 @@ const table = {
         ]
     }
 };
-const mimeTypes = (()=>{
+(()=>{
     const mimeTypes = {
     };
     for(let type in table){
@@ -20048,6 +20988,7 @@ const mimeTypes = (()=>{
     }
     return mimeTypes;
 })();
+"use strict";
 const table1 = [];
 for(let i1 = 0; i1 < 256; i1++){
     let t = i1;
@@ -20075,6 +21016,7 @@ class Crc32 {
         return ~this.crc;
     }
 }
+"use strict";
 const bitArray = {
     concat (a1, a2) {
         if (a1.length === 0 || a2.length === 0) {
@@ -20289,7 +21231,7 @@ hash.sha1.prototype = {
 const cipher = {
 };
 cipher.aes = class {
-    constructor(key1){
+    constructor(key){
         const aes = this;
         aes._tables = [
             [
@@ -20312,29 +21254,29 @@ cipher.aes = class {
         }
         const sbox = aes._tables[0][4];
         const decTable = aes._tables[1];
-        const keyLen = key1.length;
-        let i2, encKey, decKey, rcon = 1;
+        const keyLen = key.length;
+        let i, encKey, decKey, rcon = 1;
         if (keyLen !== 4 && keyLen !== 6 && keyLen !== 8) {
             throw new Error("invalid aes key size");
         }
         aes._key = [
-            encKey = key1.slice(0),
+            encKey = key.slice(0),
             decKey = []
         ];
-        for(i2 = keyLen; i2 < 4 * keyLen + 28; i2++){
-            let tmp = encKey[i2 - 1];
-            if (i2 % keyLen === 0 || keyLen === 8 && i2 % keyLen === 4) {
+        for(i = keyLen; i < 4 * keyLen + 28; i++){
+            let tmp = encKey[i - 1];
+            if (i % keyLen === 0 || keyLen === 8 && i % keyLen === 4) {
                 tmp = sbox[tmp >>> 24] << 24 ^ sbox[tmp >> 16 & 255] << 16 ^ sbox[tmp >> 8 & 255] << 8 ^ sbox[tmp & 255];
-                if (i2 % keyLen === 0) {
+                if (i % keyLen === 0) {
                     tmp = tmp << 8 ^ tmp >>> 24 ^ rcon << 24;
                     rcon = rcon << 1 ^ (rcon >> 7) * 283;
                 }
             }
-            encKey[i2] = encKey[i2 - keyLen] ^ tmp;
+            encKey[i] = encKey[i - keyLen] ^ tmp;
         }
-        for(let j = 0; i2; j++, i2--){
-            const tmp = encKey[j & 3 ? i2 : i2 - 4];
-            if (i2 <= 4 || j < 4) {
+        for(let j = 0; i; j++, i--){
+            const tmp = encKey[j & 3 ? i : i - 4];
+            if (i <= 4 || j < 4) {
                 decKey[j] = tmp;
             } else {
                 decKey[j] = decTable[0][sbox[tmp >>> 24]] ^ decTable[1][sbox[tmp >> 16 & 255]] ^ decTable[2][sbox[tmp >> 8 & 255]] ^ decTable[3][sbox[tmp & 255]];
@@ -20371,9 +21313,9 @@ cipher.aes = class {
                 decTable[i][s] = tDec = tDec << 24 ^ tDec >>> 8;
             }
         }
-        for(let i3 = 0; i3 < 5; i3++){
-            encTable[i3] = encTable[i3].slice(0);
-            decTable[i3] = decTable[i3].slice(0);
+        for(let i1 = 0; i1 < 5; i1++){
+            encTable[i1] = encTable[i1].slice(0);
+            decTable[i1] = decTable[i1].slice(0);
         }
     }
     _crypt(input, dir) {
@@ -20410,8 +21352,8 @@ cipher.aes = class {
             b = b2;
             c = c2;
         }
-        for(let i3 = 0; i3 < 4; i3++){
-            out[dir ? 3 & -i3 : i3] = sbox[a >>> 24] << 24 ^ sbox[b >> 16 & 255] << 16 ^ sbox[c >> 8 & 255] << 8 ^ sbox[d & 255] ^ key[kIndex++];
+        for(let i1 = 0; i1 < 4; i1++){
+            out[dir ? 3 & -i1 : i1] = sbox[a >>> 24] << 24 ^ sbox[b >> 16 & 255] << 16 ^ sbox[c >> 8 & 255] << 8 ^ sbox[d & 255] ^ key[kIndex++];
             a2 = a;
             a = b;
             b = c;
@@ -20489,28 +21431,28 @@ mode.ctrGladman = class {
 const misc = {
 };
 misc.hmacSha1 = class {
-    constructor(key2){
+    constructor(key){
         const hmac = this;
-        const Hash1 = hmac._hash = hash.sha1;
+        const Hash = hmac._hash = hash.sha1;
         const exKey = [
             [],
             []
         ];
-        const bs = Hash1.prototype.blockSize / 32;
+        const bs = Hash.prototype.blockSize / 32;
         hmac._baseHash = [
-            new Hash1(),
-            new Hash1()
+            new Hash(),
+            new Hash()
         ];
-        if (key2.length > bs) {
-            key2 = Hash1.hash(key2);
+        if (key.length > bs) {
+            key = Hash.hash(key);
         }
-        for(let i3 = 0; i3 < bs; i3++){
-            exKey[0][i3] = key2[i3] ^ 909522486;
-            exKey[1][i3] = key2[i3] ^ 1549556828;
+        for(let i = 0; i < bs; i++){
+            exKey[0][i] = key[i] ^ 909522486;
+            exKey[1][i] = key[i] ^ 1549556828;
         }
         hmac._baseHash[0].update(exKey[0]);
         hmac._baseHash[1].update(exKey[1]);
-        hmac._resultHash = new Hash1(hmac._baseHash[0]);
+        hmac._resultHash = new Hash(hmac._baseHash[0]);
     }
     reset() {
         const hmac = this;
@@ -20530,6 +21472,7 @@ misc.hmacSha1 = class {
         return result;
     }
 };
+"use strict";
 const ERR_INVALID_PASSWORD = "Invalid pasword";
 const BLOCK_LENGTH = 16;
 const RAW_FORMAT = "raw";
@@ -20622,10 +21565,10 @@ class AESDecrypt {
     }
 }
 class AESEncrypt {
-    constructor(password1, strength1){
+    constructor(password, strength){
         Object.assign(this, {
-            password: password1,
-            strength: strength1 - 1,
+            password,
+            strength: strength - 1,
             pendingInput: new Uint8Array(0)
         });
     }
@@ -20652,7 +21595,7 @@ class AESEncrypt {
         }
         const signature = subarray(codecBytes.fromBits(aesCrypto.hmac.digest()), 0, 10);
         return {
-            data: concat(encryptedChunkArray, signature),
+            data: concat1(encryptedChunkArray, signature),
             signature
         };
     }
@@ -20660,7 +21603,7 @@ class AESEncrypt {
 function append(aesCrypto, input, output, paddingStart, paddingEnd, verifySignature) {
     const inputLength = input.length - paddingEnd;
     if (aesCrypto.pendingInput.length) {
-        input = concat(aesCrypto.pendingInput, input);
+        input = concat1(aesCrypto.pendingInput, input);
         output = expand(output, inputLength - inputLength % BLOCK_LENGTH);
     }
     let offset;
@@ -20679,7 +21622,7 @@ function append(aesCrypto, input, output, paddingStart, paddingEnd, verifySignat
     return output;
 }
 async function createDecryptionKeys(decrypt, preambleArray, password) {
-    await createKeys1(decrypt, password, subarray(preambleArray, 0, SALT_LENGTH[decrypt.strength]));
+    await createKeys(decrypt, password, subarray(preambleArray, 0, SALT_LENGTH[decrypt.strength]));
     const passwordVerification = subarray(preambleArray, SALT_LENGTH[decrypt.strength]);
     const passwordVerificationKey = decrypt.keys.passwordVerification;
     if (passwordVerificationKey[0] != passwordVerification[0] || passwordVerificationKey[1] != passwordVerification[1]) {
@@ -20688,10 +21631,10 @@ async function createDecryptionKeys(decrypt, preambleArray, password) {
 }
 async function createEncryptionKeys(encrypt, password) {
     const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH[encrypt.strength]));
-    await createKeys1(encrypt, password, salt);
-    return concat(salt, encrypt.keys.passwordVerification);
+    await createKeys(encrypt, password, salt);
+    return concat1(salt, encrypt.keys.passwordVerification);
 }
-async function createKeys1(target, password, salt) {
+async function createKeys(target, password, salt) {
     const encodedPassword = new TextEncoder().encode(password);
     const basekey = await crypto.subtle.importKey(RAW_FORMAT, encodedPassword, BASE_KEY_ALGORITHM, false, DERIVED_BITS_USAGE);
     const derivedBits = await crypto.subtle.deriveBits(Object.assign({
@@ -20704,7 +21647,7 @@ async function createKeys1(target, password, salt) {
         passwordVerification: subarray(compositeKey, KEY_LENGTH[target.strength] * 2)
     };
 }
-function concat(leftArray, rightArray) {
+function concat1(leftArray, rightArray) {
     let array = leftArray;
     if (leftArray.length + rightArray.length) {
         array = new Uint8Array(leftArray.length + rightArray.length);
@@ -20724,15 +21667,16 @@ function expand(inputArray, length) {
 function subarray(array, begin, end) {
     return array.subarray(begin, end);
 }
+"use strict";
 const HEADER_LENGTH = 12;
 class ZipCryptoDecrypt {
-    constructor(password2, passwordVerification){
+    constructor(password, passwordVerification){
         const zipCrypto = this;
         Object.assign(zipCrypto, {
-            password: password2,
+            password,
             passwordVerification
         });
-        createKeys2(zipCrypto, password2);
+        createKeys1(zipCrypto, password);
     }
     append(input) {
         const zipCrypto = this;
@@ -20754,13 +21698,13 @@ class ZipCryptoDecrypt {
     }
 }
 class ZipCryptoEncrypt {
-    constructor(password3, passwordVerification1){
-        const zipCrypto1 = this;
-        Object.assign(zipCrypto1, {
-            password: password3,
-            passwordVerification: passwordVerification1
+    constructor(password, passwordVerification){
+        const zipCrypto = this;
+        Object.assign(zipCrypto, {
+            password,
+            passwordVerification
         });
-        createKeys2(zipCrypto1, password3);
+        createKeys1(zipCrypto, password);
     }
     append(input) {
         const zipCrypto = this;
@@ -20802,7 +21746,7 @@ function encrypt(target, input) {
     }
     return output;
 }
-function createKeys2(target, password) {
+function createKeys1(target, password) {
     target.keys = [
         305419896,
         591751049,
@@ -20836,23 +21780,24 @@ function getInt8(number) {
 function getInt32(number) {
     return number & 4294967295;
 }
+"use strict";
 const CODEC_DEFLATE = "deflate";
 const CODEC_INFLATE = "inflate";
 const ERR_INVALID_SIGNATURE = "Invalid signature";
 class Inflate1 {
-    constructor(codecConstructor, { signature , password: password4 , signed: signed1 , compressed , zipCrypto: zipCrypto2 , passwordVerification: passwordVerification2 , encryptionStrength  }, { chunkSize  }){
-        const encrypted = Boolean(password4);
+    constructor(codecConstructor, { signature , password , signed , compressed , zipCrypto , passwordVerification , encryptionStrength  }, { chunkSize  }){
+        const encrypted = Boolean(password);
         Object.assign(this, {
             signature,
             encrypted,
-            signed: signed1,
+            signed,
             compressed,
             inflate: compressed && new codecConstructor({
                 chunkSize
             }),
-            crc32: signed1 && new Crc32(),
-            zipCrypto: zipCrypto2,
-            decrypt: encrypted && zipCrypto2 ? new ZipCryptoDecrypt(password4, passwordVerification2) : new AESDecrypt(password4, signed1, encryptionStrength)
+            crc32: signed && new Crc32(),
+            zipCrypto,
+            decrypt: encrypted && zipCrypto ? new ZipCryptoDecrypt(password, passwordVerification) : new AESDecrypt(password, signed, encryptionStrength)
         });
     }
     async append(data) {
@@ -20898,18 +21843,18 @@ class Inflate1 {
     }
 }
 class Deflate1 {
-    constructor(codecConstructor1, { encrypted: encrypted1 , signed: signed2 , compressed: compressed1 , level , zipCrypto: zipCrypto3 , password: password5 , passwordVerification: passwordVerification3 , encryptionStrength: encryptionStrength1  }, { chunkSize: chunkSize1  }){
+    constructor(codecConstructor, { encrypted , signed , compressed , level , zipCrypto , password , passwordVerification , encryptionStrength  }, { chunkSize  }){
         Object.assign(this, {
-            encrypted: encrypted1,
-            signed: signed2,
-            compressed: compressed1,
-            deflate: compressed1 && new codecConstructor1({
+            encrypted,
+            signed,
+            compressed,
+            deflate: compressed && new codecConstructor({
                 level: level || 5,
-                chunkSize: chunkSize1
+                chunkSize
             }),
-            crc32: signed2 && new Crc32(),
-            zipCrypto: zipCrypto3,
-            encrypt: encrypted1 && zipCrypto3 ? new ZipCryptoEncrypt(password5, passwordVerification3) : new AESEncrypt(password5, encryptionStrength1)
+            crc32: signed && new Crc32(),
+            zipCrypto,
+            encrypt: encrypted && zipCrypto ? new ZipCryptoEncrypt(password, passwordVerification) : new AESEncrypt(password, encryptionStrength)
         });
     }
     async append(inputData) {
@@ -20958,6 +21903,7 @@ function createCodec(codecConstructor, options, config) {
         return new Inflate1(codecConstructor, options, config);
     }
 }
+"use strict";
 const importMeta1 = {
     url: "https://deno.land/x/zipjs@v2.3.17/lib/core/codecs/codec-pool-worker.js",
     main: false
@@ -21112,6 +22058,7 @@ const __default6 = (workerData, codecConstructor, options, config, onTaskFinishe
     });
     return webWorker ? createWebWorkerInterface(workerData, config) : createWorkerInterface(workerData, config);
 };
+"use strict";
 let pool = [];
 let pendingRequests = [];
 function createCodec1(codecConstructor, options, config) {
@@ -21184,50 +22131,9 @@ const __default7 = ()=>{
         });
     }
 };
-const __default8 = (library, options = {
-}, registerDataHandler)=>{
-    return {
-        Deflate: createCodecClass(library.Deflate, options.deflate, registerDataHandler),
-        Inflate: createCodecClass(library.Inflate, options.inflate, registerDataHandler)
-    };
-};
-function createCodecClass(constructor, constructorOptions, registerDataHandler) {
-    return class {
-        constructor(options){
-            const codecAdapter = this;
-            const onData = (data)=>{
-                if (codecAdapter.pendingData) {
-                    const pendingData = codecAdapter.pendingData;
-                    codecAdapter.pendingData = new Uint8Array(pendingData.length + data.length);
-                    codecAdapter.pendingData.set(pendingData, 0);
-                    codecAdapter.pendingData.set(data, pendingData.length);
-                } else {
-                    codecAdapter.pendingData = new Uint8Array(data);
-                }
-            };
-            codecAdapter.codec = new constructor(Object.assign({
-            }, constructorOptions, options));
-            registerDataHandler(codecAdapter.codec, onData);
-        }
-        async append(data) {
-            this.codec.push(data);
-            return getResponse(this);
-        }
-        async flush() {
-            this.codec.push(new Uint8Array(0), true);
-            return getResponse(this);
-        }
-    };
-    function getResponse(codec) {
-        if (codec.pendingData) {
-            const output = codec.pendingData;
-            codec.pendingData = null;
-            return output;
-        } else {
-            return new Uint8Array(0);
-        }
-    }
-}
+"use strict";
+"use strict";
+"use strict";
 const ERR_HTTP_STATUS = "HTTP error ";
 const ERR_HTTP_RANGE = "HTTP Range not supported";
 const CONTENT_TYPE_TEXT_PLAIN = "text/plain";
@@ -21366,9 +22272,9 @@ class BlobReader extends Reader {
     }
 }
 class BlobWriter extends Writer {
-    constructor(contentType1){
+    constructor(contentType){
         super();
-        this.contentType = contentType1;
+        this.contentType = contentType;
         this.arrayBuffers = [];
     }
     async writeUint8Array(array) {
@@ -21385,14 +22291,14 @@ class BlobWriter extends Writer {
     }
 }
 class FetchReader extends Reader {
-    constructor(url, options9){
+    constructor(url, options){
         super();
         this.url = url;
-        this.preventHeadRequest = options9.preventHeadRequest;
-        this.useRangeHeader = options9.useRangeHeader;
-        this.forceRangeRequests = options9.forceRangeRequests;
+        this.preventHeadRequest = options.preventHeadRequest;
+        this.useRangeHeader = options.useRangeHeader;
+        this.forceRangeRequests = options.forceRangeRequests;
         this.options = Object.assign({
-        }, options9);
+        }, options);
         delete this.options.preventHeadRequest;
         delete this.options.useRangeHeader;
         delete this.options.forceRangeRequests;
@@ -21452,12 +22358,12 @@ async function sendFetchRequest(method, url, options, headers) {
     }
 }
 class XHRReader extends Reader {
-    constructor(url1, options10){
+    constructor(url, options){
         super();
-        this.url = url1;
-        this.preventHeadRequest = options10.preventHeadRequest;
-        this.useRangeHeader = options10.useRangeHeader;
-        this.forceRangeRequests = options10.forceRangeRequests;
+        this.url = url;
+        this.preventHeadRequest = options.preventHeadRequest;
+        this.useRangeHeader = options.useRangeHeader;
+        this.forceRangeRequests = options.forceRangeRequests;
     }
     async init() {
         super.init();
@@ -21532,14 +22438,14 @@ function sendXHR(method, url, onload, onerror, headers = []) {
     return request;
 }
 class HttpReader extends Reader {
-    constructor(url2, options11 = {
+    constructor(url, options = {
     }){
         super();
-        this.url = url2;
-        if (options11.useXHR) {
-            this.reader = new XHRReader(url2, options11);
+        this.url = url;
+        if (options.useXHR) {
+            this.reader = new XHRReader(url, options);
         } else {
-            this.reader = new FetchReader(url2, options11);
+            this.reader = new FetchReader(url, options);
         }
     }
     set size(value) {
@@ -21553,13 +22459,6 @@ class HttpReader extends Reader {
     }
     async readUint8Array(index, length) {
         return this.reader.readUint8Array(index, length);
-    }
-}
-class HttpRangeReader extends HttpReader {
-    constructor(url3, options12 = {
-    }){
-        options12.useRangeHeader = true;
-        super(url3, options12);
     }
 }
 class Uint8ArrayReader extends Reader {
@@ -21597,6 +22496,7 @@ function isHttpFamily(url) {
         return /^https?:\/\//i.test(url);
     }
 }
+"use strict";
 const MAX_32_BITS = 4294967295;
 const MAX_16_BITS = 65535;
 const COMPRESSION_METHOD_DEFLATE = 8;
@@ -21610,14 +22510,16 @@ const VERSION_AES = 51;
 const DIRECTORY_SIGNATURE = "/";
 const MAX_DATE = new Date(2107, 11, 31);
 const MIN_DATE = new Date(1980, 0, 1);
+"use strict";
 const CP437 = "\0☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ".split("");
-const __default9 = (stringValue)=>{
+const __default8 = (stringValue)=>{
     let result = "";
     for(let indexCharacter = 0; indexCharacter < stringValue.length; indexCharacter++){
         result += CP437[stringValue[indexCharacter]];
     }
     return result;
 };
+"use strict";
 const ERR_ABORT = "Abort error";
 async function processData(codec, reader, writer, offset, inputLength, config, options) {
     const chunkSize = Math.max(config.chunkSize, 64);
@@ -21661,6 +22563,7 @@ async function writeData(writer, data) {
     }
     return data.length;
 }
+"use strict";
 const PROPERTY_NAMES = [
     "filename",
     "rawFilename",
@@ -21696,11 +22599,12 @@ const PROPERTY_NAMES = [
     "externalFileAttribute"
 ];
 class Entry {
-    constructor(data1){
-        PROPERTY_NAMES.forEach((name)=>this[name] = data1[name]
+    constructor(data){
+        PROPERTY_NAMES.forEach((name)=>this[name] = data[name]
         );
     }
 }
+"use strict";
 const ERR_BAD_FORMAT = "File format is not recognized";
 const ERR_EOCDR_NOT_FOUND = "End of central directory not found";
 const ERR_EOCDR_ZIP64_NOT_FOUND = "End of Zip64 central directory not found";
@@ -21718,11 +22622,11 @@ const ZIP64_PROPERTIES = [
     "offset"
 ];
 class ZipReader {
-    constructor(reader2, options13 = {
+    constructor(reader, options = {
     }){
         Object.assign(this, {
-            reader: reader2,
-            options: options13,
+            reader,
+            options,
             config: getConfiguration()
         });
     }
@@ -21840,11 +22744,11 @@ class ZipReader {
     }
 }
 class ZipEntry {
-    constructor(reader3, config1, options14){
+    constructor(reader, config, options){
         Object.assign(this, {
-            reader: reader3,
-            config: config1,
-            options: options14
+            reader,
+            config,
+            options
         });
     }
     async getData(writer, fileEntry, options = {
@@ -22120,7 +23024,7 @@ function getOptionValue(zipReader, options, name) {
 }
 function decodeString(value, encoding) {
     if (!encoding || encoding.trim().toLowerCase() == "cp437") {
-        return __default9(value);
+        return __default8(value);
     } else {
         return new TextDecoder(encoding).decode(value);
     }
@@ -22156,6 +23060,7 @@ function getDataView(array) {
 function readUint8Array(reader, offset, size) {
     return reader.readUint8Array(offset, size);
 }
+"use strict";
 const ERR_DUPLICATED_NAME = "File already exists";
 const ERR_INVALID_COMMENT = "Zip file comment exceeds 64KB";
 const ERR_INVALID_ENTRY_COMMENT = "File entry comment exceeds 64KB";
@@ -22178,14 +23083,14 @@ const EXTRAFIELD_DATA_AES = new Uint8Array([
 ]);
 let workers = 0;
 class ZipWriter {
-    constructor(writer3, options15 = {
+    constructor(writer, options = {
     }){
         Object.assign(this, {
-            writer: writer3,
-            options: options15,
+            writer,
+            options,
             config: getConfiguration(),
             files: new Map(),
-            offset: writer3.size,
+            offset: writer.size,
             pendingCompressedSize: 0,
             pendingEntries: []
         });
@@ -22813,11 +23718,12 @@ function arraySet(array, typedArray, offset) {
 function getDataView1(array) {
     return new DataView(array.buffer);
 }
+"use strict";
 const CHUNK_SIZE = 512 * 1024;
 class ZipEntry1 {
-    constructor(fs, name1, params, parent){
+    constructor(fs, name, params, parent){
         const zipEntry = this;
-        if (fs.root && parent && parent.getChildByName(name1)) {
+        if (fs.root && parent && parent.getChildByName(name)) {
             throw new Error("Entry filename already exists");
         }
         if (!params) {
@@ -22826,7 +23732,7 @@ class ZipEntry1 {
         }
         Object.assign(zipEntry, {
             fs,
-            name: name1,
+            name,
             data: params.data,
             id: fs.entries.length,
             parent,
@@ -22864,13 +23770,13 @@ class ZipEntry1 {
     }
 }
 class ZipFileEntry extends ZipEntry1 {
-    constructor(fs1, name2, params1, parent1){
-        super(fs1, name2, params1, parent1);
-        const zipEntry1 = this;
-        zipEntry1.Reader = params1.Reader;
-        zipEntry1.Writer = params1.Writer;
-        if (params1.getData) {
-            zipEntry1.getData = params1.getData;
+    constructor(fs, name, params, parent){
+        super(fs, name, params, parent);
+        const zipEntry = this;
+        zipEntry.Reader = params.Reader;
+        zipEntry.Writer = params.Writer;
+        if (params.getData) {
+            zipEntry.getData = params.getData;
         }
     }
     async getData(writer, options = {
@@ -22885,7 +23791,7 @@ class ZipFileEntry extends ZipEntry1 {
                 await writer.init();
             }
             zipEntry.uncompressedSize = zipEntry.reader.size;
-            return pipe(zipEntry.reader, writer);
+            return pipe2(zipEntry.reader, writer);
         }
     }
     getText(encoding, options) {
@@ -22934,8 +23840,8 @@ class ZipFileEntry extends ZipEntry1 {
     }
 }
 class ZipDirectoryEntry extends ZipEntry1 {
-    constructor(fs2, name3, params2, parent2){
-        super(fs2, name3, params2, parent2);
+    constructor(fs, name, params, parent){
+        super(fs, name, params, parent);
         this.directory = true;
     }
     addDirectory(name) {
@@ -22974,8 +23880,8 @@ class ZipDirectoryEntry extends ZipEntry1 {
         return addChild(this, name, {
             data: url,
             Reader: class extends HttpReader {
-                constructor(url4){
-                    super(url4, options);
+                constructor(url){
+                    super(url, options);
                 }
             }
         });
@@ -23056,93 +23962,6 @@ class ZipDirectoryEntry extends ZipEntry1 {
         }
     }
 }
-class FS {
-    constructor(){
-        resetFS(this);
-    }
-    get children() {
-        return this.root.children;
-    }
-    remove(entry) {
-        detach(entry);
-        this.entries[entry.id] = null;
-    }
-    move(entry, destination) {
-        if (entry == this.root) {
-            throw new Error("Root directory cannot be moved");
-        } else {
-            if (destination.directory) {
-                if (!destination.isDescendantOf(entry)) {
-                    if (entry != destination) {
-                        if (destination.getChildByName(entry.name)) {
-                            throw new Error("Entry filename already exists");
-                        }
-                        detach(entry);
-                        entry.parent = destination;
-                        destination.children.push(entry);
-                    }
-                } else {
-                    throw new Error("Entry is a ancestor of target entry");
-                }
-            } else {
-                throw new Error("Target entry is not a directory");
-            }
-        }
-    }
-    find(fullname) {
-        const path = fullname.split("/");
-        let node = this.root;
-        for(let index = 0; node && index < path.length; index++){
-            node = node.getChildByName(path[index]);
-        }
-        return node;
-    }
-    getById(id) {
-        return this.entries[id];
-    }
-    getChildByName(name) {
-        return this.root.getChildByName(name);
-    }
-    addDirectory(name) {
-        return this.root.addDirectory(name);
-    }
-    addText(name, text) {
-        return this.root.addText(name, text);
-    }
-    addBlob(name, blob) {
-        return this.root.addBlob(name, blob);
-    }
-    addData64URI(name, dataURI) {
-        return this.root.addData64URI(name, dataURI);
-    }
-    addHttpContent(name, url, options) {
-        return this.root.addHttpContent(name, url, options);
-    }
-    async addFileSystemEntry(fileSystemEntry) {
-        return this.root.addFileSystemEntry(fileSystemEntry);
-    }
-    async addData(name, params) {
-        return this.root.addData(name, params);
-    }
-    async importBlob(blob, options) {
-        resetFS(this);
-        await this.root.importBlob(blob, options);
-    }
-    async importData64URI(dataURI, options) {
-        resetFS(this);
-        await this.root.importData64URI(dataURI, options);
-    }
-    async importHttpContent(url, options) {
-        resetFS(this);
-        await this.root.importHttpContent(url, options);
-    }
-    async exportBlob(options) {
-        return this.root.exportBlob(options);
-    }
-    async exportData64URI(options) {
-        return this.root.exportData64URI(options);
-    }
-}
 function getTotalSize(entries, propertyName) {
     let size = 0;
     entries.forEach(process);
@@ -23156,11 +23975,11 @@ function getTotalSize(entries, propertyName) {
 }
 function getZipBlobReader(options) {
     return class extends Reader {
-        constructor(entry, options16 = {
+        constructor(entry, options = {
         }){
             super();
             this.entry = entry;
-            this.options = options16;
+            this.options = options;
         }
         async init() {
             const zipBlobReader = this;
@@ -23187,14 +24006,6 @@ async function initReaders(entry) {
             }
         }
     }
-}
-function detach(entry) {
-    const children = entry.parent.children;
-    children.forEach((child, index)=>{
-        if (child.id == entry.id) {
-            children.splice(index, 1);
-        }
-    });
 }
 async function exportZip(zipWriter, entry, totalSize, options) {
     const selectedEntry = entry;
@@ -23280,11 +24091,7 @@ async function addFileSystemEntry(zipEntry, fileSystemEntry) {
         });
     }
 }
-function resetFS(fs) {
-    fs.entries = [];
-    fs.root = new ZipDirectoryEntry(fs);
-}
-async function pipe(reader, writer) {
+async function pipe2(reader, writer) {
     return copyChunk();
     async function copyChunk(chunkIndex = 0) {
         const index = chunkIndex * CHUNK_SIZE;
@@ -23304,11 +24111,602 @@ function addChild(parent, name, params, directory) {
         throw new Error("Parent entry is not a directory");
     }
 }
+"use strict";
 __default7();
+"use strict";
 configure({
     Deflate: ZipDeflate,
     Inflate: ZipInflate
 });
+async function _createWalkEntry(path) {
+    path = normalize3(path);
+    const name = basename2(path);
+    const info = await Deno.stat(path);
+    return {
+        path,
+        name,
+        isFile: info.isFile,
+        isDirectory: info.isDirectory,
+        isSymlink: info.isSymlink
+    };
+}
+function include(path, exts, match, skip) {
+    if (exts && !exts.some((ext)=>path.endsWith(ext)
+    )) {
+        return false;
+    }
+    if (match && !match.some((pattern)=>!!path.match(pattern)
+    )) {
+        return false;
+    }
+    if (skip && skip.some((pattern)=>!!path.match(pattern)
+    )) {
+        return false;
+    }
+    return true;
+}
+function wrapErrorWithRootPath(err, root) {
+    if (err instanceof Error && "root" in err) return err;
+    const e = new Error();
+    e.root = root;
+    e.message = err instanceof Error ? `${err.message} for path "${root}"` : `[non-error thrown] for path "${root}"`;
+    e.stack = err instanceof Error ? err.stack : undefined;
+    e.cause = err instanceof Error ? err.cause : undefined;
+    return e;
+}
+async function* walk(root, { maxDepth =Infinity , includeFiles =true , includeDirs =true , followSymlinks =false , exts =undefined , match =undefined , skip =undefined  } = {
+}) {
+    if (maxDepth < 0) {
+        return;
+    }
+    if (includeDirs && include(root, exts, match, skip)) {
+        yield await _createWalkEntry(root);
+    }
+    if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
+        return;
+    }
+    try {
+        for await (const entry of Deno.readDir(root)){
+            assert(entry.name != null);
+            let path = join3(root, entry.name);
+            if (entry.isSymlink) {
+                if (followSymlinks) {
+                    path = await Deno.realPath(path);
+                } else {
+                    continue;
+                }
+            }
+            if (entry.isFile) {
+                if (includeFiles && include(path, exts, match, skip)) {
+                    yield {
+                        path,
+                        ...entry
+                    };
+                }
+            } else {
+                yield* walk(path, {
+                    maxDepth: maxDepth - 1,
+                    includeFiles,
+                    includeDirs,
+                    followSymlinks,
+                    exts,
+                    match,
+                    skip
+                });
+            }
+        }
+    } catch (err) {
+        throw wrapErrorWithRootPath(err, normalize3(root));
+    }
+}
+const toFile1 = (outputPath)=>async (stream)=>{
+        const closeRes = await stream.close();
+        await Deno.writeTextFile(outputPath, closeRes.out.join("\n"));
+        return closeRes;
+    }
+;
+const pipe1 = (...operators)=>(shellStream)=>{
+        let current = shellStream;
+        for (const operator of operators){
+            current = operator(current);
+        }
+        return current;
+    }
+;
+const toIterable1 = ()=>(stream)=>{
+        return (async function*() {
+            for await (const line of stream.generator){
+                yield line;
+            }
+            await stream.close();
+        })();
+    }
+;
+const run2 = (cmdOrStr, opt)=>(stream)=>{
+        const generator = async function*() {
+            stream.processCmd = parseCmdString(cmdOrStr);
+            stream.process = Deno.run({
+                cmd: stream.processCmd,
+                ...opt,
+                stdout: opt?.stdout || (opt?.streamStdErr ? "inherit" : "piped"),
+                stderr: opt?.stderr || (opt?.streamStdErr ? "piped" : "inherit"),
+                stdin: "piped"
+            });
+            ShellStream.incProcessCount();
+            redirectGeneratorToStdin(stream).then();
+            (async ()=>{
+                stream.processStatus = await stream.process.status();
+                ShellStream.incProcessDone();
+                closeProcess(stream.process);
+            })().then();
+            try {
+                for await (const line of readLines(opt?.streamStdErr ? stream.process.stderr : stream.process.stdout)){
+                    yield line;
+                }
+            } catch (_e) {
+            }
+            if (opt?.throwIfRunFail && !stream.processStatus.success) {
+                throw new Error(`The process ${stream.processCmd[0]} exit error ${stream.processStatus.code}`);
+            }
+            if (opt?.exitCodeIfRunFail !== undefined) {
+                Deno.exit(opt?.exitCodeIfRunFail);
+            }
+        }();
+        return ShellStream.builder(generator, stream);
+    }
+;
+async function redirectGeneratorToStdin(stream) {
+    const textEncoder = new TextEncoder();
+    for await (const line of stream.generator){
+        try {
+            await stream.process.stdin.write(textEncoder.encode(line + "\n"));
+        } catch (_e) {
+            break;
+        }
+    }
+    try {
+        stream.process.stdin.close();
+    } catch (_e) {
+    }
+}
+function parseCmdString(cmdOrStr) {
+    return cmdOrStr instanceof Array ? cmdOrStr : cmdOrStr.trim().match(/"(\\"|[^"])*"|'(\\'|[^'])*'|[^ "']+/g).map((p)=>p.match(/^"((\\"|[^"])*)"$/) ? p.replace(/^"((\\"|[^"])*)"$/, "$1") : p.match(/^'((\\'|[^'])*)'$/) ? p.replace(/^'((\\'|[^'])*)'$/, "$1") : p
+    );
+}
+function closeProcess(process) {
+    try {
+        process.stdin.close();
+    } catch (_e) {
+    }
+    try {
+        process.stdout.close();
+    } catch (_e1) {
+    }
+    try {
+        process.stderr.close();
+    } catch (_e2) {
+    }
+    try {
+        process.close();
+    } catch (_e3) {
+    }
+}
+const close1 = (opt = {
+    processes: "AWAIT"
+})=>async (shellStream)=>{
+        const out = [];
+        for await (const line of shellStream.generator){
+            out.push(line);
+        }
+        if (opt.processes === "AWAIT") {
+            for (const stream of shellStream.parents){
+                if (stream.process && !stream.processStatus) {
+                    try {
+                        stream.process.stdin.close();
+                    } catch (_e) {
+                    }
+                    try {
+                        stream.process.stdout.close();
+                    } catch (_e1) {
+                    }
+                    try {
+                        stream.processStatus = await stream.process.status();
+                    } catch (_) {
+                    }
+                    try {
+                        stream.process.close();
+                    } catch (_1) {
+                    }
+                }
+            }
+        } else if (opt.processes === "KILL") {
+            for (const stream of shellStream.parents){
+                if (stream.process && !stream.processStatus) {
+                    try {
+                        stream.process.kill("SIGINT");
+                        stream.process.kill("SIGKILL");
+                    } catch (_e) {
+                    }
+                    stream.processStatus = await stream.process.status();
+                    closeProcess(stream.process);
+                }
+            }
+        }
+        for (const stream of shellStream.parents){
+            for await (const _line of stream.generator){
+            }
+            if (stream.file) {
+                try {
+                    stream.file.close();
+                } catch (_e) {
+                }
+            }
+        }
+        const statuses = shellStream.parents.map((stream)=>{
+            return stream.processStatus && {
+                ...stream.processStatus,
+                cmd: stream.processCmd
+            };
+        });
+        const success = !statuses.some((s)=>s && !s.success
+        );
+        return new CloseRes(success, statuses, out);
+    }
+;
+const toString1 = ()=>async (shellStream)=>(await close1()(shellStream)).out.join("\n")
+;
+const toArray1 = ()=>async (shellStream)=>(await close1()(shellStream)).out
+;
+const success1 = ()=>async (shellStream)=>(await close1()(shellStream)).success
+;
+class ShellStream {
+    parents;
+    generator;
+    process;
+    processStatus;
+    processCmd;
+    file;
+    constructor(parents, generator){
+        this.parents = parents;
+        this.generator = generator;
+    }
+    run = (cmd, opt)=>run2(cmd, opt)(this)
+    ;
+    toFile = (outputPath)=>toFile1(outputPath)(this)
+    ;
+    tee = (outputPath)=>tee1(outputPath)(this)
+    ;
+    log = (transform)=>log1(transform)(this)
+    ;
+    logWithTimestamp = ()=>logWithTimestamp1()(this)
+    ;
+    grep = (regex)=>grep1(regex)(this)
+    ;
+    timestamp = ()=>timestamp1()(this)
+    ;
+    tap = (tapFunction)=>tap1(tapFunction)(this)
+    ;
+    replace = (v, r)=>replace1(v, r)(this)
+    ;
+    map = (mapFunction)=>map1(mapFunction)(this)
+    ;
+    filter = (filterFunction)=>filter1(filterFunction)(this)
+    ;
+    cut = (delim, i, sep = " ")=>cut1(delim, i, sep)(this)
+    ;
+    head = (count = 1)=>head1(count)(this)
+    ;
+    tail = (count = 1)=>tail1(count)(this)
+    ;
+    sponge = ()=>sponge1()(this)
+    ;
+    sort = ()=>sort1()(this)
+    ;
+    uniq = ()=>uniq1()(this)
+    ;
+    pipe = (...operators)=>pipe1(...operators)(this)
+    ;
+    close = async (opt = {
+        processes: "AWAIT"
+    })=>await close1(opt)(this)
+    ;
+    toString = async ()=>await toString1()(this)
+    ;
+    toArray = async ()=>await toArray1()(this)
+    ;
+    toIterable = ()=>toIterable1()(this)
+    ;
+    success = async ()=>await success1()(this)
+    ;
+    static builder(generator, inputStream) {
+        return new ShellStream(inputStream ? [
+            ...inputStream.parents,
+            inputStream
+        ] : [], generator);
+    }
+    static empty() {
+        const emptyGenerator = async function*() {
+        }();
+        return new ShellStream([], emptyGenerator);
+    }
+    static from = (iterable)=>from1(iterable)()
+    ;
+    static fromFile = (path, opt)=>fromFile1(path, opt)()
+    ;
+    static fromDir = (path)=>fromDir1(path)()
+    ;
+    static fromWalk = (path, opt)=>fromWalk1(path, opt)()
+    ;
+    static fromArray = (lines)=>fromArray1(lines)()
+    ;
+    static fromString = (line)=>fromString1(line)()
+    ;
+    static fromRun = (cmd, opt)=>fromRun1(cmd, opt)()
+    ;
+    static pipe = (...op)=>pipe1(...op)(ShellStream.empty())
+    ;
+    static processCount = 0;
+    static processDone = 0;
+    static processEventListener = [];
+    static subscribeProcessEvent(listener) {
+        ShellStream.processEventListener.push(listener);
+    }
+    static unsubscribeProcessEvent(listener) {
+        ShellStream.processEventListener = ShellStream.processEventListener.filter((l)=>l !== listener
+        );
+    }
+    static sendProcessEvent() {
+        ShellStream.processEventListener.forEach((listener)=>listener({
+                processCount: ShellStream.processCount,
+                processDone: ShellStream.processDone
+            })
+        );
+    }
+    static incProcessCount() {
+        ShellStream.processCount++;
+        ShellStream.sendProcessEvent();
+    }
+    static incProcessDone() {
+        ShellStream.processDone++;
+        ShellStream.sendProcessEvent();
+    }
+}
+const fromArray1 = (lines)=>()=>{
+        const generator = async function*() {
+            for await (const line of lines){
+                yield line;
+            }
+        }();
+        return ShellStream.builder(generator);
+    }
+;
+const fromString1 = (line)=>fromArray1(line.split("\n"))
+;
+const tap1 = (tapFunction)=>(shellStream)=>{
+        const generator = async function*() {
+            for await (const line of shellStream.generator){
+                tapFunction(line);
+                yield line;
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const log1 = (transform)=>(shellStream)=>tap1((line)=>transform ? console.log(transform(line)) : console.log(line)
+        )(shellStream)
+;
+const filter1 = (filterFunction)=>(shellStream)=>{
+        const generator = async function*() {
+            for await (const line of shellStream.generator){
+                if (filterFunction(line)) {
+                    yield line;
+                }
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const grep1 = (regex)=>(shellStream)=>filter1((line)=>regex.test(line)
+        )(shellStream)
+;
+const timestamp1 = ()=>(shellStream)=>{
+        const inputGenerator = async function*() {
+            for await (const line of shellStream.generator){
+                const ts = new Date().toISOString();
+                yield `${ts} ${line}`;
+            }
+        }();
+        return ShellStream.builder(inputGenerator, shellStream);
+    }
+;
+const map1 = (mapFunction)=>(shellStream)=>{
+        const generator = async function*() {
+            for await (const line of shellStream.generator){
+                yield mapFunction(line);
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const replace1 = (searchValue, replacer)=>(shellStream)=>{
+        return map1((line)=>{
+            if (typeof replacer === "string") {
+                return line.replace(searchValue, replacer);
+            } else {
+                return line.replace(searchValue, replacer);
+            }
+        })(shellStream);
+    }
+;
+const tee1 = (outputPath)=>(stream)=>{
+        const generator = async function*() {
+            stream.file = await Deno.open(outputPath, {
+                write: true,
+                create: true
+            });
+            const encoder = new TextEncoder();
+            let start = true;
+            for await (const line of stream.generator){
+                if (start) {
+                    await Deno.write(stream.file.rid, encoder.encode(line));
+                    start = false;
+                } else {
+                    await Deno.write(stream.file.rid, encoder.encode("\n" + line));
+                }
+                yield line;
+            }
+            stream.file.close();
+        }();
+        return ShellStream.builder(generator, stream);
+    }
+;
+const from1 = (iterable)=>()=>{
+        const generator = async function*() {
+            for await (const str of iterable){
+                yield str;
+            }
+        }();
+        return ShellStream.builder(generator);
+    }
+;
+const fromFile1 = (path, opt)=>()=>{
+        const generator = async function*() {
+            if (opt?.closeBeforeStreaming) {
+                const fileContent = await Deno.readTextFile(path);
+                for await (const line of fileContent.split("\n")){
+                    yield line;
+                }
+            } else {
+                const file = await Deno.open(path);
+                for await (const line of readLines(file)){
+                    yield line;
+                }
+                file.close();
+            }
+        }();
+        return ShellStream.builder(generator);
+    }
+;
+const fromRun1 = (cmd, opt)=>()=>run2(cmd, opt)(ShellStream.empty())
+;
+const tail1 = (count = 1)=>(shellStream)=>{
+        const generator = async function*() {
+            const buffer = [];
+            for await (const line of shellStream.generator){
+                buffer.push(line);
+                if (buffer.length > count) {
+                    buffer.shift();
+                }
+            }
+            for (const line1 of buffer){
+                yield line1;
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const head1 = (count = 1)=>(shellStream)=>{
+        const generator = async function*() {
+            let i = 0;
+            for await (const line of shellStream.generator){
+                yield line;
+                i++;
+                if (i >= count) {
+                    break;
+                }
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const sponge1 = ()=>(shellStream)=>{
+        const generator = async function*() {
+            const out = [];
+            for await (const line of shellStream.generator){
+                out.push(line);
+            }
+            for await (const line1 of out){
+                yield line1;
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const fromDir1 = (path)=>()=>{
+        const generator = async function*() {
+            for await (const dirEntry of Deno.readDir(path)){
+                yield dirEntry.name;
+            }
+        }();
+        return ShellStream.builder(generator);
+    }
+;
+const fromWalk1 = (path, opt)=>()=>{
+        const generator = async function*() {
+            for await (const dirEntry of walk(path, opt)){
+                yield dirEntry.path;
+            }
+        }();
+        return ShellStream.builder(generator);
+    }
+;
+const sort1 = ()=>(shellStream)=>{
+        const generator = async function*() {
+            const out = [];
+            for await (const line of shellStream.generator){
+                out.push(line);
+            }
+            for await (const line1 of out.sort()){
+                yield line1;
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const uniq1 = ()=>(shellStream)=>{
+        const generator = async function*() {
+            let lastEmit;
+            for await (const line of shellStream.generator){
+                if (lastEmit !== line) {
+                    lastEmit = line;
+                    yield line;
+                }
+            }
+        }();
+        return ShellStream.builder(generator, shellStream);
+    }
+;
+const cut1 = (delim, indexes, sep = " ")=>(shellStream)=>map1((line)=>{
+            const parts = line.split(delim);
+            return indexes.map((i)=>parts[i]
+            ).join(sep);
+        })(shellStream)
+;
+const logWithTimestamp1 = ()=>(shellStream)=>tap1((line)=>{
+            console.log(`${new Date().toISOString()} ${line}`);
+        })(shellStream)
+;
+ShellStream.pipe;
+ShellStream.from;
+ShellStream.fromFile;
+ShellStream.fromDir;
+ShellStream.fromWalk;
+const FromRun = ShellStream.fromRun;
+ShellStream.fromArray;
+ShellStream.fromString;
+class CloseRes {
+    success;
+    statuses;
+    out;
+    constructor(success, statuses, out){
+        this.success = success;
+        this.statuses = statuses;
+        this.out = out;
+    }
+    tostring() {
+        return this.out.join("\n");
+    }
+}
 async function ls(path) {
     const entries = [];
     for await (const entry of Deno.readDir(path)){
@@ -23325,11 +24723,11 @@ async function fsToFolder(path, genSha1 = true) {
     const entries = await ls(path);
     for (const entry of entries){
         if (entry.isDirectory) {
-            folder.files.push(await fsToFolder(join2(path, entry.name), genSha1));
+            folder.files.push(await fsToFolder(join3(path, entry.name), genSha1));
         } else {
             folder.files.push({
                 name: entry.name,
-                sha1: genSha1 ? await getSha1(join2(path, entry.name)) : ""
+                sha1: genSha1 ? await getSha1(join3(path, entry.name)) : ""
             });
         }
     }
@@ -23369,22 +24767,13 @@ async function getFfmpegCommand() {
                     "wsl",
                     "ffmpeg"
                 ];
-            } else if (await checkCommand([
-                "wsl2",
-                "ffmpeg",
-                "-version"
-            ], 0)) {
-                ffmpegCommand = [
-                    "wsl2",
-                    "ffmpeg"
-                ];
             } else {
                 console.error(`
 Command ffmpeg not found,
 use --skip-extract-image-from-mp3 to skip image item generation
 or install ffmpeg :
-       wsl  sudo apt install ffmpeg
-    or wsl2 sudo apt install ffmpeg
+       wsl sudo apt update
+       wsl sudo apt install -y ffmpeg
 `);
                 Deno.exit(3);
             }
@@ -23400,7 +24789,7 @@ or install ffmpeg :
                 console.error(`
 Command ffmpeg (from ffmpeg) not found,
 use --skip-image-item-gen to skip image item generation
-or install ffmpeg : sudo apt install ffmpeg
+or install ffmpeg : sudo apt install -y ffmpeg
 `);
                 Deno.exit(3);
             }
@@ -23421,22 +24810,13 @@ async function getPico2waveCommand() {
                     "wsl",
                     "pico2wave"
                 ];
-            } else if (await checkCommand([
-                "wsl2",
-                "pico2wave",
-                "--version"
-            ], 1)) {
-                pico2waveCommand = [
-                    "wsl2",
-                    "pico2wave"
-                ];
             } else {
                 console.error(`
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
 or install pico2wave :
-       wsl  sudo apt install libttspico-utils
-    or wsl2 sudo apt install libttspico-utils
+       wsl sudo apt update
+       wsl sudo apt install -y libttspico-utils
 `);
                 Deno.exit(3);
             }
@@ -23452,7 +24832,7 @@ or install pico2wave :
                 console.error(`
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
-or install pico2wave : sudo apt install libttspico-utils
+or install pico2wave : sudo apt install -y libttspico-utils
 `);
                 Deno.exit(3);
             }
@@ -23473,22 +24853,13 @@ async function getConvertCommand() {
                     "wsl",
                     "convert"
                 ];
-            } else if (await checkCommand([
-                "wsl2",
-                "convert",
-                "--version"
-            ], 0)) {
-                convertCommand = [
-                    "wsl2",
-                    "convert"
-                ];
             } else {
                 console.error(`
 Command convert (from ImageMagick) not found,
 use --skip-image-item-gen to skip image item generation
 or install ImageMagick :
-       wsl  sudo apt install imagemagick
-    or wsl2 sudo apt install imagemagick
+       wsl sudo apt update
+       wsl sudo apt install -y imagemagick
 `);
                 Deno.exit(3);
             }
@@ -23504,7 +24875,7 @@ or install ImageMagick :
                 console.error(`
 Command convert (from ImageMagick) not found,
 use --skip-image-item-gen to skip image item generation
-or install ImageMagick : sudo apt install imagemagick
+or install ImageMagick : sudo apt install -y imagemagick
 `);
                 Deno.exit(3);
             }
@@ -23592,11 +24963,11 @@ function firstStoryFile(folder) {
 function convertPath(path) {
     return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
 }
-function convWindowsWslPath(path) {
-    const groups = /(^.)(.*)$/.exec(path);
+function convWindowsWslPath(path, cwd) {
+    const groups = /^[a-z]:/i.test(path) ? /(^.)(.*)$/.exec(path) : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
     return "/mnt/" + groups?.[1].toLowerCase() + groups?.[2].replace(/\\/g, "/").replace(/:/g, "");
 }
-function uniq(items) {
+function uniq2(items) {
     return [
         ...new Set(items)
     ];
@@ -23619,6 +24990,7 @@ async function convertToImageItem(inputPath, outputPath) {
     const status = await process.status();
     if (status.success) {
         console.log(bgGreen("→ OK"));
+        process.stderr?.close();
     } else {
         const output = new TextDecoder().decode(await process.stderrOutput());
         console.log(bgRed("→ KO : \n" + output));
@@ -23636,17 +25008,43 @@ async function checkRunPermission() {
         runPermissionOk = true;
     }
 }
+const stdRes = [
+    "stdin",
+    "stderr",
+    "stdout"
+];
+function checkResources() {
+    const res = Deno.resources();
+    if (Object.keys(res).length !== 3 && Object.values(res).filter((v)=>!stdRes.includes(v)
+    ).length > 0) {
+        console.log(bgRed("Some resources are not closed except stdin/stderr/stdout :"));
+        console.log(res);
+    }
+}
+function checkOps() {
+    const metrics = Deno.metrics();
+    if (metrics.opsDispatched !== metrics.opsCompleted || metrics.opsDispatchedSync !== metrics.opsCompletedSync || metrics.opsDispatchedAsync !== metrics.opsCompletedAsync || metrics.opsDispatchedAsyncUnref !== metrics.opsCompletedAsyncUnref) {
+        console.log(bgRed("Some ops are not completed :"));
+        console.log({
+            metrics
+        });
+    }
+}
+function sanitize() {
+    checkResources();
+    checkOps();
+}
 async function extractImagesFromAudio(rootpath, folder) {
     await checkRunPermission();
     for (const file of folder.files){
         if (isFolder(file)) {
-            await extractImagesFromAudio(join2(rootpath, file.name), file);
+            await extractImagesFromAudio(join3(rootpath, file.name), file);
         } else {
             if (isStory(file)) {
                 const imageItem = getFileImageItem(file, folder);
                 if (!imageItem) {
-                    const inputPath = join2(rootpath, file.name);
-                    const outputPath = join2(rootpath, `${getNameWithoutExt(file.name)}.item.png`);
+                    const inputPath = join3(rootpath, file.name);
+                    const outputPath = join3(rootpath, `${getNameWithoutExt(file.name)}.item.png`);
                     await convertToImageItem(inputPath, outputPath);
                 }
             }
@@ -23708,7 +25106,7 @@ async function genMissingItems(rootpath, folder, genImage, genAudio, lang) {
         }
         for (const file of folder.files){
             if (isFolder(file)) {
-                await genMissingItems(join2(rootpath, file.name), file, genImage, genAudio, lang);
+                await genMissingItems(join3(rootpath, file.name), file, genImage, genAudio, lang);
             } else if (isStory(file)) {
                 if (genImage && !getFileImageItem(file, folder)) {
                     await generateImage(getTitle(getNameWithoutExt(file.name)), `${rootpath}/${getNameWithoutExt(file.name)}.item.png`);
@@ -23724,11 +25122,11 @@ async function convertAudioOfFolder(rootpath, folder) {
     await checkRunPermission();
     for (const file of folder.files){
         if (isFolder(file)) {
-            await convertAudioOfFolder(join2(rootpath, file.name), file);
+            await convertAudioOfFolder(join3(rootpath, file.name), file);
         } else {
             if (isStory(file) || isAudioItem(file)) {
-                const inputPath = join2(rootpath, file.name);
-                const outPath = join2(rootpath, `${getNameWithoutExt(file.name)}.mp3`);
+                const inputPath = join3(rootpath, file.name);
+                const outPath = join3(rootpath, `${getNameWithoutExt(file.name)}.mp3`);
                 const skipPath = `${outPath}__skip-convert`;
                 if (!await exists(skipPath)) {
                     const maxDb = await getMaxVolumeOfFile(inputPath);
@@ -23781,8 +25179,8 @@ async function convertAudioFile(inputPath, maxDb, outputPath) {
         console.log(bgRed("→ KO"));
     }
 }
-const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
 async function getMaxVolumeOfFile(inputPath) {
+    const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
     let maxDb = 0;
     console.log(bgBlue(`get max volume of file ${inputPath}`));
     const process = await Deno.run({
@@ -24038,15 +25436,15 @@ function getSha1sMap(folder, path = "", map = {
 }) {
     folder.files.forEach((f)=>{
         if (isFile(f)) {
-            map[f.sha1] = join2(path, f.name);
+            map[f.sha1] = join3(path, f.name);
         } else {
-            getSha1sMap(f, join2(path, f.name), map);
+            getSha1sMap(f, join3(path, f.name), map);
         }
     });
     return map;
 }
 function getAssetsPaths(serializedPack, folder) {
-    const sha1s = uniq(getAssetsSha1s(serializedPack));
+    const sha1s = uniq2(getAssetsSha1s(serializedPack));
     const map = getSha1sMap(folder);
     return sha1s.map((sha1)=>({
             sha1,
@@ -24141,7 +25539,7 @@ function getFolderParts(items) {
     };
 }
 async function writeFolderWithUrl(folder, parentPath) {
-    const path = join2(parentPath, folder.name);
+    const path = join3(parentPath, folder.name);
     await Deno.mkdir(path, {
         recursive: true
     });
@@ -24150,7 +25548,7 @@ async function writeFolderWithUrl(folder, parentPath) {
     }
 }
 async function writeFileWithUrl(fileWithUrl, parentPath) {
-    const filePath = join2(parentPath, fileWithUrl.name);
+    const filePath = join3(parentPath, fileWithUrl.name);
     console.log(bgBlue(`Download ${fileWithUrl.url}\n    → ${filePath}`));
     if (await exists(filePath)) {
         console.log(bgGreen(`   → skip`));
@@ -24171,16 +25569,16 @@ async function writeFileWithUrl(fileWithUrl, parentPath) {
 async function downloadRss(url, parentPath) {
     const fs = await getFolderWithUrlFromRssUrl(url);
     await writeFolderWithUrl(fs, parentPath);
-    const storyPath = join2(parentPath, fs.name);
+    const storyPath = join3(parentPath, fs.name);
     const itemToResize = fs.files.find((f)=>isFile(f) && f.name.startsWith("0-item-to-resize")
     );
-    const itemToResizePath = join2(storyPath, itemToResize.name);
-    await convertToImageItem(itemToResizePath, join2(storyPath, "0-item.png"));
+    const itemToResizePath = join3(storyPath, itemToResize.name);
+    await convertToImageItem(itemToResizePath, join3(storyPath, "0-item.png"));
     await Deno.remove(itemToResizePath);
     return storyPath;
 }
 const en = {
-    partQuestion: "Choisis your part",
+    partQuestion: "Choose your part",
     partTitle: "Part",
     storyQuestion: "Choose your story"
 };
@@ -24205,12 +25603,20 @@ async function initI18n(lng) {
 }
 async function getLang() {
     let LANG;
-    if ((await Deno.permissions.query({
-        name: "env"
-    })).state === "granted") {
-        LANG = Deno.env.get("LANG");
+    if (Deno.build.os === "windows") {
+        LANG = await FromRun([
+            "powershell",
+            "-NoProfile",
+            "Get-UICulture|select -ExpandProperty Name", 
+        ]).toString();
     } else {
-        console.error(yellow(`Missing Deno env permission ! add "--allow-env" to permit lang detection`));
+        if ((await Deno.permissions.query({
+            name: "env"
+        })).state === "granted") {
+            LANG = Deno.env.get("LANG");
+        } else {
+            console.error(yellow(`Missing Deno env permission ! add "--allow-env" to permit lang detection`));
+        }
     }
     let lang;
     const langRegex = /^([a-zA-Z_]+)\./;
@@ -24221,12 +25627,12 @@ async function getLang() {
 }
 async function genThumbnail(folder, storyPath) {
     await checkRunPermission();
-    const thumbnailPath = join2(storyPath, "thumbnail.png");
+    const thumbnailPath = join3(storyPath, "thumbnail.png");
     if (!await exists(thumbnailPath)) {
         const itemFile = folder.files.find((f)=>folderImageItemRegEx.test(f.name)
         );
         if (itemFile) {
-            await convertToImageItem(join2(storyPath, itemFile.name), thumbnailPath);
+            await convertToImageItem(join3(storyPath, itemFile.name), thumbnailPath);
         }
     }
 }
@@ -24265,17 +25671,19 @@ async function generatePack(opt) {
             const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
             await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
             console.log(`Done (${(Date.now() - start) / 1000} sec) :  ${opt.storyPath} → ${zipPath}`);
+            sanitize();
         }
     }
 }
-function parseArgs(args) {
-    Yargs(args).command("$0 [options] <story-path>", "convert a folder to Studio pack zip", (y)=>{
+async function parseArgs(args) {
+    await Yargs(args).command("$0 [options] <story-path>", "convert a folder to Studio pack zip", (y)=>{
         let width = y.terminalWidth();
         if (Deno.consoleSize) {
             width = Math.min(120, Deno.consoleSize(Deno.stdout.rid).columns);
         }
         return y.wrap(width);
-    }, generatePack).usage("deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack").option("lang", {
+    }, async (opts)=>await generatePack(opts)
+    ).usage("deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack").option("lang", {
         alias: "l",
         demandOption: false,
         boolean: false,
@@ -24320,9 +25728,9 @@ function parseArgs(args) {
     }).version(false).demandCommand(1).parse();
 }
 const importMeta2 = {
-    url: "file://./studio_pack_generator.ts",
+    url: "file:///data/Projets/Logiciels/deno/Studio-Pack-Generator/studio_pack_generator.ts",
     main: import.meta.main
 };
 if (importMeta2.main) {
-    parseArgs(Deno.args);
+    await parseArgs(Deno.args);
 }
