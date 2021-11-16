@@ -85,7 +85,18 @@ Deno.test("checkCommand", async () => {
 });
 
 Deno.test("convWindowsWslPath", () => {
-  assertEquals(convWindowsWslPath("C:\\azer\\tyu.iop"), "/mnt/c/azer/tyu.iop");
+  assertEquals(
+    convWindowsWslPath("C:\\azer\\tyu.iop", "C:\\tmp"),
+    "/mnt/c/azer/tyu.iop",
+  );
+  assertEquals(
+    convWindowsWslPath("d:\\azer\\tyu.iop", "C:\\tmp"),
+    "/mnt/d/azer/tyu.iop",
+  );
+  assertEquals(
+    convWindowsWslPath("azer\\tyu.iop", "C:\\tmp"),
+    "/mnt/c/tmp/azer/tyu.iop",
+  );
 });
 
 Deno.test("fileExist", async () => {

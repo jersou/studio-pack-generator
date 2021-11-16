@@ -106,8 +106,10 @@ export function convertPath(path: string) {
   return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
 }
 
-export function convWindowsWslPath(path: string): string {
-  const groups = /(^.)(.*)$/.exec(path);
+export function convWindowsWslPath(path: string, cwd?: string): string {
+  const groups = /^[a-z]:/i.test(path)
+    ? /(^.)(.*)$/.exec(path)
+    : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
   return (
     "/mnt/" +
     groups?.[1].toLowerCase() +
