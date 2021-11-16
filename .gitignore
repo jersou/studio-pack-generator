@@ -5,3 +5,4 @@
 /.DENO_DIR/gen/
 /.cov_profile
 /dist/*.zip
+/tmp.ts

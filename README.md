@@ -33,11 +33,15 @@ Examples:
   <br>→ Use `--skip-audio-item-gen` to avoid this usage.
 
 Install optional dependencies :
-`sudo apt install ffmpeg libttspico-utils imagemagick`
+`sudo apt update && sudo apt install -y ffmpeg libttspico-utils imagemagick`
 
 studio-pack-generator can use these tools from **Windows** by using the
 [WSL](https://docs.microsoft.com/fr-fr/windows/wsl/install) :
-`wsl sudo apt install ffmpeg libttspico-utils imagemagick`
+
+```
+wsl sudo apt update
+wsl sudo apt install -y ffmpeg libttspico-utils imagemagick
+```
 
 Use "-miva" option to skip all generations that use these tools.
 
