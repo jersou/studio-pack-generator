@@ -1,16 +1,16 @@
 {
   "headers": {
-    "x-amz-request-id": "1EY2C8WEHTGZ34V3",
-    "last-modified": "Mon, 09 Nov 2020 01:50:12 GMT",
-    "x-amz-version-id": "8ejhct0.hlInBv8n5Gu0yPLpwE.gKgBm",
     "cache-control": "public, max-age=31536000, immutable",
-    "access-control-allow-origin": "*",
+    "last-modified": "Mon, 09 Nov 2020 01:50:12 GMT",
     "content-type": "application/typescript; charset=utf-8",
-    "content-length": "8108",
-    "etag": "\"62b47cf7427eff3756a983e81c0599ea\"",
+    "x-amz-id-2": "AGFeaSm2je1qbhwCw9Pi7DbT+xrklj3ef22RitwcpR2gJ39fu8gMdySml/NGWnUsQuvA9o6tPnI=",
+    "x-amz-version-id": "8ejhct0.hlInBv8n5Gu0yPLpwE.gKgBm",
     "server": "deploy/europe-west1-b",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "x-amz-id-2": "E8fCe3x0AIECEgsV9odY4R1ict4+VFmWSaBh9Bm41NEqQJcHnpevCXe35jYR4xODXaYY0wyy+Qg="
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
+    "access-control-allow-origin": "*",
+    "content-length": "8108",
+    "x-amz-request-id": "0JAG2QTEQE3K707H",
+    "etag": "\"62b47cf7427eff3756a983e81c0599ea\""
   },
   "url": "https://deno.land/x/yargs_parser@v20.2.4-deno/build/lib/yargs-parser-types.d.ts"
 }

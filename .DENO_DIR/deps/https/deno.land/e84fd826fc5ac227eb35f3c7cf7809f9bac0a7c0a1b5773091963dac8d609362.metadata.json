@@ -1,16 +1,16 @@
 {
   "headers": {
-    "access-control-allow-origin": "*",
-    "content-type": "application/typescript; charset=utf-8",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "etag": "\"6e9aecbfc5cec82dab0fbb0e98a8ad7a\"",
-    "x-amz-request-id": "1EY71ESXXTHV16YX",
-    "cache-control": "public, max-age=31536000, immutable",
     "last-modified": "Sun, 08 Nov 2020 23:59:36 GMT",
-    "server": "deploy/europe-west1-b",
+    "content-type": "application/typescript; charset=utf-8",
+    "etag": "\"6e9aecbfc5cec82dab0fbb0e98a8ad7a\"",
+    "x-amz-request-id": "0JAZWWKB52E1D0TA",
+    "access-control-allow-origin": "*",
+    "x-amz-id-2": "9/QkLlNV2ytyTPqXcCds4r469lnDe5nead3b8iaECYqiSys/Z2GiBUkT3g62b9wMQj58Mc1Cgto=",
     "content-length": "392",
-    "x-amz-id-2": "mZ6JvboaPsLTpQA5xewK9nMbkSqJML/i7WNbabmv9mRZEbr+kuakeCEMsoxVs+nzuOyk9GAEnUs=",
-    "x-amz-version-id": "UlfUsBY11_47fU_WuaATTtHLx2bBbw1p"
+    "x-amz-version-id": "UlfUsBY11_47fU_WuaATTtHLx2bBbw1p",
+    "server": "deploy/europe-west1-b",
+    "cache-control": "public, max-age=31536000, immutable",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT"
   },
   "url": "https://deno.land/x/cliui@v7.0.4-deno/deno.ts"
 }

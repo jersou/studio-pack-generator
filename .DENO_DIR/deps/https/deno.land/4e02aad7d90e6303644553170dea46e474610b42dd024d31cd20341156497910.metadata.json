@@ -1,16 +1,16 @@
 {
   "headers": {
-    "cache-control": "public, max-age=31536000, immutable",
     "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
+    "x-amz-id-2": "UZ4CJFNw6WPxpbIDsM4ySyw715qR1vp9swWcIBX+uAjnk/DkZk8N+xZKNGW0eOJgolv328VbEec=",
+    "content-type": "application/javascript",
     "etag": "\"6bd5428702985354d8bfcc90c1506faf\"",
-    "content-length": "7437",
-    "x-amz-id-2": "npJjDcGgxZEsgR5iAdv6BbFBXAd725huqI6zdC+O23qJ5UQiutGWIYJ0iYEBiQ9MX5iilc5z1f8=",
     "x-amz-version-id": "urAJCiQptvDxwvtsFtUhn2cWrlT9Rph_",
+    "content-length": "7437",
     "access-control-allow-origin": "*",
-    "x-amz-request-id": "1EY0DQ42M78G5023",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "server": "deploy/europe-west1-b",
-    "content-type": "application/javascript"
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
+    "x-amz-request-id": "0JAJY35DSJZK01PT",
+    "cache-control": "public, max-age=31536000, immutable",
+    "server": "deploy/europe-west1-b"
   },
   "url": "https://deno.land/x/i18next@v21.2.4/PluralResolver.js"
 }

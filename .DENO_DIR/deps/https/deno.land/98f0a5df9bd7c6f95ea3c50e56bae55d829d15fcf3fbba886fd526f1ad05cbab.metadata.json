@@ -1,16 +1,16 @@
 {
   "headers": {
-    "access-control-allow-origin": "*",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "server": "deploy/europe-west1-b",
-    "content-type": "application/javascript",
-    "cache-control": "public, max-age=31536000, immutable",
-    "content-length": "308",
-    "x-amz-request-id": "1EYD8ZAG1JNDDG7M",
     "x-amz-version-id": "ONTD6FUSiXQe0pmK9IAYDzLH9.U1nnoV",
+    "etag": "\"1855bb01afa9960c23d7ae59a4413cd0\"",
+    "access-control-allow-origin": "*",
+    "cache-control": "public, max-age=31536000, immutable",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
+    "server": "deploy/europe-west1-b",
+    "x-amz-id-2": "JV7UdIi/fWZu8l3uRf5ISxk039huzUyN+GvGsycQUrm+YNE15co8sndFdjmRtHc3/E2KV5e0YB0=",
+    "x-amz-request-id": "0JAGDGQ1QQ3D90ZY",
     "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
-    "x-amz-id-2": "t+HJGS6SGcv0MZVGi6szKhJuiuRpc/TuFdl68B9r2FDoF8ZbNbLrR3Ejm2rr+WGMlC3Dn6EdCXc=",
-    "etag": "\"1855bb01afa9960c23d7ae59a4413cd0\""
+    "content-length": "308",
+    "content-type": "application/javascript"
   },
   "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/typings/common-types.js"
 }

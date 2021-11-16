@@ -1,16 +1,16 @@
 {
   "headers": {
+    "x-amz-version-id": "TO.b9wEbDEhkW57IoKu7FkRDT3LeGK5N",
+    "x-amz-request-id": "0JANTA162F3P51PR",
+    "access-control-allow-origin": "*",
+    "cache-control": "public, max-age=31536000, immutable",
     "content-length": "155",
     "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
-    "server": "deploy/europe-west1-b",
-    "x-amz-request-id": "1EYBBHR3XJ62CHBP",
-    "x-amz-version-id": "TO.b9wEbDEhkW57IoKu7FkRDT3LeGK5N",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "cache-control": "public, max-age=31536000, immutable",
-    "etag": "\"02a7fa75866fd5194a2a91e2b89b11eb\"",
-    "access-control-allow-origin": "*",
     "content-type": "application/javascript",
-    "x-amz-id-2": "yijbWKPhLCeNsYk3pb5ASQL7dSO+6LbnN6SiA4EuU9kuJR1z23MZuRWPmzougR2ix6BgBYKF3e4="
+    "x-amz-id-2": "qBX80pDFCQtAladePtB8q4uJylqmbl9JTprdH9F30LxspPr/z+XhooZqJF0pZZsiMqxRxWvk63c=",
+    "server": "deploy/europe-west1-b",
+    "etag": "\"02a7fa75866fd5194a2a91e2b89b11eb\"",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT"
   },
   "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/utils/is-promise.js"
 }

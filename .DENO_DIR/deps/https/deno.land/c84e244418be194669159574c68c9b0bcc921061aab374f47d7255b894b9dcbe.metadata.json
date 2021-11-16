@@ -1,15 +1,15 @@
 {
   "headers": {
-    "x-amz-request-id": "1EYESKWGXQGG6N59",
-    "content-type": "application/javascript",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
+    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
     "x-amz-version-id": "ttkIqmnLRq2lhU_0UGDaG1bnd6m5Zlv9",
+    "x-amz-id-2": "uVKMezFoyRc6Q4annUgY8GDLVDUOnhfJKrLGpDf8tIlzDC7RKdzw2R1TtZXPmJxzYM91I1RhNYw=",
+    "x-amz-request-id": "0JAYP7Q3ECJMBGDF",
+    "content-type": "application/javascript",
+    "server": "deploy/europe-west1-b",
     "etag": "\"6ffbad0f214094f0da8f5e8f3655cf66\"",
     "content-length": "1390",
     "access-control-allow-origin": "*",
-    "server": "deploy/europe-west1-b",
-    "x-amz-id-2": "ONq1EFbyFBSHfLPMKZ1YmAuV1KkS39AjAWpsSGw4rLDLgO6dqjg1nJi+ScB2aNiabf8fw1OSvJ0=",
-    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
     "cache-control": "public, max-age=31536000, immutable"
   },
   "url": "https://deno.land/x/i18next@v21.2.4/logger.js"

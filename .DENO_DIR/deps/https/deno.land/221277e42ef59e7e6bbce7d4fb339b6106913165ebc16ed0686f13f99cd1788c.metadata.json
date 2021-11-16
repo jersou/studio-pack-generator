@@ -1,16 +1,16 @@
 {
   "headers": {
-    "content-length": "665",
-    "x-amz-request-id": "1EY6Y4E5GRQ17H8V",
-    "x-amz-version-id": "null",
     "server": "deploy/europe-west1-b",
-    "cache-control": "public, max-age=31536000, immutable",
-    "x-amz-id-2": "E2+6eSx+fLIVVl+2xSRDU80u5+J29CTVouTMWlTS6q/ZtDQBNssnSZFgtYaiYPEbfXlDwlEu5C8=",
+    "x-amz-request-id": "0JASG0NERCHW8FFE",
     "access-control-allow-origin": "*",
+    "content-type": "application/typescript; charset=utf-8",
+    "x-amz-version-id": "null",
+    "cache-control": "public, max-age=31536000, immutable",
     "last-modified": "Sat, 29 Aug 2020 19:50:54 GMT",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
+    "content-length": "665",
     "etag": "\"58a9abca1f3ac2132bce186c164f4c63\"",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "content-type": "application/typescript; charset=utf-8"
+    "x-amz-id-2": "IuNeu4rAjAGR3y+dVl77vw0LCxYH0KiagfdAfnvTQQr6X2MfInXIpiXwnXd3qqn7fyY2HKSK+80="
   },
   "url": "https://deno.land/x/escalade@v3.0.3/sync.ts"
 }

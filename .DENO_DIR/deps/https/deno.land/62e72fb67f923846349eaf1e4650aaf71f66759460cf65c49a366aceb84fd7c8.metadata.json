@@ -1,16 +1,16 @@
 {
   "headers": {
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
     "content-type": "application/javascript",
-    "content-length": "3268",
     "cache-control": "public, max-age=31536000, immutable",
-    "x-amz-request-id": "1EYCGPEDPS2WTWTG",
-    "x-amz-id-2": "gGPLHA5dAOpszvyWuOj7RP6rgAdiXNpfKUeVD0pn218lIO8gpFPzYxzbVN8cEnRGbSrgUK2Ru+4=",
+    "server": "deploy/europe-west1-b",
     "x-amz-version-id": "jV1iEZubxD5XRvNHyAcXN_Z.HoQw8rjF",
     "access-control-allow-origin": "*",
+    "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT",
     "etag": "\"d14df61a540ec5df9f440a7acbd70723\"",
-    "server": "deploy/europe-west1-b",
-    "last-modified": "Sat, 25 Sep 2021 21:18:42 GMT"
+    "content-length": "3268",
+    "x-amz-id-2": "a7bODh3q2tbIsV/FPrIyK5YkgxfnJ9JxIjh5j8r6GBEsMyer8noo+kOJWMvJGfPQbiesfBcOSS0=",
+    "x-amz-request-id": "0JAVE4N84WXHHGWJ",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT"
   },
   "url": "https://deno.land/x/yargs@v17.2.1-deno/build/lib/middleware.js"
 }

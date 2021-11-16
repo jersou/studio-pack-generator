@@ -1,16 +1,16 @@
 {
   "headers": {
-    "x-amz-version-id": "iZ8D6xT.g8DDRFR2HxSdr..0bHm9YTO9",
-    "cache-control": "public, max-age=31536000, immutable",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "etag": "\"afb90c1777a84eecbad8eea5bb31d51c\"",
-    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
-    "content-length": "49832",
-    "access-control-allow-origin": "*",
     "content-type": "application/javascript",
-    "x-amz-id-2": "BUs0Rk0sqwUTpfBiJmoIESky9vsgmg3FD6cGll9UZe0KvQY1u1Q2+FoOynqMXSCMk5hVvlxzJro=",
-    "x-amz-request-id": "1EY4P8PGF8X790FG",
-    "server": "deploy/europe-west1-b"
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
+    "etag": "\"afb90c1777a84eecbad8eea5bb31d51c\"",
+    "x-amz-version-id": "iZ8D6xT.g8DDRFR2HxSdr..0bHm9YTO9",
+    "server": "deploy/europe-west1-b",
+    "cache-control": "public, max-age=31536000, immutable",
+    "x-amz-id-2": "sxIld0xCiqd2ouctxWauZ5+Bfp2pFczmoNEFxClQPpeI1Wd8qxvYaBXZZnWmmtzuYau+qbRDMRw=",
+    "x-amz-request-id": "0JAZCWB1K185044R",
+    "content-length": "49832",
+    "access-control-allow-origin": "*"
   },
   "url": "https://deno.land/x/zipjs@v2.3.17/lib/z-worker-inline.js"
 }

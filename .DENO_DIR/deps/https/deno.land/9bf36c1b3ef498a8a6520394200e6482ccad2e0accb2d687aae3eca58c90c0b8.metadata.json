@@ -1,16 +1,16 @@
 {
   "headers": {
+    "x-amz-id-2": "Vf0NjBCFwV0LpC0GI5oE4S1of2BY/HXScTN6XzCwVuALyHALJZOOiVKyfj40InKkjGpdn9SpMu8=",
     "x-amz-version-id": "zyvO9VZQxRdadVlmTZCVF8ONYChFAVF9",
-    "etag": "\"693af8b329b83bff60da510bb0a6b859\"",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "x-amz-id-2": "w13sy8+9YmorI9iK+82NsUvFkvvxhgGSGiizHHzwmAUQ3MnyNwhc0/0A7mM6+3r0hYQQR5z33pE=",
-    "access-control-allow-origin": "*",
-    "cache-control": "public, max-age=31536000, immutable",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
     "server": "deploy/europe-west1-b",
+    "access-control-allow-origin": "*",
     "content-type": "application/javascript",
+    "etag": "\"693af8b329b83bff60da510bb0a6b859\"",
+    "x-amz-request-id": "0JAKZERHSZTYNDDV",
     "content-length": "2875",
-    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
-    "x-amz-request-id": "1EY9KT3AZF0EBP4H"
+    "cache-control": "public, max-age=31536000, immutable",
+    "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT"
   },
   "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/engine.js"
 }

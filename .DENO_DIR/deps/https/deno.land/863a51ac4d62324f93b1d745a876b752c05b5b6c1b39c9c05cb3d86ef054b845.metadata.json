@@ -1,16 +1,16 @@
 {
   "headers": {
-    "server": "deploy/europe-west1-b",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
     "last-modified": "Tue, 21 Sep 2021 18:54:15 GMT",
-    "x-amz-id-2": "B6jxplUr0dDdMgaCg0rttbsPLs6xRK3p/cGBW+AsKEW/jRJykwzIN1S8ANt4GYSuDuYpnm+jusM=",
-    "access-control-allow-origin": "*",
+    "content-type": "application/javascript",
+    "content-length": "4508",
+    "x-amz-request-id": "0JATC5VHX6KWBWY9",
+    "x-amz-version-id": "rU.seTYRQEYNujuryNHV2fZ0vWKaxoU2",
     "cache-control": "public, max-age=31536000, immutable",
     "etag": "\"28c2b2279c689906b0c540d06b6551e2\"",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "content-length": "4508",
-    "content-type": "application/javascript",
-    "x-amz-request-id": "1EY77VP721K5EHNG",
-    "x-amz-version-id": "rU.seTYRQEYNujuryNHV2fZ0vWKaxoU2"
+    "server": "deploy/europe-west1-b",
+    "x-amz-id-2": "cLYdTr3gox94DYzxsLQKQTMURjXgDVQ6BAkECjyJlKl7Jtcb79HThqpE6Gr+Dzs2c7tYDLtP1Lw=",
+    "access-control-allow-origin": "*"
   },
   "url": "https://deno.land/x/zipjs@v2.3.17/lib/core/codecs/zip-crypto.js"
 }

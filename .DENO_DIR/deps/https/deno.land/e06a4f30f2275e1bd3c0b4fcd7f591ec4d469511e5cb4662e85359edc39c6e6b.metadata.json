@@ -1,16 +1,16 @@
 {
   "headers": {
-    "cache-control": "public, max-age=31536000, immutable",
-    "x-amz-version-id": "OfnnpA6UY5CXciOZtH_7NTF5taf25nUx",
-    "content-length": "16488",
-    "x-amz-request-id": "1EY2T31PSARZ0AE0",
-    "access-control-allow-origin": "*",
-    "etag": "\"69a01245e57e61c58397c13ed0b3eab8\"",
+    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT",
+    "date": "Tue, 16 Nov 2021 23:07:41 GMT",
     "content-type": "application/javascript",
-    "x-amz-id-2": "dkBOdxyNwKqzIrYEfIhIUvxc/JHfAS6TS2y4G6rkeTJyyJn5oYGdQ+8dRdutzDPlIgfkRTgktY0=",
+    "etag": "\"69a01245e57e61c58397c13ed0b3eab8\"",
+    "content-length": "16488",
+    "x-amz-version-id": "OfnnpA6UY5CXciOZtH_7NTF5taf25nUx",
+    "x-amz-id-2": "xGfwMAZk3GuQeDtZXQgRAeHkfAiht+EEneGusOdt8Abh/eMpxgc72+iIqOp+1ptl1C3NuNbZ8jU=",
     "server": "deploy/europe-west1-b",
-    "date": "Mon, 04 Oct 2021 19:08:29 GMT",
-    "last-modified": "Sat, 02 Oct 2021 19:30:07 GMT"
+    "access-control-allow-origin": "*",
+    "x-amz-request-id": "0JAMSHCMZWF67Z3V",
+    "cache-control": "public, max-age=31536000, immutable"
   },
   "url": "https://deno.land/x/i18next@v21.2.4/i18next.js"
 }
