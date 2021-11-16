@@ -1,7 +1,7 @@
-import { i18next, yellow } from "../deps.ts";
+import { FromRun, i18next, yellow } from "../deps.ts";
 
 const en = {
-  partQuestion: "Choisis your part",
+  partQuestion: "Choose your part",
   partTitle: "Part",
   storyQuestion: "Choose your story",
 };
@@ -27,15 +27,24 @@ export async function initI18n(lng: string) {
 
 export async function getLang() {
   let LANG;
-  if ((await Deno.permissions.query({ name: "env" })).state === "granted") {
-    LANG = Deno.env.get("LANG");
+  if (Deno.build.os === "windows") {
+    LANG = await FromRun([
+      "powershell",
+      "-NoProfile",
+      "Get-UICulture|select -ExpandProperty Name",
+    ]).toString();
   } else {
-    console.error(
-      yellow(
-        `Missing Deno env permission ! add "--allow-env" to permit lang detection`,
-      ),
-    );
+    if ((await Deno.permissions.query({ name: "env" })).state === "granted") {
+      LANG = Deno.env.get("LANG");
+    } else {
+      console.error(
+        yellow(
+          `Missing Deno env permission ! add "--allow-env" to permit lang detection`,
+        ),
+      );
+    }
   }
+
   let lang;
   const langRegex = /^([a-zA-Z_]+)\./;
   if (LANG && langRegex.test(LANG)) {
