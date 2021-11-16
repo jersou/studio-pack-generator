@@ -81,8 +81,10 @@ export async function generatePack(opt: ModOptions) {
       const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
       await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
       console.log(
-        `Done (${(Date.now() - start) /
-          1000} sec) :  ${opt.storyPath} → ${zipPath}`,
+        `Done (${
+          (Date.now() - start) /
+          1000
+        } sec) :  ${opt.storyPath} → ${zipPath}`,
       );
       sanitize();
     }

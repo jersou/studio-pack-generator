@@ -79,9 +79,8 @@ async function convertAudioFile(
   }
 }
 
-const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
-
 async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
+  const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
   let maxDb = 0;
   console.log(bgBlue(`get max volume of file ${inputPath}`));
   const process = await Deno.run({
