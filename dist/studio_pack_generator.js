@@ -4322,8 +4322,8 @@ const mod1 = {
     fromFileUrl: fromFileUrl1,
     toFileUrl: toFileUrl1
 };
-const path = isWindows ? mod : mod1;
-const { join: join2 , normalize: normalize2  } = path;
+const path2 = isWindows ? mod : mod1;
+const { join: join2 , normalize: normalize2  } = path2;
 const path1 = isWindows ? mod : mod1;
 const { basename: basename2 , delimiter: delimiter2 , dirname: dirname2 , extname: extname2 , format: format3 , fromFileUrl: fromFileUrl2 , isAbsolute: isAbsolute2 , join: join3 , normalize: normalize3 , parse: parse2 , relative: relative2 , resolve: resolve2 , sep: sep2 , toFileUrl: toFileUrl2 , toNamespacedPath: toNamespacedPath2 ,  } = path1;
 const consoleLogger = {
@@ -6662,180 +6662,691 @@ class I18n extends EventEmitter {
     }
 }
 const __default2 = new I18n();
-const COMMENTS = /<!--[\s\S]*?-->/g;
-const DECLARATION_OPEN = /^<[?]xml /;
-const DECLARATION_CLOSE = /^[?]>/;
-const DOCTYPE_OPEN = /^<!DOCTYPE /;
-const DOCTYPE_ATTRIBUTES = /^(?<quote>["'])(?<value>[\s\S]+?)\k<quote>/;
-const DOCTYPE_ATTRIBUTES_UNQUOTED = /^(?<value>[\w-:.]+)/;
-const DOCTYPE_CLOSE = /^>/;
-const DOCTYPE_ELEMENTS_OPEN = /^\[/;
-const DOCTYPE_ELEMENT = /^<!ELEMENT (?<element>[\w-:.]+) (?<attributes>[^<]*?)>/;
-const DOCTYPE_ELEMENTS_CLOSE = /^\]/;
-const CDATA = /^<!\[CDATA\[(?<content>[\s\S]*?)]]>/m;
-const TAG_OPEN = /^<(?<tag>[\w-:.]+)/;
-const TAG_SELFCLOSE = /^(?<selfclosed>\/?)>/;
-const TAG_CLOSE = (tag)=>new RegExp(`^<\/\\s*${tag}\\s*>`)
-;
-const TAG_ATTRIBUTES = /^(?<name>[\w:-]+)\s*=\s*(?<quote>["'])(?<value>[\s\S]+?)\k<quote>/;
-const TAG_CONTENT = /^(?<content>[^<]*?)(?=<)/;
-const ENTITIES = {
-    "&lt;": "<",
-    "&gt;": ">",
-    "&apos;": "'",
-    "&quot;": '"',
-    "&amp;": "&"
-};
-const ENTITIES_DEC = /&#(?<code>\d+);/g;
-const ENTITIES_HEX = /&#x(?<code>\d+);/g;
-function parse3(xml, options = {
-}) {
-    return format4({
-        xml: parseXML({
-            xml
-        }, options)
-    }, options).xml;
-}
-function parseXML(document, { includeDeclaration =false , includeDoctype =false  }) {
-    const parsed = {
-    };
-    document.xml = document.xml.trim().replace(COMMENTS, "");
-    if (peek(document, DECLARATION_OPEN)) {
-        consume(document, DECLARATION_OPEN);
-        while(peek(document, TAG_ATTRIBUTES)){
-            const { name , value  } = consume(document, TAG_ATTRIBUTES);
-            if (includeDeclaration) {
-                parsed[`@${name}`] = value;
-            }
-        }
-        consume(document, DECLARATION_CLOSE);
+const $XML = Symbol("x/xml");
+const schema = {
+    comment: "#comment",
+    text: "#text",
+    attribute: {
+        prefix: "@"
+    },
+    property: {
+        prefix: "@"
     }
-    if (peek(document, DOCTYPE_OPEN)) {
-        consume(document, DOCTYPE_OPEN);
-        if (includeDoctype) {
-            parsed.$doctype = {
-            };
+};
+const SeekMode = Object.freeze({
+    Current: Deno?.SeekMode?.Current ?? 0,
+    Start: Deno?.SeekMode?.Start ?? 1,
+    End: Deno?.SeekMode?.End ?? 2
+});
+const entities = {
+    xml: {
+        "&lt;": "<",
+        "&gt;": ">",
+        "&apos;": "'",
+        "&quot;": '"',
+        "&amp;": "&"
+    },
+    char: {
+        "&": "&amp;",
+        '"': "&quot;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&apos;"
+    }
+};
+const tokens1 = {
+    entity: {
+        regex: {
+            entities: /&#(?<hex>x?)(?<code>\d+);/g
         }
-        while(peek(document, DOCTYPE_ATTRIBUTES) || peek(document, DOCTYPE_ATTRIBUTES_UNQUOTED)){
-            const { value  } = peek(document, DOCTYPE_ATTRIBUTES) ? consume(document, DOCTYPE_ATTRIBUTES) : consume(document, DOCTYPE_ATTRIBUTES_UNQUOTED);
-            if (includeDoctype) {
-                parsed.$doctype[`@${value}`] = true;
-            }
-        }
-        if (peek(document, DOCTYPE_ELEMENTS_OPEN)) {
-            consume(document, DOCTYPE_ELEMENTS_OPEN);
-            while(peek(document, DOCTYPE_ELEMENT)){
-                const { element , attributes  } = consume(document, DOCTYPE_ELEMENT);
-                if (includeDoctype) {
-                    parsed.$doctype[element] = attributes;
+    },
+    prolog: {
+        start: "<?xml",
+        end: "?>"
+    },
+    doctype: {
+        start: "<!DOCTYPE",
+        end: ">",
+        elements: {
+            start: "[",
+            end: "]"
+        },
+        element: {
+            start: "<!ELEMENT",
+            end: ">",
+            value: {
+                start: "(",
+                end: ")",
+                regex: {
+                    end: {
+                        until: /\)/,
+                        bytes: 1
+                    }
                 }
             }
-            consume(document, DOCTYPE_ELEMENTS_CLOSE);
         }
-        consume(document, DOCTYPE_CLOSE);
-    }
-    const { $tag: tag , ...properties } = parseNode(document);
-    parsed[tag] = properties;
-    if (peek(document, TAG_OPEN)) {
-        throw new Error(`Failed to parse XML, multiple root nodes are not supported`);
-    }
-    return parsed;
-}
-function parseNode(document) {
-    if (!peek(document, TAG_OPEN)) {
-        return null;
-    }
-    const node = {
-        $tag: consume(document, TAG_OPEN).tag,
-        $: ""
-    };
-    while(peek(document, TAG_ATTRIBUTES)){
-        const { name , value  } = consume(document, TAG_ATTRIBUTES);
-        node[`@${name}`] = value;
-    }
-    if (consume(document, TAG_SELFCLOSE).selfclosed) {
-        return node;
-    }
-    node.$ = parseText(document);
-    if (!peek(document, TAG_CLOSE(node.$tag))) {
-        while(true){
-            parseText(document);
-            const child = parseNode(document);
-            if (!child) {
-                break;
+    },
+    comment: {
+        start: "<!--",
+        end: "-->",
+        regex: {
+            end: {
+                until: /(?<!-)-->/,
+                bytes: 4
             }
-            const { $tag: tag , ...properties } = child;
-            node[tag] ??= [];
-            node[tag].push(properties);
         }
-    }
-    consume(document, TAG_CLOSE(node.$tag));
-    return node;
-}
-function parseText(document) {
-    let content = "";
-    while(true){
-        content += consume(document, TAG_CONTENT).content;
-        if (peek(document, CDATA)) {
-            content += consume(document, CDATA).content;
-            continue;
-        }
-        break;
-    }
-    return content.trim();
-}
-function peek(document, regex) {
-    return regex.test(document.xml);
-}
-function consume(document, regex) {
-    const matched = document.xml.match(regex);
-    if (!matched) {
-        throw new Error(`Failed to parse XML, expected token: ${regex.source} (got: ${document.xml.substring(0, 6)}...)`);
-    }
-    document.xml = document.xml.replace(regex, "").trimStart();
-    return matched.groups ?? {
-    };
-}
-function format4(result, options) {
-    for (let [key, value] of Object.entries(result)){
-        if (Array.isArray(value) && value.length === 1) {
-            result[key] = value = value.shift();
-        }
-        if (typeof value === "object") {
-            const node = value;
-            const keys = Object.keys(node);
-            if (keys.length === 1 && keys[0] === "$") {
-                result[key] = revive(node.$, options);
-                continue;
+    },
+    cdata: {
+        start: "<![CDATA[",
+        end: "]]>",
+        regex: {
+            end: {
+                until: /\]\]>/,
+                bytes: 3
             }
-            if (keys.filter((k)=>k.charAt(0) !== "@"
-            ).length > 1) {
-                delete value.$;
+        }
+    },
+    tag: {
+        start: "<",
+        end: ">",
+        close: {
+            start: "</",
+            end: ">",
+            self: "/",
+            regex: {
+                start: /<\//,
+                end: /\/?>/
             }
-            result[key] = format4(value, options);
-        } else {
-            result[key] = revive(value, options);
+        },
+        attribute: {
+            regex: {
+                name: {
+                    until: /=/,
+                    bytes: 1
+                }
+            }
+        },
+        regex: {
+            name: {
+                until: /[\s\/>]/,
+                bytes: 1
+            },
+            start: {
+                until: /</,
+                bytes: 1
+            }
+        }
+    },
+    text: {
+        regex: {
+            end: {
+                until: /(<\/)|(<!)/,
+                bytes: 2
+            }
         }
     }
-    return result;
-}
-function revive(value, { reviveBooleans =true , reviveNumbers =true , emptyToNull =true  }) {
-    switch(true){
-        case emptyToNull && /^\s*$/.test(value):
-            return null;
-        case reviveBooleans && /^(?:true|false)$/i.test(value):
-            return /^true$/i.test(value);
-        case reviveNumbers && Number.isFinite(Number(value)):
-            return Number.parseFloat(value);
-        default:
-            value = value.replace(ENTITIES_DEC, (_, code)=>String.fromCharCode(parseInt(code, 10))
-            ).replace(ENTITIES_HEX, (_, code)=>String.fromCharCode(parseInt(code, 16))
-            );
-            for(const entity in ENTITIES){
-                value = value.replaceAll(entity, ENTITIES[entity]);
-            }
+};
+class Parser {
+    constructor(stream, options = {
+    }){
+        this.#stream = stream;
+        this.#options = options;
+        this.#options.reviver ??= function({ value  }) {
             return value;
+        };
     }
+    parse() {
+        return this.#document();
+    }
+    #options;
+     #debug(path, string) {
+        if (this.#options.debug) {
+            console.debug(`${path.map((node)=>node[$XML].name
+            ).join(" > ")} | ${string}`.trim());
+        }
+    }
+     #document() {
+        const document = {
+        };
+        const path = [];
+        const comments = [];
+        let root = false;
+        let clean;
+        this.#trim();
+        try {
+            while(true){
+                clean = true;
+                if (this.#peek(tokens1.comment.start)) {
+                    clean = false;
+                    comments.push(this.#comment({
+                        path
+                    }));
+                    continue;
+                }
+                if (this.#peek(tokens1.prolog.start)) {
+                    if (document.xml) {
+                        throw new SyntaxError("Multiple prolog declaration found");
+                    }
+                    clean = false;
+                    Object.assign(document, this.#prolog({
+                        path
+                    }));
+                    continue;
+                }
+                if (this.#peek(tokens1.doctype.start)) {
+                    if (document.doctype) {
+                        throw new SyntaxError("Multiple doctype declaration found");
+                    }
+                    clean = false;
+                    Object.assign(document, this.#doctype({
+                        path
+                    }));
+                    continue;
+                }
+                if (this.#peek(tokens1.tag.start)) {
+                    if (root) {
+                        throw new SyntaxError("Multiple root elements found");
+                    }
+                    clean = false;
+                    Object.assign(document, this.#node({
+                        path
+                    }));
+                    this.#trim();
+                    root = true;
+                    continue;
+                }
+            }
+        } catch (error) {
+            if (error instanceof Deno.errors.UnexpectedEof && clean) {
+                if (comments.length) {
+                    document[schema.comment] = comments;
+                }
+                return document;
+            }
+            throw error;
+        }
+    }
+     #node({ path  }) {
+        if (this.#options.progress) {
+            this.#options.progress(this.#stream.cursor);
+        }
+        if (this.#peek(tokens1.comment.start)) {
+            return {
+                [schema.comment]: this.#comment({
+                    path
+                })
+            };
+        }
+        return this.#tag({
+            path
+        });
+    }
+     #prolog({ path  }) {
+        this.#debug(path, "parsing prolog");
+        const prolog = this.#make.node({
+            name: "xml",
+            path
+        });
+        this.#consume(tokens1.prolog.start);
+        while(!this.#peek(tokens1.prolog.end)){
+            Object.assign(prolog, this.#attribute({
+                path: [
+                    ...path,
+                    prolog
+                ]
+            }));
+        }
+        this.#consume(tokens1.prolog.end);
+        return {
+            xml: prolog
+        };
+    }
+     #doctype({ path  }) {
+        this.#debug(path, "parsing doctype");
+        const doctype = this.#make.node({
+            name: "doctype",
+            path
+        });
+        Object.defineProperty(doctype, $XML, {
+            enumerable: false,
+            writable: true
+        });
+        this.#consume(tokens1.doctype.start);
+        while(!this.#peek(tokens1.doctype.end)){
+            if (this.#peek(tokens1.doctype.elements.start)) {
+                this.#consume(tokens1.doctype.elements.start);
+                while(!this.#peek(tokens1.doctype.elements.end)){
+                    Object.assign(doctype, this.#doctypeElement({
+                        path
+                    }));
+                }
+                this.#consume(tokens1.doctype.elements.end);
+            } else {
+                Object.assign(doctype, this.#property({
+                    path
+                }));
+            }
+        }
+        this.#stream.consume({
+            content: tokens1.doctype.end
+        });
+        return {
+            doctype
+        };
+    }
+     #doctypeElement({ path  }) {
+        this.#debug(path, "parsing doctype element");
+        this.#consume(tokens1.doctype.element.start);
+        const element = Object.keys(this.#property({
+            path
+        })).shift().substring(schema.property.prefix.length);
+        this.#debug(path, `found doctype element "${element}"`);
+        this.#consume(tokens1.doctype.element.value.start);
+        const value = this.#capture(tokens1.doctype.element.value.regex.end);
+        this.#consume(tokens1.doctype.element.value.end);
+        this.#debug(path, `found doctype element value "${value}"`);
+        this.#consume(tokens1.doctype.element.end);
+        return {
+            [element]: value
+        };
+    }
+     #tag({ path  }) {
+        this.#debug(path, "parsing tag");
+        const tag = this.#make.node({
+            path
+        });
+        this.#consume(tokens1.tag.start);
+        const name = this.#capture(tokens1.tag.regex.name);
+        Object.assign(tag[$XML], {
+            name
+        });
+        this.#debug(path, `found tag "${name}"`);
+        while(!tokens1.tag.close.regex.end.test(this.#stream.peek(2))){
+            Object.assign(tag, this.#attribute({
+                path: [
+                    ...path,
+                    tag
+                ]
+            }));
+        }
+        const selfclosed = this.#peek(tokens1.tag.close.self);
+        if (selfclosed) {
+            this.#debug(path, `tag "${name}" is self-closed`);
+            this.#consume(tokens1.tag.close.self);
+        }
+        this.#consume(tokens1.tag.end);
+        if (!selfclosed) {
+            if (this.#peek(tokens1.cdata.start) || !this.#peek(tokens1.tag.start)) {
+                Object.assign(tag, this.#text({
+                    close: name,
+                    path: [
+                        ...path,
+                        tag
+                    ]
+                }));
+            } else {
+                while(!tokens1.tag.close.regex.start.test(this.#stream.peek(2))){
+                    const child = this.#node({
+                        path: [
+                            ...path,
+                            tag
+                        ]
+                    });
+                    const [key, value] = Object.entries(child).shift();
+                    if (Array.isArray(tag[key])) {
+                        tag[key].push(value);
+                        this.#debug([
+                            ...path,
+                            tag
+                        ], `add new child "${key}" to array`);
+                    } else if (key in tag) {
+                        const array = [
+                            tag[key],
+                            value
+                        ];
+                        Object.defineProperty(array, $XML, {
+                            enumerable: false,
+                            writable: true
+                        });
+                        if (tag[key]?.[$XML]) {
+                            Object.assign(array, {
+                                [$XML]: tag[key][$XML]
+                            });
+                        }
+                        tag[key] = array;
+                        this.#debug([
+                            ...path,
+                            tag
+                        ], `multiple children named "${key}", using array notation`);
+                    } else {
+                        Object.assign(tag, child);
+                        this.#debug([
+                            ...path,
+                            tag
+                        ], `add new child "${key}"`);
+                    }
+                }
+            }
+            this.#consume(tokens1.tag.close.start);
+            this.#consume(name);
+            this.#consume(tokens1.tag.close.end);
+            this.#debug(path, `found closing tag for "${name}"`);
+        }
+        for (const [key] of Object.entries(tag).filter(([_, value])=>typeof value === "undefined"
+        )){
+            delete tag[key];
+        }
+        if (!Object.keys(tag).includes(schema.text)) {
+            const children = Object.keys(tag).filter((key)=>!key.startsWith(schema.attribute.prefix) && key !== schema.text
+            );
+            if (!children.length) {
+                this.#debug(path, `tag "${name}" has implictely obtained a text node as it has no children but has attributes`);
+                tag[schema.text] = this.#revive({
+                    key: schema.text,
+                    value: "",
+                    tag
+                });
+            }
+        }
+        if ((this.#options.flatten ?? true) && Object.keys(tag).includes(schema.text) && Object.keys(tag).length === 1) {
+            this.#debug(path, `tag "${name}" has been implicitely flattened as it only has a text node`);
+            return {
+                [name]: tag[schema.text]
+            };
+        }
+        return {
+            [name]: tag
+        };
+    }
+     #attribute({ path  }) {
+        this.#debug(path, "parsing attribute");
+        const attribute = this.#capture(tokens1.tag.attribute.regex.name);
+        this.#debug(path, `found attribute "${attribute}"`);
+        this.#consume("=");
+        const quote = this.#stream.peek();
+        this.#consume(quote);
+        const value = this.#capture({
+            until: new RegExp(quote),
+            bytes: quote.length
+        });
+        this.#consume(quote);
+        this.#debug(path, `found attribute value "${value}"`);
+        return {
+            [`${schema.attribute.prefix}${attribute}`]: this.#revive({
+                key: `${schema.attribute.prefix}${attribute}`,
+                value,
+                tag: path.at(-1)
+            })
+        };
+    }
+     #property({ path  }) {
+        this.#debug(path, "parsing property");
+        const quote = this.#stream.peek();
+        const delimiter = /["']/.test(quote) ? quote : " ";
+        if (delimiter.trim().length) {
+            this.#consume(delimiter);
+        }
+        const property = this.#capture({
+            until: new RegExp(delimiter),
+            bytes: delimiter.length
+        });
+        this.#debug(path, `found property ${property}`);
+        if (delimiter.trim().length) {
+            this.#consume(delimiter);
+        }
+        return {
+            [`${schema.property.prefix}${property}`]: true
+        };
+    }
+     #text({ close , path  }) {
+        this.#debug(path, "parsing text");
+        const tag = this.#make.node({
+            name: schema.text,
+            path
+        });
+        let text = "";
+        const comments = [];
+        while(this.#peek(tokens1.cdata.start) || !this.#peeks([
+            tokens1.tag.close.start,
+            close,
+            tokens1.tag.close.end
+        ])){
+            if (this.#peek(tokens1.cdata.start)) {
+                text += this.#cdata({
+                    path: [
+                        ...path,
+                        tag
+                    ]
+                });
+            } else if (this.#peek(tokens1.comment.start)) {
+                comments.push(this.#comment({
+                    path: [
+                        ...path,
+                        tag
+                    ]
+                }));
+            } else {
+                text += this.#capture(tokens1.text.regex.end);
+                if (this.#peek(tokens1.cdata.start) || this.#peek(tokens1.comment.start)) {
+                    continue;
+                }
+                if (!this.#peeks([
+                    tokens1.tag.close.start,
+                    close,
+                    tokens1.tag.close.end
+                ])) {
+                    text += tokens1.tag.close.start;
+                    this.#consume(tokens1.tag.close.start);
+                }
+            }
+        }
+        this.#debug(path, `parsed text "${text}"`);
+        if (comments.length) {
+            this.#debug(path, `parsed comments ${JSON.stringify(comments)}`);
+        }
+        Object.assign(tag, {
+            [schema.text]: this.#revive({
+                key: schema.text,
+                value: text.trim(),
+                tag: path.at(-1)
+            }),
+            ...comments.length ? {
+                [schema.comment]: comments
+            } : {
+            }
+        });
+        return tag;
+    }
+     #cdata({ path  }) {
+        this.#debug(path, "parsing cdata");
+        this.#consume(tokens1.cdata.start);
+        const data = this.#capture(tokens1.cdata.regex.end);
+        this.#consume(tokens1.cdata.end);
+        return data;
+    }
+     #comment({ path  }) {
+        this.#debug(path, "parsing comment");
+        this.#consume(tokens1.comment.start);
+        const comment = this.#capture(tokens1.comment.regex.end);
+        this.#consume(tokens1.comment.end);
+        return comment;
+    }
+     #revive({ key , value , tag  }) {
+        return this.#options.reviver.call(tag, {
+            key,
+            tag: tag[$XML].name,
+            properties: !(key.startsWith(schema.attribute.prefix) || key.startsWith(schema.property.prefix)) ? {
+                ...tag
+            } : null,
+            value: (()=>{
+                switch(true){
+                    case (this.#options.emptyToNull ?? true) && /^\s*$/.test(value):
+                        return null;
+                    case (this.#options.reviveBooleans ?? true) && /^(?:true|false)$/i.test(value):
+                        return /^true$/i.test(value);
+                    case (this.#options.reviveNumbers ?? true) && Number.isFinite(Number(value)):
+                        return Number.parseFloat(value);
+                    default:
+                        value = value.replace(tokens1.entity.regex.entities, (_, hex, code)=>String.fromCharCode(parseInt(code, hex ? 16 : 10))
+                        );
+                        for (const [entity, character] of Object.entries(entities.xml)){
+                            value = value.replaceAll(entity, character);
+                        }
+                        return value;
+                }
+            })()
+        });
+    }
+    #make = {
+        node ({ name ="" , path =[]  }) {
+            const node = {
+                [$XML]: {
+                    name,
+                    parent: path[path.length - 1] ?? null
+                }
+            };
+            Object.defineProperty(node, $XML, {
+                enumerable: false,
+                writable: true
+            });
+            return node;
+        }
+    };
+    #stream;
+     #peek(token) {
+        return this.#stream.peek(token.length) === token;
+    }
+     #peeks(tokens) {
+        let offset = 0;
+        for(let i = 0; i < tokens.length; i++){
+            const token = tokens[i];
+            while(true){
+                if (/\s/.test(this.#stream.peek(1, offset))) {
+                    offset++;
+                    continue;
+                }
+                if (this.#stream.peek(token.length, offset) === token) {
+                    offset += token.length;
+                    break;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+     #consume(token) {
+        return this.#stream.consume({
+            content: token
+        });
+    }
+     #capture(token) {
+        return this.#stream.capture(token);
+    }
+     #trim() {
+        return this.#stream.trim();
+    }
+}
+class Stream {
+    constructor(content){
+        this.#content = content;
+    }
+    #decoder = new TextDecoder();
+    #encoder = new TextEncoder();
+    #content;
+    get cursor() {
+        return this.#content.seekSync(0, SeekMode.Current);
+    }
+    peek(bytes = 1, offset = 0) {
+        const buffer = new Uint8Array(bytes);
+        const cursor = this.cursor;
+        if (offset) {
+            this.#content.seekSync(offset, SeekMode.Current);
+        }
+        if (this.#content.readSync(buffer)) {
+            this.#content.seekSync(cursor, SeekMode.Start);
+            return this.#decoder.decode(buffer);
+        }
+        throw new Deno.errors.UnexpectedEof();
+    }
+    read(bytes = 1) {
+        const buffer = new Uint8Array(bytes);
+        if (this.#content.readSync(buffer)) {
+            return buffer;
+        }
+        throw new Deno.errors.UnexpectedEof();
+    }
+    capture({ until , bytes , trim =true  }) {
+        if (trim) {
+            this.trim();
+        }
+        const buffer = [];
+        while(!until.test(this.peek(bytes))){
+            buffer.push(this.read(1)[0]);
+        }
+        if (trim) {
+            this.trim();
+        }
+        return this.#decoder.decode(Uint8Array.from(buffer));
+    }
+    consume({ content , trim =true  }) {
+        if (trim) {
+            this.trim();
+        }
+        const bytes = this.#encoder.encode(content).length;
+        if (content === this.peek(bytes)) {
+            this.read(bytes);
+            if (trim) {
+                this.trim();
+            }
+            return;
+        }
+        throw new SyntaxError(`Expected next sequence to be "${content}", got "${this.peek(bytes)}" instead`);
+    }
+    trim() {
+        try {
+            while(/\s/.test(this.peek())){
+                this.read(1);
+            }
+        } catch (error) {
+            if (error instanceof Deno.errors.UnexpectedEof) {
+                return;
+            }
+            throw error;
+        }
+    }
+}
+class Streamable {
+    constructor(string){
+        this.#buffer = new TextEncoder().encode(string);
+    }
+    #buffer;
+    #cursor = 0;
+    readSync(buffer) {
+        const bytes = this.#buffer.slice(this.#cursor, this.#cursor + buffer.length);
+        buffer.set(bytes);
+        this.#cursor = Math.min(this.#cursor + bytes.length, this.#buffer.length);
+        return bytes.length || null;
+    }
+    seekSync(offset, whence) {
+        switch(whence){
+            case SeekMode.Start:
+                this.#cursor = offset;
+                break;
+            case SeekMode.Current:
+                this.#cursor += offset;
+                break;
+            case SeekMode.End:
+                this.#cursor = this.#buffer.length + offset;
+                break;
+        }
+        return this.#cursor;
+    }
+}
+function parse3(content, options) {
+    if (typeof content === "string") {
+        content = new Streamable(content);
+    }
+    return new Parser(new Stream(content), options).parse();
 }
 const noColor1 = globalThis.Deno?.noColor ?? true;
 let enabled1 = !noColor1;
@@ -7797,7 +8308,7 @@ function extname3(path) {
     }
     return path.slice(startDot, end);
 }
-function format5(pathObject) {
+function format4(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
@@ -7943,7 +8454,7 @@ const mod2 = {
     dirname: dirname3,
     basename: basename3,
     extname: extname3,
-    format: format5,
+    format: format4,
     parse: parse4,
     fromFileUrl: fromFileUrl3,
     toFileUrl: toFileUrl3
@@ -8174,7 +8685,7 @@ function extname4(path) {
     }
     return path.slice(startDot, end);
 }
-function format6(pathObject) {
+function format5(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
@@ -8273,13 +8784,13 @@ const mod3 = {
     dirname: dirname4,
     basename: basename4,
     extname: extname4,
-    format: format6,
+    format: format5,
     parse: parse5,
     fromFileUrl: fromFileUrl4,
     toFileUrl: toFileUrl4
 };
-const path2 = isWindows1 ? mod2 : mod3;
-const { basename: basename5 , delimiter: delimiter5 , dirname: dirname5 , extname: extname5 , format: format7 , fromFileUrl: fromFileUrl5 , isAbsolute: isAbsolute5 , join: join6 , normalize: normalize6 , parse: parse6 , relative: relative5 , resolve: resolve5 , sep: sep5 , toFileUrl: toFileUrl5 , toNamespacedPath: toNamespacedPath5 ,  } = path2;
+const path3 = isWindows1 ? mod2 : mod3;
+const { basename: basename5 , delimiter: delimiter5 , dirname: dirname5 , extname: extname5 , format: format6 , fromFileUrl: fromFileUrl5 , isAbsolute: isAbsolute5 , join: join6 , normalize: normalize6 , parse: parse6 , relative: relative5 , resolve: resolve5 , sep: sep5 , toFileUrl: toFileUrl5 , toNamespacedPath: toNamespacedPath5 ,  } = path3;
 'use strict';
 const align = {
     right: alignRight,
@@ -10317,7 +10828,7 @@ try {
         throw err1;
     }
 }
-const path3 = {
+const path4 = {
     basename: basename5,
     dirname: dirname5,
     extname: extname5,
@@ -10351,7 +10862,7 @@ const __default5 = {
     },
     mainFilename: cwd,
     Parser: yargsParser,
-    path: path3,
+    path: path4,
     process: {
         argv: ()=>argv
         ,
@@ -22143,7 +22654,7 @@ const HTTP_HEADER_RANGE = "Range";
 const HTTP_METHOD_HEAD = "HEAD";
 const HTTP_METHOD_GET = "GET";
 const HTTP_RANGE_UNIT = "bytes";
-class Stream {
+class Stream1 {
     constructor(){
         this.size = 0;
     }
@@ -22151,9 +22662,9 @@ class Stream {
         this.initialized = true;
     }
 }
-class Reader extends Stream {
+class Reader extends Stream1 {
 }
-class Writer extends Stream {
+class Writer extends Stream1 {
     writeUint8Array(array) {
         this.size += array.length;
     }
@@ -24883,7 +25394,7 @@ or install ImageMagick : sudo apt install -y imagemagick
     }
     return convertCommand;
 }
-const extensionRegEx = /\.([^.]+)$/i;
+const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 const folderAudioItemRegEx = /^0-item\.(ogg|wav|mp3)$/i;
 const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
 const fileAudioItemRegEx = /\.item\.(ogg|wav|mp3)$/i;
@@ -25245,7 +25756,7 @@ async function getFfmpegInfo(filePath) {
     if (status.success) {
         info = output;
     }
-    console.log(bgRed("info=" + info));
+    console.log(bgGreen("info=" + info));
     return info;
 }
 function folderToPack(folder) {
@@ -25480,7 +25991,7 @@ async function createPackZip(zipPath, storyPath, serializedPack, assets) {
 async function getFolderWithUrlFromRssUrl(url) {
     console.log(bgGreen(`→ url = ${url}`));
     const resp = await fetch(url);
-    const xml = await resp.text();
+    const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
     const rss = parse3(xml).rss.channel;
     const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
     const fs = {
