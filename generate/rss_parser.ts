@@ -49,7 +49,7 @@ async function getFolderWithUrlFromRssUrl(url: string): Promise<FolderWithUrl> {
   console.log(bgGreen(`→ url = ${url}`));
 
   const resp = await fetch(url);
-  const xml = await resp.text();
+  const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
   // @ts-ignore rss conv
   // deno-lint-ignore no-explicit-any
   const rss: Rss = (parse(xml).rss as any).channel;
