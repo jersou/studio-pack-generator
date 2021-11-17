@@ -26,6 +26,7 @@ export type ModOptions = {
   skipExtractImageFromMp3?: boolean;
   skipZipGeneration?: boolean;
   skipNotRss?: boolean;
+  autoNextStoryTransition?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -76,14 +77,15 @@ export async function generatePack(opt: ModOptions) {
     if (!opt.skipZipGeneration) {
       folder = await fsToFolder(opt.storyPath, true);
       const pack = folderToPack(folder);
-      const serializedPack = serializePack(pack);
+      const serializedPack = serializePack(pack, {
+        autoNextStoryTransition: opt.autoNextStoryTransition,
+      });
       const assets = getAssetsPaths(serializedPack, folder);
       const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
       await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
       console.log(
         `Done (${
-          (Date.now() - start) /
-          1000
+          (Date.now() - start) / 1000
         } sec) :  ${opt.storyPath} → ${zipPath}`,
       );
       sanitize();

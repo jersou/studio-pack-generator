@@ -25828,7 +25828,7 @@ function fileToStory(file) {
         okTransition: null
     };
 }
-function serializePack(pack) {
+function serializePack(pack, opt) {
     const serialized = {
         title: pack.title,
         version: pack.version,
@@ -25838,9 +25838,28 @@ function serializePack(pack) {
         actionNodes: [],
         stageNodes: []
     };
-    exploreStageNode(pack.entrypoint, serialized, undefined, []);
+    const groups = {
+    };
+    exploreStageNode(pack.entrypoint, serialized, undefined, [], [], groups);
     serialized.actionNodes = serialized.actionNodes.reverse();
     serialized.stageNodes = serialized.stageNodes.reverse();
+    if (opt?.autoNextStoryTransition) {
+        for (const menuId of Object.keys(groups)){
+            const group = groups[menuId];
+            for(let i = 1; i < group.length; i++){
+                const stageId = group[i - 1].stage;
+                const actionId = group[i].action;
+                const stage = serialized.stageNodes.find((e)=>e.uuid === stageId
+                );
+                if (stage) {
+                    stage.okTransition = {
+                        actionNode: actionId,
+                        optionIndex: 0
+                    };
+                }
+            }
+        }
+    }
     return serialized;
 }
 function getControlSettings(stageNode, parent) {
@@ -25879,8 +25898,18 @@ function getControlSettings(stageNode, parent) {
             };
     }
 }
-function exploreStageNode(stageNode, serialized, parent, actionHistory) {
+function exploreStageNode(stageNode, serialized, parent, actionHistory, parentIDs, groups) {
     const uuid = crypto.randomUUID();
+    if (stageNode.class === "StageNode-Story") {
+        const menu = parentIDs[parentIDs.length - 3];
+        if (!groups[menu]) {
+            groups[menu] = [];
+        }
+        groups[menu].push({
+            stage: uuid,
+            action: parentIDs[parentIDs.length - 1]
+        });
+    }
     const serializedStageNode = {
         audio: stageNode.audio,
         controlSettings: getControlSettings(stageNode, parent),
@@ -25891,7 +25920,10 @@ function exploreStageNode(stageNode, serialized, parent, actionHistory) {
         image: stageNode.image,
         name: stageNode.name,
         okTransition: stageNode.okTransition ? {
-            actionNode: exploreActionNode(stageNode.okTransition, serialized, actionHistory),
+            actionNode: exploreActionNode(stageNode.okTransition, serialized, actionHistory, [
+                ...parentIDs,
+                uuid
+            ], groups),
             optionIndex: 0
         } : null,
         position: {
@@ -25912,7 +25944,7 @@ function exploreStageNode(stageNode, serialized, parent, actionHistory) {
     serialized.stageNodes.push(serializedStageNode);
     return uuid;
 }
-function exploreActionNode(actionNode, serialized, actionHistory) {
+function exploreActionNode(actionNode, serialized, actionHistory, parentIDs, groups) {
     const id = crypto.randomUUID();
     const serializedActionNode = {
         id,
@@ -25923,7 +25955,10 @@ function exploreActionNode(actionNode, serialized, actionHistory) {
                     id,
                     optionIndex
                 }, 
-            ])
+            ], [
+                ...parentIDs,
+                id
+            ], groups)
         ),
         position: {
             x: 0,
@@ -26177,7 +26212,9 @@ async function generatePack(opt) {
         if (!opt.skipZipGeneration) {
             folder = await fsToFolder(opt.storyPath, true);
             const pack = folderToPack(folder);
-            const serializedPack = serializePack(pack);
+            const serializedPack = serializePack(pack, {
+                autoNextStoryTransition: opt.autoNextStoryTransition
+            });
             const assets = getAssetsPaths(serializedPack, folder);
             const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
             await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
@@ -26236,6 +26273,12 @@ async function parseArgs(args) {
         boolean: true,
         default: false,
         describe: "skip all except download RSS files"
+    }).option("auto-next-story-transition", {
+        alias: "n",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "go to next story of group at end of stories"
     }).version(false).demandCommand(1).parse();
 }
 const importMeta2 = {

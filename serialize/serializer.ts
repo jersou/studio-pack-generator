@@ -11,7 +11,15 @@ import {
   StoryItem,
 } from "./types.ts";
 
-export function serializePack(pack: Pack): SerializedPack {
+type serializePackOption = {
+  autoNextStoryTransition?: boolean;
+};
+type Groups = { [key: string]: { stage: string; action: string }[] };
+
+export function serializePack(
+  pack: Pack,
+  opt?: serializePackOption,
+): SerializedPack {
   const serialized: SerializedPack = {
     title: pack.title,
     version: pack.version,
@@ -21,11 +29,27 @@ export function serializePack(pack: Pack): SerializedPack {
     actionNodes: [],
     stageNodes: [],
   };
-
-  exploreStageNode(pack.entrypoint, serialized, undefined, []);
+  const groups: Groups = {};
+  exploreStageNode(pack.entrypoint, serialized, undefined, [], [], groups);
   serialized.actionNodes = serialized.actionNodes.reverse();
   serialized.stageNodes = serialized.stageNodes.reverse();
 
+  if (opt?.autoNextStoryTransition) {
+    for (const menuId of Object.keys(groups)) {
+      const group = groups[menuId];
+      for (let i = 1; i < group.length; i++) {
+        const stageId = group[i - 1].stage;
+        const actionId = group[i].action;
+        const stage = serialized.stageNodes.find((e) => e.uuid === stageId);
+        if (stage) {
+          stage.okTransition = {
+            actionNode: actionId,
+            optionIndex: 0,
+          };
+        }
+      }
+    }
+  }
   return serialized;
 }
 
@@ -79,8 +103,17 @@ function exploreStageNode(
   serialized: SerializedPack,
   parent: Action | undefined,
   actionHistory: ActionHistory[],
+  parentIDs: string[],
+  groups: Groups,
 ) {
   const uuid = crypto.randomUUID();
+  if (stageNode.class === "StageNode-Story") {
+    const menu = parentIDs[parentIDs.length - 3];
+    if (!groups[menu]) {
+      groups[menu] = [];
+    }
+    groups[menu].push({ stage: uuid, action: parentIDs[parentIDs.length - 1] });
+  }
   const serializedStageNode: StageNode = {
     audio: stageNode.audio,
     controlSettings: getControlSettings(stageNode, parent),
@@ -98,6 +131,8 @@ function exploreStageNode(
           stageNode.okTransition,
           serialized,
           actionHistory,
+          [...parentIDs, uuid],
+          groups,
         ),
         optionIndex: 0,
       }
@@ -128,20 +163,28 @@ function exploreActionNode(
   actionNode: Action | StoryAction,
   serialized: SerializedPack,
   actionHistory: ActionHistory[],
+  parentIDs: string[],
+  groups: Groups,
 ) {
   const id = crypto.randomUUID();
-
   const serializedActionNode: ActionNode = {
     id,
     name: actionNode.name,
     options: actionNode.options.map((stageNode, optionIndex) =>
-      exploreStageNode(stageNode, serialized, actionNode, [
-        ...actionHistory,
-        {
-          id,
-          optionIndex,
-        },
-      ])
+      exploreStageNode(
+        stageNode,
+        serialized,
+        actionNode,
+        [
+          ...actionHistory,
+          {
+            id,
+            optionIndex,
+          },
+        ],
+        [...parentIDs, id],
+        groups,
+      )
     ),
     position: { x: 0, y: 0 },
   };

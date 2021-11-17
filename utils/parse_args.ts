@@ -76,6 +76,13 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "skip all except download RSS files",
     })
+    .option("auto-next-story-transition", {
+      alias: "n",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "go to next story of group at end of stories",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

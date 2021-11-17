@@ -185,6 +185,7 @@ Options:
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
+  -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
 ```
 
 ## Features
@@ -197,6 +198,7 @@ Options:
   10 stories.
 - Convert mp3 files to right format.
 - Generate story thumbnail.
+- Option to chaining the stories.
 
 ## Development
 
