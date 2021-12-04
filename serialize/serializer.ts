@@ -65,8 +65,8 @@ function getControlSettings(
   switch (stageNode.class) {
     case "StageNode-Entrypoint":
       return {
-        autoplay: true,
-        home: true,
+        autoplay: false,
+        home: false,
         ok: true,
         pause: false,
         wheel: true,

@@ -77,8 +77,8 @@ export const expectedMinPackSerialized = {
     {
       audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
       controlSettings: {
-        autoplay: true,
-        home: true,
+        autoplay: false,
+        home: false,
         ok: true,
         pause: false,
         wheel: true,
@@ -323,8 +323,8 @@ export const expectedMoyPackSerialized = {
     {
       audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
       controlSettings: {
-        autoplay: true,
-        home: true,
+        autoplay: false,
+        home: false,
         ok: true,
         pause: false,
         wheel: true,
@@ -998,8 +998,8 @@ export const expectedFullPackSerialized: SerializedPack = {
     {
       audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
       controlSettings: {
-        autoplay: true,
-        home: true,
+        autoplay: false,
+        home: false,
         ok: true,
         pause: false,
         wheel: true,
