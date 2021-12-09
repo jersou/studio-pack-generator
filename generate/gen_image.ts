@@ -4,9 +4,10 @@ import { getConvertCommand } from "../utils/external_commands.ts";
 
 export async function generateImage(title: string, outputPath: string) {
   console.log(bgGreen(`Generate image to ${outputPath}`));
+  const convertCommand = await getConvertCommand();
   const process = await Deno.run({
     cmd: [
-      ...(await getConvertCommand()),
+      ...(convertCommand),
       "-background",
       "black",
       "-fill",
@@ -18,7 +19,7 @@ export async function generateImage(title: string, outputPath: string) {
       "-font",
       "Arial",
       `caption:${title}`,
-      convertPath(outputPath),
+      convertCommand[0] === "wsl" ? convertPath(outputPath) : outputPath,
     ],
   });
   await process.status();

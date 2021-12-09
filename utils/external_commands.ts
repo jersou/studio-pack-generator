@@ -1,9 +1,12 @@
+import { basename, dirname, posix, win32 } from "../deps.ts";
+
 let ffmpegCommand: string[] = [];
 
 export async function checkCommand(
   cmd: string[],
   exitCodeExpected: number,
 ): Promise<boolean> {
+  console.log("checkCommand", cmd);
   try {
     const process = Deno.run({
       cmd,
@@ -19,10 +22,24 @@ export async function checkCommand(
   }
 }
 
+export async function getInstallDir(): Promise<String> {
+  if (basename(Deno.execPath()).match(/^deno/i)) {
+    const fromFileUrl = Deno.build.os === "windows"
+      ? win32.fromFileUrl
+      : posix.fromFileUrl;
+    return dirname(fromFileUrl(Deno.mainModule));
+  } else {
+    return dirname(Deno.execPath());
+  }
+}
+
 export async function getFfmpegCommand(): Promise<string[]> {
   if (ffmpegCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      if (await checkCommand(["wsl", "ffmpeg", "-version"], 0)) {
+      const winFFmeg = `${await getInstallDir()}tools\\ffmpeg.exe`;
+      if (await checkCommand([winFFmeg, "-version"], 0)) {
+        ffmpegCommand = [winFFmeg];
+      } else if (await checkCommand(["wsl", "ffmpeg", "-version"], 0)) {
         ffmpegCommand = ["wsl", "ffmpeg"];
       } else {
         console.error(
@@ -96,7 +113,10 @@ let convertCommand: string[] = [];
 export async function getConvertCommand(): Promise<string[]> {
   if (convertCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      if (await checkCommand(["wsl", "convert", "--version"], 0)) {
+      const winConvert = `${await getInstallDir()}tools\\convert.exe`;
+      if (await checkCommand([winConvert, "--version"], 0)) {
+        convertCommand = [winConvert];
+      } else if (await checkCommand(["wsl", "convert", "--version"], 0)) {
         convertCommand = ["wsl", "convert"];
       } else {
         console.error(

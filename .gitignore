@@ -6,3 +6,5 @@
 /.cov_profile
 /dist/*.zip
 /tmp.ts
+/tools/
+/.idea/vcs.xml

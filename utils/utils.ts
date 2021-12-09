@@ -126,14 +126,15 @@ export async function convertToImageItem(
   outputPath: string,
 ) {
   console.log(bgBlue(`Try convert ${inputPath} → ${outputPath}`));
+  const ffmpegCommand = await getFfmpegCommand();
   const process = await Deno.run({
     cmd: [
-      ...(await getFfmpegCommand()),
+      ...(ffmpegCommand),
       "-i",
-      convertPath(inputPath),
+      ffmpegCommand[0] === "wsl" ? convertPath(inputPath) : inputPath,
       "-vf",
       "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
-      convertPath(outputPath),
+      ffmpegCommand[0] === "wsl" ? convertPath(outputPath) : outputPath,
     ],
     stdout: "null",
     stdin: "null",

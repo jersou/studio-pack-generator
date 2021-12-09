@@ -11,7 +11,13 @@ export {
   copy,
   readerFromStreamReader,
 } from "https://deno.land/std@0.114.0/io/mod.ts";
-export { basename, join } from "https://deno.land/std@0.114.0/path/mod.ts";
+export {
+  basename,
+  dirname,
+  join,
+  posix,
+  win32,
+} from "https://deno.land/std@0.114.0/path/mod.ts";
 
 export { default as i18next } from "https://deno.land/x/i18next@v21.2.4/index.js";
 
