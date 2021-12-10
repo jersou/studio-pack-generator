@@ -25252,6 +25252,7 @@ async function getSha1(path) {
 }
 let ffmpegCommand = [];
 async function checkCommand(cmd, exitCodeExpected) {
+    console.log("checkCommand", cmd);
     try {
         const process = Deno.run({
             cmd,
@@ -25266,25 +25267,30 @@ async function checkCommand(cmd, exitCodeExpected) {
         return false;
     }
 }
+function getInstallDir() {
+    if (basename2(Deno.execPath()).match(/^deno/i)) {
+        const fromFileUrl = Deno.build.os === "windows" ? mod.fromFileUrl : mod1.fromFileUrl;
+        return dirname2(fromFileUrl(Deno.mainModule));
+    } else {
+        return dirname2(Deno.execPath());
+    }
+}
 async function getFfmpegCommand() {
     if (ffmpegCommand.length === 0) {
         if (Deno.build.os === "windows") {
+            const winFFmeg = `${getInstallDir()}tools\\ffmpeg.exe`;
             if (await checkCommand([
-                "wsl",
-                "ffmpeg",
+                winFFmeg,
                 "-version"
             ], 0)) {
                 ffmpegCommand = [
-                    "wsl",
-                    "ffmpeg"
+                    winFFmeg
                 ];
             } else {
                 console.error(`
 Command ffmpeg not found,
 use --skip-extract-image-from-mp3 to skip image item generation
-or install ffmpeg :
-       wsl sudo apt update
-       wsl sudo apt install -y ffmpeg
+or check your install, ffmpeg should be present in studio-pack-generator/tools/ffmpeg.exe
 `);
                 Deno.exit(3);
             }
@@ -25311,42 +25317,20 @@ or install ffmpeg : sudo apt install -y ffmpeg
 let pico2waveCommand = [];
 async function getPico2waveCommand() {
     if (pico2waveCommand.length === 0) {
-        if (Deno.build.os === "windows") {
-            if (await checkCommand([
-                "wsl",
-                "pico2wave",
-                "--version"
-            ], 1)) {
-                pico2waveCommand = [
-                    "wsl",
-                    "pico2wave"
-                ];
-            } else {
-                console.error(`
-Command pico2wave (from libttspico-utils) not found,
-use --skip-audio-item-gen to skip audio item generation
-or install pico2wave :
-       wsl sudo apt update
-       wsl sudo apt install -y libttspico-utils
-`);
-                Deno.exit(3);
-            }
+        if (await checkCommand([
+            "pico2wave",
+            "--version"
+        ], 1)) {
+            pico2waveCommand = [
+                "pico2wave"
+            ];
         } else {
-            if (await checkCommand([
-                "pico2wave",
-                "--version"
-            ], 1)) {
-                pico2waveCommand = [
-                    "pico2wave"
-                ];
-            } else {
-                console.error(`
+            console.error(`
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
 or install pico2wave : sudo apt install -y libttspico-utils
 `);
-                Deno.exit(3);
-            }
+            Deno.exit(3);
         }
     }
     return pico2waveCommand;
@@ -25355,22 +25339,19 @@ let convertCommand = [];
 async function getConvertCommand() {
     if (convertCommand.length === 0) {
         if (Deno.build.os === "windows") {
+            const winConvert = `${getInstallDir()}tools\\convert.exe`;
             if (await checkCommand([
-                "wsl",
-                "convert",
+                winConvert,
                 "--version"
             ], 0)) {
                 convertCommand = [
-                    "wsl",
-                    "convert"
+                    winConvert
                 ];
             } else {
                 console.error(`
 Command convert (from ImageMagick) not found,
 use --skip-image-item-gen to skip image item generation
-or install ImageMagick :
-       wsl sudo apt update
-       wsl sudo apt install -y imagemagick
+or check your install, ImageMagick should be present in studio-pack-generator/tools/convert.exe
 `);
                 Deno.exit(3);
             }
@@ -25471,13 +25452,6 @@ function firstStoryFile(folder) {
         )
     );
 }
-function convertPath(path) {
-    return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
-}
-function convWindowsWslPath(path, cwd) {
-    const groups = /^[a-z]:/i.test(path) ? /(^.)(.*)$/.exec(path) : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
-    return "/mnt/" + groups?.[1].toLowerCase() + groups?.[2].replace(/\\/g, "/").replace(/:/g, "");
-}
 function uniq2(items) {
     return [
         ...new Set(items)
@@ -25489,10 +25463,10 @@ async function convertToImageItem(inputPath, outputPath) {
         cmd: [
             ...await getFfmpegCommand(),
             "-i",
-            convertPath(inputPath),
+            inputPath,
             "-vf",
             "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
-            convertPath(outputPath), 
+            outputPath, 
         ],
         stdout: "null",
         stdin: "null",
@@ -25578,7 +25552,7 @@ async function generateImage(title, outputPath) {
             "-font",
             "Arial",
             `caption:${title}`,
-            convertPath(outputPath), 
+            outputPath, 
         ]
     });
     await process.status();
@@ -25586,18 +25560,31 @@ async function generateImage(title, outputPath) {
 }
 async function generateAudio(title, outputPath, lang) {
     console.log(bgBlue(`Generate audio to ${outputPath}`));
-    const process = Deno.run({
-        cmd: [
-            ...await getPico2waveCommand(),
-            "-l",
-            lang,
-            "-w",
-            convertPath(outputPath),
-            ` . ${title} . `, 
-        ]
-    });
-    await process.status();
-    process.close();
+    if (Deno.build.os === "windows") {
+        const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" + "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" + "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
+        const process = Deno.run({
+            cmd: [
+                "PowerShell",
+                "-Command",
+                `Add-Type -AssemblyName System.Speech; ` + `$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` + `$speak.SetOutputToWaveFile("${outputPath}",${audioFormat}); ` + `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` + `$speak.Dispose();`, 
+            ]
+        });
+        await process.status();
+        process.close();
+    } else {
+        const process = Deno.run({
+            cmd: [
+                ...await getPico2waveCommand(),
+                "-l",
+                lang,
+                "-w",
+                outputPath,
+                ` . ${title} . `, 
+            ]
+        });
+        await process.status();
+        process.close();
+    }
 }
 function getTitle(name) {
     if (/^[0-9]* *-? *$/.test(name)) {
@@ -25666,7 +25653,7 @@ async function convertAudioFile(inputPath, maxDb, outputPath) {
         cmd: [
             ...await getFfmpegCommand(),
             "-i",
-            convertPath(inputPath),
+            inputPath,
             "-af",
             `volume=${maxDb}dB,dynaudnorm`,
             "-ac",
@@ -25676,7 +25663,7 @@ async function convertAudioFile(inputPath, maxDb, outputPath) {
             "-map_metadata",
             "-1",
             "-y",
-            convertPath(outputPath), 
+            outputPath, 
         ],
         stdout: "null",
         stdin: "null",
@@ -25698,7 +25685,7 @@ async function getMaxVolumeOfFile(inputPath) {
         cmd: [
             ...await getFfmpegCommand(),
             "-i",
-            convertPath(inputPath),
+            inputPath,
             "-af",
             "volumedetect",
             "-vn",
@@ -25739,7 +25726,7 @@ async function getFfmpegInfo(filePath) {
         cmd: [
             ...await getFfmpegCommand(),
             "-i",
-            convertPath(filePath),
+            filePath,
             "-hide_banner",
             "-f",
             "null",
@@ -25866,8 +25853,8 @@ function getControlSettings(stageNode, parent) {
     switch(stageNode.class){
         case "StageNode-Entrypoint":
             return {
-                autoplay: true,
-                home: true,
+                autoplay: false,
+                home: false,
                 ok: true,
                 pause: false,
                 wheel: true
@@ -26286,5 +26273,6 @@ const importMeta2 = {
     main: import.meta.main
 };
 if (importMeta2.main) {
+    console.log(Deno.version);
     await parseArgs(Deno.args);
 }
