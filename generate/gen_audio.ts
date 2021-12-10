@@ -1,21 +1,5 @@
 import { bgBlue } from "../deps.ts";
-import { convertPath } from "../utils/utils.ts";
-import {
-  checkCommand,
-  getPico2waveCommand,
-} from "../utils/external_commands.ts";
-
-let hasPico2waveWslCache: undefined | boolean;
-
-export async function hasPico2waveWsl() {
-  if (hasPico2waveWslCache === undefined) {
-    hasPico2waveWslCache = await checkCommand(
-      ["wsl", "pico2wave", "--version"],
-      1,
-    );
-  }
-  return hasPico2waveWslCache;
-}
+import { getPico2waveCommand } from "../utils/external_commands.ts";
 
 export async function generateAudio(
   title: string,
@@ -24,7 +8,7 @@ export async function generateAudio(
 ) {
   console.log(bgBlue(`Generate audio to ${outputPath}`));
 
-  if (Deno.build.os === "windows" && !await hasPico2waveWsl()) {
+  if (Deno.build.os === "windows") {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
@@ -48,7 +32,7 @@ export async function generateAudio(
         "-l",
         lang,
         "-w",
-        convertPath(outputPath),
+        outputPath,
         ` . ${title} . `,
       ],
     });

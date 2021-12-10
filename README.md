@@ -4,7 +4,7 @@ This project convert a folder or a RSS URL to
 [Studio](https://github.com/marian-m12l/studio) pack zip for Lunii device, see
 file structure below.
 
-Supported OS: Windows(using WSL) / Linux / MacOS
+Supported OS: Windows / Linux / MacOS
 
 ## Quick start
 
@@ -35,13 +35,8 @@ Examples:
 Install optional dependencies :
 `sudo apt update && sudo apt install -y ffmpeg libttspico-utils imagemagick`
 
-studio-pack-generator can use these tools from **Windows** by using the
-[WSL](https://docs.microsoft.com/fr-fr/windows/wsl/install) :
-
-```
-wsl sudo apt update
-wsl sudo apt install -y ffmpeg libttspico-utils imagemagick
-```
+Windows release of studio-pack-generator embeds these tools in zip file, and use
+Windows TTS instead of picoTTS.
 
 Use "-miva" option to skip all generations that use these tools.
 

@@ -102,21 +102,6 @@ export function firstStoryFile(folder: Folder) {
   ) as File;
 }
 
-export function convertPath(path: string) {
-  return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
-}
-
-export function convWindowsWslPath(path: string, cwd?: string): string {
-  const groups = /^[a-z]:/i.test(path)
-    ? /(^.)(.*)$/.exec(path)
-    : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
-  return (
-    "/mnt/" +
-    groups?.[1].toLowerCase() +
-    groups?.[2].replace(/\\/g, "/").replace(/:/g, "")
-  );
-}
-
 export function uniq(items: string[]): string[] {
   return [...new Set(items)];
 }
@@ -126,15 +111,14 @@ export async function convertToImageItem(
   outputPath: string,
 ) {
   console.log(bgBlue(`Try convert ${inputPath} → ${outputPath}`));
-  const ffmpegCommand = await getFfmpegCommand();
   const process = await Deno.run({
     cmd: [
-      ...(ffmpegCommand),
+      ...(await getFfmpegCommand()),
       "-i",
-      ffmpegCommand[0] === "wsl" ? convertPath(inputPath) : inputPath,
+      inputPath,
       "-vf",
       "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
-      ffmpegCommand[0] === "wsl" ? convertPath(outputPath) : outputPath,
+      outputPath,
     ],
     stdout: "null",
     stdin: "null",

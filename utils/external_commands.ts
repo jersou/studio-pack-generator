@@ -22,7 +22,7 @@ export async function checkCommand(
   }
 }
 
-export async function getInstallDir(): Promise<String> {
+export function getInstallDir(): string {
   if (basename(Deno.execPath()).match(/^deno/i)) {
     const fromFileUrl = Deno.build.os === "windows"
       ? win32.fromFileUrl
@@ -36,19 +36,15 @@ export async function getInstallDir(): Promise<String> {
 export async function getFfmpegCommand(): Promise<string[]> {
   if (ffmpegCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      const winFFmeg = `${await getInstallDir()}tools\\ffmpeg.exe`;
+      const winFFmeg = `${getInstallDir()}tools\\ffmpeg.exe`;
       if (await checkCommand([winFFmeg, "-version"], 0)) {
         ffmpegCommand = [winFFmeg];
-      } else if (await checkCommand(["wsl", "ffmpeg", "-version"], 0)) {
-        ffmpegCommand = ["wsl", "ffmpeg"];
       } else {
         console.error(
           `
 Command ffmpeg not found,
 use --skip-extract-image-from-mp3 to skip image item generation
-or install ffmpeg :
-       wsl sudo apt update
-       wsl sudo apt install -y ffmpeg
+or check your install, ffmpeg should be present in studio-pack-generator/tools/ffmpeg.exe
 `,
         );
         Deno.exit(3);
@@ -75,34 +71,17 @@ let pico2waveCommand: string[] = [];
 
 export async function getPico2waveCommand(): Promise<string[]> {
   if (pico2waveCommand.length === 0) {
-    if (Deno.build.os === "windows") {
-      if (await checkCommand(["wsl", "pico2wave", "--version"], 1)) {
-        pico2waveCommand = ["wsl", "pico2wave"];
-      } else {
-        console.error(
-          `
-Command pico2wave (from libttspico-utils) not found,
-use --skip-audio-item-gen to skip audio item generation
-or install pico2wave :
-       wsl sudo apt update
-       wsl sudo apt install -y libttspico-utils
-`,
-        );
-        Deno.exit(3);
-      }
+    if (await checkCommand(["pico2wave", "--version"], 1)) {
+      pico2waveCommand = ["pico2wave"];
     } else {
-      if (await checkCommand(["pico2wave", "--version"], 1)) {
-        pico2waveCommand = ["pico2wave"];
-      } else {
-        console.error(
-          `
+      console.error(
+        `
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
 or install pico2wave : sudo apt install -y libttspico-utils
 `,
-        );
-        Deno.exit(3);
-      }
+      );
+      Deno.exit(3);
     }
   }
   return pico2waveCommand;
@@ -113,19 +92,15 @@ let convertCommand: string[] = [];
 export async function getConvertCommand(): Promise<string[]> {
   if (convertCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      const winConvert = `${await getInstallDir()}tools\\convert.exe`;
+      const winConvert = `${getInstallDir()}tools\\convert.exe`;
       if (await checkCommand([winConvert, "--version"], 0)) {
         convertCommand = [winConvert];
-      } else if (await checkCommand(["wsl", "convert", "--version"], 0)) {
-        convertCommand = ["wsl", "convert"];
       } else {
         console.error(
           `
 Command convert (from ImageMagick) not found,
 use --skip-image-item-gen to skip image item generation
-or install ImageMagick :
-       wsl sudo apt update
-       wsl sudo apt install -y imagemagick
+or check your install, ImageMagick should be present in studio-pack-generator/tools/convert.exe
 `,
         );
         Deno.exit(3);

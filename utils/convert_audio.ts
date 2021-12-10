@@ -1,6 +1,5 @@
 import {
   checkRunPermission,
-  convertPath,
   getExtension,
   getNameWithoutExt,
   isAudioItem,
@@ -50,12 +49,11 @@ async function convertAudioFile(
   outputPath: string,
 ) {
   console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
-  const ffmpegCommand = await getFfmpegCommand();
   const process = await Deno.run({
     cmd: [
-      ...(ffmpegCommand),
+      ...(await getFfmpegCommand()),
       "-i",
-      ffmpegCommand[0] === "wsl" ? convertPath(inputPath) : inputPath,
+      inputPath,
       "-af",
       `volume=${maxDb}dB,dynaudnorm`,
       "-ac",
@@ -65,7 +63,7 @@ async function convertAudioFile(
       "-map_metadata",
       "-1",
       "-y",
-      ffmpegCommand[0] === "wsl" ? convertPath(outputPath) : outputPath,
+      outputPath,
     ],
     stdout: "null",
     stdin: "null",
@@ -84,12 +82,11 @@ async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
   const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
   let maxDb = 0;
   console.log(bgBlue(`get max volume of file ${inputPath}`));
-  const ffmpegCommand = await getFfmpegCommand();
   const process = await Deno.run({
     cmd: [
-      ...(ffmpegCommand),
+      ...(await getFfmpegCommand()),
       "-i",
-      ffmpegCommand[0] === "wsl" ? convertPath(inputPath) : inputPath,
+      inputPath,
       "-af",
       "volumedetect",
       "-vn",
@@ -131,13 +128,11 @@ async function checkAudioFormat(filePath: string) {
 
 async function getFfmpegInfo(filePath: string): Promise<string> {
   console.log(bgBlue(`get info of file ${filePath}`));
-  const ffmpegCommand = await getFfmpegCommand();
   const process = await Deno.run({
     cmd: [
-      ...(ffmpegCommand),
+      ...(await getFfmpegCommand()),
       "-i",
-      convertPath(filePath),
-      ffmpegCommand[0] === "wsl" ? convertPath(filePath) : filePath,
+      filePath,
       "-hide_banner",
       "-f",
       "null",

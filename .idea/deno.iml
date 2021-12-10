@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/DENO_DIR" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/tools" />
       <excludePattern pattern=".*" />
       <excludePattern pattern="lock.json" />
       <excludePattern pattern="mod.js" />
