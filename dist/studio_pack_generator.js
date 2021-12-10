@@ -25278,7 +25278,7 @@ function getInstallDir() {
 async function getFfmpegCommand() {
     if (ffmpegCommand.length === 0) {
         if (Deno.build.os === "windows") {
-            const winFFmeg = `${getInstallDir()}tools\\ffmpeg.exe`;
+            const winFFmeg = `${getInstallDir()}\\tools\\ffmpeg.exe`;
             if (await checkCommand([
                 winFFmeg,
                 "-version"
@@ -25339,7 +25339,7 @@ let convertCommand = [];
 async function getConvertCommand() {
     if (convertCommand.length === 0) {
         if (Deno.build.os === "windows") {
-            const winConvert = `${getInstallDir()}tools\\convert.exe`;
+            const winConvert = `${getInstallDir()}\\tools\\convert.exe`;
             if (await checkCommand([
                 winConvert,
                 "--version"
