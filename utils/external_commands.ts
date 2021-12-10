@@ -36,7 +36,7 @@ export function getInstallDir(): string {
 export async function getFfmpegCommand(): Promise<string[]> {
   if (ffmpegCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      const winFFmeg = `${getInstallDir()}tools\\ffmpeg.exe`;
+      const winFFmeg = `${getInstallDir()}\\tools\\ffmpeg.exe`;
       if (await checkCommand([winFFmeg, "-version"], 0)) {
         ffmpegCommand = [winFFmeg];
       } else {
@@ -92,7 +92,7 @@ let convertCommand: string[] = [];
 export async function getConvertCommand(): Promise<string[]> {
   if (convertCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      const winConvert = `${getInstallDir()}tools\\convert.exe`;
+      const winConvert = `${getInstallDir()}\\tools\\convert.exe`;
       if (await checkCommand([winConvert, "--version"], 0)) {
         convertCommand = [winConvert];
       } else {
