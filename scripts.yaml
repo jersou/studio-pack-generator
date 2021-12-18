@@ -37,3 +37,8 @@ scripts:
     - deno coverage .cov_profile --lcov > .cov_profile/cov_profile.lcov
     - genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov
 
+  pre-commit:
+    - deno fmt --ignore=.DENO_DIR,dist,.lock.json --check
+    - deno lint --ignore=.DENO_DIR,dist
+    - deno test -A --ignore=".DENO_DIR,dist" --no-check
+
