@@ -25317,20 +25317,42 @@ or install ffmpeg : sudo apt install -y ffmpeg
 let pico2waveCommand = [];
 async function getPico2waveCommand() {
     if (pico2waveCommand.length === 0) {
-        if (await checkCommand([
-            "pico2wave",
-            "--version"
-        ], 1)) {
-            pico2waveCommand = [
-                "pico2wave"
-            ];
+        if (Deno.build.os === "windows") {
+            if (await checkCommand([
+                "wsl",
+                "pico2wave",
+                "--version"
+            ], 1)) {
+                pico2waveCommand = [
+                    "wsl",
+                    "pico2wave"
+                ];
+            } else {
+                console.error(`
+Command pico2wave (from libttspico-utils) not found,
+use --skip-audio-item-gen to skip audio item generation
+or install pico2wave :
+       wsl sudo apt update
+       wsl sudo apt install -y libttspico-utils
+`);
+                Deno.exit(3);
+            }
         } else {
-            console.error(`
+            if (await checkCommand([
+                "pico2wave",
+                "--version"
+            ], 1)) {
+                pico2waveCommand = [
+                    "pico2wave"
+                ];
+            } else {
+                console.error(`
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
 or install pico2wave : sudo apt install -y libttspico-utils
 `);
-            Deno.exit(3);
+                Deno.exit(3);
+            }
         }
     }
     return pico2waveCommand;
@@ -25452,6 +25474,13 @@ function firstStoryFile(folder) {
         )
     );
 }
+function convertPath(path) {
+    return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
+}
+function convWindowsWslPath(path, cwd) {
+    const groups = /^[a-z]:/i.test(path) ? /(^.)(.*)$/.exec(path) : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
+    return "/mnt/" + groups?.[1].toLowerCase() + groups?.[2].replace(/\\/g, "/").replace(/:/g, "");
+}
 function uniq2(items) {
     return [
         ...new Set(items)
@@ -25558,9 +25587,20 @@ async function generateImage(title, outputPath) {
     await process.status();
     process.close();
 }
+let hasPico2waveWslCache;
+async function hasPico2waveWsl() {
+    if (hasPico2waveWslCache === undefined) {
+        hasPico2waveWslCache = await checkCommand([
+            "wsl",
+            "pico2wave",
+            "--version"
+        ], 1);
+    }
+    return hasPico2waveWslCache;
+}
 async function generateAudio(title, outputPath, lang) {
     console.log(bgBlue(`Generate audio to ${outputPath}`));
-    if (Deno.build.os === "windows") {
+    if (Deno.build.os === "windows" && !await hasPico2waveWsl()) {
         const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" + "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" + "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
         const process = Deno.run({
             cmd: [
@@ -25578,7 +25618,7 @@ async function generateAudio(title, outputPath, lang) {
                 "-l",
                 lang,
                 "-w",
-                outputPath,
+                convertPath(outputPath),
                 ` . ${title} . `, 
             ]
         });
@@ -26018,14 +26058,15 @@ async function getFolderWithUrlFromRssUrl(url) {
     const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
     const fs = {
         name: rss.title,
-        files: [
-            {
-                name: `0-item-to-resize.${getExtension(imgUrl)}`,
-                url: imgUrl,
-                sha1: ""
-            }, 
-        ]
+        files: []
     };
+    if (imgUrl) {
+        fs.files.push({
+            name: `0-item-to-resize.${getExtension(imgUrl)}`,
+            url: imgUrl,
+            sha1: ""
+        });
+    }
     const items = rss.item.sort((a, b)=>new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime()
     );
     console.log(bgBlue(`→ ${items.length} items`));
@@ -26105,9 +26146,11 @@ async function downloadRss(url, parentPath) {
     const storyPath = join3(parentPath, fs.name);
     const itemToResize = fs.files.find((f)=>isFile(f) && f.name.startsWith("0-item-to-resize")
     );
-    const itemToResizePath = join3(storyPath, itemToResize.name);
-    await convertToImageItem(itemToResizePath, join3(storyPath, "0-item.png"));
-    await Deno.remove(itemToResizePath);
+    if (itemToResize) {
+        const itemToResizePath = join3(storyPath, itemToResize.name);
+        await convertToImageItem(itemToResizePath, join3(storyPath, "0-item.png"));
+        await Deno.remove(itemToResizePath);
+    }
     return storyPath;
 }
 const en = {
