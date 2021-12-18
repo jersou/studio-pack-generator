@@ -100,8 +100,8 @@ async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
     stdin: "null",
     stderr: "piped",
   });
-  const status = await process.status();
   const output = new TextDecoder().decode(await process.stderrOutput());
+  const status = await process.status();
   process.close();
   if (status.success) {
     const maxVolLine = output
@@ -142,8 +142,8 @@ async function getFfmpegInfo(filePath: string): Promise<string> {
     stdin: "null",
     stderr: "piped",
   });
-  const status = await process.status();
   const output = new TextDecoder().decode(await process.stderrOutput());
+  const status = await process.status();
   process.close();
   let info = "";
   if (status.success) {

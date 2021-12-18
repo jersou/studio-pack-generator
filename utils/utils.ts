@@ -139,14 +139,14 @@ export async function convertToImageItem(
     stdin: "null",
     stderr: "piped",
   });
+  const output = new TextDecoder().decode(await process.stderrOutput());
   const status = await process.status();
   if (status.success) {
     console.log(bgGreen("→ OK"));
-    process.stderr?.close();
   } else {
-    const output = new TextDecoder().decode(await process.stderrOutput());
     console.log(bgRed("→ KO : \n" + output));
   }
+  process.stderr?.close();
   process.close();
 }
 
