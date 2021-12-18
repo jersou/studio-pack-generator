@@ -102,6 +102,21 @@ export function firstStoryFile(folder: Folder) {
   ) as File;
 }
 
+export function convertPath(path: string) {
+  return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
+}
+
+export function convWindowsWslPath(path: string, cwd?: string): string {
+  const groups = /^[a-z]:/i.test(path)
+    ? /(^.)(.*)$/.exec(path)
+    : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
+  return (
+    "/mnt/" +
+    groups?.[1].toLowerCase() +
+    groups?.[2].replace(/\\/g, "/").replace(/:/g, "")
+  );
+}
+
 export function uniq(items: string[]): string[] {
   return [...new Set(items)];
 }

@@ -71,17 +71,34 @@ let pico2waveCommand: string[] = [];
 
 export async function getPico2waveCommand(): Promise<string[]> {
   if (pico2waveCommand.length === 0) {
-    if (await checkCommand(["pico2wave", "--version"], 1)) {
-      pico2waveCommand = ["pico2wave"];
+    if (Deno.build.os === "windows") {
+      if (await checkCommand(["wsl", "pico2wave", "--version"], 1)) {
+        pico2waveCommand = ["wsl", "pico2wave"];
+      } else {
+        console.error(
+          `
+Command pico2wave (from libttspico-utils) not found,
+use --skip-audio-item-gen to skip audio item generation
+or install pico2wave :
+       wsl sudo apt update
+       wsl sudo apt install -y libttspico-utils
+`,
+        );
+        Deno.exit(3);
+      }
     } else {
-      console.error(
-        `
+      if (await checkCommand(["pico2wave", "--version"], 1)) {
+        pico2waveCommand = ["pico2wave"];
+      } else {
+        console.error(
+          `
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
 or install pico2wave : sudo apt install -y libttspico-utils
 `,
-      );
-      Deno.exit(3);
+        );
+        Deno.exit(3);
+      }
     }
   }
   return pico2waveCommand;

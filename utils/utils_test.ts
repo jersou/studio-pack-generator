@@ -1,4 +1,5 @@
 import {
+  convWindowsWslPath,
   firstStoryFile,
   getExtension,
   getFileAudioItem,
@@ -80,6 +81,21 @@ Deno.test("checkCommand", async () => {
   assertEquals(
     await checkCommand(["gdfJ0bN6jltMx5XsYsx78gHvrAn44o3p-not-found"], 0),
     false,
+  );
+});
+
+Deno.test("convWindowsWslPath", () => {
+  assertEquals(
+    convWindowsWslPath("C:\\azer\\tyu.iop", "C:\\tmp"),
+    "/mnt/c/azer/tyu.iop",
+  );
+  assertEquals(
+    convWindowsWslPath("d:\\azer\\tyu.iop", "C:\\tmp"),
+    "/mnt/d/azer/tyu.iop",
+  );
+  assertEquals(
+    convWindowsWslPath("azer\\tyu.iop", "C:\\tmp"),
+    "/mnt/c/tmp/azer/tyu.iop",
   );
 });
 
