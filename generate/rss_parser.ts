@@ -56,14 +56,15 @@ async function getFolderWithUrlFromRssUrl(url: string): Promise<FolderWithUrl> {
   const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
   const fs: FolderWithUrl = {
     name: rss.title,
-    files: [
-      {
-        name: `0-item-to-resize.${getExtension(imgUrl)}`,
-        url: imgUrl,
-        sha1: "",
-      },
-    ],
+    files: [],
   };
+  if (imgUrl) {
+    fs.files.push({
+      name: `0-item-to-resize.${getExtension(imgUrl)}`,
+      url: imgUrl,
+      sha1: "",
+    });
+  }
   const items = rss.item.sort(
     (a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime(),
   );
@@ -150,9 +151,10 @@ export async function downloadRss(url: string, parentPath: string) {
   const itemToResize = fs.files.find(
     (f) => isFile(f) && f.name.startsWith("0-item-to-resize"),
   )!;
-  const itemToResizePath = join(storyPath, itemToResize.name);
-  await convertToImageItem(itemToResizePath, join(storyPath, "0-item.png"));
-  await Deno.remove(itemToResizePath);
-
+  if (itemToResize) {
+    const itemToResizePath = join(storyPath, itemToResize.name);
+    await convertToImageItem(itemToResizePath, join(storyPath, "0-item.png"));
+    await Deno.remove(itemToResizePath);
+  }
   return storyPath;
 }
