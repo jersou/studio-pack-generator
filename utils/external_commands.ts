@@ -27,7 +27,11 @@ export function getInstallDir(): string {
     const fromFileUrl = Deno.build.os === "windows"
       ? win32.fromFileUrl
       : posix.fromFileUrl;
-    return dirname(fromFileUrl(Deno.mainModule));
+    if (Deno.mainModule.match(/^http/)) {
+      return ".";
+    } else {
+      return dirname(fromFileUrl(Deno.mainModule));
+    }
   } else {
     return dirname(Deno.execPath());
   }
