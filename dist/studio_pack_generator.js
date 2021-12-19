@@ -25270,7 +25270,11 @@ async function checkCommand(cmd, exitCodeExpected) {
 function getInstallDir() {
     if (basename2(Deno.execPath()).match(/^deno/i)) {
         const fromFileUrl = Deno.build.os === "windows" ? mod.fromFileUrl : mod1.fromFileUrl;
-        return dirname2(fromFileUrl(Deno.mainModule));
+        if (Deno.mainModule.match(/^http/)) {
+            return ".";
+        } else {
+            return dirname2(fromFileUrl(Deno.mainModule));
+        }
     } else {
         return dirname2(Deno.execPath());
     }
@@ -25501,12 +25505,11 @@ async function convertToImageItem(inputPath, outputPath) {
         stdin: "null",
         stderr: "piped"
     });
+    const output = new TextDecoder().decode(await process.stderrOutput());
     const status = await process.status();
     if (status.success) {
         console.log(bgGreen("→ OK"));
-        process.stderr?.close();
     } else {
-        const output = new TextDecoder().decode(await process.stderrOutput());
         console.log(bgRed("→ KO : \n" + output));
     }
     process.close();
@@ -25739,8 +25742,8 @@ async function getMaxVolumeOfFile(inputPath) {
         stdin: "null",
         stderr: "piped"
     });
-    const status = await process.status();
     const output = new TextDecoder().decode(await process.stderrOutput());
+    const status = await process.status();
     process.close();
     if (status.success) {
         const maxVolLine = output.split("\\n").find((line)=>maxVolumeRegex.test(line)
@@ -25776,8 +25779,8 @@ async function getFfmpegInfo(filePath) {
         stdin: "null",
         stderr: "piped"
     });
-    const status = await process.status();
     const output = new TextDecoder().decode(await process.stderrOutput());
+    const status = await process.status();
     process.close();
     let info = "";
     if (status.success) {
@@ -26078,7 +26081,7 @@ async function getFolderWithUrlFromRssUrl(url) {
     return fs;
 }
 function getItemFileName(item) {
-    const title = item.title.replace(/[\/"]/g, " ");
+    const title = item.title.replace(/[\\\/:*?"<>|]/g, " ");
     return new Date(item.pubDate).getTime() + ` - ${title}.${getExtension(item.enclosure["@url"])}`;
 }
 function getFolderOfStories(items) {
