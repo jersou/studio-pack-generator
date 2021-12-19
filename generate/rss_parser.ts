@@ -77,8 +77,8 @@ async function getFolderWithUrlFromRssUrl(url: string): Promise<FolderWithUrl> {
   return fs;
 }
 
-function getItemFileName(item: RssItem) {
-  const title = item.title!.replace(/[\/"]/g, " ");
+export function getItemFileName(item: RssItem) {
+  const title = item.title!.replace(/[\\\/:*?"<>|]/g, " ");
   return (
     new Date(item.pubDate).getTime() +
     ` - ${title}.${getExtension(item.enclosure["@url"])}`
