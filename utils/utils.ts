@@ -146,7 +146,6 @@ export async function convertToImageItem(
   } else {
     console.log(bgRed("→ KO : \n" + output));
   }
-  process.stderr?.close();
   process.close();
 }
 
