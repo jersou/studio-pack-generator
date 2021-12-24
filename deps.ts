@@ -29,6 +29,7 @@ export type { Arguments } from "https://deno.land/x/yargs@v17.2.1-deno/deno-type
 export {
   BlobReader,
   BlobWriter,
+  ZipReader,
   ZipWriter,
 } from "https://deno.land/x/zipjs@v2.3.17/index.js";
 

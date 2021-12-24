@@ -54,24 +54,24 @@ function clone(object: any) {
   return cloneObj;
 }
 
-Deno.test("serializePack-min", () => {
-  const pack = serializePack(expectedMinPack);
+Deno.test("serializePack-min", async () => {
+  const pack = await serializePack(expectedMinPack, "");
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedMinPackSerialized)),
   );
 });
 
-Deno.test("serializePack-moy", () => {
-  const pack = serializePack(expectedMoyPack);
+Deno.test("serializePack-moy", async () => {
+  const pack = await serializePack(expectedMoyPack, "");
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedMoyPackSerialized)),
   );
 });
 
-Deno.test("serializePack-full", () => {
-  const pack = serializePack(expectedFullPack);
+Deno.test("serializePack-full", async () => {
+  const pack = await serializePack(expectedFullPack, "");
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedFullPackSerialized)),

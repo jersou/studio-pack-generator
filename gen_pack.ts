@@ -13,7 +13,6 @@ import {
   checkRunPermission,
   convertToImageItem,
   folderImageItemRegEx,
-  sanitize,
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 
@@ -77,7 +76,7 @@ export async function generatePack(opt: ModOptions) {
     if (!opt.skipZipGeneration) {
       folder = await fsToFolder(opt.storyPath, true);
       const pack = folderToPack(folder);
-      const serializedPack = serializePack(pack, {
+      const serializedPack = await serializePack(pack, opt.storyPath, {
         autoNextStoryTransition: opt.autoNextStoryTransition,
       });
       const assets = getAssetsPaths(serializedPack, folder);
@@ -88,7 +87,7 @@ export async function generatePack(opt: ModOptions) {
           (Date.now() - start) / 1000
         } sec) :  ${opt.storyPath} → ${zipPath}`,
       );
-      sanitize();
+      // sanitize();
     }
   }
 }

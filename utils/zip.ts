@@ -1,4 +1,11 @@
-import { BlobReader, BlobWriter, Buffer, exists, ZipWriter } from "../deps.ts";
+import {
+  BlobReader,
+  BlobWriter,
+  Buffer,
+  exists,
+  ZipReader,
+  ZipWriter,
+} from "../deps.ts";
 import { SerializedPack } from "../serialize/types.ts";
 import { Assets } from "../serialize/assets.ts";
 import { getExtension } from "./utils.ts";
@@ -11,23 +18,51 @@ export async function createPackZip(
 ) {
   console.log(`create ${zipPath}`);
   const blobWriter = new BlobWriter("application/zip");
+  const fileInZip: string[] = [];
   const zipWriter = new ZipWriter(blobWriter, {
     useWebWorkers: false,
   });
   const thumbnailPath = `${storyPath}/thumbnail.png`;
   if (await exists(thumbnailPath)) {
+    fileInZip.push("thumbnail.png");
     await zipWriter.add(
       "thumbnail.png",
       new BlobReader(new Blob([await Deno.readFile(thumbnailPath)])),
     );
   }
 
+  if (serializedPack.zipPaths) {
+    for (const zipPath of serializedPack.zipPaths) {
+      const zipReader = new ZipReader(
+        new BlobReader(
+          new Blob([await Deno.readFile(`${storyPath}/${zipPath}`)]),
+        ),
+      );
+      // deno-lint-ignore no-explicit-any
+      const entries: any[] = await zipReader.getEntries();
+      for (
+        const entry of entries.filter((entry) =>
+          entry.filename.startsWith("assets/")
+        )
+      ) {
+        if (!fileInZip.find((f) => f === entry.filename)) {
+          const blob = await entry.getData(new BlobWriter());
+          console.log(`add to zip : ${entry.filename}`);
+          fileInZip.push(entry.filename);
+          await zipWriter.add(entry.filename, new BlobReader(blob));
+        }
+      }
+      await zipReader.close();
+    }
+  }
+  delete serializedPack.zipPaths;
+
   await zipWriter.add(
     "story.json",
     new BlobReader(new Blob([JSON.stringify(serializedPack, null, "  ")])),
   );
 
-  for (const asset of assets) {
+  for (const asset of assets.filter((asset) => asset.path)) {
     console.log(`add asset ${asset.path}`);
     await zipWriter.add(
       `assets/${asset.sha1}.${getExtension(asset.path)}`,
@@ -36,6 +71,7 @@ export async function createPackZip(
       ),
     );
   }
+
   console.log(`write ${zipPath}`);
   const blob = await zipWriter.close();
 

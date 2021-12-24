@@ -1,4 +1,12 @@
-import { File, Folder, Menu, Pack, Story, StoryItem } from "./types.ts";
+import {
+  File,
+  Folder,
+  Menu,
+  Pack,
+  Story,
+  StoryItem,
+  ZipMenu,
+} from "./types.ts";
 import {
   firstStoryFile,
   getExtension,
@@ -9,6 +17,7 @@ import {
   getFolderImageItem,
   isFolder,
   isStory,
+  isZipFile,
 } from "../utils/utils.ts";
 
 export function folderToPack(folder: Folder): Pack {
@@ -29,7 +38,7 @@ export function folderToPack(folder: Folder): Pack {
         name: "Action node",
         options: [
           firstSubFolder
-            ? folderToMenu(firstSubFolder)
+            ? folderToMenu(firstSubFolder, "")
             : fileToStory(firstStoryFile(folder)! as File),
         ],
       },
@@ -37,7 +46,7 @@ export function folderToPack(folder: Folder): Pack {
   };
 }
 
-export function folderToMenu(folder: Folder): Menu {
+export function folderToMenu(folder: Folder, path: string): Menu {
   return {
     class: "StageNode-Menu",
     image: getFolderImageItem(folder),
@@ -49,13 +58,22 @@ export function folderToMenu(folder: Folder): Menu {
       options: folder.files
         .map((f) =>
           isFolder(f)
-            ? folderToMenu(f as Folder)
-            : !isStory(f as File)
-            ? null
-            : fileToStoryItem(<File> f, folder)
+            ? folderToMenu(f as Folder, path + "/" + f.name)
+            : isStory(f as File)
+            ? fileToStoryItem(f as File, folder)
+            : isZipFile(f as File)
+            ? fileToZipMenu(`${path}/${folder.name}/${f.name}`)
+            : null
         )
-        .filter((f) => f) as (Menu | StoryItem)[],
+        .filter((f) => f) as (Menu | ZipMenu | StoryItem)[],
     },
+  };
+}
+
+export function fileToZipMenu(path: string): ZipMenu {
+  return {
+    class: "ZipMenu",
+    path: path,
   };
 }
 

@@ -88,6 +88,10 @@ export function isStory(file: File): boolean {
   );
 }
 
+export function isZipFile(file: File): boolean {
+  return /\.zip$/i.test(file.name);
+}
+
 export function isAudioItem(file: File) {
   return (
     fileAudioItemRegEx.test(file.name) || folderAudioItemRegEx.test(file.name)

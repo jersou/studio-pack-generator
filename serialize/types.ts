@@ -35,7 +35,7 @@ export type StoryItem = Omit<Menu, "class" | "okTransition"> & {
 export type Action = {
   class: "ActionNode";
   name: string;
-  options: (Menu | StoryItem | Story)[];
+  options: (Menu | ZipMenu | StoryItem | Story)[];
 };
 export type StoryAction = {
   class: "ActionNode";
@@ -87,4 +87,10 @@ export type SerializedPack = {
   nightModeAvailable: false;
   actionNodes: ActionNode[];
   stageNodes: StageNode[];
+  zipPaths?: string[];
+};
+
+export type ZipMenu = {
+  class: "ZipMenu";
+  path: string;
 };
