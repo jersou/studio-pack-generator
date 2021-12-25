@@ -157,6 +157,37 @@ There is no limit to the nesting of menus, for example :
     ...
 ```
 
+### Zip Pack aggregation
+
+_Since v0.1.11._
+
+studio-pack-generator can embed zip studio packs in the tree structure :
+
+```shell
+📂 Story folder
+└── 📂 Choose a character   ← 📂 first menu
+    ├── 📦 Alice.zip           ← 📦 pack as menu entry
+    ├── 🎵 Bob.mp3             ← 📗 audio story
+    ...
+```
+
+The "super pack" will look like :
+
+```shell
+📂 Story folder
+└── 📂 Choose a character                 ← 📂 first menu
+    ├── 📂 Alice                            ← 📂 The Alice.zip pack
+    │   └── 📂 Choose a place                ← 📂 second menu
+    │       └── 📂 Building                    ← 📂 second choice of the first menu
+    │       │   └── 📂 Choose the floor          ← 📂 third menu
+    │       │       ├── 🎵 the floor 1.mp3         ← 📗 audio story
+    │       │       └── 🎵 the floor 2.mp3         ← 📗 audio story
+    │       ├── 🎵 the city.mp3                ← 📗 audio story
+    │       └── 🎵 the jungle.mp3              ← 📗 audio story
+    ├── 🎵 Bob.mp3                         ← 📗 audio story
+    ...
+```
+
 ## Tips
 
 - The first digit of file/folder name are ignored, it's useful to sort
