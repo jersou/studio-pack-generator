@@ -17,6 +17,15 @@ export async function hasPico2waveWsl() {
   return hasPico2waveWslCache;
 }
 
+let hasPico2waveCache: undefined | boolean;
+
+export async function hasPico2wave() {
+  if (hasPico2waveCache === undefined) {
+    hasPico2waveCache = await checkCommand(["pico2wave", "--version"], 1);
+  }
+  return hasPico2waveCache;
+}
+
 export async function generateAudio(
   title: string,
   outputPath: string,
@@ -24,7 +33,7 @@ export async function generateAudio(
 ) {
   console.log(bgBlue(`Generate audio to ${outputPath}`));
 
-  if (Deno.build.os === "windows" && !await hasPico2waveWsl()) {
+  if (Deno.build.os === "windows" && !(await hasPico2waveWsl())) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
@@ -38,6 +47,12 @@ export async function generateAudio(
         `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` +
         `$speak.Dispose();`,
       ],
+    });
+    await process.status();
+    process.close();
+  } else if (Deno.build.os === "darwin" && !hasPico2wave()) {
+    const process = Deno.run({
+      cmd: ["say", "-o", convertPath(outputPath), ` . ${title} . `],
     });
     await process.status();
     process.close();
