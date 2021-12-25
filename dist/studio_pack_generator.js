@@ -25470,6 +25470,9 @@ function isStory(file) {
     return storyRegEx.test(file.name) && !itemsRegEx.some((regex)=>regex.test(file.name)
     );
 }
+function isZipFile(file) {
+    return /\.zip$/i.test(file.name);
+}
 function isAudioItem(file) {
     return fileAudioItemRegEx.test(file.name) || folderAudioItemRegEx.test(file.name);
 }
@@ -25525,32 +25528,6 @@ async function checkRunPermission() {
         runPermissionOk = true;
     }
 }
-const stdRes = [
-    "stdin",
-    "stderr",
-    "stdout"
-];
-function checkResources() {
-    const res = Deno.resources();
-    if (Object.keys(res).length !== 3 && Object.values(res).filter((v)=>!stdRes.includes(v)
-    ).length > 0) {
-        console.log(bgRed("Some resources are not closed except stdin/stderr/stdout :"));
-        console.log(res);
-    }
-}
-function checkOps() {
-    const metrics = Deno.metrics();
-    if (metrics.opsDispatched !== metrics.opsCompleted || metrics.opsDispatchedSync !== metrics.opsCompletedSync || metrics.opsDispatchedAsync !== metrics.opsCompletedAsync || metrics.opsDispatchedAsyncUnref !== metrics.opsCompletedAsyncUnref) {
-        console.log(bgRed("Some ops are not completed :"));
-        console.log({
-            metrics
-        });
-    }
-}
-function sanitize() {
-    checkResources();
-    checkOps();
-}
 async function extractImagesFromAudio(rootpath, folder) {
     await checkRunPermission();
     for (const file of folder.files){
@@ -25601,6 +25578,16 @@ async function hasPico2waveWsl() {
     }
     return hasPico2waveWslCache;
 }
+let hasPico2waveCache;
+async function hasPico2wave() {
+    if (hasPico2waveCache === undefined) {
+        hasPico2waveCache = await checkCommand([
+            "pico2wave",
+            "--version"
+        ], 1);
+    }
+    return hasPico2waveCache;
+}
 async function generateAudio(title, outputPath, lang) {
     console.log(bgBlue(`Generate audio to ${outputPath}`));
     if (Deno.build.os === "windows" && !await hasPico2waveWsl()) {
@@ -25610,6 +25597,17 @@ async function generateAudio(title, outputPath, lang) {
                 "PowerShell",
                 "-Command",
                 `Add-Type -AssemblyName System.Speech; ` + `$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` + `$speak.SetOutputToWaveFile("${outputPath}",${audioFormat}); ` + `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` + `$speak.Dispose();`, 
+            ]
+        });
+        await process.status();
+        process.close();
+    } else if (Deno.build.os === "darwin" && !hasPico2wave()) {
+        const process = Deno.run({
+            cmd: [
+                "say",
+                "-o",
+                convertPath(outputPath),
+                ` . ${title} . `
             ]
         });
         await process.status();
@@ -25807,13 +25805,13 @@ function folderToPack(folder) {
                 class: "ActionNode",
                 name: "Action node",
                 options: [
-                    firstSubFolder ? folderToMenu(firstSubFolder) : fileToStory(firstStoryFile(folder)), 
+                    firstSubFolder ? folderToMenu(firstSubFolder, "") : fileToStory(firstStoryFile(folder)), 
                 ]
             }
         }
     };
 }
-function folderToMenu(folder) {
+function folderToMenu(folder, path) {
     return {
         class: "StageNode-Menu",
         image: getFolderImageItem(folder),
@@ -25822,10 +25820,16 @@ function folderToMenu(folder) {
         okTransition: {
             class: "ActionNode",
             name: folder.name + " ActionNode",
-            options: folder.files.map((f)=>isFolder(f) ? folderToMenu(f) : !isStory(f) ? null : fileToStoryItem(f, folder)
+            options: folder.files.map((f)=>isFolder(f) ? folderToMenu(f, path + "/" + f.name) : isStory(f) ? fileToStoryItem(f, folder) : isZipFile(f) ? fileToZipMenu(`${path}/${folder.name}/${f.name}`) : null
             ).filter((f)=>f
             )
         }
+    };
+}
+function fileToZipMenu(path) {
+    return {
+        class: "ZipMenu",
+        path: path
     };
 }
 function fileToStoryItem(file, parent) {
@@ -25858,7 +25862,7 @@ function fileToStory(file) {
         okTransition: null
     };
 }
-function serializePack(pack, opt) {
+async function serializePack(pack, storyPath, opt) {
     const serialized = {
         title: pack.title,
         version: pack.version,
@@ -25870,7 +25874,7 @@ function serializePack(pack, opt) {
     };
     const groups = {
     };
-    exploreStageNode(pack.entrypoint, serialized, undefined, [], [], groups);
+    await exploreStageNode(pack.entrypoint, serialized, undefined, [], [], groups, storyPath);
     serialized.actionNodes = serialized.actionNodes.reverse();
     serialized.stageNodes = serialized.stageNodes.reverse();
     if (opt?.autoNextStoryTransition) {
@@ -25928,7 +25932,7 @@ function getControlSettings(stageNode, parent) {
             };
     }
 }
-function exploreStageNode(stageNode, serialized, parent, actionHistory, parentIDs, groups) {
+async function exploreStageNode(stageNode, serialized, parent, actionHistory, parentIDs, groups, storyPath) {
     const uuid = crypto.randomUUID();
     if (stageNode.class === "StageNode-Story") {
         const menu = parentIDs[parentIDs.length - 3];
@@ -25950,10 +25954,10 @@ function exploreStageNode(stageNode, serialized, parent, actionHistory, parentID
         image: stageNode.image,
         name: stageNode.name,
         okTransition: stageNode.okTransition ? {
-            actionNode: exploreActionNode(stageNode.okTransition, serialized, actionHistory, [
+            actionNode: await exploreActionNode(stageNode.okTransition, serialized, actionHistory, [
                 ...parentIDs,
                 uuid
-            ], groups),
+            ], groups, storyPath),
             optionIndex: 0
         } : null,
         position: {
@@ -25974,22 +25978,88 @@ function exploreStageNode(stageNode, serialized, parent, actionHistory, parentID
     serialized.stageNodes.push(serializedStageNode);
     return uuid;
 }
-function exploreActionNode(actionNode, serialized, actionHistory, parentIDs, groups) {
+async function exploreZipMenu(zipMenu, serialized, actionHistory, storyPath) {
+    if (!serialized.zipPaths) {
+        serialized.zipPaths = [];
+    }
+    serialized.zipPaths.push(zipMenu.path);
+    const zipReader = new ZipReader(new BlobReader(new Blob([
+        await Deno.readFile(`${storyPath}/${zipMenu.path}`)
+    ])));
+    const entries = await zipReader.getEntries();
+    const storyEntry = entries.find((entry)=>entry.filename === "story.json"
+    );
+    if (!storyEntry) {
+        console.error(`The zip file '${storyPath}/${zipMenu.path}' is not Studio pack zip !`);
+        Deno.exit(6);
+    }
+    const blobWriter = new BlobWriter("application/json");
+    const blob = await storyEntry.getData(blobWriter);
+    const storyTxt = await blob.text();
+    await zipReader.close();
+    const story = JSON.parse(storyTxt);
+    const entrypoint = story.stageNodes.find((stageNode)=>stageNode.squareOne === true
+    );
+    entrypoint.squareOne = false;
+    entrypoint.type = "stage";
+    entrypoint.homeTransition = actionHistory.length > 1 ? {
+        actionNode: actionHistory[actionHistory.length - 2].id,
+        optionIndex: actionHistory[actionHistory.length - 2].optionIndex
+    } : null;
+    if (!entrypoint.controlSettings) {
+        entrypoint.controlSettings = {
+        };
+    }
+    entrypoint.controlSettings.home = true;
+    const entrypointActionNodeUuid = entrypoint.okTransition.actionNode;
+    if (entrypointActionNodeUuid && actionHistory.length > 0) {
+        const entrypointActionNode = story.actionNodes.find((actionNode)=>actionNode.id === entrypointActionNodeUuid
+        );
+        for (const option of entrypointActionNode.options){
+            const stage = story.stageNodes.find((s)=>s.uuid === option
+            );
+            console.log(stage);
+            if (!stage.controlSettings) {
+                stage.controlSettings = {
+                };
+            }
+            stage.controlSettings.homeTransition = true;
+            stage.homeTransition = {
+                actionNode: actionHistory[actionHistory.length - 1].id,
+                optionIndex: actionHistory[actionHistory.length - 1].optionIndex
+            };
+        }
+    }
+    serialized.actionNodes.push(...story.actionNodes);
+    serialized.stageNodes.push(...story.stageNodes);
+    return entrypoint.uuid;
+}
+async function exploreActionNode(actionNode, serialized, actionHistory, parentIDs, groups, storyPath) {
     const id = crypto.randomUUID();
-    const serializedActionNode = {
-        id,
-        name: actionNode.name,
-        options: actionNode.options.map((stageNode, optionIndex)=>exploreStageNode(stageNode, serialized, actionNode, [
+    const options = [];
+    for (const stageNode of actionNode.options){
+        {
+            const histo = [
                 ...actionHistory,
                 {
                     id,
-                    optionIndex
-                }, 
-            ], [
-                ...parentIDs,
-                id
-            ], groups)
-        ),
+                    optionIndex: options.length
+                }
+            ];
+            if (stageNode.class == "ZipMenu") {
+                options.push(await exploreZipMenu(stageNode, serialized, histo, storyPath));
+            } else {
+                options.push(await exploreStageNode(stageNode, serialized, actionNode, histo, [
+                    ...parentIDs,
+                    id
+                ], groups, storyPath));
+            }
+        }
+    }
+    const serializedActionNode = {
+        id,
+        name: actionNode.name,
+        options,
         position: {
             x: 0,
             y: 0
@@ -26031,19 +26101,42 @@ function getAssetsPaths(serializedPack, folder) {
 async function createPackZip(zipPath, storyPath, serializedPack, assets) {
     console.log(`create ${zipPath}`);
     const blobWriter = new BlobWriter("application/zip");
+    const fileInZip = [];
     const zipWriter = new ZipWriter(blobWriter, {
         useWebWorkers: false
     });
     const thumbnailPath = `${storyPath}/thumbnail.png`;
     if (await exists(thumbnailPath)) {
+        fileInZip.push("thumbnail.png");
         await zipWriter.add("thumbnail.png", new BlobReader(new Blob([
             await Deno.readFile(thumbnailPath)
         ])));
     }
+    if (serializedPack.zipPaths) {
+        for (const zipPath of serializedPack.zipPaths){
+            const zipReader = new ZipReader(new BlobReader(new Blob([
+                await Deno.readFile(`${storyPath}/${zipPath}`)
+            ])));
+            const entries = await zipReader.getEntries();
+            for (const entry of entries.filter((entry)=>entry.filename.startsWith("assets/")
+            )){
+                if (!fileInZip.find((f)=>f === entry.filename
+                )) {
+                    const blob = await entry.getData(new BlobWriter());
+                    console.log(`add to zip : ${entry.filename}`);
+                    fileInZip.push(entry.filename);
+                    await zipWriter.add(entry.filename, new BlobReader(blob));
+                }
+            }
+            await zipReader.close();
+        }
+    }
+    delete serializedPack.zipPaths;
     await zipWriter.add("story.json", new BlobReader(new Blob([
         JSON.stringify(serializedPack, null, "  ")
     ])));
-    for (const asset of assets){
+    for (const asset of assets.filter((asset)=>asset.path
+    )){
         console.log(`add asset ${asset.path}`);
         await zipWriter.add(`assets/${asset.sha1}.${getExtension(asset.path)}`, new BlobReader(new Blob([
             await Deno.readFile(`${storyPath}/${asset.path}`)
@@ -26245,14 +26338,13 @@ async function generatePack(opt) {
         if (!opt.skipZipGeneration) {
             folder = await fsToFolder(opt.storyPath, true);
             const pack = folderToPack(folder);
-            const serializedPack = serializePack(pack, {
+            const serializedPack = await serializePack(pack, opt.storyPath, {
                 autoNextStoryTransition: opt.autoNextStoryTransition
             });
             const assets = getAssetsPaths(serializedPack, folder);
             const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
             await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
             console.log(`Done (${(Date.now() - start) / 1000} sec) :  ${opt.storyPath} → ${zipPath}`);
-            sanitize();
         }
     }
 }
