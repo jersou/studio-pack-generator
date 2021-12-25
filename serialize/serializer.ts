@@ -229,6 +229,29 @@ async function exploreZipMenu(
     entrypoint.controlSettings = {};
   }
   entrypoint.controlSettings.home = true;
+
+  const entrypointActionNodeUuid = entrypoint.okTransition.actionNode;
+  if (entrypointActionNodeUuid && actionHistory.length > 0) {
+    const entrypointActionNode = story.actionNodes.find(
+      // deno-lint-ignore no-explicit-any
+      (actionNode: any) => actionNode.id === entrypointActionNodeUuid,
+    );
+
+    for (const option of entrypointActionNode.options) {
+      // deno-lint-ignore no-explicit-any
+      const stage = story.stageNodes.find((s: any) => s.uuid === option);
+      console.log(stage);
+      if (!stage.controlSettings) {
+        stage.controlSettings = {};
+      }
+      stage.controlSettings.homeTransition = true;
+      stage.homeTransition = {
+        actionNode: actionHistory[actionHistory.length - 1].id,
+        optionIndex: actionHistory[actionHistory.length - 1].optionIndex,
+      };
+    }
+  }
+
   serialized.actionNodes.push(...story.actionNodes);
   serialized.stageNodes.push(...story.stageNodes);
   return entrypoint.uuid;
