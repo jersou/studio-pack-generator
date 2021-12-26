@@ -52,10 +52,16 @@ export async function generateAudio(
     process.close();
   } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
     const process = Deno.run({
-      cmd: ["say", "-o", convertPath(outputPath), 
-            "--file-format", "WAVE", 
-            "--data-format", "LEF32@22050",
-            ` . ${title} . `],
+      cmd: [
+        "say",
+        "-o",
+        convertPath(outputPath),
+        "--file-format",
+        "WAVE",
+        "--data-format",
+        "LEF32@22050",
+        ` . ${title} . `,
+      ],
     });
     await process.status();
     process.close();
