@@ -195,7 +195,7 @@ The "super pack" will look like :
 - To keep numbers in generated items : "- 3 petits cochons.mp3" or "12 - 3
   petits cochons.mp3".
 - Image formats : png, jpg, bmp.
-- Audio formats : mp3, ogg, wav.
+- Audio formats : mp3, ogg, opus, wav.
 
 ## Usage
 
