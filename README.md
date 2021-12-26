@@ -204,7 +204,7 @@ deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert
 
 Options:
       --help                         Show help                                                                 [boolean]
-  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
+  -l, --lang                         the lang used to generate menu and items (not used by Windows TTS). Auto detected by default         [string]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
   -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
   -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
