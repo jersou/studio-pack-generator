@@ -3,11 +3,11 @@ import { bgBlue, bgGreen, bgRed } from "../deps.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
-export const folderAudioItemRegEx = /^0-item\.(ogg|wav|mp3)$/i;
+export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
 export const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
-export const fileAudioItemRegEx = /\.item\.(ogg|wav|mp3)$/i;
+export const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3)$/i;
 export const fileImageItemRegEx = /\.item\.(png|jpg|jpeg|bmp)$/i;
-export const storyRegEx = /\.(ogg|wav|mp3)$/i;
+export const storyRegEx = /\.(ogg|opus|wav|mp3)$/i;
 export const itemsRegEx = [
   folderAudioItemRegEx,
   folderImageItemRegEx,
