@@ -25282,13 +25282,13 @@ function getInstallDir() {
 async function getFfmpegCommand() {
     if (ffmpegCommand.length === 0) {
         if (Deno.build.os === "windows") {
-            const winFFmeg = `${getInstallDir()}\\tools\\ffmpeg.exe`;
+            const winFfmpeg = `${getInstallDir()}\\tools\\ffmpeg.exe`;
             if (await checkCommand([
-                winFFmeg,
+                winFfmpeg,
                 "-version"
             ], 0)) {
                 ffmpegCommand = [
-                    winFFmeg
+                    winFfmpeg
                 ];
             } else {
                 console.error(`
@@ -25402,11 +25402,11 @@ or install ImageMagick : sudo apt install -y imagemagick
     return convertCommand;
 }
 const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
-const folderAudioItemRegEx = /^0-item\.(ogg|wav|mp3)$/i;
+const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
 const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
-const fileAudioItemRegEx = /\.item\.(ogg|wav|mp3)$/i;
+const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3)$/i;
 const fileImageItemRegEx = /\.item\.(png|jpg|jpeg|bmp)$/i;
-const storyRegEx = /\.(ogg|wav|mp3)$/i;
+const storyRegEx = /\.(ogg|opus|wav|mp3)$/i;
 const itemsRegEx = [
     folderAudioItemRegEx,
     folderImageItemRegEx,
@@ -25601,13 +25601,17 @@ async function generateAudio(title, outputPath, lang) {
         });
         await process.status();
         process.close();
-    } else if (Deno.build.os === "darwin" && !hasPico2wave()) {
+    } else if (Deno.build.os === "darwin" && !await hasPico2wave()) {
         const process = Deno.run({
             cmd: [
                 "say",
                 "-o",
                 convertPath(outputPath),
-                ` . ${title} . `
+                "--file-format",
+                "WAVE",
+                "--data-format",
+                "LEF32@22050",
+                ` . ${title} . `, 
             ]
         });
         await process.status();
@@ -25985,7 +25989,9 @@ async function exploreZipMenu(zipMenu, serialized, actionHistory, storyPath) {
     serialized.zipPaths.push(zipMenu.path);
     const zipReader = new ZipReader(new BlobReader(new Blob([
         await Deno.readFile(`${storyPath}/${zipMenu.path}`)
-    ])));
+    ])), {
+        useWebWorkers: false
+    });
     const entries = await zipReader.getEntries();
     const storyEntry = entries.find((entry)=>entry.filename === "story.json"
     );
@@ -26116,7 +26122,9 @@ async function createPackZip(zipPath, storyPath, serializedPack, assets) {
         for (const zipPath of serializedPack.zipPaths){
             const zipReader = new ZipReader(new BlobReader(new Blob([
                 await Deno.readFile(`${storyPath}/${zipPath}`)
-            ])));
+            ])), {
+                useWebWorkers: false
+            });
             const entries = await zipReader.getEntries();
             for (const entry of entries.filter((entry)=>entry.filename.startsWith("assets/")
             )){
@@ -26138,9 +26146,12 @@ async function createPackZip(zipPath, storyPath, serializedPack, assets) {
     for (const asset of assets.filter((asset)=>asset.path
     )){
         console.log(`add asset ${asset.path}`);
-        await zipWriter.add(`assets/${asset.sha1}.${getExtension(asset.path)}`, new BlobReader(new Blob([
-            await Deno.readFile(`${storyPath}/${asset.path}`)
-        ])));
+        if (!fileInZip.find((f)=>f === `assets/${asset.sha1}.${getExtension(asset.path)}`
+        )) {
+            await zipWriter.add(`assets/${asset.sha1}.${getExtension(asset.path)}`, new BlobReader(new Blob([
+                await Deno.readFile(`${storyPath}/${asset.path}`)
+            ])));
+        }
     }
     console.log(`write ${zipPath}`);
     const blob = await zipWriter.close();
