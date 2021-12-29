@@ -188,6 +188,7 @@ async function exploreZipMenu(
     new BlobReader(
       new Blob([await Deno.readFile(`${storyPath}/${zipMenu.path}`)]),
     ),
+    { useWebWorkers: false },
   );
 
   const entries = await zipReader.getEntries();

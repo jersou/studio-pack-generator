@@ -37,6 +37,7 @@ export async function createPackZip(
         new BlobReader(
           new Blob([await Deno.readFile(`${storyPath}/${zipPath}`)]),
         ),
+        { useWebWorkers: false },
       );
       // deno-lint-ignore no-explicit-any
       const entries: any[] = await zipReader.getEntries();
@@ -64,12 +65,19 @@ export async function createPackZip(
 
   for (const asset of assets.filter((asset) => asset.path)) {
     console.log(`add asset ${asset.path}`);
-    await zipWriter.add(
-      `assets/${asset.sha1}.${getExtension(asset.path)}`,
-      new BlobReader(
-        new Blob([await Deno.readFile(`${storyPath}/${asset.path}`)]),
-      ),
-    );
+
+    if (
+      !fileInZip.find(
+        (f) => f === `assets/${asset.sha1}.${getExtension(asset.path)}`,
+      )
+    ) {
+      await zipWriter.add(
+        `assets/${asset.sha1}.${getExtension(asset.path)}`,
+        new BlobReader(
+          new Blob([await Deno.readFile(`${storyPath}/${asset.path}`)]),
+        ),
+      );
+    }
   }
 
   console.log(`write ${zipPath}`);

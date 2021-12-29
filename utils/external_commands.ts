@@ -40,9 +40,9 @@ export function getInstallDir(): string {
 export async function getFfmpegCommand(): Promise<string[]> {
   if (ffmpegCommand.length === 0) {
     if (Deno.build.os === "windows") {
-      const winFFmeg = `${getInstallDir()}\\tools\\ffmpeg.exe`;
-      if (await checkCommand([winFFmeg, "-version"], 0)) {
-        ffmpegCommand = [winFFmeg];
+      const winFfmpeg = `${getInstallDir()}\\tools\\ffmpeg.exe`;
+      if (await checkCommand([winFfmpeg, "-version"], 0)) {
+        ffmpegCommand = [winFfmpeg];
       } else {
         console.error(
           `
