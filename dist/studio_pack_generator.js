@@ -25218,6 +25218,54 @@ class CloseRes {
         return this.out.join("\n");
     }
 }
+const en = {
+    partQuestion: "Choose your part",
+    partTitle: "Part",
+    storyQuestion: "Choose your story"
+};
+const fr = {
+    partQuestion: "Choisis ta partie",
+    partTitle: "Partie",
+    storyQuestion: "Choisis ton histoire"
+};
+async function initI18n(lng) {
+    await __default2.init({
+        lng,
+        fallbackLng: "en-US",
+        resources: {
+            "en-US": {
+                translation: en
+            },
+            "fr-FR": {
+                translation: fr
+            }
+        }
+    }, undefined);
+}
+async function getLang() {
+    let LANG;
+    if (Deno.build.os === "windows") {
+        LANG = await FromRun([
+            "powershell",
+            "-NoProfile",
+            "Get-UICulture|select -ExpandProperty Name", 
+        ]).toString();
+    } else {
+        if ((await Deno.permissions.query({
+            name: "env"
+        })).state === "granted") {
+            LANG = Deno.env.get("LANG");
+        } else {
+            console.error(yellow(`Missing Deno env permission ! add "--allow-env" to permit lang detection`));
+        }
+    }
+    let lang;
+    const langRegex = /^([a-zA-Z_-]+)\.?/;
+    if (LANG && langRegex.test(LANG)) {
+        lang = langRegex.exec(LANG)[1].replace(/_/g, "-");
+    }
+    return lang || "en-US";
+}
 async function ls(path) {
     const entries = [];
     for await (const entry of Deno.readDir(path)){
@@ -25232,6 +25280,11 @@ async function fsToFolder(path, genSha1 = true) {
         files: []
     };
     const entries = await ls(path);
+    const lang = (await getLang()).substring(0, 2);
+    entries.sort((a, b)=>a.name.localeCompare(b.name, lang, {
+            numeric: true
+        })
+    );
     for (const entry of entries){
         if (entry.isDirectory) {
             folder.files.push(await fsToFolder(join3(path, entry.name), genSha1));
@@ -26259,54 +26312,6 @@ async function downloadRss(url, parentPath) {
         await Deno.remove(itemToResizePath);
     }
     return storyPath;
-}
-const en = {
-    partQuestion: "Choose your part",
-    partTitle: "Part",
-    storyQuestion: "Choose your story"
-};
-const fr = {
-    partQuestion: "Choisis ta partie",
-    partTitle: "Partie",
-    storyQuestion: "Choisis ton histoire"
-};
-async function initI18n(lng) {
-    await __default2.init({
-        lng,
-        fallbackLng: "en-US",
-        resources: {
-            "en-US": {
-                translation: en
-            },
-            "fr-FR": {
-                translation: fr
-            }
-        }
-    }, undefined);
-}
-async function getLang() {
-    let LANG;
-    if (Deno.build.os === "windows") {
-        LANG = await FromRun([
-            "powershell",
-            "-NoProfile",
-            "Get-UICulture|select -ExpandProperty Name", 
-        ]).toString();
-    } else {
-        if ((await Deno.permissions.query({
-            name: "env"
-        })).state === "granted") {
-            LANG = Deno.env.get("LANG");
-        } else {
-            console.error(yellow(`Missing Deno env permission ! add "--allow-env" to permit lang detection`));
-        }
-    }
-    let lang;
-    const langRegex = /^([a-zA-Z_-]+)\.?/;
-    if (LANG && langRegex.test(LANG)) {
-        lang = langRegex.exec(LANG)[1].replace(/_/g, "-");
-    }
-    return lang || "en-US";
 }
 async function genThumbnail(folder, storyPath) {
     await checkRunPermission();
