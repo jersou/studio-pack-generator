@@ -1,5 +1,6 @@
 import { File, Folder } from "./types.ts";
 import { basename, createHash, join } from "../deps.ts";
+import { getLang } from "../utils/i18n.ts";
 
 async function ls(path: string): Promise<Deno.DirEntry[]> {
   const entries = [];
@@ -18,6 +19,9 @@ export async function fsToFolder(
     files: [],
   };
   const entries = await ls(path);
+  // natural sort to to
+  const lang = (await getLang()).substring(0, 2);
+  entries.sort((a, b) => a.name.localeCompare(b.name, lang, { numeric: true }));
   for (const entry of entries) {
     if (entry.isDirectory) {
       folder.files.push(await fsToFolder(join(path, entry.name), genSha1));

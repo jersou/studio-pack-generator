@@ -1484,3 +1484,22 @@ export const expectedFullFolder = {
   ],
   name: "2-full",
 };
+
+export const expectedSortFolder = {
+  files: [
+    {
+      files: [
+        {
+          name: "2 jungle.ogg",
+          sha1: "084c25abd45f62e50aed566e74ae3317bf844d6c",
+        },
+        {
+          name: "10 desert.ogg",
+          sha1: "90304af3b9d81fb1590ad367df796e791ea78750",
+        },
+      ],
+      name: "Choose a place",
+    },
+  ],
+  name: "3-sort",
+};
