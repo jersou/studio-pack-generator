@@ -1,33 +1,37 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
+// This code was bundled using `deno bundle` and it's not recommended to edit it manually
+
 const { Deno: Deno1  } = globalThis;
 const noColor = typeof Deno1?.noColor === "boolean" ? Deno1.noColor : true;
 let enabled = !noColor;
-function code(open, close) {
+function code(open, close1) {
     return {
         open: `\x1b[${open.join(";")}m`,
-        close: `\x1b[${close}m`,
-        regexp: new RegExp(`\\x1b\\[${close}m`, "g")
+        close: `\x1b[${close1}m`,
+        regexp: new RegExp(`\\x1b\\[${close1}m`, "g")
     };
 }
-function run3(str, code) {
-    return enabled ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
+function run(str, code1) {
+    return enabled ? `${code1.open}${str.replace(code1.regexp, code1.open)}${code1.close}` : str;
 }
 function yellow(str) {
-    return run3(str, code([
+    return run(str, code([
         33
     ], 39));
 }
 function bgRed(str) {
-    return run3(str, code([
+    return run(str, code([
         41
     ], 49));
 }
 function bgGreen(str) {
-    return run3(str, code([
+    return run(str, code([
         42
     ], 49));
 }
 function bgBlue(str) {
-    return run3(str, code([
+    return run(str, code([
         44
     ], 49));
 }
@@ -114,23 +118,23 @@ const base64abc = [
 ];
 function encode(data) {
     const uint8 = typeof data === "string" ? new TextEncoder().encode(data) : data instanceof Uint8Array ? data : new Uint8Array(data);
-    let result = "", i;
+    let result = "", i1;
     const l = uint8.length;
-    for(i = 2; i < l; i += 3){
-        result += base64abc[uint8[i - 2] >> 2];
-        result += base64abc[(uint8[i - 2] & 3) << 4 | uint8[i - 1] >> 4];
-        result += base64abc[(uint8[i - 1] & 15) << 2 | uint8[i] >> 6];
-        result += base64abc[uint8[i] & 63];
+    for(i1 = 2; i1 < l; i1 += 3){
+        result += base64abc[uint8[i1 - 2] >> 2];
+        result += base64abc[(uint8[i1 - 2] & 3) << 4 | uint8[i1 - 1] >> 4];
+        result += base64abc[(uint8[i1 - 1] & 15) << 2 | uint8[i1] >> 6];
+        result += base64abc[uint8[i1] & 63];
     }
-    if (i === l + 1) {
-        result += base64abc[uint8[i - 2] >> 2];
-        result += base64abc[(uint8[i - 2] & 3) << 4];
+    if (i1 === l + 1) {
+        result += base64abc[uint8[i1 - 2] >> 2];
+        result += base64abc[(uint8[i1 - 2] & 3) << 4];
         result += "==";
     }
-    if (i === l) {
-        result += base64abc[uint8[i - 2] >> 2];
-        result += base64abc[(uint8[i - 2] & 3) << 4 | uint8[i - 1] >> 4];
-        result += base64abc[(uint8[i - 1] & 15) << 2];
+    if (i1 === l) {
+        result += base64abc[uint8[i1 - 2] >> 2];
+        result += base64abc[(uint8[i1 - 2] & 3) << 4 | uint8[i1 - 1] >> 4];
+        result += base64abc[(uint8[i1 - 1] & 15) << 2];
         result += "=";
     }
     return result;
@@ -139,8 +143,8 @@ function decode(b64) {
     const binString = atob(b64);
     const size = binString.length;
     const bytes = new Uint8Array(size);
-    for(let i = 0; i < size; i++){
-        bytes[i] = binString.charCodeAt(i);
+    for(let i2 = 0; i2 < size; i2++){
+        bytes[i2] = binString.charCodeAt(i2);
     }
     return bytes;
 }
@@ -200,9 +204,9 @@ function passStringToWasm0(arg, malloc, realloc) {
     const mem = getUint8Memory0();
     let offset = 0;
     for(; offset < len; offset++){
-        const code = arg.charCodeAt(offset);
-        if (code > 127) break;
-        mem[ptr + offset] = code;
+        const code2 = arg.charCodeAt(offset);
+        if (code2 > 127) break;
+        mem[ptr + offset] = code2;
     }
     if (offset !== len) {
         if (offset !== 0) {
@@ -234,11 +238,11 @@ function passArray8ToWasm0(arg, malloc) {
     WASM_VECTOR_LEN = arg.length;
     return ptr;
 }
-function update_hash(hash, data) {
-    _assertClass(hash, DenoHash);
+function update_hash(hash1, data) {
+    _assertClass(hash1, DenoHash);
     var ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.update_hash(hash.ptr, ptr0, len0);
+    wasm.update_hash(hash1.ptr, ptr0, len0);
 }
 let cachegetInt32Memory0 = null;
 function getInt32Memory0() {
@@ -250,11 +254,11 @@ function getInt32Memory0() {
 function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
-function digest_hash(hash) {
+function digest_hash(hash2) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        _assertClass(hash, DenoHash);
-        wasm.digest_hash(retptr, hash.ptr);
+        _assertClass(hash2, DenoHash);
+        wasm.digest_hash(retptr, hash2.ptr);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         var v0 = getArrayU8FromWasm0(r0, r1).slice();
@@ -2554,10 +2558,10 @@ const wasm = wasmInstance.exports;
 const hexTable = new TextEncoder().encode("0123456789abcdef");
 function encode1(src) {
     const dst = new Uint8Array(src.length * 2);
-    for(let i = 0; i < dst.length; i++){
-        const v = src[i];
-        dst[i * 2] = hexTable[v >> 4];
-        dst[i * 2 + 1] = hexTable[v & 15];
+    for(let i3 = 0; i3 < dst.length; i3++){
+        const v = src[i3];
+        dst[i3 * 2] = hexTable[v >> 4];
+        dst[i3 * 2 + 1] = hexTable[v & 15];
     }
     return dst;
 }
@@ -2592,9 +2596,9 @@ class Hash {
         this.#digested = true;
         return digest_hash(this.#hash);
     }
-    toString(format = "hex") {
+    toString(format6 = "hex") {
         const finalized = new Uint8Array(this.digest());
-        switch(format){
+        switch(format6){
             case "hex":
                 return new TextDecoder().decode(encode1(finalized));
             case "base64":
@@ -2710,67 +2714,67 @@ class Buffer {
         return copy(p, this.#buf, m);
     }
     write(p) {
-        const n = this.writeSync(p);
-        return Promise.resolve(n);
+        const n1 = this.writeSync(p);
+        return Promise.resolve(n1);
     }
-     #grow(n) {
+     #grow(n2) {
         const m = this.length;
         if (m === 0 && this.#off !== 0) {
             this.reset();
         }
-        const i = this.#tryGrowByReslice(n);
+        const i = this.#tryGrowByReslice(n2);
         if (i >= 0) {
             return i;
         }
         const c = this.capacity;
-        if (n <= Math.floor(c / 2) - m) {
+        if (n2 <= Math.floor(c / 2) - m) {
             copy(this.#buf.subarray(this.#off), this.#buf);
-        } else if (c + n > MAX_SIZE) {
+        } else if (c + n2 > MAX_SIZE) {
             throw new Error("The buffer cannot be grown beyond the maximum size.");
         } else {
-            const buf = new Uint8Array(Math.min(2 * c + n, MAX_SIZE));
+            const buf = new Uint8Array(Math.min(2 * c + n2, MAX_SIZE));
             copy(this.#buf.subarray(this.#off), buf);
             this.#buf = buf;
         }
         this.#off = 0;
-        this.#reslice(Math.min(m + n, MAX_SIZE));
+        this.#reslice(Math.min(m + n2, MAX_SIZE));
         return m;
     }
-    grow(n) {
-        if (n < 0) {
+    grow(n3) {
+        if (n3 < 0) {
             throw Error("Buffer.grow: negative count");
         }
-        const m = this.#grow(n);
+        const m = this.#grow(n3);
         this.#reslice(m);
     }
     async readFrom(r) {
-        let n = 0;
+        let n4 = 0;
         const tmp = new Uint8Array(MIN_READ);
         while(true){
             const shouldGrow = this.capacity - this.length < MIN_READ;
             const buf = shouldGrow ? tmp : new Uint8Array(this.#buf.buffer, this.length);
             const nread = await r.read(buf);
             if (nread === null) {
-                return n;
+                return n4;
             }
             if (shouldGrow) this.writeSync(buf.subarray(0, nread));
             else this.#reslice(this.length + nread);
-            n += nread;
+            n4 += nread;
         }
     }
     readFromSync(r) {
-        let n = 0;
+        let n5 = 0;
         const tmp = new Uint8Array(MIN_READ);
         while(true){
             const shouldGrow = this.capacity - this.length < MIN_READ;
             const buf = shouldGrow ? tmp : new Uint8Array(this.#buf.buffer, this.length);
             const nread = r.readSync(buf);
             if (nread === null) {
-                return n;
+                return n5;
             }
             if (shouldGrow) this.writeSync(buf.subarray(0, nread));
             else this.#reslice(this.length + nread);
-            n += nread;
+            n5 += nread;
         }
     }
 }
@@ -2823,7 +2827,7 @@ class BufReader {
         if (this.w >= this.buf.byteLength) {
             throw Error("bufio: tried to fill full buffer");
         }
-        for(let i = 100; i > 0; i--){
+        for(let i4 = 100; i4 > 0; i4--){
             const rr = await this.rd.read(this.buf.subarray(this.w));
             if (rr === null) {
                 this.eof = true;
@@ -2966,11 +2970,11 @@ class BufReader {
         let s = 0;
         let slice;
         while(true){
-            let i = this.buf.subarray(this.r + s, this.w).indexOf(delim);
-            if (i >= 0) {
-                i += s;
-                slice = this.buf.subarray(this.r, this.r + i + 1);
-                this.r += i + 1;
+            let i5 = this.buf.subarray(this.r + s, this.w).indexOf(delim);
+            if (i5 >= 0) {
+                i5 += s;
+                slice = this.buf.subarray(this.r, this.r + i5 + 1);
+                this.r += i5 + 1;
                 break;
             }
             if (this.eof) {
@@ -3007,12 +3011,12 @@ class BufReader {
         }
         return slice;
     }
-    async peek(n) {
-        if (n < 0) {
+    async peek(n6) {
+        if (n6 < 0) {
             throw Error("negative count");
         }
         let avail = this.w - this.r;
-        while(avail < n && avail < this.buf.byteLength && !this.eof){
+        while(avail < n6 && avail < this.buf.byteLength && !this.eof){
             try {
                 await this._fill();
             } catch (err) {
@@ -3032,12 +3036,12 @@ class BufReader {
         }
         if (avail === 0 && this.eof) {
             return null;
-        } else if (avail < n && this.eof) {
+        } else if (avail < n6 && this.eof) {
             return this.buf.subarray(this.r, this.r + avail);
-        } else if (avail < n) {
+        } else if (avail < n6) {
             throw new BufferFullError(this.buf.subarray(this.r, this.w));
         }
-        return this.buf.subarray(this.r, this.r + n);
+        return this.buf.subarray(this.r, this.r + n6);
     }
 }
 class AbstractBufBase {
@@ -3226,7 +3230,7 @@ async function writeAll(w, arr) {
     }
 }
 async function copy1(src, dst, options) {
-    let n = 0;
+    let n1 = 0;
     const bufSize = options?.bufSize ?? DEFAULT_BUFFER_SIZE;
     const b = new Uint8Array(bufSize);
     let gotEOF = false;
@@ -3239,18 +3243,17 @@ async function copy1(src, dst, options) {
             while(nwritten < result){
                 nwritten += await dst.write(b.subarray(nwritten, result));
             }
-            n += nwritten;
+            n1 += nwritten;
         }
     }
-    return n;
+    return n1;
 }
 var DiffType;
-(function(DiffType) {
-    DiffType["removed"] = "removed";
-    DiffType["common"] = "common";
-    DiffType["added"] = "added";
-})(DiffType || (DiffType = {
-}));
+(function(DiffType2) {
+    DiffType2["removed"] = "removed";
+    DiffType2["common"] = "common";
+    DiffType2["added"] = "added";
+})(DiffType || (DiffType = {}));
 BigInt(Number.MAX_SAFE_INTEGER);
 new TextDecoder();
 const osType = (()=>{
@@ -3266,33 +3269,32 @@ const osType = (()=>{
 })();
 const isWindows = osType === "windows";
 const CHAR_FORWARD_SLASH = 47;
-function assertPath(path) {
-    if (typeof path !== "string") {
-        throw new TypeError(`Path must be a string. Received ${JSON.stringify(path)}`);
+function assertPath(path5) {
+    if (typeof path5 !== "string") {
+        throw new TypeError(`Path must be a string. Received ${JSON.stringify(path5)}`);
     }
 }
-function isPosixPathSeparator(code) {
-    return code === 47;
+function isPosixPathSeparator(code3) {
+    return code3 === 47;
 }
-function isPathSeparator(code) {
-    return isPosixPathSeparator(code) || code === 92;
+function isPathSeparator(code4) {
+    return isPosixPathSeparator(code4) || code4 === 92;
 }
-function isWindowsDeviceRoot(code) {
-    return code >= 97 && code <= 122 || code >= 65 && code <= 90;
+function isWindowsDeviceRoot(code5) {
+    return code5 >= 97 && code5 <= 122 || code5 >= 65 && code5 <= 90;
 }
-function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
+function normalizeString(path6, allowAboveRoot, separator, isPathSeparator1) {
     let res = "";
     let lastSegmentLength = 0;
     let lastSlash = -1;
     let dots = 0;
-    let code;
-    for(let i = 0, len = path.length; i <= len; ++i){
-        if (i < len) code = path.charCodeAt(i);
-        else if (isPathSeparator(code)) break;
-        else code = CHAR_FORWARD_SLASH;
-        if (isPathSeparator(code)) {
-            if (lastSlash === i - 1 || dots === 1) {
-            } else if (lastSlash !== i - 1 && dots === 2) {
+    let code6;
+    for(let i6 = 0, len1 = path6.length; i6 <= len1; ++i6){
+        if (i6 < len1) code6 = path6.charCodeAt(i6);
+        else if (isPathSeparator1(code6)) break;
+        else code6 = CHAR_FORWARD_SLASH;
+        if (isPathSeparator1(code6)) {
+            if (lastSlash === i6 - 1 || dots === 1) {} else if (lastSlash !== i6 - 1 && dots === 2) {
                 if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 || res.charCodeAt(res.length - 2) !== 46) {
                     if (res.length > 2) {
                         const lastSlashIndex = res.lastIndexOf(separator);
@@ -3303,13 +3305,13 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
                             res = res.slice(0, lastSlashIndex);
                             lastSegmentLength = res.length - 1 - res.lastIndexOf(separator);
                         }
-                        lastSlash = i;
+                        lastSlash = i6;
                         dots = 0;
                         continue;
                     } else if (res.length === 2 || res.length === 1) {
                         res = "";
                         lastSegmentLength = 0;
-                        lastSlash = i;
+                        lastSlash = i6;
                         dots = 0;
                         continue;
                     }
@@ -3320,13 +3322,13 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
                     lastSegmentLength = 2;
                 }
             } else {
-                if (res.length > 0) res += separator + path.slice(lastSlash + 1, i);
-                else res = path.slice(lastSlash + 1, i);
-                lastSegmentLength = i - lastSlash - 1;
+                if (res.length > 0) res += separator + path6.slice(lastSlash + 1, i6);
+                else res = path6.slice(lastSlash + 1, i6);
+                lastSegmentLength = i6 - lastSlash - 1;
             }
-            lastSlash = i;
+            lastSlash = i6;
             dots = 0;
-        } else if (code === 46 && dots !== -1) {
+        } else if (code6 === 46 && dots !== -1) {
             ++dots;
         } else {
             dots = -1;
@@ -3334,12 +3336,12 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
     }
     return res;
 }
-function _format(sep, pathObject) {
+function _format(sep6, pathObject) {
     const dir = pathObject.dir || pathObject.root;
     const base = pathObject.base || (pathObject.name || "") + (pathObject.ext || "");
     if (!dir) return base;
     if (dir === pathObject.root) return dir + base;
-    return dir + sep + base;
+    return dir + sep6 + base;
 }
 const WHITESPACE_ENCODINGS = {
     "\u0009": "%09",
@@ -3360,57 +3362,57 @@ function resolve(...pathSegments) {
     let resolvedDevice = "";
     let resolvedTail = "";
     let resolvedAbsolute = false;
-    for(let i = pathSegments.length - 1; i >= -1; i--){
-        let path;
+    for(let i7 = pathSegments.length - 1; i7 >= -1; i7--){
+        let path7;
         const { Deno  } = globalThis;
-        if (i >= 0) {
-            path = pathSegments[i];
+        if (i7 >= 0) {
+            path7 = pathSegments[i7];
         } else if (!resolvedDevice) {
             if (typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a drive-letter-less path without a CWD.");
             }
-            path = Deno.cwd();
+            path7 = Deno.cwd();
         } else {
             if (typeof Deno?.env?.get !== "function" || typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a relative path without a CWD.");
             }
-            path = Deno.cwd();
-            if (path === undefined || path.slice(0, 3).toLowerCase() !== `${resolvedDevice.toLowerCase()}\\`) {
-                path = `${resolvedDevice}\\`;
+            path7 = Deno.cwd();
+            if (path7 === undefined || path7.slice(0, 3).toLowerCase() !== `${resolvedDevice.toLowerCase()}\\`) {
+                path7 = `${resolvedDevice}\\`;
             }
         }
-        assertPath(path);
-        const len = path.length;
-        if (len === 0) continue;
+        assertPath(path7);
+        const len2 = path7.length;
+        if (len2 === 0) continue;
         let rootEnd = 0;
         let device = "";
-        let isAbsolute = false;
-        const code = path.charCodeAt(0);
-        if (len > 1) {
-            if (isPathSeparator(code)) {
-                isAbsolute = true;
-                if (isPathSeparator(path.charCodeAt(1))) {
+        let isAbsolute1 = false;
+        const code7 = path7.charCodeAt(0);
+        if (len2 > 1) {
+            if (isPathSeparator(code7)) {
+                isAbsolute1 = true;
+                if (isPathSeparator(path7.charCodeAt(1))) {
                     let j = 2;
                     let last = j;
-                    for(; j < len; ++j){
-                        if (isPathSeparator(path.charCodeAt(j))) break;
+                    for(; j < len2; ++j){
+                        if (isPathSeparator(path7.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
-                        const firstPart = path.slice(last, j);
+                    if (j < len2 && j !== last) {
+                        const firstPart = path7.slice(last, j);
                         last = j;
-                        for(; j < len; ++j){
-                            if (!isPathSeparator(path.charCodeAt(j))) break;
+                        for(; j < len2; ++j){
+                            if (!isPathSeparator(path7.charCodeAt(j))) break;
                         }
-                        if (j < len && j !== last) {
+                        if (j < len2 && j !== last) {
                             last = j;
-                            for(; j < len; ++j){
-                                if (isPathSeparator(path.charCodeAt(j))) break;
+                            for(; j < len2; ++j){
+                                if (isPathSeparator(path7.charCodeAt(j))) break;
                             }
-                            if (j === len) {
-                                device = `\\\\${firstPart}\\${path.slice(last)}`;
+                            if (j === len2) {
+                                device = `\\\\${firstPart}\\${path7.slice(last)}`;
                                 rootEnd = j;
                             } else if (j !== last) {
-                                device = `\\\\${firstPart}\\${path.slice(last, j)}`;
+                                device = `\\\\${firstPart}\\${path7.slice(last, j)}`;
                                 rootEnd = j;
                             }
                         }
@@ -3418,21 +3420,21 @@ function resolve(...pathSegments) {
                 } else {
                     rootEnd = 1;
                 }
-            } else if (isWindowsDeviceRoot(code)) {
-                if (path.charCodeAt(1) === 58) {
-                    device = path.slice(0, 2);
+            } else if (isWindowsDeviceRoot(code7)) {
+                if (path7.charCodeAt(1) === 58) {
+                    device = path7.slice(0, 2);
                     rootEnd = 2;
-                    if (len > 2) {
-                        if (isPathSeparator(path.charCodeAt(2))) {
-                            isAbsolute = true;
+                    if (len2 > 2) {
+                        if (isPathSeparator(path7.charCodeAt(2))) {
+                            isAbsolute1 = true;
                             rootEnd = 3;
                         }
                     }
                 }
             }
-        } else if (isPathSeparator(code)) {
+        } else if (isPathSeparator(code7)) {
             rootEnd = 1;
-            isAbsolute = true;
+            isAbsolute1 = true;
         }
         if (device.length > 0 && resolvedDevice.length > 0 && device.toLowerCase() !== resolvedDevice.toLowerCase()) {
             continue;
@@ -3441,46 +3443,46 @@ function resolve(...pathSegments) {
             resolvedDevice = device;
         }
         if (!resolvedAbsolute) {
-            resolvedTail = `${path.slice(rootEnd)}\\${resolvedTail}`;
-            resolvedAbsolute = isAbsolute;
+            resolvedTail = `${path7.slice(rootEnd)}\\${resolvedTail}`;
+            resolvedAbsolute = isAbsolute1;
         }
         if (resolvedAbsolute && resolvedDevice.length > 0) break;
     }
     resolvedTail = normalizeString(resolvedTail, !resolvedAbsolute, "\\", isPathSeparator);
     return resolvedDevice + (resolvedAbsolute ? "\\" : "") + resolvedTail || ".";
 }
-function normalize(path) {
-    assertPath(path);
-    const len = path.length;
-    if (len === 0) return ".";
+function normalize(path8) {
+    assertPath(path8);
+    const len3 = path8.length;
+    if (len3 === 0) return ".";
     let rootEnd = 0;
     let device;
-    let isAbsolute = false;
-    const code = path.charCodeAt(0);
-    if (len > 1) {
-        if (isPathSeparator(code)) {
-            isAbsolute = true;
-            if (isPathSeparator(path.charCodeAt(1))) {
+    let isAbsolute2 = false;
+    const code8 = path8.charCodeAt(0);
+    if (len3 > 1) {
+        if (isPathSeparator(code8)) {
+            isAbsolute2 = true;
+            if (isPathSeparator(path8.charCodeAt(1))) {
                 let j = 2;
                 let last = j;
-                for(; j < len; ++j){
-                    if (isPathSeparator(path.charCodeAt(j))) break;
+                for(; j < len3; ++j){
+                    if (isPathSeparator(path8.charCodeAt(j))) break;
                 }
-                if (j < len && j !== last) {
-                    const firstPart = path.slice(last, j);
+                if (j < len3 && j !== last) {
+                    const firstPart = path8.slice(last, j);
                     last = j;
-                    for(; j < len; ++j){
-                        if (!isPathSeparator(path.charCodeAt(j))) break;
+                    for(; j < len3; ++j){
+                        if (!isPathSeparator(path8.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
+                    if (j < len3 && j !== last) {
                         last = j;
-                        for(; j < len; ++j){
-                            if (isPathSeparator(path.charCodeAt(j))) break;
+                        for(; j < len3; ++j){
+                            if (isPathSeparator(path8.charCodeAt(j))) break;
                         }
-                        if (j === len) {
-                            return `\\\\${firstPart}\\${path.slice(last)}\\`;
+                        if (j === len3) {
+                            return `\\\\${firstPart}\\${path8.slice(last)}\\`;
                         } else if (j !== last) {
-                            device = `\\\\${firstPart}\\${path.slice(last, j)}`;
+                            device = `\\\\${firstPart}\\${path8.slice(last, j)}`;
                             rootEnd = j;
                         }
                     }
@@ -3488,59 +3490,59 @@ function normalize(path) {
             } else {
                 rootEnd = 1;
             }
-        } else if (isWindowsDeviceRoot(code)) {
-            if (path.charCodeAt(1) === 58) {
-                device = path.slice(0, 2);
+        } else if (isWindowsDeviceRoot(code8)) {
+            if (path8.charCodeAt(1) === 58) {
+                device = path8.slice(0, 2);
                 rootEnd = 2;
-                if (len > 2) {
-                    if (isPathSeparator(path.charCodeAt(2))) {
-                        isAbsolute = true;
+                if (len3 > 2) {
+                    if (isPathSeparator(path8.charCodeAt(2))) {
+                        isAbsolute2 = true;
                         rootEnd = 3;
                     }
                 }
             }
         }
-    } else if (isPathSeparator(code)) {
+    } else if (isPathSeparator(code8)) {
         return "\\";
     }
-    let tail;
-    if (rootEnd < len) {
-        tail = normalizeString(path.slice(rootEnd), !isAbsolute, "\\", isPathSeparator);
+    let tail1;
+    if (rootEnd < len3) {
+        tail1 = normalizeString(path8.slice(rootEnd), !isAbsolute2, "\\", isPathSeparator);
     } else {
-        tail = "";
+        tail1 = "";
     }
-    if (tail.length === 0 && !isAbsolute) tail = ".";
-    if (tail.length > 0 && isPathSeparator(path.charCodeAt(len - 1))) {
-        tail += "\\";
+    if (tail1.length === 0 && !isAbsolute2) tail1 = ".";
+    if (tail1.length > 0 && isPathSeparator(path8.charCodeAt(len3 - 1))) {
+        tail1 += "\\";
     }
     if (device === undefined) {
-        if (isAbsolute) {
-            if (tail.length > 0) return `\\${tail}`;
+        if (isAbsolute2) {
+            if (tail1.length > 0) return `\\${tail1}`;
             else return "\\";
-        } else if (tail.length > 0) {
-            return tail;
+        } else if (tail1.length > 0) {
+            return tail1;
         } else {
             return "";
         }
-    } else if (isAbsolute) {
-        if (tail.length > 0) return `${device}\\${tail}`;
+    } else if (isAbsolute2) {
+        if (tail1.length > 0) return `${device}\\${tail1}`;
         else return `${device}\\`;
-    } else if (tail.length > 0) {
-        return device + tail;
+    } else if (tail1.length > 0) {
+        return device + tail1;
     } else {
         return device;
     }
 }
-function isAbsolute(path) {
-    assertPath(path);
-    const len = path.length;
-    if (len === 0) return false;
-    const code = path.charCodeAt(0);
-    if (isPathSeparator(code)) {
+function isAbsolute(path9) {
+    assertPath(path9);
+    const len4 = path9.length;
+    if (len4 === 0) return false;
+    const code9 = path9.charCodeAt(0);
+    if (isPathSeparator(code9)) {
         return true;
-    } else if (isWindowsDeviceRoot(code)) {
-        if (len > 2 && path.charCodeAt(1) === 58) {
-            if (isPathSeparator(path.charCodeAt(2))) return true;
+    } else if (isWindowsDeviceRoot(code9)) {
+        if (len4 > 2 && path9.charCodeAt(1) === 58) {
+            if (isPathSeparator(path9.charCodeAt(2))) return true;
         }
     }
     return false;
@@ -3550,12 +3552,12 @@ function join(...paths) {
     if (pathsCount === 0) return ".";
     let joined;
     let firstPart = null;
-    for(let i = 0; i < pathsCount; ++i){
-        const path = paths[i];
-        assertPath(path);
-        if (path.length > 0) {
-            if (joined === undefined) joined = firstPart = path;
-            else joined += `\\${path}`;
+    for(let i8 = 0; i8 < pathsCount; ++i8){
+        const path10 = paths[i8];
+        assertPath(path10);
+        if (path10.length > 0) {
+            if (joined === undefined) joined = firstPart = path10;
+            else joined += `\\${path10}`;
         }
     }
     if (joined === undefined) return ".";
@@ -3585,23 +3587,23 @@ function join(...paths) {
     }
     return normalize(joined);
 }
-function relative(from, to) {
-    assertPath(from);
+function relative(from1, to) {
+    assertPath(from1);
     assertPath(to);
-    if (from === to) return "";
-    const fromOrig = resolve(from);
+    if (from1 === to) return "";
+    const fromOrig = resolve(from1);
     const toOrig = resolve(to);
     if (fromOrig === toOrig) return "";
-    from = fromOrig.toLowerCase();
+    from1 = fromOrig.toLowerCase();
     to = toOrig.toLowerCase();
-    if (from === to) return "";
+    if (from1 === to) return "";
     let fromStart = 0;
-    let fromEnd = from.length;
+    let fromEnd = from1.length;
     for(; fromStart < fromEnd; ++fromStart){
-        if (from.charCodeAt(fromStart) !== 92) break;
+        if (from1.charCodeAt(fromStart) !== 92) break;
     }
     for(; fromEnd - 1 > fromStart; --fromEnd){
-        if (from.charCodeAt(fromEnd - 1) !== 92) break;
+        if (from1.charCodeAt(fromEnd - 1) !== 92) break;
     }
     const fromLen = fromEnd - fromStart;
     let toStart = 0;
@@ -3615,37 +3617,37 @@ function relative(from, to) {
     const toLen = toEnd - toStart;
     const length = fromLen < toLen ? fromLen : toLen;
     let lastCommonSep = -1;
-    let i = 0;
-    for(; i <= length; ++i){
-        if (i === length) {
+    let i9 = 0;
+    for(; i9 <= length; ++i9){
+        if (i9 === length) {
             if (toLen > length) {
-                if (to.charCodeAt(toStart + i) === 92) {
-                    return toOrig.slice(toStart + i + 1);
-                } else if (i === 2) {
-                    return toOrig.slice(toStart + i);
+                if (to.charCodeAt(toStart + i9) === 92) {
+                    return toOrig.slice(toStart + i9 + 1);
+                } else if (i9 === 2) {
+                    return toOrig.slice(toStart + i9);
                 }
             }
             if (fromLen > length) {
-                if (from.charCodeAt(fromStart + i) === 92) {
-                    lastCommonSep = i;
-                } else if (i === 2) {
+                if (from1.charCodeAt(fromStart + i9) === 92) {
+                    lastCommonSep = i9;
+                } else if (i9 === 2) {
                     lastCommonSep = 3;
                 }
             }
             break;
         }
-        const fromCode = from.charCodeAt(fromStart + i);
-        const toCode = to.charCodeAt(toStart + i);
+        const fromCode = from1.charCodeAt(fromStart + i9);
+        const toCode = to.charCodeAt(toStart + i9);
         if (fromCode !== toCode) break;
-        else if (fromCode === 92) lastCommonSep = i;
+        else if (fromCode === 92) lastCommonSep = i9;
     }
-    if (i !== length && lastCommonSep === -1) {
+    if (i9 !== length && lastCommonSep === -1) {
         return toOrig;
     }
     let out = "";
     if (lastCommonSep === -1) lastCommonSep = 0;
-    for(i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i){
-        if (i === fromEnd || from.charCodeAt(i) === 92) {
+    for(i9 = fromStart + lastCommonSep + 1; i9 <= fromEnd; ++i9){
+        if (i9 === fromEnd || from1.charCodeAt(i9) === 92) {
             if (out.length === 0) out += "..";
             else out += "\\..";
         }
@@ -3658,15 +3660,15 @@ function relative(from, to) {
         return toOrig.slice(toStart, toEnd);
     }
 }
-function toNamespacedPath(path) {
-    if (typeof path !== "string") return path;
-    if (path.length === 0) return "";
-    const resolvedPath = resolve(path);
+function toNamespacedPath(path11) {
+    if (typeof path11 !== "string") return path11;
+    if (path11.length === 0) return "";
+    const resolvedPath = resolve(path11);
     if (resolvedPath.length >= 3) {
         if (resolvedPath.charCodeAt(0) === 92) {
             if (resolvedPath.charCodeAt(1) === 92) {
-                const code = resolvedPath.charCodeAt(2);
-                if (code !== 63 && code !== 46) {
+                const code10 = resolvedPath.charCodeAt(2);
+                if (code10 !== 63 && code10 !== 46) {
                     return `\\\\?\\UNC\\${resolvedPath.slice(2)}`;
                 }
             }
@@ -3676,38 +3678,38 @@ function toNamespacedPath(path) {
             }
         }
     }
-    return path;
+    return path11;
 }
-function dirname(path) {
-    assertPath(path);
-    const len = path.length;
-    if (len === 0) return ".";
+function dirname(path12) {
+    assertPath(path12);
+    const len5 = path12.length;
+    if (len5 === 0) return ".";
     let rootEnd = -1;
     let end = -1;
     let matchedSlash = true;
     let offset = 0;
-    const code = path.charCodeAt(0);
-    if (len > 1) {
-        if (isPathSeparator(code)) {
+    const code11 = path12.charCodeAt(0);
+    if (len5 > 1) {
+        if (isPathSeparator(code11)) {
             rootEnd = offset = 1;
-            if (isPathSeparator(path.charCodeAt(1))) {
+            if (isPathSeparator(path12.charCodeAt(1))) {
                 let j = 2;
                 let last = j;
-                for(; j < len; ++j){
-                    if (isPathSeparator(path.charCodeAt(j))) break;
+                for(; j < len5; ++j){
+                    if (isPathSeparator(path12.charCodeAt(j))) break;
                 }
-                if (j < len && j !== last) {
+                if (j < len5 && j !== last) {
                     last = j;
-                    for(; j < len; ++j){
-                        if (!isPathSeparator(path.charCodeAt(j))) break;
+                    for(; j < len5; ++j){
+                        if (!isPathSeparator(path12.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
+                    if (j < len5 && j !== last) {
                         last = j;
-                        for(; j < len; ++j){
-                            if (isPathSeparator(path.charCodeAt(j))) break;
+                        for(; j < len5; ++j){
+                            if (isPathSeparator(path12.charCodeAt(j))) break;
                         }
-                        if (j === len) {
-                            return path;
+                        if (j === len5) {
+                            return path12;
                         }
                         if (j !== last) {
                             rootEnd = offset = j + 1;
@@ -3715,21 +3717,21 @@ function dirname(path) {
                     }
                 }
             }
-        } else if (isWindowsDeviceRoot(code)) {
-            if (path.charCodeAt(1) === 58) {
+        } else if (isWindowsDeviceRoot(code11)) {
+            if (path12.charCodeAt(1) === 58) {
                 rootEnd = offset = 2;
-                if (len > 2) {
-                    if (isPathSeparator(path.charCodeAt(2))) rootEnd = offset = 3;
+                if (len5 > 2) {
+                    if (isPathSeparator(path12.charCodeAt(2))) rootEnd = offset = 3;
                 }
             }
         }
-    } else if (isPathSeparator(code)) {
-        return path;
+    } else if (isPathSeparator(code11)) {
+        return path12;
     }
-    for(let i = len - 1; i >= offset; --i){
-        if (isPathSeparator(path.charCodeAt(i))) {
+    for(let i10 = len5 - 1; i10 >= offset; --i10){
+        if (isPathSeparator(path12.charCodeAt(i10))) {
             if (!matchedSlash) {
-                end = i;
+                end = i10;
                 break;
             }
         } else {
@@ -3740,43 +3742,43 @@ function dirname(path) {
         if (rootEnd === -1) return ".";
         else end = rootEnd;
     }
-    return path.slice(0, end);
+    return path12.slice(0, end);
 }
-function basename(path, ext = "") {
+function basename(path13, ext = "") {
     if (ext !== undefined && typeof ext !== "string") {
         throw new TypeError('"ext" argument must be a string');
     }
-    assertPath(path);
+    assertPath(path13);
     let start = 0;
     let end = -1;
     let matchedSlash = true;
-    let i;
-    if (path.length >= 2) {
-        const drive = path.charCodeAt(0);
+    let i11;
+    if (path13.length >= 2) {
+        const drive = path13.charCodeAt(0);
         if (isWindowsDeviceRoot(drive)) {
-            if (path.charCodeAt(1) === 58) start = 2;
+            if (path13.charCodeAt(1) === 58) start = 2;
         }
     }
-    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
-        if (ext.length === path.length && ext === path) return "";
+    if (ext !== undefined && ext.length > 0 && ext.length <= path13.length) {
+        if (ext.length === path13.length && ext === path13) return "";
         let extIdx = ext.length - 1;
         let firstNonSlashEnd = -1;
-        for(i = path.length - 1; i >= start; --i){
-            const code = path.charCodeAt(i);
-            if (isPathSeparator(code)) {
+        for(i11 = path13.length - 1; i11 >= start; --i11){
+            const code12 = path13.charCodeAt(i11);
+            if (isPathSeparator(code12)) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i11 + 1;
                     break;
                 }
             } else {
                 if (firstNonSlashEnd === -1) {
                     matchedSlash = false;
-                    firstNonSlashEnd = i + 1;
+                    firstNonSlashEnd = i11 + 1;
                 }
                 if (extIdx >= 0) {
-                    if (code === ext.charCodeAt(extIdx)) {
+                    if (code12 === ext.charCodeAt(extIdx)) {
                         if (--extIdx === -1) {
-                            end = i;
+                            end = i11;
                         }
                     } else {
                         extIdx = -1;
@@ -3786,50 +3788,50 @@ function basename(path, ext = "") {
             }
         }
         if (start === end) end = firstNonSlashEnd;
-        else if (end === -1) end = path.length;
-        return path.slice(start, end);
+        else if (end === -1) end = path13.length;
+        return path13.slice(start, end);
     } else {
-        for(i = path.length - 1; i >= start; --i){
-            if (isPathSeparator(path.charCodeAt(i))) {
+        for(i11 = path13.length - 1; i11 >= start; --i11){
+            if (isPathSeparator(path13.charCodeAt(i11))) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i11 + 1;
                     break;
                 }
             } else if (end === -1) {
                 matchedSlash = false;
-                end = i + 1;
+                end = i11 + 1;
             }
         }
         if (end === -1) return "";
-        return path.slice(start, end);
+        return path13.slice(start, end);
     }
 }
-function extname(path) {
-    assertPath(path);
+function extname(path14) {
+    assertPath(path14);
     let start = 0;
     let startDot = -1;
     let startPart = 0;
     let end = -1;
     let matchedSlash = true;
     let preDotState = 0;
-    if (path.length >= 2 && path.charCodeAt(1) === 58 && isWindowsDeviceRoot(path.charCodeAt(0))) {
+    if (path14.length >= 2 && path14.charCodeAt(1) === 58 && isWindowsDeviceRoot(path14.charCodeAt(0))) {
         start = startPart = 2;
     }
-    for(let i = path.length - 1; i >= start; --i){
-        const code = path.charCodeAt(i);
-        if (isPathSeparator(code)) {
+    for(let i12 = path14.length - 1; i12 >= start; --i12){
+        const code13 = path14.charCodeAt(i12);
+        if (isPathSeparator(code13)) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i12 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i12 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code13 === 46) {
+            if (startDot === -1) startDot = i12;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -3838,16 +3840,16 @@ function extname(path) {
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         return "";
     }
-    return path.slice(startDot, end);
+    return path14.slice(startDot, end);
 }
-function format1(pathObject) {
+function format(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
     return _format("\\", pathObject);
 }
-function parse(path) {
-    assertPath(path);
+function parse(path15) {
+    assertPath(path15);
     const ret = {
         root: "",
         dir: "",
@@ -3855,30 +3857,30 @@ function parse(path) {
         ext: "",
         name: ""
     };
-    const len = path.length;
-    if (len === 0) return ret;
+    const len6 = path15.length;
+    if (len6 === 0) return ret;
     let rootEnd = 0;
-    let code = path.charCodeAt(0);
-    if (len > 1) {
-        if (isPathSeparator(code)) {
+    let code14 = path15.charCodeAt(0);
+    if (len6 > 1) {
+        if (isPathSeparator(code14)) {
             rootEnd = 1;
-            if (isPathSeparator(path.charCodeAt(1))) {
+            if (isPathSeparator(path15.charCodeAt(1))) {
                 let j = 2;
                 let last = j;
-                for(; j < len; ++j){
-                    if (isPathSeparator(path.charCodeAt(j))) break;
+                for(; j < len6; ++j){
+                    if (isPathSeparator(path15.charCodeAt(j))) break;
                 }
-                if (j < len && j !== last) {
+                if (j < len6 && j !== last) {
                     last = j;
-                    for(; j < len; ++j){
-                        if (!isPathSeparator(path.charCodeAt(j))) break;
+                    for(; j < len6; ++j){
+                        if (!isPathSeparator(path15.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
+                    if (j < len6 && j !== last) {
                         last = j;
-                        for(; j < len; ++j){
-                            if (isPathSeparator(path.charCodeAt(j))) break;
+                        for(; j < len6; ++j){
+                            if (isPathSeparator(path15.charCodeAt(j))) break;
                         }
-                        if (j === len) {
+                        if (j === len6) {
                             rootEnd = j;
                         } else if (j !== last) {
                             rootEnd = j + 1;
@@ -3886,49 +3888,49 @@ function parse(path) {
                     }
                 }
             }
-        } else if (isWindowsDeviceRoot(code)) {
-            if (path.charCodeAt(1) === 58) {
+        } else if (isWindowsDeviceRoot(code14)) {
+            if (path15.charCodeAt(1) === 58) {
                 rootEnd = 2;
-                if (len > 2) {
-                    if (isPathSeparator(path.charCodeAt(2))) {
-                        if (len === 3) {
-                            ret.root = ret.dir = path;
+                if (len6 > 2) {
+                    if (isPathSeparator(path15.charCodeAt(2))) {
+                        if (len6 === 3) {
+                            ret.root = ret.dir = path15;
                             return ret;
                         }
                         rootEnd = 3;
                     }
                 } else {
-                    ret.root = ret.dir = path;
+                    ret.root = ret.dir = path15;
                     return ret;
                 }
             }
         }
-    } else if (isPathSeparator(code)) {
-        ret.root = ret.dir = path;
+    } else if (isPathSeparator(code14)) {
+        ret.root = ret.dir = path15;
         return ret;
     }
-    if (rootEnd > 0) ret.root = path.slice(0, rootEnd);
+    if (rootEnd > 0) ret.root = path15.slice(0, rootEnd);
     let startDot = -1;
     let startPart = rootEnd;
     let end = -1;
     let matchedSlash = true;
-    let i = path.length - 1;
+    let i13 = path15.length - 1;
     let preDotState = 0;
-    for(; i >= rootEnd; --i){
-        code = path.charCodeAt(i);
-        if (isPathSeparator(code)) {
+    for(; i13 >= rootEnd; --i13){
+        code14 = path15.charCodeAt(i13);
+        if (isPathSeparator(code14)) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i13 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i13 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code14 === 46) {
+            if (startDot === -1) startDot = i13;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -3936,15 +3938,15 @@ function parse(path) {
     }
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         if (end !== -1) {
-            ret.base = ret.name = path.slice(startPart, end);
+            ret.base = ret.name = path15.slice(startPart, end);
         }
     } else {
-        ret.name = path.slice(startPart, startDot);
-        ret.base = path.slice(startPart, end);
-        ret.ext = path.slice(startDot, end);
+        ret.name = path15.slice(startPart, startDot);
+        ret.base = path15.slice(startPart, end);
+        ret.ext = path15.slice(startDot, end);
     }
     if (startPart > 0 && startPart !== rootEnd) {
-        ret.dir = path.slice(0, startPart - 1);
+        ret.dir = path15.slice(0, startPart - 1);
     } else ret.dir = ret.root;
     return ret;
 }
@@ -3953,17 +3955,17 @@ function fromFileUrl(url) {
     if (url.protocol != "file:") {
         throw new TypeError("Must be a file URL.");
     }
-    let path = decodeURIComponent(url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25")).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
+    let path16 = decodeURIComponent(url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25")).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
     if (url.hostname != "") {
-        path = `\\\\${url.hostname}${path}`;
+        path16 = `\\\\${url.hostname}${path16}`;
     }
-    return path;
+    return path16;
 }
-function toFileUrl(path) {
-    if (!isAbsolute(path)) {
+function toFileUrl(path17) {
+    if (!isAbsolute(path17)) {
         throw new TypeError("Must be an absolute path.");
     }
-    const [, hostname, pathname] = path.match(/^(?:[/\\]{2}([^/\\]+)(?=[/\\](?:[^/\\]|$)))?(.*)/);
+    const [, hostname, pathname] = path17.match(/^(?:[/\\]{2}([^/\\]+)(?=[/\\](?:[^/\\]|$)))?(.*)/);
     const url = new URL("file:///");
     url.pathname = encodeWhitespace(pathname.replace(/%/g, "%25"));
     if (hostname != null && hostname != "localhost") {
@@ -3986,7 +3988,7 @@ const mod = {
     dirname: dirname,
     basename: basename,
     extname: extname,
-    format: format1,
+    format: format,
     parse: parse,
     fromFileUrl: fromFileUrl,
     toFileUrl: toFileUrl
@@ -3996,22 +3998,22 @@ const delimiter1 = ":";
 function resolve1(...pathSegments) {
     let resolvedPath = "";
     let resolvedAbsolute = false;
-    for(let i = pathSegments.length - 1; i >= -1 && !resolvedAbsolute; i--){
-        let path;
-        if (i >= 0) path = pathSegments[i];
+    for(let i14 = pathSegments.length - 1; i14 >= -1 && !resolvedAbsolute; i14--){
+        let path18;
+        if (i14 >= 0) path18 = pathSegments[i14];
         else {
             const { Deno  } = globalThis;
             if (typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a relative path without a CWD.");
             }
-            path = Deno.cwd();
+            path18 = Deno.cwd();
         }
-        assertPath(path);
-        if (path.length === 0) {
+        assertPath(path18);
+        if (path18.length === 0) {
             continue;
         }
-        resolvedPath = `${path}/${resolvedPath}`;
-        resolvedAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+        resolvedPath = `${path18}/${resolvedPath}`;
+        resolvedAbsolute = path18.charCodeAt(0) === CHAR_FORWARD_SLASH;
     }
     resolvedPath = normalizeString(resolvedPath, !resolvedAbsolute, "/", isPosixPathSeparator);
     if (resolvedAbsolute) {
@@ -4020,46 +4022,46 @@ function resolve1(...pathSegments) {
     } else if (resolvedPath.length > 0) return resolvedPath;
     else return ".";
 }
-function normalize1(path) {
-    assertPath(path);
-    if (path.length === 0) return ".";
-    const isAbsolute = path.charCodeAt(0) === 47;
-    const trailingSeparator = path.charCodeAt(path.length - 1) === 47;
-    path = normalizeString(path, !isAbsolute, "/", isPosixPathSeparator);
-    if (path.length === 0 && !isAbsolute) path = ".";
-    if (path.length > 0 && trailingSeparator) path += "/";
-    if (isAbsolute) return `/${path}`;
-    return path;
+function normalize1(path19) {
+    assertPath(path19);
+    if (path19.length === 0) return ".";
+    const isAbsolute1 = path19.charCodeAt(0) === 47;
+    const trailingSeparator = path19.charCodeAt(path19.length - 1) === 47;
+    path19 = normalizeString(path19, !isAbsolute1, "/", isPosixPathSeparator);
+    if (path19.length === 0 && !isAbsolute1) path19 = ".";
+    if (path19.length > 0 && trailingSeparator) path19 += "/";
+    if (isAbsolute1) return `/${path19}`;
+    return path19;
 }
-function isAbsolute1(path) {
-    assertPath(path);
-    return path.length > 0 && path.charCodeAt(0) === 47;
+function isAbsolute1(path20) {
+    assertPath(path20);
+    return path20.length > 0 && path20.charCodeAt(0) === 47;
 }
 function join1(...paths) {
     if (paths.length === 0) return ".";
     let joined;
-    for(let i = 0, len = paths.length; i < len; ++i){
-        const path = paths[i];
-        assertPath(path);
-        if (path.length > 0) {
-            if (!joined) joined = path;
-            else joined += `/${path}`;
+    for(let i15 = 0, len7 = paths.length; i15 < len7; ++i15){
+        const path21 = paths[i15];
+        assertPath(path21);
+        if (path21.length > 0) {
+            if (!joined) joined = path21;
+            else joined += `/${path21}`;
         }
     }
     if (!joined) return ".";
     return normalize1(joined);
 }
-function relative1(from, to) {
-    assertPath(from);
+function relative1(from2, to) {
+    assertPath(from2);
     assertPath(to);
-    if (from === to) return "";
-    from = resolve1(from);
+    if (from2 === to) return "";
+    from2 = resolve1(from2);
     to = resolve1(to);
-    if (from === to) return "";
+    if (from2 === to) return "";
     let fromStart = 1;
-    const fromEnd = from.length;
+    const fromEnd = from2.length;
     for(; fromStart < fromEnd; ++fromStart){
-        if (from.charCodeAt(fromStart) !== 47) break;
+        if (from2.charCodeAt(fromStart) !== 47) break;
     }
     const fromLen = fromEnd - fromStart;
     let toStart = 1;
@@ -4070,32 +4072,32 @@ function relative1(from, to) {
     const toLen = toEnd - toStart;
     const length = fromLen < toLen ? fromLen : toLen;
     let lastCommonSep = -1;
-    let i = 0;
-    for(; i <= length; ++i){
-        if (i === length) {
+    let i16 = 0;
+    for(; i16 <= length; ++i16){
+        if (i16 === length) {
             if (toLen > length) {
-                if (to.charCodeAt(toStart + i) === 47) {
-                    return to.slice(toStart + i + 1);
-                } else if (i === 0) {
-                    return to.slice(toStart + i);
+                if (to.charCodeAt(toStart + i16) === 47) {
+                    return to.slice(toStart + i16 + 1);
+                } else if (i16 === 0) {
+                    return to.slice(toStart + i16);
                 }
             } else if (fromLen > length) {
-                if (from.charCodeAt(fromStart + i) === 47) {
-                    lastCommonSep = i;
-                } else if (i === 0) {
+                if (from2.charCodeAt(fromStart + i16) === 47) {
+                    lastCommonSep = i16;
+                } else if (i16 === 0) {
                     lastCommonSep = 0;
                 }
             }
             break;
         }
-        const fromCode = from.charCodeAt(fromStart + i);
-        const toCode = to.charCodeAt(toStart + i);
+        const fromCode = from2.charCodeAt(fromStart + i16);
+        const toCode = to.charCodeAt(toStart + i16);
         if (fromCode !== toCode) break;
-        else if (fromCode === 47) lastCommonSep = i;
+        else if (fromCode === 47) lastCommonSep = i16;
     }
     let out = "";
-    for(i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i){
-        if (i === fromEnd || from.charCodeAt(i) === 47) {
+    for(i16 = fromStart + lastCommonSep + 1; i16 <= fromEnd; ++i16){
+        if (i16 === fromEnd || from2.charCodeAt(i16) === 47) {
             if (out.length === 0) out += "..";
             else out += "/..";
         }
@@ -4107,19 +4109,19 @@ function relative1(from, to) {
         return to.slice(toStart);
     }
 }
-function toNamespacedPath1(path) {
-    return path;
+function toNamespacedPath1(path22) {
+    return path22;
 }
-function dirname1(path) {
-    assertPath(path);
-    if (path.length === 0) return ".";
-    const hasRoot = path.charCodeAt(0) === 47;
+function dirname1(path23) {
+    assertPath(path23);
+    if (path23.length === 0) return ".";
+    const hasRoot = path23.charCodeAt(0) === 47;
     let end = -1;
     let matchedSlash = true;
-    for(let i = path.length - 1; i >= 1; --i){
-        if (path.charCodeAt(i) === 47) {
+    for(let i17 = path23.length - 1; i17 >= 1; --i17){
+        if (path23.charCodeAt(i17) === 47) {
             if (!matchedSlash) {
-                end = i;
+                end = i17;
                 break;
             }
         } else {
@@ -4128,37 +4130,37 @@ function dirname1(path) {
     }
     if (end === -1) return hasRoot ? "/" : ".";
     if (hasRoot && end === 1) return "//";
-    return path.slice(0, end);
+    return path23.slice(0, end);
 }
-function basename1(path, ext = "") {
+function basename1(path24, ext = "") {
     if (ext !== undefined && typeof ext !== "string") {
         throw new TypeError('"ext" argument must be a string');
     }
-    assertPath(path);
+    assertPath(path24);
     let start = 0;
     let end = -1;
     let matchedSlash = true;
-    let i;
-    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
-        if (ext.length === path.length && ext === path) return "";
+    let i18;
+    if (ext !== undefined && ext.length > 0 && ext.length <= path24.length) {
+        if (ext.length === path24.length && ext === path24) return "";
         let extIdx = ext.length - 1;
         let firstNonSlashEnd = -1;
-        for(i = path.length - 1; i >= 0; --i){
-            const code = path.charCodeAt(i);
-            if (code === 47) {
+        for(i18 = path24.length - 1; i18 >= 0; --i18){
+            const code15 = path24.charCodeAt(i18);
+            if (code15 === 47) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i18 + 1;
                     break;
                 }
             } else {
                 if (firstNonSlashEnd === -1) {
                     matchedSlash = false;
-                    firstNonSlashEnd = i + 1;
+                    firstNonSlashEnd = i18 + 1;
                 }
                 if (extIdx >= 0) {
-                    if (code === ext.charCodeAt(extIdx)) {
+                    if (code15 === ext.charCodeAt(extIdx)) {
                         if (--extIdx === -1) {
-                            end = i;
+                            end = i18;
                         }
                     } else {
                         extIdx = -1;
@@ -4168,46 +4170,46 @@ function basename1(path, ext = "") {
             }
         }
         if (start === end) end = firstNonSlashEnd;
-        else if (end === -1) end = path.length;
-        return path.slice(start, end);
+        else if (end === -1) end = path24.length;
+        return path24.slice(start, end);
     } else {
-        for(i = path.length - 1; i >= 0; --i){
-            if (path.charCodeAt(i) === 47) {
+        for(i18 = path24.length - 1; i18 >= 0; --i18){
+            if (path24.charCodeAt(i18) === 47) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i18 + 1;
                     break;
                 }
             } else if (end === -1) {
                 matchedSlash = false;
-                end = i + 1;
+                end = i18 + 1;
             }
         }
         if (end === -1) return "";
-        return path.slice(start, end);
+        return path24.slice(start, end);
     }
 }
-function extname1(path) {
-    assertPath(path);
+function extname1(path25) {
+    assertPath(path25);
     let startDot = -1;
     let startPart = 0;
     let end = -1;
     let matchedSlash = true;
     let preDotState = 0;
-    for(let i = path.length - 1; i >= 0; --i){
-        const code = path.charCodeAt(i);
-        if (code === 47) {
+    for(let i19 = path25.length - 1; i19 >= 0; --i19){
+        const code16 = path25.charCodeAt(i19);
+        if (code16 === 47) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i19 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i19 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code16 === 46) {
+            if (startDot === -1) startDot = i19;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -4216,16 +4218,16 @@ function extname1(path) {
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         return "";
     }
-    return path.slice(startDot, end);
+    return path25.slice(startDot, end);
 }
-function format2(pathObject) {
+function format1(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
     return _format("/", pathObject);
 }
-function parse1(path) {
-    assertPath(path);
+function parse1(path26) {
+    assertPath(path26);
     const ret = {
         root: "",
         dir: "",
@@ -4233,10 +4235,10 @@ function parse1(path) {
         ext: "",
         name: ""
     };
-    if (path.length === 0) return ret;
-    const isAbsolute = path.charCodeAt(0) === 47;
+    if (path26.length === 0) return ret;
+    const isAbsolute2 = path26.charCodeAt(0) === 47;
     let start;
-    if (isAbsolute) {
+    if (isAbsolute2) {
         ret.root = "/";
         start = 1;
     } else {
@@ -4246,23 +4248,23 @@ function parse1(path) {
     let startPart = 0;
     let end = -1;
     let matchedSlash = true;
-    let i = path.length - 1;
+    let i20 = path26.length - 1;
     let preDotState = 0;
-    for(; i >= start; --i){
-        const code = path.charCodeAt(i);
-        if (code === 47) {
+    for(; i20 >= start; --i20){
+        const code17 = path26.charCodeAt(i20);
+        if (code17 === 47) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i20 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i20 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code17 === 46) {
+            if (startDot === -1) startDot = i20;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -4270,24 +4272,24 @@ function parse1(path) {
     }
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         if (end !== -1) {
-            if (startPart === 0 && isAbsolute) {
-                ret.base = ret.name = path.slice(1, end);
+            if (startPart === 0 && isAbsolute2) {
+                ret.base = ret.name = path26.slice(1, end);
             } else {
-                ret.base = ret.name = path.slice(startPart, end);
+                ret.base = ret.name = path26.slice(startPart, end);
             }
         }
     } else {
-        if (startPart === 0 && isAbsolute) {
-            ret.name = path.slice(1, startDot);
-            ret.base = path.slice(1, end);
+        if (startPart === 0 && isAbsolute2) {
+            ret.name = path26.slice(1, startDot);
+            ret.base = path26.slice(1, end);
         } else {
-            ret.name = path.slice(startPart, startDot);
-            ret.base = path.slice(startPart, end);
+            ret.name = path26.slice(startPart, startDot);
+            ret.base = path26.slice(startPart, end);
         }
-        ret.ext = path.slice(startDot, end);
+        ret.ext = path26.slice(startDot, end);
     }
-    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);
-    else if (isAbsolute) ret.dir = "/";
+    if (startPart > 0) ret.dir = path26.slice(0, startPart - 1);
+    else if (isAbsolute2) ret.dir = "/";
     return ret;
 }
 function fromFileUrl1(url) {
@@ -4297,12 +4299,12 @@ function fromFileUrl1(url) {
     }
     return decodeURIComponent(url.pathname.replace(/%(?![0-9A-Fa-f]{2})/g, "%25"));
 }
-function toFileUrl1(path) {
-    if (!isAbsolute1(path)) {
+function toFileUrl1(path27) {
+    if (!isAbsolute1(path27)) {
         throw new TypeError("Must be an absolute path.");
     }
     const url = new URL("file:///");
-    url.pathname = encodeWhitespace(path.replace(/%/g, "%25").replace(/\\/g, "%5C"));
+    url.pathname = encodeWhitespace(path27.replace(/%/g, "%25").replace(/\\/g, "%5C"));
     return url;
 }
 const mod1 = {
@@ -4317,15 +4319,15 @@ const mod1 = {
     dirname: dirname1,
     basename: basename1,
     extname: extname1,
-    format: format2,
+    format: format1,
     parse: parse1,
     fromFileUrl: fromFileUrl1,
     toFileUrl: toFileUrl1
 };
-const path2 = isWindows ? mod : mod1;
-const { join: join2 , normalize: normalize2  } = path2;
+const path = isWindows ? mod : mod1;
+const { join: join2 , normalize: normalize2  } = path;
 const path1 = isWindows ? mod : mod1;
-const { basename: basename2 , delimiter: delimiter2 , dirname: dirname2 , extname: extname2 , format: format3 , fromFileUrl: fromFileUrl2 , isAbsolute: isAbsolute2 , join: join3 , normalize: normalize3 , parse: parse2 , relative: relative2 , resolve: resolve2 , sep: sep2 , toFileUrl: toFileUrl2 , toNamespacedPath: toNamespacedPath2 ,  } = path1;
+const { basename: basename2 , delimiter: delimiter2 , dirname: dirname2 , extname: extname2 , format: format2 , fromFileUrl: fromFileUrl2 , isAbsolute: isAbsolute2 , join: join3 , normalize: normalize3 , parse: parse2 , relative: relative2 , resolve: resolve2 , sep: sep2 , toFileUrl: toFileUrl2 , toNamespacedPath: toNamespacedPath2 ,  } = path1;
 const consoleLogger = {
     type: 'logger',
     log (args) {
@@ -4342,12 +4344,10 @@ const consoleLogger = {
     }
 };
 class Logger {
-    constructor(concreteLogger, options = {
-    }){
+    constructor(concreteLogger, options = {}){
         this.init(concreteLogger, options);
     }
-    init(concreteLogger, options = {
-    }) {
+    init(concreteLogger, options = {}) {
         this.prefix = options.prefix || 'i18next:';
         this.logger = concreteLogger || consoleLogger;
         this.options = options;
@@ -4385,8 +4385,7 @@ class Logger {
 const __default = new Logger();
 class EventEmitter {
     constructor(){
-        this.observers = {
-        };
+        this.observers = {};
     }
     on(events, listener) {
         events.split(' ').forEach((event)=>{
@@ -4425,8 +4424,8 @@ class EventEmitter {
 function defer() {
     let res;
     let rej;
-    const promise = new Promise((resolve, reject)=>{
-        res = resolve;
+    const promise = new Promise((resolve6, reject)=>{
+        res = resolve6;
         rej = reject;
     });
     promise.resolve = res;
@@ -4442,45 +4441,42 @@ function copy2(a, s, t) {
         if (s[m]) t[m] = s[m];
     });
 }
-function getLastOfPath(object, path, Empty) {
+function getLastOfPath(object, path28, Empty) {
     function cleanKey(key) {
         return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
     }
     function canNotTraverseDeeper() {
         return !object || typeof object === 'string';
     }
-    const stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
+    const stack = typeof path28 !== 'string' ? [].concat(path28) : path28.split('.');
     while(stack.length > 1){
-        if (canNotTraverseDeeper()) return {
-        };
+        if (canNotTraverseDeeper()) return {};
         const key = cleanKey(stack.shift());
         if (!object[key] && Empty) object[key] = new Empty();
         if (Object.prototype.hasOwnProperty.call(object, key)) {
             object = object[key];
         } else {
-            object = {
-            };
+            object = {};
         }
     }
-    if (canNotTraverseDeeper()) return {
-    };
+    if (canNotTraverseDeeper()) return {};
     return {
         obj: object,
         k: cleanKey(stack.shift())
     };
 }
-function setPath(object, path, newValue) {
-    const { obj , k  } = getLastOfPath(object, path, Object);
+function setPath(object, path29, newValue) {
+    const { obj , k  } = getLastOfPath(object, path29, Object);
     obj[k] = newValue;
 }
-function pushPath(object, path, newValue, concat) {
-    const { obj , k  } = getLastOfPath(object, path, Object);
+function pushPath(object, path30, newValue, concat2) {
+    const { obj , k  } = getLastOfPath(object, path30, Object);
     obj[k] = obj[k] || [];
-    if (concat) obj[k] = obj[k].concat(newValue);
-    if (!concat) obj[k].push(newValue);
+    if (concat2) obj[k] = obj[k].concat(newValue);
+    if (!concat2) obj[k].push(newValue);
 }
-function getPath(object, path) {
-    const { obj , k  } = getLastOfPath(object, path);
+function getPath(object, path31) {
+    const { obj , k  } = getLastOfPath(object, path31);
     if (!obj) return undefined;
     return obj[k];
 }
@@ -4550,33 +4546,33 @@ function looksLikeObjectPath(key, nsSeparator, keySeparator) {
     }
     return matched;
 }
-function deepFind(obj, path, keySeparator = '.') {
+function deepFind(obj, path32, keySeparator = '.') {
     if (!obj) return undefined;
-    if (obj[path]) return obj[path];
-    const paths = path.split(keySeparator);
+    if (obj[path32]) return obj[path32];
+    const paths = path32.split(keySeparator);
     let current = obj;
-    for(let i = 0; i < paths.length; ++i){
+    for(let i21 = 0; i21 < paths.length; ++i21){
         if (!current) return undefined;
-        if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
+        if (typeof current[paths[i21]] === 'string' && i21 + 1 < paths.length) {
             return undefined;
         }
-        if (current[paths[i]] === undefined) {
+        if (current[paths[i21]] === undefined) {
             let j = 2;
-            let p = paths.slice(i, i + j).join(keySeparator);
+            let p = paths.slice(i21, i21 + j).join(keySeparator);
             let mix = current[p];
-            while(mix === undefined && paths.length > i + j){
+            while(mix === undefined && paths.length > i21 + j){
                 j++;
-                p = paths.slice(i, i + j).join(keySeparator);
+                p = paths.slice(i21, i21 + j).join(keySeparator);
                 mix = current[p];
             }
             if (mix === undefined) return undefined;
             if (typeof mix === 'string') return mix;
             if (p && typeof mix[p] === 'string') return mix[p];
-            const joinedPath = paths.slice(i + j).join(keySeparator);
+            const joinedPath = paths.slice(i21 + j).join(keySeparator);
             if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
             return undefined;
         }
-        current = current[paths[i]];
+        current = current[paths[i21]];
     }
     return current;
 }
@@ -4591,8 +4587,7 @@ class ResourceStore extends EventEmitter {
         if (isIE10) {
             EventEmitter.call(this);
         }
-        this.data = data || {
-        };
+        this.data = data || {};
         this.options = options;
         if (this.options.keySeparator === undefined) {
             this.options.keySeparator = '.';
@@ -4612,20 +4607,19 @@ class ResourceStore extends EventEmitter {
             this.options.ns.splice(index, 1);
         }
     }
-    getResource(lng, ns, key, options = {
-    }) {
+    getResource(lng, ns, key, options = {}) {
         const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
         const ignoreJSONStructure = options.ignoreJSONStructure !== undefined ? options.ignoreJSONStructure : this.options.ignoreJSONStructure;
-        let path = [
+        let path33 = [
             lng,
             ns
         ];
-        if (key && typeof key !== 'string') path = path.concat(key);
-        if (key && typeof key === 'string') path = path.concat(keySeparator ? key.split(keySeparator) : key);
+        if (key && typeof key !== 'string') path33 = path33.concat(key);
+        if (key && typeof key === 'string') path33 = path33.concat(keySeparator ? key.split(keySeparator) : key);
         if (lng.indexOf('.') > -1) {
-            path = lng.split('.');
+            path33 = lng.split('.');
         }
-        const result = getPath(this.data, path);
+        const result = getPath(this.data, path33);
         if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
         return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
     }
@@ -4634,18 +4628,18 @@ class ResourceStore extends EventEmitter {
     }) {
         let keySeparator = this.options.keySeparator;
         if (keySeparator === undefined) keySeparator = '.';
-        let path = [
+        let path34 = [
             lng,
             ns
         ];
-        if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
+        if (key) path34 = path34.concat(keySeparator ? key.split(keySeparator) : key);
         if (lng.indexOf('.') > -1) {
-            path = lng.split('.');
+            path34 = lng.split('.');
             value = ns;
-            ns = path[1];
+            ns = path34[1];
         }
         this.addNamespaces(ns);
-        setPath(this.data, path, value);
+        setPath(this.data, path34, value);
         if (!options.silent) this.emit('added', lng, ns, key, value);
     }
     addResources(lng, ns, resources, options = {
@@ -4661,19 +4655,18 @@ class ResourceStore extends EventEmitter {
     addResourceBundle(lng, ns, resources, deep, overwrite, options = {
         silent: false
     }) {
-        let path = [
+        let path35 = [
             lng,
             ns
         ];
         if (lng.indexOf('.') > -1) {
-            path = lng.split('.');
+            path35 = lng.split('.');
             deep = resources;
             resources = ns;
-            ns = path[1];
+            ns = path35[1];
         }
         this.addNamespaces(ns);
-        let pack = getPath(this.data, path) || {
-        };
+        let pack = getPath(this.data, path35) || {};
         if (deep) {
             deepExtend(pack, resources, overwrite);
         } else {
@@ -4682,7 +4675,7 @@ class ResourceStore extends EventEmitter {
                 ...resources
             };
         }
-        setPath(this.data, path, pack);
+        setPath(this.data, path35, pack);
         if (!options.silent) this.emit('added', lng, ns, resources);
     }
     removeResourceBundle(lng, ns) {
@@ -4698,8 +4691,7 @@ class ResourceStore extends EventEmitter {
     getResourceBundle(lng, ns) {
         if (!ns) ns = this.options.defaultNS;
         if (this.options.compatibilityAPI === 'v1') return {
-            ...{
-            },
+            ...{},
             ...this.getResource(lng, ns)
         };
         return this.getResource(lng, ns);
@@ -4709,8 +4701,8 @@ class ResourceStore extends EventEmitter {
     }
     hasLanguageSomeTranslations(lng) {
         const data = this.getDataByLanguage(lng);
-        const n = data && Object.keys(data) || [];
-        return !!n.find((v)=>data[v] && Object.keys(data[v]).length > 0
+        const n3 = data && Object.keys(data) || [];
+        return !!n3.find((v)=>data[v] && Object.keys(data[v]).length > 0
         );
     }
     toJSON() {
@@ -4718,8 +4710,7 @@ class ResourceStore extends EventEmitter {
     }
 }
 const __default1 = {
-    processors: {
-    },
+    processors: {},
     addPostProcessor (module) {
         this.processors[module.name] = module;
     },
@@ -4730,11 +4721,9 @@ const __default1 = {
         return value;
     }
 };
-const checkedLoadedFor = {
-};
+const checkedLoadedFor = {};
 class Translator extends EventEmitter {
-    constructor(services, options = {
-    }){
+    constructor(services, options = {}){
         super();
         if (isIE10) {
             EventEmitter.call(this);
@@ -4758,8 +4747,7 @@ class Translator extends EventEmitter {
         if (lng) this.language = lng;
     }
     exists(key, options = {
-        interpolation: {
-        }
+        interpolation: {}
     }) {
         if (key === undefined || key === null) {
             return false;
@@ -4798,8 +4786,7 @@ class Translator extends EventEmitter {
         if (typeof options !== 'object' && this.options.overloadTranslationOptionHandler) {
             options = this.options.overloadTranslationOptionHandler(arguments);
         }
-        if (!options) options = {
-        };
+        if (!options) options = {};
         if (keys === undefined || keys === null) return '';
         if (!Array.isArray(keys)) keys = [
             String(keys)
@@ -4841,23 +4828,22 @@ class Translator extends EventEmitter {
             }
             if (keySeparator) {
                 const resTypeIsArray = resType === '[object Array]';
-                const copy = resTypeIsArray ? [] : {
-                };
+                const copy3 = resTypeIsArray ? [] : {};
                 let newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
                 for(const m in res){
                     if (Object.prototype.hasOwnProperty.call(res, m)) {
                         const deepKey = `${newKeyToUse}${keySeparator}${m}`;
-                        copy[m] = this.translate(deepKey, {
+                        copy3[m] = this.translate(deepKey, {
                             ...options,
                             ...{
                                 joinArrays: false,
                                 ns: namespaces
                             }
                         });
-                        if (copy[m] === deepKey) copy[m] = res[m];
+                        if (copy3[m] === deepKey) copy3[m] = res[m];
                     }
                 }
-                res = copy;
+                res = copy3;
             }
         } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && resType === '[object Array]') {
             res = res.join(joinArrays);
@@ -4892,8 +4878,8 @@ class Translator extends EventEmitter {
                 let lngs = [];
                 const fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
                 if (this.options.saveMissingTo === 'fallback' && fallbackLngs && fallbackLngs[0]) {
-                    for(let i = 0; i < fallbackLngs.length; i++){
-                        lngs.push(fallbackLngs[i]);
+                    for(let i22 = 0; i22 < fallbackLngs.length; i22++){
+                        lngs.push(fallbackLngs[i22]);
                     }
                 } else if (this.options.saveMissingTo === 'all') {
                     lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);
@@ -4981,8 +4967,7 @@ class Translator extends EventEmitter {
         }
         return res;
     }
-    resolve(keys, options = {
-    }) {
+    resolve(keys, options = {}) {
         let found;
         let usedKey;
         let exactUsedKey;
@@ -5008,18 +4993,18 @@ class Translator extends EventEmitter {
                     checkedLoadedFor[`${codes[0]}-${ns}`] = true;
                     this.logger.warn(`key "${usedKey}" for languages "${codes.join(', ')}" won't get resolved as namespace "${usedNS}" was not yet loaded`, 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
                 }
-                codes.forEach((code)=>{
+                codes.forEach((code18)=>{
                     if (this.isValidLookup(found)) return;
-                    usedLng = code;
+                    usedLng = code18;
                     let finalKey = key;
                     const finalKeys = [
                         finalKey
                     ];
                     if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
-                        this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
+                        this.i18nFormat.addLookupKeys(finalKeys, key, code18, ns, options);
                     } else {
                         let pluralSuffix;
-                        if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
+                        if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code18, options.count, options);
                         if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
                         if (needsContextHandling) finalKeys.push(finalKey += `${this.options.contextSeparator}${options.context}`);
                         if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
@@ -5028,7 +5013,7 @@ class Translator extends EventEmitter {
                     while(possibleKey = finalKeys.pop()){
                         if (!this.isValidLookup(found)) {
                             exactUsedKey = possibleKey;
-                            found = this.getResource(code, ns, possibleKey, options);
+                            found = this.getResource(code18, ns, possibleKey, options);
                         }
                     }
                 });
@@ -5045,10 +5030,9 @@ class Translator extends EventEmitter {
     isValidLookup(res) {
         return res !== undefined && !(!this.options.returnNull && res === null) && !(!this.options.returnEmptyString && res === '');
     }
-    getResource(code, ns, key, options = {
-    }) {
-        if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code, ns, key, options);
-        return this.resourceStore.getResource(code, ns, key, options);
+    getResource(code19, ns, key, options = {}) {
+        if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code19, ns, key, options);
+        return this.resourceStore.getResource(code19, ns, key, options);
     }
     static hasDefaultValue(options) {
         const prefix = 'defaultValue';
@@ -5069,21 +5053,21 @@ class LanguageUtil {
         this.supportedLngs = this.options.supportedLngs || false;
         this.logger = __default.create('languageUtils');
     }
-    getScriptPartFromCode(code) {
-        if (!code || code.indexOf('-') < 0) return null;
-        const p = code.split('-');
+    getScriptPartFromCode(code20) {
+        if (!code20 || code20.indexOf('-') < 0) return null;
+        const p = code20.split('-');
         if (p.length === 2) return null;
         p.pop();
         if (p[p.length - 1].toLowerCase() === 'x') return null;
         return this.formatLanguageCode(p.join('-'));
     }
-    getLanguagePartFromCode(code) {
-        if (!code || code.indexOf('-') < 0) return code;
-        const p = code.split('-');
+    getLanguagePartFromCode(code21) {
+        if (!code21 || code21.indexOf('-') < 0) return code21;
+        const p = code21.split('-');
         return this.formatLanguageCode(p[0]);
     }
-    formatLanguageCode(code) {
-        if (typeof code === 'string' && code.indexOf('-') > -1) {
+    formatLanguageCode(code22) {
+        if (typeof code22 === 'string' && code22.indexOf('-') > -1) {
             const specialCases = [
                 'hans',
                 'hant',
@@ -5093,7 +5077,7 @@ class LanguageUtil {
                 'mong',
                 'arab'
             ];
-            let p = code.split('-');
+            let p = code22.split('-');
             if (this.options.lowerCaseLng) {
                 p = p.map((part)=>part.toLowerCase()
                 );
@@ -5110,26 +5094,26 @@ class LanguageUtil {
             }
             return p.join('-');
         }
-        return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
+        return this.options.cleanCode || this.options.lowerCaseLng ? code22.toLowerCase() : code22;
     }
-    isSupportedCode(code) {
+    isSupportedCode(code23) {
         if (this.options.load === 'languageOnly' || this.options.nonExplicitSupportedLngs) {
-            code = this.getLanguagePartFromCode(code);
+            code23 = this.getLanguagePartFromCode(code23);
         }
-        return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.indexOf(code) > -1;
+        return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.indexOf(code23) > -1;
     }
     getBestMatchFromCodes(codes) {
         if (!codes) return null;
         let found;
-        codes.forEach((code)=>{
+        codes.forEach((code24)=>{
             if (found) return;
-            let cleanedLng = this.formatLanguageCode(code);
+            let cleanedLng = this.formatLanguageCode(code24);
             if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
         });
         if (!found && this.options.supportedLngs) {
-            codes.forEach((code)=>{
+            codes.forEach((code25)=>{
                 if (found) return;
-                let lngOnly = this.getLanguagePartFromCode(code);
+                let lngOnly = this.getLanguagePartFromCode(code25);
                 if (this.isSupportedCode(lngOnly)) return found = lngOnly;
                 found = this.options.supportedLngs.find((supportedLng)=>{
                     if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
@@ -5139,23 +5123,23 @@ class LanguageUtil {
         if (!found) found = this.getFallbackCodes(this.options.fallbackLng)[0];
         return found;
     }
-    getFallbackCodes(fallbacks, code) {
+    getFallbackCodes(fallbacks, code26) {
         if (!fallbacks) return [];
-        if (typeof fallbacks === 'function') fallbacks = fallbacks(code);
+        if (typeof fallbacks === 'function') fallbacks = fallbacks(code26);
         if (typeof fallbacks === 'string') fallbacks = [
             fallbacks
         ];
         if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
-        if (!code) return fallbacks.default || [];
-        let found = fallbacks[code];
-        if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
-        if (!found) found = fallbacks[this.formatLanguageCode(code)];
-        if (!found) found = fallbacks[this.getLanguagePartFromCode(code)];
+        if (!code26) return fallbacks.default || [];
+        let found = fallbacks[code26];
+        if (!found) found = fallbacks[this.getScriptPartFromCode(code26)];
+        if (!found) found = fallbacks[this.formatLanguageCode(code26)];
+        if (!found) found = fallbacks[this.getLanguagePartFromCode(code26)];
         if (!found) found = fallbacks.default;
         return found || [];
     }
-    toResolveHierarchy(code, fallbackCode) {
-        const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
+    toResolveHierarchy(code27, fallbackCode) {
+        const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code27);
         const codes = [];
         const addCode = (c)=>{
             if (!c) return;
@@ -5165,12 +5149,12 @@ class LanguageUtil {
                 this.logger.warn(`rejecting language code not found in supportedLngs: ${c}`);
             }
         };
-        if (typeof code === 'string' && code.indexOf('-') > -1) {
-            if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
-            if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code));
-            if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
-        } else if (typeof code === 'string') {
-            addCode(this.formatLanguageCode(code));
+        if (typeof code27 === 'string' && code27.indexOf('-') > -1) {
+            if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code27));
+            if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code27));
+            if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code27));
+        } else if (typeof code27 === 'string') {
+            addCode(this.formatLanguageCode(code27));
         }
         fallbackCodes.forEach((fc)=>{
             if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
@@ -5548,71 +5532,71 @@ let sets = [
     }
 ];
 let _rulesPluralsTypes = {
-    1: function(n) {
-        return Number(n > 1);
+    1: function(n4) {
+        return Number(n4 > 1);
     },
-    2: function(n) {
-        return Number(n != 1);
+    2: function(n5) {
+        return Number(n5 != 1);
     },
     3: function(n) {
         return 0;
     },
-    4: function(n) {
-        return Number(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);
+    4: function(n6) {
+        return Number(n6 % 10 == 1 && n6 % 100 != 11 ? 0 : n6 % 10 >= 2 && n6 % 10 <= 4 && (n6 % 100 < 10 || n6 % 100 >= 20) ? 1 : 2);
     },
-    5: function(n) {
-        return Number(n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5);
+    5: function(n7) {
+        return Number(n7 == 0 ? 0 : n7 == 1 ? 1 : n7 == 2 ? 2 : n7 % 100 >= 3 && n7 % 100 <= 10 ? 3 : n7 % 100 >= 11 ? 4 : 5);
     },
-    6: function(n) {
-        return Number(n == 1 ? 0 : n >= 2 && n <= 4 ? 1 : 2);
+    6: function(n8) {
+        return Number(n8 == 1 ? 0 : n8 >= 2 && n8 <= 4 ? 1 : 2);
     },
-    7: function(n) {
-        return Number(n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);
+    7: function(n9) {
+        return Number(n9 == 1 ? 0 : n9 % 10 >= 2 && n9 % 10 <= 4 && (n9 % 100 < 10 || n9 % 100 >= 20) ? 1 : 2);
     },
-    8: function(n) {
-        return Number(n == 1 ? 0 : n == 2 ? 1 : n != 8 && n != 11 ? 2 : 3);
+    8: function(n10) {
+        return Number(n10 == 1 ? 0 : n10 == 2 ? 1 : n10 != 8 && n10 != 11 ? 2 : 3);
     },
-    9: function(n) {
-        return Number(n >= 2);
+    9: function(n11) {
+        return Number(n11 >= 2);
     },
-    10: function(n) {
-        return Number(n == 1 ? 0 : n == 2 ? 1 : n < 7 ? 2 : n < 11 ? 3 : 4);
+    10: function(n12) {
+        return Number(n12 == 1 ? 0 : n12 == 2 ? 1 : n12 < 7 ? 2 : n12 < 11 ? 3 : 4);
     },
-    11: function(n) {
-        return Number(n == 1 || n == 11 ? 0 : n == 2 || n == 12 ? 1 : n > 2 && n < 20 ? 2 : 3);
+    11: function(n13) {
+        return Number(n13 == 1 || n13 == 11 ? 0 : n13 == 2 || n13 == 12 ? 1 : n13 > 2 && n13 < 20 ? 2 : 3);
     },
-    12: function(n) {
-        return Number(n % 10 != 1 || n % 100 == 11);
+    12: function(n14) {
+        return Number(n14 % 10 != 1 || n14 % 100 == 11);
     },
-    13: function(n) {
-        return Number(n !== 0);
+    13: function(n15) {
+        return Number(n15 !== 0);
     },
-    14: function(n) {
-        return Number(n == 1 ? 0 : n == 2 ? 1 : n == 3 ? 2 : 3);
+    14: function(n16) {
+        return Number(n16 == 1 ? 0 : n16 == 2 ? 1 : n16 == 3 ? 2 : 3);
     },
-    15: function(n) {
-        return Number(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);
+    15: function(n17) {
+        return Number(n17 % 10 == 1 && n17 % 100 != 11 ? 0 : n17 % 10 >= 2 && (n17 % 100 < 10 || n17 % 100 >= 20) ? 1 : 2);
     },
-    16: function(n) {
-        return Number(n % 10 == 1 && n % 100 != 11 ? 0 : n !== 0 ? 1 : 2);
+    16: function(n18) {
+        return Number(n18 % 10 == 1 && n18 % 100 != 11 ? 0 : n18 !== 0 ? 1 : 2);
     },
-    17: function(n) {
-        return Number(n == 1 || n % 10 == 1 && n % 100 != 11 ? 0 : 1);
+    17: function(n19) {
+        return Number(n19 == 1 || n19 % 10 == 1 && n19 % 100 != 11 ? 0 : 1);
     },
-    18: function(n) {
-        return Number(n == 0 ? 0 : n == 1 ? 1 : 2);
+    18: function(n20) {
+        return Number(n20 == 0 ? 0 : n20 == 1 ? 1 : 2);
     },
-    19: function(n) {
-        return Number(n == 1 ? 0 : n == 0 || n % 100 > 1 && n % 100 < 11 ? 1 : n % 100 > 10 && n % 100 < 20 ? 2 : 3);
+    19: function(n21) {
+        return Number(n21 == 1 ? 0 : n21 == 0 || n21 % 100 > 1 && n21 % 100 < 11 ? 1 : n21 % 100 > 10 && n21 % 100 < 20 ? 2 : 3);
     },
-    20: function(n) {
-        return Number(n == 1 ? 0 : n == 0 || n % 100 > 0 && n % 100 < 20 ? 1 : 2);
+    20: function(n22) {
+        return Number(n22 == 1 ? 0 : n22 == 0 || n22 % 100 > 0 && n22 % 100 < 20 ? 1 : 2);
     },
-    21: function(n) {
-        return Number(n % 100 == 1 ? 1 : n % 100 == 2 ? 2 : n % 100 == 3 || n % 100 == 4 ? 3 : 0);
+    21: function(n23) {
+        return Number(n23 % 100 == 1 ? 1 : n23 % 100 == 2 ? 2 : n23 % 100 == 3 || n23 % 100 == 4 ? 3 : 0);
     },
-    22: function(n) {
-        return Number(n == 1 ? 0 : n == 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3);
+    22: function(n24) {
+        return Number(n24 == 1 ? 0 : n24 == 2 ? 1 : (n24 < 0 || n24 > 10) && n24 % 10 == 0 ? 2 : 3);
     }
 };
 const deprecatedJsonVersions = [
@@ -5629,8 +5613,7 @@ const suffixesOrder = {
     other: 5
 };
 function createRules() {
-    const rules = {
-    };
+    const rules = {};
     sets.forEach((set)=>{
         set.lngs.forEach((l)=>{
             rules[l] = {
@@ -5642,8 +5625,7 @@ function createRules() {
     return rules;
 }
 class PluralResolver {
-    constructor(languageUtils, options = {
-    }){
+    constructor(languageUtils, options = {}){
         this.languageUtils = languageUtils;
         this.options = options;
         this.logger = __default.create('pluralResolver');
@@ -5656,35 +5638,31 @@ class PluralResolver {
     addRule(lng, obj) {
         this.rules[lng] = obj;
     }
-    getRule(code, options = {
-    }) {
+    getRule(code28, options = {}) {
         if (this.shouldUseIntlApi()) {
             try {
-                return new Intl.PluralRules(code, {
+                return new Intl.PluralRules(code28, {
                     type: options.ordinal ? 'ordinal' : 'cardinal'
                 });
             } catch  {
                 return;
             }
         }
-        return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
+        return this.rules[code28] || this.rules[this.languageUtils.getLanguagePartFromCode(code28)];
     }
-    needsPlural(code, options = {
-    }) {
-        const rule = this.getRule(code, options);
+    needsPlural(code29, options = {}) {
+        const rule = this.getRule(code29, options);
         if (this.shouldUseIntlApi()) {
             return rule && rule.resolvedOptions().pluralCategories.length > 1;
         }
         return rule && rule.numbers.length > 1;
     }
-    getPluralFormsOfKey(code, key, options = {
-    }) {
-        return this.getSuffixes(code, options).map((suffix)=>`${key}${suffix}`
+    getPluralFormsOfKey(code30, key, options = {}) {
+        return this.getSuffixes(code30, options).map((suffix)=>`${key}${suffix}`
         );
     }
-    getSuffixes(code, options = {
-    }) {
-        const rule = this.getRule(code, options);
+    getSuffixes(code31, options = {}) {
+        const rule = this.getRule(code31, options);
         if (!rule) {
             return [];
         }
@@ -5693,19 +5671,18 @@ class PluralResolver {
             ).map((pluralCategory)=>`${this.options.prepend}${pluralCategory}`
             );
         }
-        return rule.numbers.map((number)=>this.getSuffix(code, number, options)
+        return rule.numbers.map((number)=>this.getSuffix(code31, number, options)
         );
     }
-    getSuffix(code, count, options = {
-    }) {
-        const rule = this.getRule(code, options);
+    getSuffix(code32, count, options = {}) {
+        const rule = this.getRule(code32, options);
         if (rule) {
             if (this.shouldUseIntlApi()) {
                 return `${this.options.prepend}${rule.select(count)}`;
             }
             return this.getSuffixRetroCompatible(rule, count);
         }
-        this.logger.warn(`no plural rule found for: ${code}`);
+        this.logger.warn(`no plural rule found for: ${code32}`);
         return '';
     }
     getSuffixRetroCompatible(rule, count) {
@@ -5736,16 +5713,14 @@ class PluralResolver {
     }
 }
 class Interpolator {
-    constructor(options = {
-    }){
+    constructor(options = {}){
         this.logger = __default.create('interpolator');
         this.options = options;
         this.format = options.interpolation && options.interpolation.format || ((value)=>value
         );
         this.init(options);
     }
-    init(options = {
-    }) {
+    init(options = {}) {
         if (!options.interpolation) options.interpolation = {
             escapeValue: true
         };
@@ -5780,19 +5755,18 @@ class Interpolator {
         let match;
         let value;
         let replaces;
-        const defaultData = this.options && this.options.interpolation && this.options.interpolation.defaultVariables || {
-        };
+        const defaultData = this.options && this.options.interpolation && this.options.interpolation.defaultVariables || {};
         function regexSafe(val) {
             return val.replace(/\$/g, '$$$$');
         }
         const handleFormat = (key)=>{
             if (key.indexOf(this.formatSeparator) < 0) {
-                const path = getPathWithDefaults(data, defaultData, key);
-                return this.alwaysFormat ? this.format(path, undefined, lng, {
+                const path36 = getPathWithDefaults(data, defaultData, key);
+                return this.alwaysFormat ? this.format(path36, undefined, lng, {
                     ...options,
                     ...data,
                     interpolationkey: key
-                }) : path;
+                }) : path36;
             }
             const p = key.split(this.formatSeparator);
             const k = p.shift().trim();
@@ -5850,8 +5824,7 @@ class Interpolator {
         });
         return str;
     }
-    nest(str, fc, options = {
-    }) {
+    nest(str, fc, options = {}) {
         let match;
         let value;
         let clonedOptions = {
@@ -5860,9 +5833,9 @@ class Interpolator {
         clonedOptions.applyPostProcessor = false;
         delete clonedOptions.defaultValue;
         function handleHasOptions(key, inheritedOptions) {
-            const sep = this.nestingOptionsSeparator;
-            if (key.indexOf(sep) < 0) return key;
-            const c = key.split(new RegExp(`${sep}[ ]*{`));
+            const sep7 = this.nestingOptionsSeparator;
+            if (key.indexOf(sep7) < 0) return key;
+            const c = key.split(new RegExp(`${sep7}[ ]*{`));
             let optionsString = `{${c[1]}`;
             key = c[0];
             optionsString = this.interpolate(optionsString, clonedOptions);
@@ -5875,7 +5848,7 @@ class Interpolator {
                 };
             } catch (e) {
                 this.logger.warn(`failed parsing options string in nesting for key ${key}`, e);
-                return `${key}${sep}${optionsString}`;
+                return `${key}${sep7}${optionsString}`;
             }
             delete clonedOptions.defaultValue;
             return key;
@@ -5918,8 +5891,7 @@ function remove(arr, what) {
     }
 }
 class Connector extends EventEmitter {
-    constructor(backend, store, services, options = {
-    }){
+    constructor(backend, store, services, options = {}){
         super();
         if (isIE10) {
             EventEmitter.call(this);
@@ -5930,8 +5902,7 @@ class Connector extends EventEmitter {
         this.languageUtils = services.languageUtils;
         this.options = options;
         this.logger = __default.create('backendConnector');
-        this.state = {
-        };
+        this.state = {};
         this.queue = [];
         if (this.backend && this.backend.init) {
             this.backend.init(services, options.backend, options);
@@ -5948,8 +5919,7 @@ class Connector extends EventEmitter {
                 const name = `${lng}|${ns}`;
                 if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
                     this.state[name] = 2;
-                } else if (this.state[name] < 0) {
-                } else if (this.state[name] === 1) {
+                } else if (this.state[name] < 0) {} else if (this.state[name] === 1) {
                     if (pending.indexOf(name) < 0) pending.push(name);
                 } else {
                     this.state[name] = 1;
@@ -5964,8 +5934,7 @@ class Connector extends EventEmitter {
         if (toLoad.length || pending.length) {
             this.queue.push({
                 pending,
-                loaded: {
-                },
+                loaded: {},
                 errors: [],
                 callback
             });
@@ -5980,18 +5949,17 @@ class Connector extends EventEmitter {
     loaded(name, err, data) {
         const s = name.split('|');
         const lng = s[0];
-        const ns = s[1];
-        if (err) this.emit('failedLoading', lng, ns, err);
+        const ns1 = s[1];
+        if (err) this.emit('failedLoading', lng, ns1, err);
         if (data) {
-            this.store.addResourceBundle(lng, ns, data);
+            this.store.addResourceBundle(lng, ns1, data);
         }
         this.state[name] = err ? -1 : 2;
-        const loaded = {
-        };
+        const loaded = {};
         this.queue.forEach((q)=>{
             pushPath(q.loaded, [
                 lng
-            ], ns);
+            ], ns1);
             remove(q.pending, name);
             if (err) q.errors.push(err);
             if (q.pending.length === 0 && !q.done) {
@@ -6016,8 +5984,7 @@ class Connector extends EventEmitter {
         );
     }
     read(lng, ns, fcName, tried = 0, wait = 350, callback) {
-        if (!lng.length) return callback(null, {
-        });
+        if (!lng.length) return callback(null, {});
         return this.backend[fcName](lng, ns, (err, data)=>{
             if (err && data && tried < 5) {
                 setTimeout(()=>{
@@ -6028,8 +5995,7 @@ class Connector extends EventEmitter {
             callback(err, data);
         });
     }
-    prepareLoading(languages, namespaces, options = {
-    }, callback) {
+    prepareLoading(languages, namespaces, options = {}, callback) {
         if (!this.backend) {
             this.logger.warn('No backend was added via i18next.use. Will not load resources.');
             return callback && callback();
@@ -6048,8 +6014,7 @@ class Connector extends EventEmitter {
         });
     }
     load(languages, namespaces, callback) {
-        this.prepareLoading(languages, namespaces, {
-        }, callback);
+        this.prepareLoading(languages, namespaces, {}, callback);
     }
     reload(languages, namespaces, callback) {
         this.prepareLoading(languages, namespaces, {
@@ -6066,8 +6031,7 @@ class Connector extends EventEmitter {
             this.loaded(name, err, data);
         });
     }
-    saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {
-    }) {
+    saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}) {
         if (this.services.utils && this.services.utils.hasLoadedNamespace && !this.services.utils.hasLoadedNamespace(namespace)) {
             this.logger.warn(`did not save key "${key}" as the namespace "${namespace}" was not yet loaded`, 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
             return;
@@ -6124,8 +6088,7 @@ function get() {
         appendNamespaceToMissingKey: false,
         appendNamespaceToCIMode: false,
         overloadTranslationOptionHandler: function handle(args) {
-            var ret = {
-            };
+            var ret = {};
             if (typeof args[1] === 'object') ret = args[1];
             if (typeof args[1] === 'string') ret.defaultValue = args[1];
             if (typeof args[2] === 'string') ret.tDescription = args[2];
@@ -6170,18 +6133,15 @@ function transformOptions(options) {
     }
     return options;
 }
-function noop() {
-}
+function noop() {}
 class I18n extends EventEmitter {
-    constructor(options = {
-    }, callback){
+    constructor(options = {}, callback){
         super();
         if (isIE10) {
             EventEmitter.call(this);
         }
         this.options = transformOptions(options);
-        this.services = {
-        };
+        this.services = {};
         this.logger = __default;
         this.modules = {
             external: []
@@ -6196,12 +6156,10 @@ class I18n extends EventEmitter {
             }, 0);
         }
     }
-    init(options = {
-    }, callback) {
+    init(options = {}, callback) {
         if (typeof options === 'function') {
             callback = options;
-            options = {
-            };
+            options = {};
         }
         if (!options.defaultNS && options.ns) {
             if (typeof options.ns === 'string') {
@@ -6322,7 +6280,7 @@ class I18n extends EventEmitter {
         if (!this.options.resources || this.options.partialBundledLanguages) {
             if (usedLng && usedLng.toLowerCase() === 'cimode') return usedCallback();
             const toLoad = [];
-            const append = (lng)=>{
+            const append1 = (lng)=>{
                 if (!lng) return;
                 const lngs = this.services.languageUtils.toResolveHierarchy(lng);
                 lngs.forEach((l)=>{
@@ -6331,13 +6289,13 @@ class I18n extends EventEmitter {
             };
             if (!usedLng) {
                 const fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
-                fallbacks.forEach((l)=>append(l)
+                fallbacks.forEach((l)=>append1(l)
                 );
             } else {
-                append(usedLng);
+                append1(usedLng);
             }
             if (this.options.preload) {
-                this.options.preload.forEach((l)=>append(l)
+                this.options.preload.forEach((l)=>append1(l)
                 );
             }
             this.services.backendConnector.load(toLoad, this.options.ns, usedCallback);
@@ -6479,8 +6437,7 @@ class I18n extends EventEmitter {
     setDefaultNamespace(ns) {
         this.options.defaultNS = ns;
     }
-    hasLoadedNamespace(ns, options = {
-    }) {
+    hasLoadedNamespace(ns, options = {}) {
         if (!this.isInitialized) {
             this.logger.warn('hasLoadedNamespace: i18next was not initialized', this.languages);
             return false;
@@ -6493,8 +6450,8 @@ class I18n extends EventEmitter {
         const fallbackLng = this.options ? this.options.fallbackLng : false;
         const lastLng = this.languages[this.languages.length - 1];
         if (lng.toLowerCase() === 'cimode') return true;
-        const loadNotPending = (l, n)=>{
-            const loadState = this.services.backendConnector.state[`${l}|${n}`];
+        const loadNotPending = (l, n25)=>{
+            const loadState = this.services.backendConnector.state[`${l}|${n25}`];
             return loadState === -1 || loadState === 2;
         };
         if (options.precheck) {
@@ -6515,8 +6472,8 @@ class I18n extends EventEmitter {
         if (typeof ns === 'string') ns = [
             ns
         ];
-        ns.forEach((n)=>{
-            if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
+        ns.forEach((n26)=>{
+            if (this.options.ns.indexOf(n26) < 0) this.options.ns.push(n26);
         });
         this.loadResources((err)=>{
             deferred.resolve();
@@ -6612,12 +6569,10 @@ class I18n extends EventEmitter {
         ];
         return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0 ? 'rtl' : 'ltr';
     }
-    createInstance(options = {
-    }, callback) {
+    createInstance(options = {}, callback) {
         return new I18n(options, callback);
     }
-    cloneInstance(options = {
-    }, callback = noop) {
+    cloneInstance(options = {}, callback = noop) {
         const mergedOptions = {
             ...this.options,
             ...options,
@@ -6694,7 +6649,7 @@ const entities = {
         "'": "&apos;"
     }
 };
-const tokens1 = {
+const tokens = {
     entity: {
         regex: {
             entities: /&#(?<hex>x?)(?<code>\d+);/g
@@ -6787,8 +6742,7 @@ const tokens1 = {
     }
 };
 class Parser {
-    constructor(stream, options = {
-    }){
+    constructor(stream, options = {}){
         this.#stream = stream;
         this.#options = options;
         this.#options.reviver ??= function({ value  }) {
@@ -6799,15 +6753,14 @@ class Parser {
         return this.#document();
     }
     #options;
-     #debug(path, string) {
+     #debug(path37, string) {
         if (this.#options.debug) {
-            console.debug(`${path.map((node)=>node[$XML].name
+            console.debug(`${path37.map((node)=>node[$XML].name
             ).join(" > ")} | ${string}`.trim());
         }
     }
      #document() {
-        const document = {
-        };
+        const document = {};
         const path = [];
         const comments = [];
         let root = false;
@@ -6816,14 +6769,14 @@ class Parser {
         try {
             while(true){
                 clean = true;
-                if (this.#peek(tokens1.comment.start)) {
+                if (this.#peek(tokens.comment.start)) {
                     clean = false;
                     comments.push(this.#comment({
                         path
                     }));
                     continue;
                 }
-                if (this.#peek(tokens1.prolog.start)) {
+                if (this.#peek(tokens.prolog.start)) {
                     if (document.xml) {
                         throw new SyntaxError("Multiple prolog declaration found");
                     }
@@ -6833,7 +6786,7 @@ class Parser {
                     }));
                     continue;
                 }
-                if (this.#peek(tokens1.doctype.start)) {
+                if (this.#peek(tokens.doctype.start)) {
                     if (document.doctype) {
                         throw new SyntaxError("Multiple doctype declaration found");
                     }
@@ -6843,7 +6796,7 @@ class Parser {
                     }));
                     continue;
                 }
-                if (this.#peek(tokens1.tag.start)) {
+                if (this.#peek(tokens.tag.start)) {
                     if (root) {
                         throw new SyntaxError("Multiple root elements found");
                     }
@@ -6866,129 +6819,129 @@ class Parser {
             throw error;
         }
     }
-     #node({ path  }) {
+     #node({ path: path110  }) {
         if (this.#options.progress) {
             this.#options.progress(this.#stream.cursor);
         }
-        if (this.#peek(tokens1.comment.start)) {
+        if (this.#peek(tokens.comment.start)) {
             return {
                 [schema.comment]: this.#comment({
-                    path
+                    path: path110
                 })
             };
         }
         return this.#tag({
-            path
+            path: path110
         });
     }
-     #prolog({ path  }) {
-        this.#debug(path, "parsing prolog");
+     #prolog({ path: path211  }) {
+        this.#debug(path211, "parsing prolog");
         const prolog = this.#make.node({
             name: "xml",
-            path
+            path: path211
         });
-        this.#consume(tokens1.prolog.start);
-        while(!this.#peek(tokens1.prolog.end)){
+        this.#consume(tokens.prolog.start);
+        while(!this.#peek(tokens.prolog.end)){
             Object.assign(prolog, this.#attribute({
                 path: [
-                    ...path,
+                    ...path211,
                     prolog
                 ]
             }));
         }
-        this.#consume(tokens1.prolog.end);
+        this.#consume(tokens.prolog.end);
         return {
             xml: prolog
         };
     }
-     #doctype({ path  }) {
-        this.#debug(path, "parsing doctype");
+     #doctype({ path: path311  }) {
+        this.#debug(path311, "parsing doctype");
         const doctype = this.#make.node({
             name: "doctype",
-            path
+            path: path311
         });
         Object.defineProperty(doctype, $XML, {
             enumerable: false,
             writable: true
         });
-        this.#consume(tokens1.doctype.start);
-        while(!this.#peek(tokens1.doctype.end)){
-            if (this.#peek(tokens1.doctype.elements.start)) {
-                this.#consume(tokens1.doctype.elements.start);
-                while(!this.#peek(tokens1.doctype.elements.end)){
+        this.#consume(tokens.doctype.start);
+        while(!this.#peek(tokens.doctype.end)){
+            if (this.#peek(tokens.doctype.elements.start)) {
+                this.#consume(tokens.doctype.elements.start);
+                while(!this.#peek(tokens.doctype.elements.end)){
                     Object.assign(doctype, this.#doctypeElement({
-                        path
+                        path: path311
                     }));
                 }
-                this.#consume(tokens1.doctype.elements.end);
+                this.#consume(tokens.doctype.elements.end);
             } else {
                 Object.assign(doctype, this.#property({
-                    path
+                    path: path311
                 }));
             }
         }
         this.#stream.consume({
-            content: tokens1.doctype.end
+            content: tokens.doctype.end
         });
         return {
             doctype
         };
     }
-     #doctypeElement({ path  }) {
-        this.#debug(path, "parsing doctype element");
-        this.#consume(tokens1.doctype.element.start);
+     #doctypeElement({ path: path411  }) {
+        this.#debug(path411, "parsing doctype element");
+        this.#consume(tokens.doctype.element.start);
         const element = Object.keys(this.#property({
-            path
+            path: path411
         })).shift().substring(schema.property.prefix.length);
-        this.#debug(path, `found doctype element "${element}"`);
-        this.#consume(tokens1.doctype.element.value.start);
-        const value = this.#capture(tokens1.doctype.element.value.regex.end);
-        this.#consume(tokens1.doctype.element.value.end);
-        this.#debug(path, `found doctype element value "${value}"`);
-        this.#consume(tokens1.doctype.element.end);
+        this.#debug(path411, `found doctype element "${element}"`);
+        this.#consume(tokens.doctype.element.value.start);
+        const value = this.#capture(tokens.doctype.element.value.regex.end);
+        this.#consume(tokens.doctype.element.value.end);
+        this.#debug(path411, `found doctype element value "${value}"`);
+        this.#consume(tokens.doctype.element.end);
         return {
             [element]: value
         };
     }
-     #tag({ path  }) {
-        this.#debug(path, "parsing tag");
+     #tag({ path: path5  }) {
+        this.#debug(path5, "parsing tag");
         const tag = this.#make.node({
-            path
+            path: path5
         });
-        this.#consume(tokens1.tag.start);
-        const name = this.#capture(tokens1.tag.regex.name);
+        this.#consume(tokens.tag.start);
+        const name = this.#capture(tokens.tag.regex.name);
         Object.assign(tag[$XML], {
             name
         });
-        this.#debug(path, `found tag "${name}"`);
-        while(!tokens1.tag.close.regex.end.test(this.#stream.peek(2))){
+        this.#debug(path5, `found tag "${name}"`);
+        while(!tokens.tag.close.regex.end.test(this.#stream.peek(2))){
             Object.assign(tag, this.#attribute({
                 path: [
-                    ...path,
+                    ...path5,
                     tag
                 ]
             }));
         }
-        const selfclosed = this.#peek(tokens1.tag.close.self);
+        const selfclosed = this.#peek(tokens.tag.close.self);
         if (selfclosed) {
-            this.#debug(path, `tag "${name}" is self-closed`);
-            this.#consume(tokens1.tag.close.self);
+            this.#debug(path5, `tag "${name}" is self-closed`);
+            this.#consume(tokens.tag.close.self);
         }
-        this.#consume(tokens1.tag.end);
+        this.#consume(tokens.tag.end);
         if (!selfclosed) {
-            if (this.#peek(tokens1.cdata.start) || !this.#peek(tokens1.tag.start)) {
+            if (this.#peek(tokens.cdata.start) || !this.#peek(tokens.tag.start)) {
                 Object.assign(tag, this.#text({
                     close: name,
                     path: [
-                        ...path,
+                        ...path5,
                         tag
                     ]
                 }));
             } else {
-                while(!tokens1.tag.close.regex.start.test(this.#stream.peek(2))){
+                while(!tokens.tag.close.regex.start.test(this.#stream.peek(2))){
                     const child = this.#node({
                         path: [
-                            ...path,
+                            ...path5,
                             tag
                         ]
                     });
@@ -6996,7 +6949,7 @@ class Parser {
                     if (Array.isArray(tag[key])) {
                         tag[key].push(value);
                         this.#debug([
-                            ...path,
+                            ...path5,
                             tag
                         ], `add new child "${key}" to array`);
                     } else if (key in tag) {
@@ -7015,32 +6968,32 @@ class Parser {
                         }
                         tag[key] = array;
                         this.#debug([
-                            ...path,
+                            ...path5,
                             tag
                         ], `multiple children named "${key}", using array notation`);
                     } else {
                         Object.assign(tag, child);
                         this.#debug([
-                            ...path,
+                            ...path5,
                             tag
                         ], `add new child "${key}"`);
                     }
                 }
             }
-            this.#consume(tokens1.tag.close.start);
+            this.#consume(tokens.tag.close.start);
             this.#consume(name);
-            this.#consume(tokens1.tag.close.end);
-            this.#debug(path, `found closing tag for "${name}"`);
+            this.#consume(tokens.tag.close.end);
+            this.#debug(path5, `found closing tag for "${name}"`);
         }
-        for (const [key] of Object.entries(tag).filter(([_, value])=>typeof value === "undefined"
+        for (const [key1] of Object.entries(tag).filter(([_, value])=>typeof value === "undefined"
         )){
-            delete tag[key];
+            delete tag[key1];
         }
         if (!Object.keys(tag).includes(schema.text)) {
-            const children = Object.keys(tag).filter((key)=>!key.startsWith(schema.attribute.prefix) && key !== schema.text
+            const children = Object.keys(tag).filter((key2)=>!key2.startsWith(schema.attribute.prefix) && key2 !== schema.text
             );
             if (!children.length) {
-                this.#debug(path, `tag "${name}" has implictely obtained a text node as it has no children but has attributes`);
+                this.#debug(path5, `tag "${name}" has implictely obtained a text node as it has no children but has attributes`);
                 tag[schema.text] = this.#revive({
                     key: schema.text,
                     value: "",
@@ -7049,7 +7002,7 @@ class Parser {
             }
         }
         if ((this.#options.flatten ?? true) && Object.keys(tag).includes(schema.text) && Object.keys(tag).length === 1) {
-            this.#debug(path, `tag "${name}" has been implicitely flattened as it only has a text node`);
+            this.#debug(path5, `tag "${name}" has been implicitely flattened as it only has a text node`);
             return {
                 [name]: tag[schema.text]
             };
@@ -7058,10 +7011,10 @@ class Parser {
             [name]: tag
         };
     }
-     #attribute({ path  }) {
-        this.#debug(path, "parsing attribute");
-        const attribute = this.#capture(tokens1.tag.attribute.regex.name);
-        this.#debug(path, `found attribute "${attribute}"`);
+     #attribute({ path: path6  }) {
+        this.#debug(path6, "parsing attribute");
+        const attribute = this.#capture(tokens.tag.attribute.regex.name);
+        this.#debug(path6, `found attribute "${attribute}"`);
         this.#consume("=");
         const quote = this.#stream.peek();
         this.#consume(quote);
@@ -7070,17 +7023,17 @@ class Parser {
             bytes: quote.length
         });
         this.#consume(quote);
-        this.#debug(path, `found attribute value "${value}"`);
+        this.#debug(path6, `found attribute value "${value}"`);
         return {
             [`${schema.attribute.prefix}${attribute}`]: this.#revive({
                 key: `${schema.attribute.prefix}${attribute}`,
                 value,
-                tag: path.at(-1)
+                tag: path6.at(-1)
             })
         };
     }
-     #property({ path  }) {
-        this.#debug(path, "parsing property");
+     #property({ path: path7  }) {
+        this.#debug(path7, "parsing property");
         const quote = this.#stream.peek();
         const delimiter = /["']/.test(quote) ? quote : " ";
         if (delimiter.trim().length) {
@@ -7090,7 +7043,7 @@ class Parser {
             until: new RegExp(delimiter),
             bytes: delimiter.length
         });
-        this.#debug(path, `found property ${property}`);
+        this.#debug(path7, `found property ${property}`);
         if (delimiter.trim().length) {
             this.#consume(delimiter);
         }
@@ -7098,77 +7051,76 @@ class Parser {
             [`${schema.property.prefix}${property}`]: true
         };
     }
-     #text({ close , path  }) {
-        this.#debug(path, "parsing text");
+     #text({ close: close2 , path: path8  }) {
+        this.#debug(path8, "parsing text");
         const tag = this.#make.node({
             name: schema.text,
-            path
+            path: path8
         });
         let text = "";
         const comments = [];
-        while(this.#peek(tokens1.cdata.start) || !this.#peeks([
-            tokens1.tag.close.start,
-            close,
-            tokens1.tag.close.end
+        while(this.#peek(tokens.cdata.start) || !this.#peeks([
+            tokens.tag.close.start,
+            close2,
+            tokens.tag.close.end
         ])){
-            if (this.#peek(tokens1.cdata.start)) {
+            if (this.#peek(tokens.cdata.start)) {
                 text += this.#cdata({
                     path: [
-                        ...path,
+                        ...path8,
                         tag
                     ]
                 });
-            } else if (this.#peek(tokens1.comment.start)) {
+            } else if (this.#peek(tokens.comment.start)) {
                 comments.push(this.#comment({
                     path: [
-                        ...path,
+                        ...path8,
                         tag
                     ]
                 }));
             } else {
-                text += this.#capture(tokens1.text.regex.end);
-                if (this.#peek(tokens1.cdata.start) || this.#peek(tokens1.comment.start)) {
+                text += this.#capture(tokens.text.regex.end);
+                if (this.#peek(tokens.cdata.start) || this.#peek(tokens.comment.start)) {
                     continue;
                 }
                 if (!this.#peeks([
-                    tokens1.tag.close.start,
-                    close,
-                    tokens1.tag.close.end
+                    tokens.tag.close.start,
+                    close2,
+                    tokens.tag.close.end
                 ])) {
-                    text += tokens1.tag.close.start;
-                    this.#consume(tokens1.tag.close.start);
+                    text += tokens.tag.close.start;
+                    this.#consume(tokens.tag.close.start);
                 }
             }
         }
-        this.#debug(path, `parsed text "${text}"`);
+        this.#debug(path8, `parsed text "${text}"`);
         if (comments.length) {
-            this.#debug(path, `parsed comments ${JSON.stringify(comments)}`);
+            this.#debug(path8, `parsed comments ${JSON.stringify(comments)}`);
         }
         Object.assign(tag, {
             [schema.text]: this.#revive({
                 key: schema.text,
                 value: text.trim(),
-                tag: path.at(-1)
+                tag: path8.at(-1)
             }),
             ...comments.length ? {
                 [schema.comment]: comments
-            } : {
-            }
+            } : {}
         });
         return tag;
     }
-     #cdata({ path  }) {
-        this.#debug(path, "parsing cdata");
-        this.#consume(tokens1.cdata.start);
-        const data = this.#capture(tokens1.cdata.regex.end);
-        this.#consume(tokens1.cdata.end);
+     #cdata({ path: path9  }) {
+        this.#debug(path9, "parsing cdata");
+        this.#consume(tokens.cdata.start);
+        const data = this.#capture(tokens.cdata.regex.end);
+        this.#consume(tokens.cdata.end);
         return data;
     }
-     #comment({ path  }) {
-        this.#debug(path, "parsing comment");
-        this.#consume(tokens1.comment.start);
-        const comment = this.#capture(tokens1.comment.regex.end);
-        this.#consume(tokens1.comment.end);
+     #comment({ path: path10  }) {
+        this.#debug(path10, "parsing comment");
+        this.#consume(tokens.comment.start);
+        const comment = this.#capture(tokens.comment.regex.end);
+        this.#consume(tokens.comment.end);
         return comment;
     }
      #revive({ key , value , tag  }) {
@@ -7187,7 +7139,7 @@ class Parser {
                     case (this.#options.reviveNumbers ?? true) && Number.isFinite(Number(value)):
                         return Number.parseFloat(value);
                     default:
-                        value = value.replace(tokens1.entity.regex.entities, (_, hex, code)=>String.fromCharCode(parseInt(code, hex ? 16 : 10))
+                        value = value.replace(tokens.entity.regex.entities, (_, hex, code33)=>String.fromCharCode(parseInt(code33, hex ? 16 : 10))
                         );
                         for (const [entity, character] of Object.entries(entities.xml)){
                             value = value.replaceAll(entity, character);
@@ -7198,11 +7150,11 @@ class Parser {
         });
     }
     #make = {
-        node ({ name ="" , path =[]  }) {
+        node ({ name ="" , path: path11 = []  }) {
             const node = {
                 [$XML]: {
                     name,
-                    parent: path[path.length - 1] ?? null
+                    parent: path11[path11.length - 1] ?? null
                 }
             };
             Object.defineProperty(node, $XML, {
@@ -7216,10 +7168,10 @@ class Parser {
      #peek(token) {
         return this.#stream.peek(token.length) === token;
     }
-     #peeks(tokens) {
+     #peeks(tokens1) {
         let offset = 0;
-        for(let i = 0; i < tokens.length; i++){
-            const token = tokens[i];
+        for(let i = 0; i < tokens1.length; i++){
+            const token = tokens1[i];
             while(true){
                 if (/\s/.test(this.#stream.peek(1, offset))) {
                     offset++;
@@ -7234,13 +7186,13 @@ class Parser {
         }
         return true;
     }
-     #consume(token) {
+     #consume(token1) {
         return this.#stream.consume({
-            content: token
+            content: token1
         });
     }
-     #capture(token) {
-        return this.#stream.capture(token);
+     #capture(token2) {
+        return this.#stream.capture(token2);
     }
      #trim() {
         return this.#stream.trim();
@@ -7316,8 +7268,8 @@ class Stream {
     }
 }
 class Streamable {
-    constructor(string){
-        this.#buffer = new TextEncoder().encode(string);
+    constructor(string1){
+        this.#buffer = new TextEncoder().encode(string1);
     }
     #buffer;
     #cursor = 0;
@@ -7350,15 +7302,15 @@ function parse3(content, options) {
 }
 const noColor1 = globalThis.Deno?.noColor ?? true;
 let enabled1 = !noColor1;
-function code1(open, close) {
+function code1(open, close3) {
     return {
         open: `\x1b[${open.join(";")}m`,
-        close: `\x1b[${close}m`,
-        regexp: new RegExp(`\\x1b\\[${close}m`, "g")
+        close: `\x1b[${close3}m`,
+        regexp: new RegExp(`\\x1b\\[${close3}m`, "g")
     };
 }
-function run1(str, code) {
-    return enabled1 ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
+function run1(str, code110) {
+    return enabled1 ? `${code110.open}${str.replace(code110.regexp, code110.open)}${code110.close}` : str;
 }
 function bold(str) {
     return run1(str, code1([
@@ -7393,52 +7345,51 @@ new RegExp([
     "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))", 
 ].join("|"), "g");
 var DiffType1;
-(function(DiffType) {
-    DiffType["removed"] = "removed";
-    DiffType["common"] = "common";
-    DiffType["added"] = "added";
-})(DiffType1 || (DiffType1 = {
-}));
+(function(DiffType3) {
+    DiffType3["removed"] = "removed";
+    DiffType3["common"] = "common";
+    DiffType3["added"] = "added";
+})(DiffType1 || (DiffType1 = {}));
 const REMOVED = 1;
 const COMMON = 2;
 const ADDED = 3;
 function createCommon(A, B, reverse) {
     const common = [];
     if (A.length === 0 || B.length === 0) return [];
-    for(let i = 0; i < Math.min(A.length, B.length); i += 1){
-        if (A[reverse ? A.length - i - 1 : i] === B[reverse ? B.length - i - 1 : i]) {
-            common.push(A[reverse ? A.length - i - 1 : i]);
+    for(let i23 = 0; i23 < Math.min(A.length, B.length); i23 += 1){
+        if (A[reverse ? A.length - i23 - 1 : i23] === B[reverse ? B.length - i23 - 1 : i23]) {
+            common.push(A[reverse ? A.length - i23 - 1 : i23]);
         } else {
             return common;
         }
     }
     return common;
 }
-function diff(A, B) {
-    const prefixCommon = createCommon(A, B);
-    const suffixCommon = createCommon(A.slice(prefixCommon.length), B.slice(prefixCommon.length), true).reverse();
-    A = suffixCommon.length ? A.slice(prefixCommon.length, -suffixCommon.length) : A.slice(prefixCommon.length);
-    B = suffixCommon.length ? B.slice(prefixCommon.length, -suffixCommon.length) : B.slice(prefixCommon.length);
-    const swapped = B.length > A.length;
-    [A, B] = swapped ? [
-        B,
-        A
+function diff(A1, B1) {
+    const prefixCommon = createCommon(A1, B1);
+    const suffixCommon = createCommon(A1.slice(prefixCommon.length), B1.slice(prefixCommon.length), true).reverse();
+    A1 = suffixCommon.length ? A1.slice(prefixCommon.length, -suffixCommon.length) : A1.slice(prefixCommon.length);
+    B1 = suffixCommon.length ? B1.slice(prefixCommon.length, -suffixCommon.length) : B1.slice(prefixCommon.length);
+    const swapped1 = B1.length > A1.length;
+    [A1, B1] = swapped1 ? [
+        B1,
+        A1
     ] : [
-        A,
-        B
+        A1,
+        B1
     ];
-    const M = A.length;
-    const N = B.length;
-    if (!M && !N && !suffixCommon.length && !prefixCommon.length) return [];
-    if (!N) {
+    const M1 = A1.length;
+    const N1 = B1.length;
+    if (!M1 && !N1 && !suffixCommon.length && !prefixCommon.length) return [];
+    if (!N1) {
         return [
             ...prefixCommon.map((c)=>({
                     type: DiffType1.common,
                     value: c
                 })
             ),
-            ...A.map((a)=>({
-                    type: swapped ? DiffType1.added : DiffType1.removed,
+            ...A1.map((a)=>({
+                    type: swapped1 ? DiffType1.added : DiffType1.removed,
                     value: a
                 })
             ),
@@ -7449,13 +7400,13 @@ function diff(A, B) {
             ), 
         ];
     }
-    const offset = N;
-    const delta = M - N;
-    const size = M + N + 1;
-    const fp = new Array(size).fill({
+    const offset = N1;
+    const delta = M1 - N1;
+    const size = M1 + N1 + 1;
+    const fp1 = new Array(size).fill({
         y: -1
     });
-    const routes = new Uint32Array((M * N + size + 1) * 2);
+    const routes = new Uint32Array((M1 * N1 + size + 1) * 2);
     const diffTypesPtrOffset = routes.length / 2;
     let ptr = 0;
     let p = -1;
@@ -7540,15 +7491,15 @@ function diff(A, B) {
         }
         return fp;
     }
-    while(fp[delta + offset].y < N){
+    while(fp1[delta + offset].y < N1){
         p = p + 1;
         for(let k = -p; k < delta; ++k){
-            fp[k + offset] = snake(k, fp[k - 1 + offset], fp[k + 1 + offset], offset, A, B);
+            fp1[k + offset] = snake(k, fp1[k - 1 + offset], fp1[k + 1 + offset], offset, A1, B1);
         }
         for(let k1 = delta + p; k1 > delta; --k1){
-            fp[k1 + offset] = snake(k1, fp[k1 - 1 + offset], fp[k1 + 1 + offset], offset, A, B);
+            fp1[k1 + offset] = snake(k1, fp1[k1 - 1 + offset], fp1[k1 + 1 + offset], offset, A1, B1);
         }
-        fp[delta + offset] = snake(delta, fp[delta - 1 + offset], fp[delta + 1 + offset], offset, A, B);
+        fp1[delta + offset] = snake(delta, fp1[delta - 1 + offset], fp1[delta + 1 + offset], offset, A1, B1);
     }
     return [
         ...prefixCommon.map((c)=>({
@@ -7556,7 +7507,7 @@ function diff(A, B) {
                 value: c
             })
         ),
-        ...backTrace(A, B, fp[delta + offset], swapped),
+        ...backTrace(A1, B1, fp1[delta + offset], swapped1),
         ...suffixCommon.map((c)=>({
                 type: DiffType1.common,
                 value: c
@@ -7644,9 +7595,7 @@ function equal(c, d) {
             if (seen.get(a) === b) {
                 return true;
             }
-            if (Object.keys(a || {
-            }).length !== Object.keys(b || {
-            }).length) {
+            if (Object.keys(a || {}).length !== Object.keys(b || {}).length) {
                 return false;
             }
             if (isKeyedCollection(a) && isKeyedCollection(b)) {
@@ -7667,8 +7616,8 @@ function equal(c, d) {
                 ...a,
                 ...b
             };
-            for(const key in merged){
-                if (!compare(a && a[key], b && b[key])) {
+            for(const key1 in merged){
+                if (!compare(a && a[key1], b && b[key1])) {
                     return false;
                 }
             }
@@ -7726,10 +7675,11 @@ function assertStrictEquals(actual, expected, msg) {
     throw new AssertionError(message);
 }
 const osType1 = (()=>{
-    if (globalThis.Deno != null) {
+    const { Deno  } = globalThis;
+    if (typeof Deno?.build?.os === "string") {
         return Deno.build.os;
     }
-    const navigator = globalThis.navigator;
+    const { navigator  } = globalThis;
     if (navigator?.appVersion?.includes?.("Win") ?? false) {
         return "windows";
     }
@@ -7737,33 +7687,32 @@ const osType1 = (()=>{
 })();
 const isWindows1 = osType1 === "windows";
 const CHAR_FORWARD_SLASH1 = 47;
-function assertPath1(path) {
-    if (typeof path !== "string") {
-        throw new TypeError(`Path must be a string. Received ${JSON.stringify(path)}`);
+function assertPath1(path38) {
+    if (typeof path38 !== "string") {
+        throw new TypeError(`Path must be a string. Received ${JSON.stringify(path38)}`);
     }
 }
-function isPosixPathSeparator1(code) {
-    return code === 47;
+function isPosixPathSeparator1(code34) {
+    return code34 === 47;
 }
-function isPathSeparator1(code) {
-    return isPosixPathSeparator1(code) || code === 92;
+function isPathSeparator1(code35) {
+    return isPosixPathSeparator1(code35) || code35 === 92;
 }
-function isWindowsDeviceRoot1(code) {
-    return code >= 97 && code <= 122 || code >= 65 && code <= 90;
+function isWindowsDeviceRoot1(code36) {
+    return code36 >= 97 && code36 <= 122 || code36 >= 65 && code36 <= 90;
 }
-function normalizeString1(path, allowAboveRoot, separator, isPathSeparator) {
+function normalizeString1(path39, allowAboveRoot, separator, isPathSeparator11) {
     let res = "";
     let lastSegmentLength = 0;
     let lastSlash = -1;
     let dots = 0;
-    let code;
-    for(let i = 0, len = path.length; i <= len; ++i){
-        if (i < len) code = path.charCodeAt(i);
-        else if (isPathSeparator(code)) break;
-        else code = CHAR_FORWARD_SLASH1;
-        if (isPathSeparator(code)) {
-            if (lastSlash === i - 1 || dots === 1) {
-            } else if (lastSlash !== i - 1 && dots === 2) {
+    let code37;
+    for(let i24 = 0, len8 = path39.length; i24 <= len8; ++i24){
+        if (i24 < len8) code37 = path39.charCodeAt(i24);
+        else if (isPathSeparator11(code37)) break;
+        else code37 = CHAR_FORWARD_SLASH1;
+        if (isPathSeparator11(code37)) {
+            if (lastSlash === i24 - 1 || dots === 1) {} else if (lastSlash !== i24 - 1 && dots === 2) {
                 if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 || res.charCodeAt(res.length - 2) !== 46) {
                     if (res.length > 2) {
                         const lastSlashIndex = res.lastIndexOf(separator);
@@ -7774,13 +7723,13 @@ function normalizeString1(path, allowAboveRoot, separator, isPathSeparator) {
                             res = res.slice(0, lastSlashIndex);
                             lastSegmentLength = res.length - 1 - res.lastIndexOf(separator);
                         }
-                        lastSlash = i;
+                        lastSlash = i24;
                         dots = 0;
                         continue;
                     } else if (res.length === 2 || res.length === 1) {
                         res = "";
                         lastSegmentLength = 0;
-                        lastSlash = i;
+                        lastSlash = i24;
                         dots = 0;
                         continue;
                     }
@@ -7791,13 +7740,13 @@ function normalizeString1(path, allowAboveRoot, separator, isPathSeparator) {
                     lastSegmentLength = 2;
                 }
             } else {
-                if (res.length > 0) res += separator + path.slice(lastSlash + 1, i);
-                else res = path.slice(lastSlash + 1, i);
-                lastSegmentLength = i - lastSlash - 1;
+                if (res.length > 0) res += separator + path39.slice(lastSlash + 1, i24);
+                else res = path39.slice(lastSlash + 1, i24);
+                lastSegmentLength = i24 - lastSlash - 1;
             }
-            lastSlash = i;
+            lastSlash = i24;
             dots = 0;
-        } else if (code === 46 && dots !== -1) {
+        } else if (code37 === 46 && dots !== -1) {
             ++dots;
         } else {
             dots = -1;
@@ -7805,12 +7754,25 @@ function normalizeString1(path, allowAboveRoot, separator, isPathSeparator) {
     }
     return res;
 }
-function _format2(sep, pathObject) {
+function _format2(sep8, pathObject) {
     const dir = pathObject.dir || pathObject.root;
     const base = pathObject.base || (pathObject.name || "") + (pathObject.ext || "");
     if (!dir) return base;
     if (dir === pathObject.root) return dir + base;
-    return dir + sep + base;
+    return dir + sep8 + base;
+}
+const WHITESPACE_ENCODINGS1 = {
+    "\u0009": "%09",
+    "\u000A": "%0A",
+    "\u000B": "%0B",
+    "\u000C": "%0C",
+    "\u000D": "%0D",
+    "\u0020": "%20"
+};
+function encodeWhitespace1(string2) {
+    return string2.replaceAll(/[\s]/g, (c)=>{
+        return WHITESPACE_ENCODINGS1[c] ?? c;
+    });
 }
 class DenoStdInternalError1 extends Error {
     constructor(message){
@@ -7829,56 +7791,57 @@ function resolve3(...pathSegments) {
     let resolvedDevice = "";
     let resolvedTail = "";
     let resolvedAbsolute = false;
-    for(let i = pathSegments.length - 1; i >= -1; i--){
-        let path;
-        if (i >= 0) {
-            path = pathSegments[i];
+    for(let i25 = pathSegments.length - 1; i25 >= -1; i25--){
+        let path40;
+        const { Deno  } = globalThis;
+        if (i25 >= 0) {
+            path40 = pathSegments[i25];
         } else if (!resolvedDevice) {
-            if (globalThis.Deno == null) {
+            if (typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a drive-letter-less path without a CWD.");
             }
-            path = Deno.cwd();
+            path40 = Deno.cwd();
         } else {
-            if (globalThis.Deno == null) {
+            if (typeof Deno?.env?.get !== "function" || typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a relative path without a CWD.");
             }
-            path = Deno.env.get(`=${resolvedDevice}`) || Deno.cwd();
-            if (path === undefined || path.slice(0, 3).toLowerCase() !== `${resolvedDevice.toLowerCase()}\\`) {
-                path = `${resolvedDevice}\\`;
+            path40 = Deno.cwd();
+            if (path40 === undefined || path40.slice(0, 3).toLowerCase() !== `${resolvedDevice.toLowerCase()}\\`) {
+                path40 = `${resolvedDevice}\\`;
             }
         }
-        assertPath1(path);
-        const len = path.length;
-        if (len === 0) continue;
+        assertPath1(path40);
+        const len9 = path40.length;
+        if (len9 === 0) continue;
         let rootEnd = 0;
         let device = "";
-        let isAbsolute = false;
-        const code = path.charCodeAt(0);
-        if (len > 1) {
-            if (isPathSeparator1(code)) {
-                isAbsolute = true;
-                if (isPathSeparator1(path.charCodeAt(1))) {
+        let isAbsolute11 = false;
+        const code38 = path40.charCodeAt(0);
+        if (len9 > 1) {
+            if (isPathSeparator1(code38)) {
+                isAbsolute11 = true;
+                if (isPathSeparator1(path40.charCodeAt(1))) {
                     let j = 2;
                     let last = j;
-                    for(; j < len; ++j){
-                        if (isPathSeparator1(path.charCodeAt(j))) break;
+                    for(; j < len9; ++j){
+                        if (isPathSeparator1(path40.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
-                        const firstPart = path.slice(last, j);
+                    if (j < len9 && j !== last) {
+                        const firstPart = path40.slice(last, j);
                         last = j;
-                        for(; j < len; ++j){
-                            if (!isPathSeparator1(path.charCodeAt(j))) break;
+                        for(; j < len9; ++j){
+                            if (!isPathSeparator1(path40.charCodeAt(j))) break;
                         }
-                        if (j < len && j !== last) {
+                        if (j < len9 && j !== last) {
                             last = j;
-                            for(; j < len; ++j){
-                                if (isPathSeparator1(path.charCodeAt(j))) break;
+                            for(; j < len9; ++j){
+                                if (isPathSeparator1(path40.charCodeAt(j))) break;
                             }
-                            if (j === len) {
-                                device = `\\\\${firstPart}\\${path.slice(last)}`;
+                            if (j === len9) {
+                                device = `\\\\${firstPart}\\${path40.slice(last)}`;
                                 rootEnd = j;
                             } else if (j !== last) {
-                                device = `\\\\${firstPart}\\${path.slice(last, j)}`;
+                                device = `\\\\${firstPart}\\${path40.slice(last, j)}`;
                                 rootEnd = j;
                             }
                         }
@@ -7886,21 +7849,21 @@ function resolve3(...pathSegments) {
                 } else {
                     rootEnd = 1;
                 }
-            } else if (isWindowsDeviceRoot1(code)) {
-                if (path.charCodeAt(1) === 58) {
-                    device = path.slice(0, 2);
+            } else if (isWindowsDeviceRoot1(code38)) {
+                if (path40.charCodeAt(1) === 58) {
+                    device = path40.slice(0, 2);
                     rootEnd = 2;
-                    if (len > 2) {
-                        if (isPathSeparator1(path.charCodeAt(2))) {
-                            isAbsolute = true;
+                    if (len9 > 2) {
+                        if (isPathSeparator1(path40.charCodeAt(2))) {
+                            isAbsolute11 = true;
                             rootEnd = 3;
                         }
                     }
                 }
             }
-        } else if (isPathSeparator1(code)) {
+        } else if (isPathSeparator1(code38)) {
             rootEnd = 1;
-            isAbsolute = true;
+            isAbsolute11 = true;
         }
         if (device.length > 0 && resolvedDevice.length > 0 && device.toLowerCase() !== resolvedDevice.toLowerCase()) {
             continue;
@@ -7909,46 +7872,46 @@ function resolve3(...pathSegments) {
             resolvedDevice = device;
         }
         if (!resolvedAbsolute) {
-            resolvedTail = `${path.slice(rootEnd)}\\${resolvedTail}`;
-            resolvedAbsolute = isAbsolute;
+            resolvedTail = `${path40.slice(rootEnd)}\\${resolvedTail}`;
+            resolvedAbsolute = isAbsolute11;
         }
         if (resolvedAbsolute && resolvedDevice.length > 0) break;
     }
     resolvedTail = normalizeString1(resolvedTail, !resolvedAbsolute, "\\", isPathSeparator1);
     return resolvedDevice + (resolvedAbsolute ? "\\" : "") + resolvedTail || ".";
 }
-function normalize4(path) {
-    assertPath1(path);
-    const len = path.length;
-    if (len === 0) return ".";
+function normalize4(path41) {
+    assertPath1(path41);
+    const len10 = path41.length;
+    if (len10 === 0) return ".";
     let rootEnd = 0;
     let device;
-    let isAbsolute = false;
-    const code = path.charCodeAt(0);
-    if (len > 1) {
-        if (isPathSeparator1(code)) {
-            isAbsolute = true;
-            if (isPathSeparator1(path.charCodeAt(1))) {
+    let isAbsolute21 = false;
+    const code39 = path41.charCodeAt(0);
+    if (len10 > 1) {
+        if (isPathSeparator1(code39)) {
+            isAbsolute21 = true;
+            if (isPathSeparator1(path41.charCodeAt(1))) {
                 let j = 2;
                 let last = j;
-                for(; j < len; ++j){
-                    if (isPathSeparator1(path.charCodeAt(j))) break;
+                for(; j < len10; ++j){
+                    if (isPathSeparator1(path41.charCodeAt(j))) break;
                 }
-                if (j < len && j !== last) {
-                    const firstPart = path.slice(last, j);
+                if (j < len10 && j !== last) {
+                    const firstPart = path41.slice(last, j);
                     last = j;
-                    for(; j < len; ++j){
-                        if (!isPathSeparator1(path.charCodeAt(j))) break;
+                    for(; j < len10; ++j){
+                        if (!isPathSeparator1(path41.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
+                    if (j < len10 && j !== last) {
                         last = j;
-                        for(; j < len; ++j){
-                            if (isPathSeparator1(path.charCodeAt(j))) break;
+                        for(; j < len10; ++j){
+                            if (isPathSeparator1(path41.charCodeAt(j))) break;
                         }
-                        if (j === len) {
-                            return `\\\\${firstPart}\\${path.slice(last)}\\`;
+                        if (j === len10) {
+                            return `\\\\${firstPart}\\${path41.slice(last)}\\`;
                         } else if (j !== last) {
-                            device = `\\\\${firstPart}\\${path.slice(last, j)}`;
+                            device = `\\\\${firstPart}\\${path41.slice(last, j)}`;
                             rootEnd = j;
                         }
                     }
@@ -7956,59 +7919,59 @@ function normalize4(path) {
             } else {
                 rootEnd = 1;
             }
-        } else if (isWindowsDeviceRoot1(code)) {
-            if (path.charCodeAt(1) === 58) {
-                device = path.slice(0, 2);
+        } else if (isWindowsDeviceRoot1(code39)) {
+            if (path41.charCodeAt(1) === 58) {
+                device = path41.slice(0, 2);
                 rootEnd = 2;
-                if (len > 2) {
-                    if (isPathSeparator1(path.charCodeAt(2))) {
-                        isAbsolute = true;
+                if (len10 > 2) {
+                    if (isPathSeparator1(path41.charCodeAt(2))) {
+                        isAbsolute21 = true;
                         rootEnd = 3;
                     }
                 }
             }
         }
-    } else if (isPathSeparator1(code)) {
+    } else if (isPathSeparator1(code39)) {
         return "\\";
     }
-    let tail;
-    if (rootEnd < len) {
-        tail = normalizeString1(path.slice(rootEnd), !isAbsolute, "\\", isPathSeparator1);
+    let tail2;
+    if (rootEnd < len10) {
+        tail2 = normalizeString1(path41.slice(rootEnd), !isAbsolute21, "\\", isPathSeparator1);
     } else {
-        tail = "";
+        tail2 = "";
     }
-    if (tail.length === 0 && !isAbsolute) tail = ".";
-    if (tail.length > 0 && isPathSeparator1(path.charCodeAt(len - 1))) {
-        tail += "\\";
+    if (tail2.length === 0 && !isAbsolute21) tail2 = ".";
+    if (tail2.length > 0 && isPathSeparator1(path41.charCodeAt(len10 - 1))) {
+        tail2 += "\\";
     }
     if (device === undefined) {
-        if (isAbsolute) {
-            if (tail.length > 0) return `\\${tail}`;
+        if (isAbsolute21) {
+            if (tail2.length > 0) return `\\${tail2}`;
             else return "\\";
-        } else if (tail.length > 0) {
-            return tail;
+        } else if (tail2.length > 0) {
+            return tail2;
         } else {
             return "";
         }
-    } else if (isAbsolute) {
-        if (tail.length > 0) return `${device}\\${tail}`;
+    } else if (isAbsolute21) {
+        if (tail2.length > 0) return `${device}\\${tail2}`;
         else return `${device}\\`;
-    } else if (tail.length > 0) {
-        return device + tail;
+    } else if (tail2.length > 0) {
+        return device + tail2;
     } else {
         return device;
     }
 }
-function isAbsolute3(path) {
-    assertPath1(path);
-    const len = path.length;
-    if (len === 0) return false;
-    const code = path.charCodeAt(0);
-    if (isPathSeparator1(code)) {
+function isAbsolute3(path42) {
+    assertPath1(path42);
+    const len11 = path42.length;
+    if (len11 === 0) return false;
+    const code40 = path42.charCodeAt(0);
+    if (isPathSeparator1(code40)) {
         return true;
-    } else if (isWindowsDeviceRoot1(code)) {
-        if (len > 2 && path.charCodeAt(1) === 58) {
-            if (isPathSeparator1(path.charCodeAt(2))) return true;
+    } else if (isWindowsDeviceRoot1(code40)) {
+        if (len11 > 2 && path42.charCodeAt(1) === 58) {
+            if (isPathSeparator1(path42.charCodeAt(2))) return true;
         }
     }
     return false;
@@ -8018,12 +7981,12 @@ function join4(...paths) {
     if (pathsCount === 0) return ".";
     let joined;
     let firstPart = null;
-    for(let i = 0; i < pathsCount; ++i){
-        const path = paths[i];
-        assertPath1(path);
-        if (path.length > 0) {
-            if (joined === undefined) joined = firstPart = path;
-            else joined += `\\${path}`;
+    for(let i26 = 0; i26 < pathsCount; ++i26){
+        const path43 = paths[i26];
+        assertPath1(path43);
+        if (path43.length > 0) {
+            if (joined === undefined) joined = firstPart = path43;
+            else joined += `\\${path43}`;
         }
     }
     if (joined === undefined) return ".";
@@ -8053,23 +8016,23 @@ function join4(...paths) {
     }
     return normalize4(joined);
 }
-function relative3(from, to) {
-    assertPath1(from);
+function relative3(from3, to) {
+    assertPath1(from3);
     assertPath1(to);
-    if (from === to) return "";
-    const fromOrig = resolve3(from);
+    if (from3 === to) return "";
+    const fromOrig = resolve3(from3);
     const toOrig = resolve3(to);
     if (fromOrig === toOrig) return "";
-    from = fromOrig.toLowerCase();
+    from3 = fromOrig.toLowerCase();
     to = toOrig.toLowerCase();
-    if (from === to) return "";
+    if (from3 === to) return "";
     let fromStart = 0;
-    let fromEnd = from.length;
+    let fromEnd = from3.length;
     for(; fromStart < fromEnd; ++fromStart){
-        if (from.charCodeAt(fromStart) !== 92) break;
+        if (from3.charCodeAt(fromStart) !== 92) break;
     }
     for(; fromEnd - 1 > fromStart; --fromEnd){
-        if (from.charCodeAt(fromEnd - 1) !== 92) break;
+        if (from3.charCodeAt(fromEnd - 1) !== 92) break;
     }
     const fromLen = fromEnd - fromStart;
     let toStart = 0;
@@ -8083,37 +8046,37 @@ function relative3(from, to) {
     const toLen = toEnd - toStart;
     const length = fromLen < toLen ? fromLen : toLen;
     let lastCommonSep = -1;
-    let i = 0;
-    for(; i <= length; ++i){
-        if (i === length) {
+    let i27 = 0;
+    for(; i27 <= length; ++i27){
+        if (i27 === length) {
             if (toLen > length) {
-                if (to.charCodeAt(toStart + i) === 92) {
-                    return toOrig.slice(toStart + i + 1);
-                } else if (i === 2) {
-                    return toOrig.slice(toStart + i);
+                if (to.charCodeAt(toStart + i27) === 92) {
+                    return toOrig.slice(toStart + i27 + 1);
+                } else if (i27 === 2) {
+                    return toOrig.slice(toStart + i27);
                 }
             }
             if (fromLen > length) {
-                if (from.charCodeAt(fromStart + i) === 92) {
-                    lastCommonSep = i;
-                } else if (i === 2) {
+                if (from3.charCodeAt(fromStart + i27) === 92) {
+                    lastCommonSep = i27;
+                } else if (i27 === 2) {
                     lastCommonSep = 3;
                 }
             }
             break;
         }
-        const fromCode = from.charCodeAt(fromStart + i);
-        const toCode = to.charCodeAt(toStart + i);
+        const fromCode = from3.charCodeAt(fromStart + i27);
+        const toCode = to.charCodeAt(toStart + i27);
         if (fromCode !== toCode) break;
-        else if (fromCode === 92) lastCommonSep = i;
+        else if (fromCode === 92) lastCommonSep = i27;
     }
-    if (i !== length && lastCommonSep === -1) {
+    if (i27 !== length && lastCommonSep === -1) {
         return toOrig;
     }
     let out = "";
     if (lastCommonSep === -1) lastCommonSep = 0;
-    for(i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i){
-        if (i === fromEnd || from.charCodeAt(i) === 92) {
+    for(i27 = fromStart + lastCommonSep + 1; i27 <= fromEnd; ++i27){
+        if (i27 === fromEnd || from3.charCodeAt(i27) === 92) {
             if (out.length === 0) out += "..";
             else out += "\\..";
         }
@@ -8126,15 +8089,15 @@ function relative3(from, to) {
         return toOrig.slice(toStart, toEnd);
     }
 }
-function toNamespacedPath3(path) {
-    if (typeof path !== "string") return path;
-    if (path.length === 0) return "";
-    const resolvedPath = resolve3(path);
+function toNamespacedPath3(path44) {
+    if (typeof path44 !== "string") return path44;
+    if (path44.length === 0) return "";
+    const resolvedPath = resolve3(path44);
     if (resolvedPath.length >= 3) {
         if (resolvedPath.charCodeAt(0) === 92) {
             if (resolvedPath.charCodeAt(1) === 92) {
-                const code = resolvedPath.charCodeAt(2);
-                if (code !== 63 && code !== 46) {
+                const code41 = resolvedPath.charCodeAt(2);
+                if (code41 !== 63 && code41 !== 46) {
                     return `\\\\?\\UNC\\${resolvedPath.slice(2)}`;
                 }
             }
@@ -8144,38 +8107,38 @@ function toNamespacedPath3(path) {
             }
         }
     }
-    return path;
+    return path44;
 }
-function dirname3(path) {
-    assertPath1(path);
-    const len = path.length;
-    if (len === 0) return ".";
+function dirname3(path45) {
+    assertPath1(path45);
+    const len12 = path45.length;
+    if (len12 === 0) return ".";
     let rootEnd = -1;
     let end = -1;
     let matchedSlash = true;
     let offset = 0;
-    const code = path.charCodeAt(0);
-    if (len > 1) {
-        if (isPathSeparator1(code)) {
+    const code42 = path45.charCodeAt(0);
+    if (len12 > 1) {
+        if (isPathSeparator1(code42)) {
             rootEnd = offset = 1;
-            if (isPathSeparator1(path.charCodeAt(1))) {
+            if (isPathSeparator1(path45.charCodeAt(1))) {
                 let j = 2;
                 let last = j;
-                for(; j < len; ++j){
-                    if (isPathSeparator1(path.charCodeAt(j))) break;
+                for(; j < len12; ++j){
+                    if (isPathSeparator1(path45.charCodeAt(j))) break;
                 }
-                if (j < len && j !== last) {
+                if (j < len12 && j !== last) {
                     last = j;
-                    for(; j < len; ++j){
-                        if (!isPathSeparator1(path.charCodeAt(j))) break;
+                    for(; j < len12; ++j){
+                        if (!isPathSeparator1(path45.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
+                    if (j < len12 && j !== last) {
                         last = j;
-                        for(; j < len; ++j){
-                            if (isPathSeparator1(path.charCodeAt(j))) break;
+                        for(; j < len12; ++j){
+                            if (isPathSeparator1(path45.charCodeAt(j))) break;
                         }
-                        if (j === len) {
-                            return path;
+                        if (j === len12) {
+                            return path45;
                         }
                         if (j !== last) {
                             rootEnd = offset = j + 1;
@@ -8183,21 +8146,21 @@ function dirname3(path) {
                     }
                 }
             }
-        } else if (isWindowsDeviceRoot1(code)) {
-            if (path.charCodeAt(1) === 58) {
+        } else if (isWindowsDeviceRoot1(code42)) {
+            if (path45.charCodeAt(1) === 58) {
                 rootEnd = offset = 2;
-                if (len > 2) {
-                    if (isPathSeparator1(path.charCodeAt(2))) rootEnd = offset = 3;
+                if (len12 > 2) {
+                    if (isPathSeparator1(path45.charCodeAt(2))) rootEnd = offset = 3;
                 }
             }
         }
-    } else if (isPathSeparator1(code)) {
-        return path;
+    } else if (isPathSeparator1(code42)) {
+        return path45;
     }
-    for(let i = len - 1; i >= offset; --i){
-        if (isPathSeparator1(path.charCodeAt(i))) {
+    for(let i28 = len12 - 1; i28 >= offset; --i28){
+        if (isPathSeparator1(path45.charCodeAt(i28))) {
             if (!matchedSlash) {
-                end = i;
+                end = i28;
                 break;
             }
         } else {
@@ -8208,43 +8171,43 @@ function dirname3(path) {
         if (rootEnd === -1) return ".";
         else end = rootEnd;
     }
-    return path.slice(0, end);
+    return path45.slice(0, end);
 }
-function basename3(path, ext = "") {
+function basename3(path46, ext = "") {
     if (ext !== undefined && typeof ext !== "string") {
         throw new TypeError('"ext" argument must be a string');
     }
-    assertPath1(path);
+    assertPath1(path46);
     let start = 0;
     let end = -1;
     let matchedSlash = true;
-    let i;
-    if (path.length >= 2) {
-        const drive = path.charCodeAt(0);
+    let i29;
+    if (path46.length >= 2) {
+        const drive = path46.charCodeAt(0);
         if (isWindowsDeviceRoot1(drive)) {
-            if (path.charCodeAt(1) === 58) start = 2;
+            if (path46.charCodeAt(1) === 58) start = 2;
         }
     }
-    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
-        if (ext.length === path.length && ext === path) return "";
+    if (ext !== undefined && ext.length > 0 && ext.length <= path46.length) {
+        if (ext.length === path46.length && ext === path46) return "";
         let extIdx = ext.length - 1;
         let firstNonSlashEnd = -1;
-        for(i = path.length - 1; i >= start; --i){
-            const code = path.charCodeAt(i);
-            if (isPathSeparator1(code)) {
+        for(i29 = path46.length - 1; i29 >= start; --i29){
+            const code43 = path46.charCodeAt(i29);
+            if (isPathSeparator1(code43)) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i29 + 1;
                     break;
                 }
             } else {
                 if (firstNonSlashEnd === -1) {
                     matchedSlash = false;
-                    firstNonSlashEnd = i + 1;
+                    firstNonSlashEnd = i29 + 1;
                 }
                 if (extIdx >= 0) {
-                    if (code === ext.charCodeAt(extIdx)) {
+                    if (code43 === ext.charCodeAt(extIdx)) {
                         if (--extIdx === -1) {
-                            end = i;
+                            end = i29;
                         }
                     } else {
                         extIdx = -1;
@@ -8254,50 +8217,50 @@ function basename3(path, ext = "") {
             }
         }
         if (start === end) end = firstNonSlashEnd;
-        else if (end === -1) end = path.length;
-        return path.slice(start, end);
+        else if (end === -1) end = path46.length;
+        return path46.slice(start, end);
     } else {
-        for(i = path.length - 1; i >= start; --i){
-            if (isPathSeparator1(path.charCodeAt(i))) {
+        for(i29 = path46.length - 1; i29 >= start; --i29){
+            if (isPathSeparator1(path46.charCodeAt(i29))) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i29 + 1;
                     break;
                 }
             } else if (end === -1) {
                 matchedSlash = false;
-                end = i + 1;
+                end = i29 + 1;
             }
         }
         if (end === -1) return "";
-        return path.slice(start, end);
+        return path46.slice(start, end);
     }
 }
-function extname3(path) {
-    assertPath1(path);
+function extname3(path47) {
+    assertPath1(path47);
     let start = 0;
     let startDot = -1;
     let startPart = 0;
     let end = -1;
     let matchedSlash = true;
     let preDotState = 0;
-    if (path.length >= 2 && path.charCodeAt(1) === 58 && isWindowsDeviceRoot1(path.charCodeAt(0))) {
+    if (path47.length >= 2 && path47.charCodeAt(1) === 58 && isWindowsDeviceRoot1(path47.charCodeAt(0))) {
         start = startPart = 2;
     }
-    for(let i = path.length - 1; i >= start; --i){
-        const code = path.charCodeAt(i);
-        if (isPathSeparator1(code)) {
+    for(let i30 = path47.length - 1; i30 >= start; --i30){
+        const code44 = path47.charCodeAt(i30);
+        if (isPathSeparator1(code44)) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i30 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i30 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code44 === 46) {
+            if (startDot === -1) startDot = i30;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -8306,16 +8269,16 @@ function extname3(path) {
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         return "";
     }
-    return path.slice(startDot, end);
+    return path47.slice(startDot, end);
 }
-function format4(pathObject) {
+function format3(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
     return _format2("\\", pathObject);
 }
-function parse4(path) {
-    assertPath1(path);
+function parse4(path48) {
+    assertPath1(path48);
     const ret = {
         root: "",
         dir: "",
@@ -8323,30 +8286,30 @@ function parse4(path) {
         ext: "",
         name: ""
     };
-    const len = path.length;
-    if (len === 0) return ret;
+    const len13 = path48.length;
+    if (len13 === 0) return ret;
     let rootEnd = 0;
-    let code = path.charCodeAt(0);
-    if (len > 1) {
-        if (isPathSeparator1(code)) {
+    let code45 = path48.charCodeAt(0);
+    if (len13 > 1) {
+        if (isPathSeparator1(code45)) {
             rootEnd = 1;
-            if (isPathSeparator1(path.charCodeAt(1))) {
+            if (isPathSeparator1(path48.charCodeAt(1))) {
                 let j = 2;
                 let last = j;
-                for(; j < len; ++j){
-                    if (isPathSeparator1(path.charCodeAt(j))) break;
+                for(; j < len13; ++j){
+                    if (isPathSeparator1(path48.charCodeAt(j))) break;
                 }
-                if (j < len && j !== last) {
+                if (j < len13 && j !== last) {
                     last = j;
-                    for(; j < len; ++j){
-                        if (!isPathSeparator1(path.charCodeAt(j))) break;
+                    for(; j < len13; ++j){
+                        if (!isPathSeparator1(path48.charCodeAt(j))) break;
                     }
-                    if (j < len && j !== last) {
+                    if (j < len13 && j !== last) {
                         last = j;
-                        for(; j < len; ++j){
-                            if (isPathSeparator1(path.charCodeAt(j))) break;
+                        for(; j < len13; ++j){
+                            if (isPathSeparator1(path48.charCodeAt(j))) break;
                         }
-                        if (j === len) {
+                        if (j === len13) {
                             rootEnd = j;
                         } else if (j !== last) {
                             rootEnd = j + 1;
@@ -8354,49 +8317,49 @@ function parse4(path) {
                     }
                 }
             }
-        } else if (isWindowsDeviceRoot1(code)) {
-            if (path.charCodeAt(1) === 58) {
+        } else if (isWindowsDeviceRoot1(code45)) {
+            if (path48.charCodeAt(1) === 58) {
                 rootEnd = 2;
-                if (len > 2) {
-                    if (isPathSeparator1(path.charCodeAt(2))) {
-                        if (len === 3) {
-                            ret.root = ret.dir = path;
+                if (len13 > 2) {
+                    if (isPathSeparator1(path48.charCodeAt(2))) {
+                        if (len13 === 3) {
+                            ret.root = ret.dir = path48;
                             return ret;
                         }
                         rootEnd = 3;
                     }
                 } else {
-                    ret.root = ret.dir = path;
+                    ret.root = ret.dir = path48;
                     return ret;
                 }
             }
         }
-    } else if (isPathSeparator1(code)) {
-        ret.root = ret.dir = path;
+    } else if (isPathSeparator1(code45)) {
+        ret.root = ret.dir = path48;
         return ret;
     }
-    if (rootEnd > 0) ret.root = path.slice(0, rootEnd);
+    if (rootEnd > 0) ret.root = path48.slice(0, rootEnd);
     let startDot = -1;
     let startPart = rootEnd;
     let end = -1;
     let matchedSlash = true;
-    let i = path.length - 1;
+    let i31 = path48.length - 1;
     let preDotState = 0;
-    for(; i >= rootEnd; --i){
-        code = path.charCodeAt(i);
-        if (isPathSeparator1(code)) {
+    for(; i31 >= rootEnd; --i31){
+        code45 = path48.charCodeAt(i31);
+        if (isPathSeparator1(code45)) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i31 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i31 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code45 === 46) {
+            if (startDot === -1) startDot = i31;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -8404,15 +8367,15 @@ function parse4(path) {
     }
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         if (end !== -1) {
-            ret.base = ret.name = path.slice(startPart, end);
+            ret.base = ret.name = path48.slice(startPart, end);
         }
     } else {
-        ret.name = path.slice(startPart, startDot);
-        ret.base = path.slice(startPart, end);
-        ret.ext = path.slice(startDot, end);
+        ret.name = path48.slice(startPart, startDot);
+        ret.base = path48.slice(startPart, end);
+        ret.ext = path48.slice(startDot, end);
     }
     if (startPart > 0 && startPart !== rootEnd) {
-        ret.dir = path.slice(0, startPart - 1);
+        ret.dir = path48.slice(0, startPart - 1);
     } else ret.dir = ret.root;
     return ret;
 }
@@ -8421,20 +8384,20 @@ function fromFileUrl3(url) {
     if (url.protocol != "file:") {
         throw new TypeError("Must be a file URL.");
     }
-    let path = decodeURIComponent(url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25")).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
+    let path49 = decodeURIComponent(url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25")).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
     if (url.hostname != "") {
-        path = `\\\\${url.hostname}${path}`;
+        path49 = `\\\\${url.hostname}${path49}`;
     }
-    return path;
+    return path49;
 }
-function toFileUrl3(path) {
-    if (!isAbsolute3(path)) {
+function toFileUrl3(path50) {
+    if (!isAbsolute3(path50)) {
         throw new TypeError("Must be an absolute path.");
     }
-    const [, hostname, pathname] = path.match(/^(?:[/\\]{2}([^/\\]+)(?=[/\\][^/\\]))?(.*)/);
+    const [, hostname, pathname] = path50.match(/^(?:[/\\]{2}([^/\\]+)(?=[/\\](?:[^/\\]|$)))?(.*)/);
     const url = new URL("file:///");
-    url.pathname = pathname.replace(/%/g, "%25");
-    if (hostname != null) {
+    url.pathname = encodeWhitespace1(pathname.replace(/%/g, "%25"));
+    if (hostname != null && hostname != "localhost") {
         url.hostname = hostname;
         if (!url.hostname) {
             throw new TypeError("Invalid hostname.");
@@ -8454,7 +8417,7 @@ const mod2 = {
     dirname: dirname3,
     basename: basename3,
     extname: extname3,
-    format: format4,
+    format: format3,
     parse: parse4,
     fromFileUrl: fromFileUrl3,
     toFileUrl: toFileUrl3
@@ -8464,21 +8427,22 @@ const delimiter4 = ":";
 function resolve4(...pathSegments) {
     let resolvedPath = "";
     let resolvedAbsolute = false;
-    for(let i = pathSegments.length - 1; i >= -1 && !resolvedAbsolute; i--){
-        let path;
-        if (i >= 0) path = pathSegments[i];
+    for(let i32 = pathSegments.length - 1; i32 >= -1 && !resolvedAbsolute; i32--){
+        let path51;
+        if (i32 >= 0) path51 = pathSegments[i32];
         else {
-            if (globalThis.Deno == null) {
+            const { Deno  } = globalThis;
+            if (typeof Deno?.cwd !== "function") {
                 throw new TypeError("Resolved a relative path without a CWD.");
             }
-            path = Deno.cwd();
+            path51 = Deno.cwd();
         }
-        assertPath1(path);
-        if (path.length === 0) {
+        assertPath1(path51);
+        if (path51.length === 0) {
             continue;
         }
-        resolvedPath = `${path}/${resolvedPath}`;
-        resolvedAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH1;
+        resolvedPath = `${path51}/${resolvedPath}`;
+        resolvedAbsolute = path51.charCodeAt(0) === CHAR_FORWARD_SLASH1;
     }
     resolvedPath = normalizeString1(resolvedPath, !resolvedAbsolute, "/", isPosixPathSeparator1);
     if (resolvedAbsolute) {
@@ -8487,46 +8451,46 @@ function resolve4(...pathSegments) {
     } else if (resolvedPath.length > 0) return resolvedPath;
     else return ".";
 }
-function normalize5(path) {
-    assertPath1(path);
-    if (path.length === 0) return ".";
-    const isAbsolute = path.charCodeAt(0) === 47;
-    const trailingSeparator = path.charCodeAt(path.length - 1) === 47;
-    path = normalizeString1(path, !isAbsolute, "/", isPosixPathSeparator1);
-    if (path.length === 0 && !isAbsolute) path = ".";
-    if (path.length > 0 && trailingSeparator) path += "/";
-    if (isAbsolute) return `/${path}`;
-    return path;
+function normalize5(path52) {
+    assertPath1(path52);
+    if (path52.length === 0) return ".";
+    const isAbsolute12 = path52.charCodeAt(0) === 47;
+    const trailingSeparator = path52.charCodeAt(path52.length - 1) === 47;
+    path52 = normalizeString1(path52, !isAbsolute12, "/", isPosixPathSeparator1);
+    if (path52.length === 0 && !isAbsolute12) path52 = ".";
+    if (path52.length > 0 && trailingSeparator) path52 += "/";
+    if (isAbsolute12) return `/${path52}`;
+    return path52;
 }
-function isAbsolute4(path) {
-    assertPath1(path);
-    return path.length > 0 && path.charCodeAt(0) === 47;
+function isAbsolute4(path53) {
+    assertPath1(path53);
+    return path53.length > 0 && path53.charCodeAt(0) === 47;
 }
 function join5(...paths) {
     if (paths.length === 0) return ".";
     let joined;
-    for(let i = 0, len = paths.length; i < len; ++i){
-        const path = paths[i];
-        assertPath1(path);
-        if (path.length > 0) {
-            if (!joined) joined = path;
-            else joined += `/${path}`;
+    for(let i33 = 0, len14 = paths.length; i33 < len14; ++i33){
+        const path54 = paths[i33];
+        assertPath1(path54);
+        if (path54.length > 0) {
+            if (!joined) joined = path54;
+            else joined += `/${path54}`;
         }
     }
     if (!joined) return ".";
     return normalize5(joined);
 }
-function relative4(from, to) {
-    assertPath1(from);
+function relative4(from4, to) {
+    assertPath1(from4);
     assertPath1(to);
-    if (from === to) return "";
-    from = resolve4(from);
+    if (from4 === to) return "";
+    from4 = resolve4(from4);
     to = resolve4(to);
-    if (from === to) return "";
+    if (from4 === to) return "";
     let fromStart = 1;
-    const fromEnd = from.length;
+    const fromEnd = from4.length;
     for(; fromStart < fromEnd; ++fromStart){
-        if (from.charCodeAt(fromStart) !== 47) break;
+        if (from4.charCodeAt(fromStart) !== 47) break;
     }
     const fromLen = fromEnd - fromStart;
     let toStart = 1;
@@ -8537,32 +8501,32 @@ function relative4(from, to) {
     const toLen = toEnd - toStart;
     const length = fromLen < toLen ? fromLen : toLen;
     let lastCommonSep = -1;
-    let i = 0;
-    for(; i <= length; ++i){
-        if (i === length) {
+    let i34 = 0;
+    for(; i34 <= length; ++i34){
+        if (i34 === length) {
             if (toLen > length) {
-                if (to.charCodeAt(toStart + i) === 47) {
-                    return to.slice(toStart + i + 1);
-                } else if (i === 0) {
-                    return to.slice(toStart + i);
+                if (to.charCodeAt(toStart + i34) === 47) {
+                    return to.slice(toStart + i34 + 1);
+                } else if (i34 === 0) {
+                    return to.slice(toStart + i34);
                 }
             } else if (fromLen > length) {
-                if (from.charCodeAt(fromStart + i) === 47) {
-                    lastCommonSep = i;
-                } else if (i === 0) {
+                if (from4.charCodeAt(fromStart + i34) === 47) {
+                    lastCommonSep = i34;
+                } else if (i34 === 0) {
                     lastCommonSep = 0;
                 }
             }
             break;
         }
-        const fromCode = from.charCodeAt(fromStart + i);
-        const toCode = to.charCodeAt(toStart + i);
+        const fromCode = from4.charCodeAt(fromStart + i34);
+        const toCode = to.charCodeAt(toStart + i34);
         if (fromCode !== toCode) break;
-        else if (fromCode === 47) lastCommonSep = i;
+        else if (fromCode === 47) lastCommonSep = i34;
     }
     let out = "";
-    for(i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i){
-        if (i === fromEnd || from.charCodeAt(i) === 47) {
+    for(i34 = fromStart + lastCommonSep + 1; i34 <= fromEnd; ++i34){
+        if (i34 === fromEnd || from4.charCodeAt(i34) === 47) {
             if (out.length === 0) out += "..";
             else out += "/..";
         }
@@ -8574,19 +8538,19 @@ function relative4(from, to) {
         return to.slice(toStart);
     }
 }
-function toNamespacedPath4(path) {
-    return path;
+function toNamespacedPath4(path55) {
+    return path55;
 }
-function dirname4(path) {
-    assertPath1(path);
-    if (path.length === 0) return ".";
-    const hasRoot = path.charCodeAt(0) === 47;
+function dirname4(path56) {
+    assertPath1(path56);
+    if (path56.length === 0) return ".";
+    const hasRoot = path56.charCodeAt(0) === 47;
     let end = -1;
     let matchedSlash = true;
-    for(let i = path.length - 1; i >= 1; --i){
-        if (path.charCodeAt(i) === 47) {
+    for(let i35 = path56.length - 1; i35 >= 1; --i35){
+        if (path56.charCodeAt(i35) === 47) {
             if (!matchedSlash) {
-                end = i;
+                end = i35;
                 break;
             }
         } else {
@@ -8595,37 +8559,37 @@ function dirname4(path) {
     }
     if (end === -1) return hasRoot ? "/" : ".";
     if (hasRoot && end === 1) return "//";
-    return path.slice(0, end);
+    return path56.slice(0, end);
 }
-function basename4(path, ext = "") {
+function basename4(path57, ext = "") {
     if (ext !== undefined && typeof ext !== "string") {
         throw new TypeError('"ext" argument must be a string');
     }
-    assertPath1(path);
+    assertPath1(path57);
     let start = 0;
     let end = -1;
     let matchedSlash = true;
-    let i;
-    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
-        if (ext.length === path.length && ext === path) return "";
+    let i36;
+    if (ext !== undefined && ext.length > 0 && ext.length <= path57.length) {
+        if (ext.length === path57.length && ext === path57) return "";
         let extIdx = ext.length - 1;
         let firstNonSlashEnd = -1;
-        for(i = path.length - 1; i >= 0; --i){
-            const code = path.charCodeAt(i);
-            if (code === 47) {
+        for(i36 = path57.length - 1; i36 >= 0; --i36){
+            const code46 = path57.charCodeAt(i36);
+            if (code46 === 47) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i36 + 1;
                     break;
                 }
             } else {
                 if (firstNonSlashEnd === -1) {
                     matchedSlash = false;
-                    firstNonSlashEnd = i + 1;
+                    firstNonSlashEnd = i36 + 1;
                 }
                 if (extIdx >= 0) {
-                    if (code === ext.charCodeAt(extIdx)) {
+                    if (code46 === ext.charCodeAt(extIdx)) {
                         if (--extIdx === -1) {
-                            end = i;
+                            end = i36;
                         }
                     } else {
                         extIdx = -1;
@@ -8635,46 +8599,46 @@ function basename4(path, ext = "") {
             }
         }
         if (start === end) end = firstNonSlashEnd;
-        else if (end === -1) end = path.length;
-        return path.slice(start, end);
+        else if (end === -1) end = path57.length;
+        return path57.slice(start, end);
     } else {
-        for(i = path.length - 1; i >= 0; --i){
-            if (path.charCodeAt(i) === 47) {
+        for(i36 = path57.length - 1; i36 >= 0; --i36){
+            if (path57.charCodeAt(i36) === 47) {
                 if (!matchedSlash) {
-                    start = i + 1;
+                    start = i36 + 1;
                     break;
                 }
             } else if (end === -1) {
                 matchedSlash = false;
-                end = i + 1;
+                end = i36 + 1;
             }
         }
         if (end === -1) return "";
-        return path.slice(start, end);
+        return path57.slice(start, end);
     }
 }
-function extname4(path) {
-    assertPath1(path);
+function extname4(path58) {
+    assertPath1(path58);
     let startDot = -1;
     let startPart = 0;
     let end = -1;
     let matchedSlash = true;
     let preDotState = 0;
-    for(let i = path.length - 1; i >= 0; --i){
-        const code = path.charCodeAt(i);
-        if (code === 47) {
+    for(let i37 = path58.length - 1; i37 >= 0; --i37){
+        const code47 = path58.charCodeAt(i37);
+        if (code47 === 47) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i37 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i37 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code47 === 46) {
+            if (startDot === -1) startDot = i37;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -8683,16 +8647,16 @@ function extname4(path) {
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         return "";
     }
-    return path.slice(startDot, end);
+    return path58.slice(startDot, end);
 }
-function format5(pathObject) {
+function format4(pathObject) {
     if (pathObject === null || typeof pathObject !== "object") {
         throw new TypeError(`The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`);
     }
     return _format2("/", pathObject);
 }
-function parse5(path) {
-    assertPath1(path);
+function parse5(path59) {
+    assertPath1(path59);
     const ret = {
         root: "",
         dir: "",
@@ -8700,10 +8664,10 @@ function parse5(path) {
         ext: "",
         name: ""
     };
-    if (path.length === 0) return ret;
-    const isAbsolute = path.charCodeAt(0) === 47;
+    if (path59.length === 0) return ret;
+    const isAbsolute22 = path59.charCodeAt(0) === 47;
     let start;
-    if (isAbsolute) {
+    if (isAbsolute22) {
         ret.root = "/";
         start = 1;
     } else {
@@ -8713,23 +8677,23 @@ function parse5(path) {
     let startPart = 0;
     let end = -1;
     let matchedSlash = true;
-    let i = path.length - 1;
+    let i38 = path59.length - 1;
     let preDotState = 0;
-    for(; i >= start; --i){
-        const code = path.charCodeAt(i);
-        if (code === 47) {
+    for(; i38 >= start; --i38){
+        const code48 = path59.charCodeAt(i38);
+        if (code48 === 47) {
             if (!matchedSlash) {
-                startPart = i + 1;
+                startPart = i38 + 1;
                 break;
             }
             continue;
         }
         if (end === -1) {
             matchedSlash = false;
-            end = i + 1;
+            end = i38 + 1;
         }
-        if (code === 46) {
-            if (startDot === -1) startDot = i;
+        if (code48 === 46) {
+            if (startDot === -1) startDot = i38;
             else if (preDotState !== 1) preDotState = 1;
         } else if (startDot !== -1) {
             preDotState = -1;
@@ -8737,24 +8701,24 @@ function parse5(path) {
     }
     if (startDot === -1 || end === -1 || preDotState === 0 || preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
         if (end !== -1) {
-            if (startPart === 0 && isAbsolute) {
-                ret.base = ret.name = path.slice(1, end);
+            if (startPart === 0 && isAbsolute22) {
+                ret.base = ret.name = path59.slice(1, end);
             } else {
-                ret.base = ret.name = path.slice(startPart, end);
+                ret.base = ret.name = path59.slice(startPart, end);
             }
         }
     } else {
-        if (startPart === 0 && isAbsolute) {
-            ret.name = path.slice(1, startDot);
-            ret.base = path.slice(1, end);
+        if (startPart === 0 && isAbsolute22) {
+            ret.name = path59.slice(1, startDot);
+            ret.base = path59.slice(1, end);
         } else {
-            ret.name = path.slice(startPart, startDot);
-            ret.base = path.slice(startPart, end);
+            ret.name = path59.slice(startPart, startDot);
+            ret.base = path59.slice(startPart, end);
         }
-        ret.ext = path.slice(startDot, end);
+        ret.ext = path59.slice(startDot, end);
     }
-    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);
-    else if (isAbsolute) ret.dir = "/";
+    if (startPart > 0) ret.dir = path59.slice(0, startPart - 1);
+    else if (isAbsolute22) ret.dir = "/";
     return ret;
 }
 function fromFileUrl4(url) {
@@ -8764,12 +8728,12 @@ function fromFileUrl4(url) {
     }
     return decodeURIComponent(url.pathname.replace(/%(?![0-9A-Fa-f]{2})/g, "%25"));
 }
-function toFileUrl4(path) {
-    if (!isAbsolute4(path)) {
+function toFileUrl4(path60) {
+    if (!isAbsolute4(path60)) {
         throw new TypeError("Must be an absolute path.");
     }
     const url = new URL("file:///");
-    url.pathname = path.replace(/%/g, "%25").replace(/\\/g, "%5C");
+    url.pathname = encodeWhitespace1(path60.replace(/%/g, "%25").replace(/\\/g, "%5C"));
     return url;
 }
 const mod3 = {
@@ -8784,13 +8748,15 @@ const mod3 = {
     dirname: dirname4,
     basename: basename4,
     extname: extname4,
-    format: format5,
+    format: format4,
     parse: parse5,
     fromFileUrl: fromFileUrl4,
     toFileUrl: toFileUrl4
 };
+const path2 = isWindows1 ? mod2 : mod3;
+const { join: join6 , normalize: normalize6  } = path2;
 const path3 = isWindows1 ? mod2 : mod3;
-const { basename: basename5 , delimiter: delimiter5 , dirname: dirname5 , extname: extname5 , format: format6 , fromFileUrl: fromFileUrl5 , isAbsolute: isAbsolute5 , join: join6 , normalize: normalize6 , parse: parse6 , relative: relative5 , resolve: resolve5 , sep: sep5 , toFileUrl: toFileUrl5 , toNamespacedPath: toNamespacedPath5 ,  } = path3;
+const { basename: basename5 , delimiter: delimiter5 , dirname: dirname5 , extname: extname5 , format: format5 , fromFileUrl: fromFileUrl5 , isAbsolute: isAbsolute5 , join: join7 , normalize: normalize7 , parse: parse6 , relative: relative5 , resolve: resolve5 , sep: sep5 , toFileUrl: toFileUrl5 , toNamespacedPath: toNamespacedPath5 ,  } = path3;
 'use strict';
 const align = {
     right: alignRight,
@@ -8841,11 +8807,11 @@ class UI {
             }
         });
         rows.forEach((columns)=>{
-            this.div(...columns.map((r, i)=>{
+            this.div(...columns.map((r, i39)=>{
                 return {
                     text: r.trim(),
                     padding: this.measurePadding(r),
-                    width: i === 0 && columns.length > 1 ? leftColumnWidth : undefined
+                    width: i39 === 0 && columns.length > 1 ? leftColumnWidth : undefined
                 };
             }));
         });
@@ -8962,8 +8928,8 @@ class UI {
                     rrows.push([]);
                 }
                 const rrow = rrows[r];
-                for(let i = 0; i < c; i++){
-                    if (rrow[i] === undefined) {
+                for(let i40 = 0; i40 < c; i40++){
+                    if (rrow[i40] === undefined) {
                         rrow.push('');
                     }
                 }
@@ -8999,9 +8965,9 @@ class UI {
             return undefined;
         });
         const unsetWidth = unset ? Math.floor(remainingWidth / unset) : 0;
-        return widths.map((w, i)=>{
+        return widths.map((w, i41)=>{
             if (w === undefined) {
-                return Math.max(unsetWidth, _minWidth(row[i]));
+                return Math.max(unsetWidth, _minWidth(row[i41]));
             }
             return w;
         });
@@ -9068,11 +9034,11 @@ function wrap(str, width) {
     ];
     str = stripAnsi(str);
     let wrapped = '';
-    for(let i = 0; i < str.length; i++){
-        if (i !== 0 && i % width === 0) {
+    for(let i42 = 0; i42 < str.length; i42++){
+        if (i42 !== 0 && i42 % width === 0) {
             wrapped += '\n';
         }
-        wrapped += str.charAt(i);
+        wrapped += str.charAt(i42);
     }
     if (start && end) {
         wrapped = `${start}${wrapped}${end}`;
@@ -9118,13 +9084,13 @@ function camelCase(str) {
         let camelcase = '';
         let nextChrUpper = false;
         const leadingHyphens = str.match(/^-+/);
-        for(let i = leadingHyphens ? leadingHyphens[0].length : 0; i < str.length; i++){
-            let chr = str.charAt(i);
+        for(let i43 = leadingHyphens ? leadingHyphens[0].length : 0; i43 < str.length; i43++){
+            let chr = str.charAt(i43);
             if (nextChrUpper) {
                 nextChrUpper = false;
                 chr = chr.toLocaleUpperCase();
             }
-            if (i !== 0 && (chr === '-' || chr === '_')) {
+            if (i43 !== 0 && (chr === '-' || chr === '_')) {
                 nextChrUpper = true;
                 continue;
             } else if (chr !== '-' && chr !== '_') {
@@ -9138,11 +9104,11 @@ function decamelize(str, joinString) {
     const lowercase = str.toLocaleLowerCase();
     joinString = joinString || '-';
     let notCamelcase = '';
-    for(let i = 0; i < str.length; i++){
-        const chrLower = lowercase.charAt(i);
-        const chrString = str.charAt(i);
-        if (chrLower !== chrString && i > 0) {
-            notCamelcase += `${joinString}${lowercase.charAt(i)}`;
+    for(let i44 = 0; i44 < str.length; i44++){
+        const chrLower = lowercase.charAt(i44);
+        const chrString = str.charAt(i44);
+        if (chrLower !== chrString && i44 > 0) {
+            notCamelcase += `${joinString}${lowercase.charAt(i44)}`;
         } else {
             notCamelcase += chrString;
         }
@@ -9162,7 +9128,7 @@ function tokenizeArgString(argString) {
         );
     }
     argString = argString.trim();
-    let i = 0;
+    let i45 = 0;
     let prevC = null;
     let c = null;
     let opening = null;
@@ -9172,7 +9138,7 @@ function tokenizeArgString(argString) {
         c = argString.charAt(ii);
         if (c === ' ' && !opening) {
             if (!(prevC === ' ')) {
-                i++;
+                i45++;
             }
             continue;
         }
@@ -9181,8 +9147,8 @@ function tokenizeArgString(argString) {
         } else if ((c === "'" || c === '"') && !opening) {
             opening = c;
         }
-        if (!args[i]) args[i] = '';
-        args[i] += c;
+        if (!args[i45]) args[i45] = '';
+        args[i45] += c;
     }
     return args;
 }
@@ -9210,8 +9176,8 @@ class YargsParser {
             __: undefined,
             key: undefined
         }, options);
-        const args = tokenizeArgString(argsInput);
-        const aliases = combineAliases(Object.assign(Object.create(null), opts.alias));
+        const args1 = tokenizeArgString(argsInput);
+        const aliases1 = combineAliases(Object.assign(Object.create(null), opts.alias));
         const configuration = Object.assign({
             'boolean-negation': true,
             'camel-case-expansion': true,
@@ -9232,7 +9198,7 @@ class YargsParser {
             'strip-dashed': false,
             'unknown-options-as-args': false
         }, opts.configuration);
-        const defaults = Object.assign(Object.create(null), opts.default);
+        const defaults1 = Object.assign(Object.create(null), opts.default);
         const configObjects = opts.configObjects || [];
         const envPrefix = opts.envPrefix;
         const notFlagsOption = configuration['populate--'];
@@ -9256,101 +9222,100 @@ class YargsParser {
         const negative = /^-([0-9]+(\.[0-9]+)?|\.[0-9]+)$/;
         const negatedBoolean = new RegExp('^--' + configuration['negation-prefix'] + '(.+)');
         [].concat(opts.array || []).filter(Boolean).forEach(function(opt) {
-            const key = typeof opt === 'object' ? opt.key : opt;
-            const assignment = Object.keys(opt).map(function(key) {
+            const key1 = typeof opt === 'object' ? opt.key : opt;
+            const assignment = Object.keys(opt).map(function(key2) {
                 const arrayFlagKeys = {
                     boolean: 'bools',
                     string: 'strings',
                     number: 'numbers'
                 };
-                return arrayFlagKeys[key];
+                return arrayFlagKeys[key2];
             }).filter(Boolean).pop();
             if (assignment) {
-                flags[assignment][key] = true;
+                flags[assignment][key1] = true;
             }
-            flags.arrays[key] = true;
-            flags.keys.push(key);
+            flags.arrays[key1] = true;
+            flags.keys.push(key1);
         });
-        [].concat(opts.boolean || []).filter(Boolean).forEach(function(key) {
-            flags.bools[key] = true;
-            flags.keys.push(key);
+        [].concat(opts.boolean || []).filter(Boolean).forEach(function(key3) {
+            flags.bools[key3] = true;
+            flags.keys.push(key3);
         });
-        [].concat(opts.string || []).filter(Boolean).forEach(function(key) {
-            flags.strings[key] = true;
-            flags.keys.push(key);
+        [].concat(opts.string || []).filter(Boolean).forEach(function(key4) {
+            flags.strings[key4] = true;
+            flags.keys.push(key4);
         });
-        [].concat(opts.number || []).filter(Boolean).forEach(function(key) {
-            flags.numbers[key] = true;
-            flags.keys.push(key);
+        [].concat(opts.number || []).filter(Boolean).forEach(function(key5) {
+            flags.numbers[key5] = true;
+            flags.keys.push(key5);
         });
-        [].concat(opts.count || []).filter(Boolean).forEach(function(key) {
-            flags.counts[key] = true;
-            flags.keys.push(key);
+        [].concat(opts.count || []).filter(Boolean).forEach(function(key6) {
+            flags.counts[key6] = true;
+            flags.keys.push(key6);
         });
-        [].concat(opts.normalize || []).filter(Boolean).forEach(function(key) {
-            flags.normalize[key] = true;
-            flags.keys.push(key);
+        [].concat(opts.normalize || []).filter(Boolean).forEach(function(key7) {
+            flags.normalize[key7] = true;
+            flags.keys.push(key7);
         });
         if (typeof opts.narg === 'object') {
-            Object.entries(opts.narg).forEach(([key, value])=>{
-                if (typeof value === 'number') {
-                    flags.nargs[key] = value;
-                    flags.keys.push(key);
+            Object.entries(opts.narg).forEach(([key8, value1])=>{
+                if (typeof value1 === 'number') {
+                    flags.nargs[key8] = value1;
+                    flags.keys.push(key8);
                 }
             });
         }
         if (typeof opts.coerce === 'object') {
-            Object.entries(opts.coerce).forEach(([key, value])=>{
-                if (typeof value === 'function') {
-                    flags.coercions[key] = value;
-                    flags.keys.push(key);
+            Object.entries(opts.coerce).forEach(([key9, value2])=>{
+                if (typeof value2 === 'function') {
+                    flags.coercions[key9] = value2;
+                    flags.keys.push(key9);
                 }
             });
         }
         if (typeof opts.config !== 'undefined') {
             if (Array.isArray(opts.config) || typeof opts.config === 'string') {
-                [].concat(opts.config).filter(Boolean).forEach(function(key) {
-                    flags.configs[key] = true;
+                [].concat(opts.config).filter(Boolean).forEach(function(key10) {
+                    flags.configs[key10] = true;
                 });
             } else if (typeof opts.config === 'object') {
-                Object.entries(opts.config).forEach(([key, value])=>{
-                    if (typeof value === 'boolean' || typeof value === 'function') {
-                        flags.configs[key] = value;
+                Object.entries(opts.config).forEach(([key11, value3])=>{
+                    if (typeof value3 === 'boolean' || typeof value3 === 'function') {
+                        flags.configs[key11] = value3;
                     }
                 });
             }
         }
-        extendAliases(opts.key, aliases, opts.default, flags.arrays);
-        Object.keys(defaults).forEach(function(key) {
-            (flags.aliases[key] || []).forEach(function(alias) {
-                defaults[alias] = defaults[key];
+        extendAliases(opts.key, aliases1, opts.default, flags.arrays);
+        Object.keys(defaults1).forEach(function(key12) {
+            (flags.aliases[key12] || []).forEach(function(alias) {
+                defaults1[alias] = defaults1[key12];
             });
         });
         let error = null;
         checkConfiguration();
         let notFlags = [];
-        const argv = Object.assign(Object.create(null), {
+        const argv1 = Object.assign(Object.create(null), {
             _: []
         });
-        const argvReturn = {
-        };
-        for(let i = 0; i < args.length; i++){
-            const arg = args[i];
+        const argvReturn = {};
+        for(let i1 = 0; i1 < args1.length; i1++){
+            const arg = args1[i1];
             let broken;
-            let key;
+            let key13;
             let letters;
             let m;
             let next;
-            let value;
+            let value4;
             if (arg !== '--' && isUnknownOptionAsArg(arg)) {
                 pushPositional(arg);
             } else if (arg.match(/^--.+=/) || !configuration['short-option-groups'] && arg.match(/^-.+=/)) {
                 m = arg.match(/^--?([^=]+)=([\s\S]*)$/);
                 if (m !== null && Array.isArray(m) && m.length >= 3) {
                     if (checkAllAliases(m[1], flags.arrays)) {
-                        i = eatArray(i, m[1], args, m[2]);
+                        i1 = eatArray(i1, m[1], args1, m[2]);
                     } else if (checkAllAliases(m[1], flags.nargs) !== false) {
-                        i = eatNargs(i, m[1], args, m[2]);
+                        i1 = eatNargs(i1, m[1], args1, m[2]);
                     } else {
                         setArg(m[1], m[2]);
                     }
@@ -9358,29 +9323,29 @@ class YargsParser {
             } else if (arg.match(negatedBoolean) && configuration['boolean-negation']) {
                 m = arg.match(negatedBoolean);
                 if (m !== null && Array.isArray(m) && m.length >= 2) {
-                    key = m[1];
-                    setArg(key, checkAllAliases(key, flags.arrays) ? [
+                    key13 = m[1];
+                    setArg(key13, checkAllAliases(key13, flags.arrays) ? [
                         false
                     ] : false);
                 }
             } else if (arg.match(/^--.+/) || !configuration['short-option-groups'] && arg.match(/^-[^-]+/)) {
                 m = arg.match(/^--?(.+)/);
                 if (m !== null && Array.isArray(m) && m.length >= 2) {
-                    key = m[1];
-                    if (checkAllAliases(key, flags.arrays)) {
-                        i = eatArray(i, key, args);
-                    } else if (checkAllAliases(key, flags.nargs) !== false) {
-                        i = eatNargs(i, key, args);
+                    key13 = m[1];
+                    if (checkAllAliases(key13, flags.arrays)) {
+                        i1 = eatArray(i1, key13, args1);
+                    } else if (checkAllAliases(key13, flags.nargs) !== false) {
+                        i1 = eatNargs(i1, key13, args1);
                     } else {
-                        next = args[i + 1];
-                        if (next !== undefined && (!next.match(/^-/) || next.match(negative)) && !checkAllAliases(key, flags.bools) && !checkAllAliases(key, flags.counts)) {
-                            setArg(key, next);
-                            i++;
+                        next = args1[i1 + 1];
+                        if (next !== undefined && (!next.match(/^-/) || next.match(negative)) && !checkAllAliases(key13, flags.bools) && !checkAllAliases(key13, flags.counts)) {
+                            setArg(key13, next);
+                            i1++;
                         } else if (/^(true|false)$/.test(next)) {
-                            setArg(key, next);
-                            i++;
+                            setArg(key13, next);
+                            i1++;
                         } else {
-                            setArg(key, defaultValue(key));
+                            setArg(key13, defaultValue(key13));
                         }
                     }
                 }
@@ -9390,15 +9355,15 @@ class YargsParser {
                     setArg(m[1], m[2]);
                 }
             } else if (arg.match(/^-.\..+/) && !arg.match(negative)) {
-                next = args[i + 1];
+                next = args1[i1 + 1];
                 m = arg.match(/^-(.\..+)/);
                 if (m !== null && Array.isArray(m) && m.length >= 2) {
-                    key = m[1];
-                    if (next !== undefined && !next.match(/^-/) && !checkAllAliases(key, flags.bools) && !checkAllAliases(key, flags.counts)) {
-                        setArg(key, next);
-                        i++;
+                    key13 = m[1];
+                    if (next !== undefined && !next.match(/^-/) && !checkAllAliases(key13, flags.bools) && !checkAllAliases(key13, flags.counts)) {
+                        setArg(key13, next);
+                        i1++;
                     } else {
-                        setArg(key, defaultValue(key));
+                        setArg(key13, defaultValue(key13));
                     }
                 }
             } else if (arg.match(/^-[^-]+/) && !arg.match(negative)) {
@@ -9407,14 +9372,14 @@ class YargsParser {
                 for(let j = 0; j < letters.length; j++){
                     next = arg.slice(j + 2);
                     if (letters[j + 1] && letters[j + 1] === '=') {
-                        value = arg.slice(j + 3);
-                        key = letters[j];
-                        if (checkAllAliases(key, flags.arrays)) {
-                            i = eatArray(i, key, args, value);
-                        } else if (checkAllAliases(key, flags.nargs) !== false) {
-                            i = eatNargs(i, key, args, value);
+                        value4 = arg.slice(j + 3);
+                        key13 = letters[j];
+                        if (checkAllAliases(key13, flags.arrays)) {
+                            i1 = eatArray(i1, key13, args1, value4);
+                        } else if (checkAllAliases(key13, flags.nargs) !== false) {
+                            i1 = eatNargs(i1, key13, args1, value4);
                         } else {
-                            setArg(key, value);
+                            setArg(key13, value4);
                         }
                         broken = true;
                         break;
@@ -9436,153 +9401,153 @@ class YargsParser {
                         setArg(letters[j], defaultValue(letters[j]));
                     }
                 }
-                key = arg.slice(-1)[0];
-                if (!broken && key !== '-') {
-                    if (checkAllAliases(key, flags.arrays)) {
-                        i = eatArray(i, key, args);
-                    } else if (checkAllAliases(key, flags.nargs) !== false) {
-                        i = eatNargs(i, key, args);
+                key13 = arg.slice(-1)[0];
+                if (!broken && key13 !== '-') {
+                    if (checkAllAliases(key13, flags.arrays)) {
+                        i1 = eatArray(i1, key13, args1);
+                    } else if (checkAllAliases(key13, flags.nargs) !== false) {
+                        i1 = eatNargs(i1, key13, args1);
                     } else {
-                        next = args[i + 1];
-                        if (next !== undefined && (!/^(-|--)[^-]/.test(next) || next.match(negative)) && !checkAllAliases(key, flags.bools) && !checkAllAliases(key, flags.counts)) {
-                            setArg(key, next);
-                            i++;
+                        next = args1[i1 + 1];
+                        if (next !== undefined && (!/^(-|--)[^-]/.test(next) || next.match(negative)) && !checkAllAliases(key13, flags.bools) && !checkAllAliases(key13, flags.counts)) {
+                            setArg(key13, next);
+                            i1++;
                         } else if (/^(true|false)$/.test(next)) {
-                            setArg(key, next);
-                            i++;
+                            setArg(key13, next);
+                            i1++;
                         } else {
-                            setArg(key, defaultValue(key));
+                            setArg(key13, defaultValue(key13));
                         }
                     }
                 }
             } else if (arg.match(/^-[0-9]$/) && arg.match(negative) && checkAllAliases(arg.slice(1), flags.bools)) {
-                key = arg.slice(1);
-                setArg(key, defaultValue(key));
+                key13 = arg.slice(1);
+                setArg(key13, defaultValue(key13));
             } else if (arg === '--') {
-                notFlags = args.slice(i + 1);
+                notFlags = args1.slice(i1 + 1);
                 break;
             } else if (configuration['halt-at-non-option']) {
-                notFlags = args.slice(i);
+                notFlags = args1.slice(i1);
                 break;
             } else {
                 pushPositional(arg);
             }
         }
-        applyEnvVars(argv, true);
-        applyEnvVars(argv, false);
-        setConfig(argv);
+        applyEnvVars(argv1, true);
+        applyEnvVars(argv1, false);
+        setConfig(argv1);
         setConfigObjects();
-        applyDefaultsAndAliases(argv, flags.aliases, defaults, true);
-        applyCoercions(argv);
-        if (configuration['set-placeholder-key']) setPlaceholderKeys(argv);
-        Object.keys(flags.counts).forEach(function(key) {
-            if (!hasKey(argv, key.split('.'))) setArg(key, 0);
+        applyDefaultsAndAliases(argv1, flags.aliases, defaults1, true);
+        applyCoercions(argv1);
+        if (configuration['set-placeholder-key']) setPlaceholderKeys(argv1);
+        Object.keys(flags.counts).forEach(function(key14) {
+            if (!hasKey(argv1, key14.split('.'))) setArg(key14, 0);
         });
-        if (notFlagsOption && notFlags.length) argv[notFlagsArgv] = [];
-        notFlags.forEach(function(key) {
-            argv[notFlagsArgv].push(key);
+        if (notFlagsOption && notFlags.length) argv1[notFlagsArgv] = [];
+        notFlags.forEach(function(key15) {
+            argv1[notFlagsArgv].push(key15);
         });
         if (configuration['camel-case-expansion'] && configuration['strip-dashed']) {
-            Object.keys(argv).filter((key)=>key !== '--' && key.includes('-')
-            ).forEach((key)=>{
-                delete argv[key];
+            Object.keys(argv1).filter((key16)=>key16 !== '--' && key16.includes('-')
+            ).forEach((key17)=>{
+                delete argv1[key17];
             });
         }
         if (configuration['strip-aliased']) {
-            [].concat(...Object.keys(aliases).map((k)=>aliases[k]
+            [].concat(...Object.keys(aliases1).map((k)=>aliases1[k]
             )).forEach((alias)=>{
                 if (configuration['camel-case-expansion'] && alias.includes('-')) {
-                    delete argv[alias.split('.').map((prop)=>camelCase(prop)
+                    delete argv1[alias.split('.').map((prop)=>camelCase(prop)
                     ).join('.')];
                 }
-                delete argv[alias];
+                delete argv1[alias];
             });
         }
         function pushPositional(arg) {
             const maybeCoercedNumber = maybeCoerceNumber('_', arg);
             if (typeof maybeCoercedNumber === 'string' || typeof maybeCoercedNumber === 'number') {
-                argv._.push(maybeCoercedNumber);
+                argv1._.push(maybeCoercedNumber);
             }
         }
-        function eatNargs(i, key, args, argAfterEqualSign) {
+        function eatNargs(i46, key18, args, argAfterEqualSign) {
             let ii;
-            let toEat = checkAllAliases(key, flags.nargs);
+            let toEat = checkAllAliases(key18, flags.nargs);
             toEat = typeof toEat !== 'number' || isNaN(toEat) ? 1 : toEat;
             if (toEat === 0) {
                 if (!isUndefined(argAfterEqualSign)) {
-                    error = Error(__('Argument unexpected for: %s', key));
+                    error = Error(__('Argument unexpected for: %s', key18));
                 }
-                setArg(key, defaultValue(key));
-                return i;
+                setArg(key18, defaultValue(key18));
+                return i46;
             }
             let available = isUndefined(argAfterEqualSign) ? 0 : 1;
             if (configuration['nargs-eats-options']) {
-                if (args.length - (i + 1) + available < toEat) {
-                    error = Error(__('Not enough arguments following: %s', key));
+                if (args.length - (i46 + 1) + available < toEat) {
+                    error = Error(__('Not enough arguments following: %s', key18));
                 }
                 available = toEat;
             } else {
-                for(ii = i + 1; ii < args.length; ii++){
+                for(ii = i46 + 1; ii < args.length; ii++){
                     if (!args[ii].match(/^-[^0-9]/) || args[ii].match(negative) || isUnknownOptionAsArg(args[ii])) available++;
                     else break;
                 }
-                if (available < toEat) error = Error(__('Not enough arguments following: %s', key));
+                if (available < toEat) error = Error(__('Not enough arguments following: %s', key18));
             }
             let consumed = Math.min(available, toEat);
             if (!isUndefined(argAfterEqualSign) && consumed > 0) {
-                setArg(key, argAfterEqualSign);
+                setArg(key18, argAfterEqualSign);
                 consumed--;
             }
-            for(ii = i + 1; ii < consumed + i + 1; ii++){
-                setArg(key, args[ii]);
+            for(ii = i46 + 1; ii < consumed + i46 + 1; ii++){
+                setArg(key18, args[ii]);
             }
-            return i + consumed;
+            return i46 + consumed;
         }
-        function eatArray(i, key, args, argAfterEqualSign) {
+        function eatArray(i47, key19, args, argAfterEqualSign) {
             let argsToSet = [];
-            let next = argAfterEqualSign || args[i + 1];
-            const nargsCount = checkAllAliases(key, flags.nargs);
-            if (checkAllAliases(key, flags.bools) && !/^(true|false)$/.test(next)) {
+            let next = argAfterEqualSign || args[i47 + 1];
+            const nargsCount = checkAllAliases(key19, flags.nargs);
+            if (checkAllAliases(key19, flags.bools) && !/^(true|false)$/.test(next)) {
                 argsToSet.push(true);
             } else if (isUndefined(next) || isUndefined(argAfterEqualSign) && /^-/.test(next) && !negative.test(next) && !isUnknownOptionAsArg(next)) {
-                if (defaults[key] !== undefined) {
-                    const defVal = defaults[key];
+                if (defaults1[key19] !== undefined) {
+                    const defVal = defaults1[key19];
                     argsToSet = Array.isArray(defVal) ? defVal : [
                         defVal
                     ];
                 }
             } else {
                 if (!isUndefined(argAfterEqualSign)) {
-                    argsToSet.push(processValue(key, argAfterEqualSign));
+                    argsToSet.push(processValue(key19, argAfterEqualSign));
                 }
-                for(let ii = i + 1; ii < args.length; ii++){
+                for(let ii = i47 + 1; ii < args.length; ii++){
                     if (!configuration['greedy-arrays'] && argsToSet.length > 0 || nargsCount && typeof nargsCount === 'number' && argsToSet.length >= nargsCount) break;
                     next = args[ii];
                     if (/^-/.test(next) && !negative.test(next) && !isUnknownOptionAsArg(next)) break;
-                    i = ii;
-                    argsToSet.push(processValue(key, next));
+                    i47 = ii;
+                    argsToSet.push(processValue(key19, next));
                 }
             }
             if (typeof nargsCount === 'number' && (nargsCount && argsToSet.length < nargsCount || isNaN(nargsCount) && argsToSet.length === 0)) {
-                error = Error(__('Not enough arguments following: %s', key));
+                error = Error(__('Not enough arguments following: %s', key19));
             }
-            setArg(key, argsToSet);
-            return i;
+            setArg(key19, argsToSet);
+            return i47;
         }
-        function setArg(key, val) {
-            if (/-/.test(key) && configuration['camel-case-expansion']) {
-                const alias = key.split('.').map(function(prop) {
+        function setArg(key2, val) {
+            if (/-/.test(key2) && configuration['camel-case-expansion']) {
+                const alias = key2.split('.').map(function(prop) {
                     return camelCase(prop);
                 }).join('.');
-                addNewAlias(key, alias);
+                addNewAlias(key2, alias);
             }
-            const value = processValue(key, val);
-            const splitKey = key.split('.');
-            setKey(argv, splitKey, value);
-            if (flags.aliases[key]) {
-                flags.aliases[key].forEach(function(x) {
+            const value1 = processValue(key2, val);
+            const splitKey = key2.split('.');
+            setKey(argv1, splitKey, value1);
+            if (flags.aliases[key2]) {
+                flags.aliases[key2].forEach(function(x) {
                     const keyProperties = x.split('.');
-                    setKey(argv, keyProperties, value);
+                    setKey(argv1, keyProperties, value1);
                 });
             }
             if (splitKey.length > 1 && configuration['dot-notation']) {
@@ -9591,110 +9556,110 @@ class YargsParser {
                     const a = [].concat(splitKey);
                     a.shift();
                     keyProperties = keyProperties.concat(a);
-                    if (!(flags.aliases[key] || []).includes(keyProperties.join('.'))) {
-                        setKey(argv, keyProperties, value);
+                    if (!(flags.aliases[key2] || []).includes(keyProperties.join('.'))) {
+                        setKey(argv1, keyProperties, value1);
                     }
                 });
             }
-            if (checkAllAliases(key, flags.normalize) && !checkAllAliases(key, flags.arrays)) {
+            if (checkAllAliases(key2, flags.normalize) && !checkAllAliases(key2, flags.arrays)) {
                 const keys = [
-                    key
-                ].concat(flags.aliases[key] || []);
-                keys.forEach(function(key) {
-                    Object.defineProperty(argvReturn, key, {
+                    key2
+                ].concat(flags.aliases[key2] || []);
+                keys.forEach(function(key20) {
+                    Object.defineProperty(argvReturn, key20, {
                         enumerable: true,
                         get () {
                             return val;
                         },
-                        set (value) {
-                            val = typeof value === 'string' ? mixin1.normalize(value) : value;
+                        set (value5) {
+                            val = typeof value5 === 'string' ? mixin1.normalize(value5) : value5;
                         }
                     });
                 });
             }
         }
-        function addNewAlias(key, alias) {
-            if (!(flags.aliases[key] && flags.aliases[key].length)) {
-                flags.aliases[key] = [
+        function addNewAlias(key21, alias) {
+            if (!(flags.aliases[key21] && flags.aliases[key21].length)) {
+                flags.aliases[key21] = [
                     alias
                 ];
                 newAliases[alias] = true;
             }
             if (!(flags.aliases[alias] && flags.aliases[alias].length)) {
-                addNewAlias(alias, key);
+                addNewAlias(alias, key21);
             }
         }
-        function processValue(key, val) {
-            if (typeof val === 'string' && (val[0] === "'" || val[0] === '"') && val[val.length - 1] === val[0]) {
-                val = val.substring(1, val.length - 1);
+        function processValue(key22, val1) {
+            if (typeof val1 === 'string' && (val1[0] === "'" || val1[0] === '"') && val1[val1.length - 1] === val1[0]) {
+                val1 = val1.substring(1, val1.length - 1);
             }
-            if (checkAllAliases(key, flags.bools) || checkAllAliases(key, flags.counts)) {
-                if (typeof val === 'string') val = val === 'true';
+            if (checkAllAliases(key22, flags.bools) || checkAllAliases(key22, flags.counts)) {
+                if (typeof val1 === 'string') val1 = val1 === 'true';
             }
-            let value = Array.isArray(val) ? val.map(function(v) {
-                return maybeCoerceNumber(key, v);
-            }) : maybeCoerceNumber(key, val);
-            if (checkAllAliases(key, flags.counts) && (isUndefined(value) || typeof value === 'boolean')) {
-                value = increment();
+            let value6 = Array.isArray(val1) ? val1.map(function(v) {
+                return maybeCoerceNumber(key22, v);
+            }) : maybeCoerceNumber(key22, val1);
+            if (checkAllAliases(key22, flags.counts) && (isUndefined(value6) || typeof value6 === 'boolean')) {
+                value6 = increment();
             }
-            if (checkAllAliases(key, flags.normalize) && checkAllAliases(key, flags.arrays)) {
-                if (Array.isArray(val)) value = val.map((val)=>{
+            if (checkAllAliases(key22, flags.normalize) && checkAllAliases(key22, flags.arrays)) {
+                if (Array.isArray(val1)) value6 = val1.map((val)=>{
                     return mixin1.normalize(val);
                 });
-                else value = mixin1.normalize(val);
+                else value6 = mixin1.normalize(val1);
             }
-            return value;
+            return value6;
         }
-        function maybeCoerceNumber(key, value) {
-            if (!configuration['parse-positional-numbers'] && key === '_') return value;
-            if (!checkAllAliases(key, flags.strings) && !checkAllAliases(key, flags.bools) && !Array.isArray(value)) {
-                const shouldCoerceNumber = looksLikeNumber(value) && configuration['parse-numbers'] && Number.isSafeInteger(Math.floor(parseFloat(`${value}`)));
-                if (shouldCoerceNumber || !isUndefined(value) && checkAllAliases(key, flags.numbers)) {
-                    value = Number(value);
+        function maybeCoerceNumber(key23, value7) {
+            if (!configuration['parse-positional-numbers'] && key23 === '_') return value7;
+            if (!checkAllAliases(key23, flags.strings) && !checkAllAliases(key23, flags.bools) && !Array.isArray(value7)) {
+                const shouldCoerceNumber = looksLikeNumber(value7) && configuration['parse-numbers'] && Number.isSafeInteger(Math.floor(parseFloat(`${value7}`)));
+                if (shouldCoerceNumber || !isUndefined(value7) && checkAllAliases(key23, flags.numbers)) {
+                    value7 = Number(value7);
                 }
             }
-            return value;
+            return value7;
         }
-        function setConfig(argv) {
+        function setConfig(argv2) {
             const configLookup = Object.create(null);
-            applyDefaultsAndAliases(configLookup, flags.aliases, defaults);
+            applyDefaultsAndAliases(configLookup, flags.aliases, defaults1);
             Object.keys(flags.configs).forEach(function(configKey) {
-                const configPath = argv[configKey] || configLookup[configKey];
+                const configPath = argv2[configKey] || configLookup[configKey];
                 if (configPath) {
                     try {
-                        let config = null;
+                        let config1 = null;
                         const resolvedConfigPath = mixin1.resolve(mixin1.cwd(), configPath);
                         const resolveConfig = flags.configs[configKey];
                         if (typeof resolveConfig === 'function') {
                             try {
-                                config = resolveConfig(resolvedConfigPath);
+                                config1 = resolveConfig(resolvedConfigPath);
                             } catch (e) {
-                                config = e;
+                                config1 = e;
                             }
-                            if (config instanceof Error) {
-                                error = config;
+                            if (config1 instanceof Error) {
+                                error = config1;
                                 return;
                             }
                         } else {
-                            config = mixin1.require(resolvedConfigPath);
+                            config1 = mixin1.require(resolvedConfigPath);
                         }
-                        setConfigObject(config);
+                        setConfigObject(config1);
                     } catch (ex) {
                         if (ex.name === 'PermissionDenied') error = ex;
-                        else if (argv[configKey]) error = Error(__('Invalid JSON config file: %s', configPath));
+                        else if (argv2[configKey]) error = Error(__('Invalid JSON config file: %s', configPath));
                     }
                 }
             });
         }
-        function setConfigObject(config, prev) {
-            Object.keys(config).forEach(function(key) {
-                const value = config[key];
-                const fullKey = prev ? prev + '.' + key : key;
-                if (typeof value === 'object' && value !== null && !Array.isArray(value) && configuration['dot-notation']) {
-                    setConfigObject(value, fullKey);
+        function setConfigObject(config2, prev) {
+            Object.keys(config2).forEach(function(key24) {
+                const value8 = config2[key24];
+                const fullKey = prev ? prev + '.' + key24 : key24;
+                if (typeof value8 === 'object' && value8 !== null && !Array.isArray(value8) && configuration['dot-notation']) {
+                    setConfigObject(value8, fullKey);
                 } else {
-                    if (!hasKey(argv, fullKey.split('.')) || checkAllAliases(fullKey, flags.arrays) && configuration['combine-arrays']) {
-                        setArg(fullKey, value);
+                    if (!hasKey(argv1, fullKey.split('.')) || checkAllAliases(fullKey, flags.arrays) && configuration['combine-arrays']) {
+                        setArg(fullKey, value8);
                     }
                 }
             });
@@ -9706,36 +9671,36 @@ class YargsParser {
                 });
             }
         }
-        function applyEnvVars(argv, configOnly) {
+        function applyEnvVars(argv3, configOnly) {
             if (typeof envPrefix === 'undefined') return;
             const prefix = typeof envPrefix === 'string' ? envPrefix : '';
-            const env = mixin1.env();
-            Object.keys(env).forEach(function(envVar) {
+            const env1 = mixin1.env();
+            Object.keys(env1).forEach(function(envVar) {
                 if (prefix === '' || envVar.lastIndexOf(prefix, 0) === 0) {
-                    const keys = envVar.split('__').map(function(key, i) {
-                        if (i === 0) {
-                            key = key.substring(prefix.length);
+                    const keys = envVar.split('__').map(function(key25, i48) {
+                        if (i48 === 0) {
+                            key25 = key25.substring(prefix.length);
                         }
-                        return camelCase(key);
+                        return camelCase(key25);
                     });
-                    if ((configOnly && flags.configs[keys.join('.')] || !configOnly) && !hasKey(argv, keys)) {
-                        setArg(keys.join('.'), env[envVar]);
+                    if ((configOnly && flags.configs[keys.join('.')] || !configOnly) && !hasKey(argv3, keys)) {
+                        setArg(keys.join('.'), env1[envVar]);
                     }
                 }
             });
         }
-        function applyCoercions(argv) {
+        function applyCoercions(argv4) {
             let coerce;
             const applied = new Set();
-            Object.keys(argv).forEach(function(key) {
-                if (!applied.has(key)) {
-                    coerce = checkAllAliases(key, flags.coercions);
+            Object.keys(argv4).forEach(function(key26) {
+                if (!applied.has(key26)) {
+                    coerce = checkAllAliases(key26, flags.coercions);
                     if (typeof coerce === 'function') {
                         try {
-                            const value = maybeCoerceNumber(key, coerce(argv[key]));
-                            [].concat(flags.aliases[key] || [], key).forEach((ali)=>{
+                            const value9 = maybeCoerceNumber(key26, coerce(argv4[key26]));
+                            [].concat(flags.aliases[key26] || [], key26).forEach((ali)=>{
                                 applied.add(ali);
-                                argv[ali] = value;
+                                argv4[ali] = value9;
                             });
                         } catch (err) {
                             error = err;
@@ -9744,21 +9709,21 @@ class YargsParser {
                 }
             });
         }
-        function setPlaceholderKeys(argv) {
-            flags.keys.forEach((key)=>{
-                if (~key.indexOf('.')) return;
-                if (typeof argv[key] === 'undefined') argv[key] = undefined;
+        function setPlaceholderKeys(argv5) {
+            flags.keys.forEach((key27)=>{
+                if (~key27.indexOf('.')) return;
+                if (typeof argv5[key27] === 'undefined') argv5[key27] = undefined;
             });
-            return argv;
+            return argv5;
         }
         function applyDefaultsAndAliases(obj, aliases, defaults, canLog = false) {
-            Object.keys(defaults).forEach(function(key) {
-                if (!hasKey(obj, key.split('.'))) {
-                    setKey(obj, key.split('.'), defaults[key]);
-                    if (canLog) defaulted[key] = true;
-                    (aliases[key] || []).forEach(function(x) {
+            Object.keys(defaults).forEach(function(key28) {
+                if (!hasKey(obj, key28.split('.'))) {
+                    setKey(obj, key28.split('.'), defaults[key28]);
+                    if (canLog) defaulted[key28] = true;
+                    (aliases[key28] || []).forEach(function(x) {
                         if (hasKey(obj, x.split('.'))) return;
-                        setKey(obj, x.split('.'), defaults[key]);
+                        setKey(obj, x.split('.'), defaults[key28]);
                     });
                 }
             });
@@ -9768,127 +9733,122 @@ class YargsParser {
             if (!configuration['dot-notation']) keys = [
                 keys.join('.')
             ];
-            keys.slice(0, -1).forEach(function(key) {
-                o = o[key] || {
-                };
+            keys.slice(0, -1).forEach(function(key29) {
+                o = o[key29] || {};
             });
-            const key = keys[keys.length - 1];
+            const key3 = keys[keys.length - 1];
             if (typeof o !== 'object') return false;
-            else return key in o;
+            else return key3 in o;
         }
-        function setKey(obj, keys, value) {
+        function setKey(obj, keys, value10) {
             let o = obj;
             if (!configuration['dot-notation']) keys = [
                 keys.join('.')
             ];
-            keys.slice(0, -1).forEach(function(key) {
-                key = sanitizeKey(key);
-                if (typeof o === 'object' && o[key] === undefined) {
-                    o[key] = {
-                    };
+            keys.slice(0, -1).forEach(function(key30) {
+                key30 = sanitizeKey(key30);
+                if (typeof o === 'object' && o[key30] === undefined) {
+                    o[key30] = {};
                 }
-                if (typeof o[key] !== 'object' || Array.isArray(o[key])) {
-                    if (Array.isArray(o[key])) {
-                        o[key].push({
-                        });
+                if (typeof o[key30] !== 'object' || Array.isArray(o[key30])) {
+                    if (Array.isArray(o[key30])) {
+                        o[key30].push({});
                     } else {
-                        o[key] = [
-                            o[key],
-                            {
-                            }
+                        o[key30] = [
+                            o[key30],
+                            {}
                         ];
                     }
-                    o = o[key][o[key].length - 1];
+                    o = o[key30][o[key30].length - 1];
                 } else {
-                    o = o[key];
+                    o = o[key30];
                 }
             });
-            const key = sanitizeKey(keys[keys.length - 1]);
+            const key4 = sanitizeKey(keys[keys.length - 1]);
             const isTypeArray = checkAllAliases(keys.join('.'), flags.arrays);
-            const isValueArray = Array.isArray(value);
+            const isValueArray = Array.isArray(value10);
             let duplicate = configuration['duplicate-arguments-array'];
-            if (!duplicate && checkAllAliases(key, flags.nargs)) {
+            if (!duplicate && checkAllAliases(key4, flags.nargs)) {
                 duplicate = true;
-                if (!isUndefined(o[key]) && flags.nargs[key] === 1 || Array.isArray(o[key]) && o[key].length === flags.nargs[key]) {
-                    o[key] = undefined;
+                if (!isUndefined(o[key4]) && flags.nargs[key4] === 1 || Array.isArray(o[key4]) && o[key4].length === flags.nargs[key4]) {
+                    o[key4] = undefined;
                 }
             }
-            if (value === increment()) {
-                o[key] = increment(o[key]);
-            } else if (Array.isArray(o[key])) {
+            if (value10 === increment()) {
+                o[key4] = increment(o[key4]);
+            } else if (Array.isArray(o[key4])) {
                 if (duplicate && isTypeArray && isValueArray) {
-                    o[key] = configuration['flatten-duplicate-arrays'] ? o[key].concat(value) : (Array.isArray(o[key][0]) ? o[key] : [
-                        o[key]
+                    o[key4] = configuration['flatten-duplicate-arrays'] ? o[key4].concat(value10) : (Array.isArray(o[key4][0]) ? o[key4] : [
+                        o[key4]
                     ]).concat([
-                        value
+                        value10
                     ]);
                 } else if (!duplicate && Boolean(isTypeArray) === Boolean(isValueArray)) {
-                    o[key] = value;
+                    o[key4] = value10;
                 } else {
-                    o[key] = o[key].concat([
-                        value
+                    o[key4] = o[key4].concat([
+                        value10
                     ]);
                 }
-            } else if (o[key] === undefined && isTypeArray) {
-                o[key] = isValueArray ? value : [
-                    value
+            } else if (o[key4] === undefined && isTypeArray) {
+                o[key4] = isValueArray ? value10 : [
+                    value10
                 ];
-            } else if (duplicate && !(o[key] === undefined || checkAllAliases(key, flags.counts) || checkAllAliases(key, flags.bools))) {
-                o[key] = [
-                    o[key],
-                    value
+            } else if (duplicate && !(o[key4] === undefined || checkAllAliases(key4, flags.counts) || checkAllAliases(key4, flags.bools))) {
+                o[key4] = [
+                    o[key4],
+                    value10
                 ];
             } else {
-                o[key] = value;
+                o[key4] = value10;
             }
         }
         function extendAliases(...args) {
             args.forEach(function(obj) {
-                Object.keys(obj || {
-                }).forEach(function(key) {
-                    if (flags.aliases[key]) return;
-                    flags.aliases[key] = [].concat(aliases[key] || []);
-                    flags.aliases[key].concat(key).forEach(function(x) {
+                Object.keys(obj || {}).forEach(function(key31) {
+                    if (flags.aliases[key31]) return;
+                    flags.aliases[key31] = [].concat(aliases1[key31] || []);
+                    flags.aliases[key31].concat(key31).forEach(function(x) {
                         if (/-/.test(x) && configuration['camel-case-expansion']) {
                             const c = camelCase(x);
-                            if (c !== key && flags.aliases[key].indexOf(c) === -1) {
-                                flags.aliases[key].push(c);
+                            if (c !== key31 && flags.aliases[key31].indexOf(c) === -1) {
+                                flags.aliases[key31].push(c);
                                 newAliases[c] = true;
                             }
                         }
                     });
-                    flags.aliases[key].concat(key).forEach(function(x) {
+                    flags.aliases[key31].concat(key31).forEach(function(x) {
                         if (x.length > 1 && /[A-Z]/.test(x) && configuration['camel-case-expansion']) {
                             const c = decamelize(x, '-');
-                            if (c !== key && flags.aliases[key].indexOf(c) === -1) {
-                                flags.aliases[key].push(c);
+                            if (c !== key31 && flags.aliases[key31].indexOf(c) === -1) {
+                                flags.aliases[key31].push(c);
                                 newAliases[c] = true;
                             }
                         }
                     });
-                    flags.aliases[key].forEach(function(x) {
+                    flags.aliases[key31].forEach(function(x) {
                         flags.aliases[x] = [
-                            key
-                        ].concat(flags.aliases[key].filter(function(y) {
+                            key31
+                        ].concat(flags.aliases[key31].filter(function(y) {
                             return x !== y;
                         }));
                     });
                 });
             });
         }
-        function checkAllAliases(key, flag) {
-            const toCheck = [].concat(flags.aliases[key] || [], key);
+        function checkAllAliases(key5, flag) {
+            const toCheck = [].concat(flags.aliases[key5] || [], key5);
             const keys = Object.keys(flag);
-            const setAlias = toCheck.find((key)=>keys.includes(key)
+            const setAlias = toCheck.find((key32)=>keys.includes(key32)
             );
             return setAlias ? flag[setAlias] : false;
         }
-        function hasAnyFlag(key) {
+        function hasAnyFlag(key33) {
             const flagsKeys = Object.keys(flags);
             const toCheck = [].concat(flagsKeys.map((k)=>flags[k]
             ));
             return toCheck.some(function(flag) {
-                return Array.isArray(flag) ? flag.includes(key) : flag[key];
+                return Array.isArray(flag) ? flag.includes(key33) : flag[key33];
             });
         }
         function hasFlagsMatching(arg, ...patterns) {
@@ -9934,11 +9894,11 @@ class YargsParser {
             const flagEndingInNonWordCharacters = /^-+([^=]+?)\W+.*$/;
             return !hasFlagsMatching(arg, flagWithEquals, negatedBoolean, normalFlag, flagEndingInHyphen, flagEndingInDigits, flagEndingInNonWordCharacters);
         }
-        function defaultValue(key) {
-            if (!checkAllAliases(key, flags.bools) && !checkAllAliases(key, flags.counts) && `${key}` in defaults) {
-                return defaults[key];
+        function defaultValue(key34) {
+            if (!checkAllAliases(key34, flags.bools) && !checkAllAliases(key34, flags.counts) && `${key34}` in defaults1) {
+                return defaults1[key34];
             } else {
-                return defaultForType(guessType(key));
+                return defaultForType(guessType1(key34));
             }
         }
         function defaultForType(type) {
@@ -9950,39 +9910,36 @@ class YargsParser {
             };
             return def[type];
         }
-        function guessType(key) {
+        function guessType1(key35) {
             let type = 'boolean';
-            if (checkAllAliases(key, flags.strings)) type = 'string';
-            else if (checkAllAliases(key, flags.numbers)) type = 'number';
-            else if (checkAllAliases(key, flags.bools)) type = 'boolean';
-            else if (checkAllAliases(key, flags.arrays)) type = 'array';
+            if (checkAllAliases(key35, flags.strings)) type = 'string';
+            else if (checkAllAliases(key35, flags.numbers)) type = 'number';
+            else if (checkAllAliases(key35, flags.bools)) type = 'boolean';
+            else if (checkAllAliases(key35, flags.arrays)) type = 'array';
             return type;
         }
         function isUndefined(num) {
             return num === undefined;
         }
         function checkConfiguration() {
-            Object.keys(flags.counts).find((key)=>{
-                if (checkAllAliases(key, flags.arrays)) {
-                    error = Error(__('Invalid configuration: %s, opts.count excludes opts.array.', key));
+            Object.keys(flags.counts).find((key36)=>{
+                if (checkAllAliases(key36, flags.arrays)) {
+                    error = Error(__('Invalid configuration: %s, opts.count excludes opts.array.', key36));
                     return true;
-                } else if (checkAllAliases(key, flags.nargs)) {
-                    error = Error(__('Invalid configuration: %s, opts.count excludes opts.narg.', key));
+                } else if (checkAllAliases(key36, flags.nargs)) {
+                    error = Error(__('Invalid configuration: %s, opts.count excludes opts.narg.', key36));
                     return true;
                 }
                 return false;
             });
         }
         return {
-            aliases: Object.assign({
-            }, flags.aliases),
-            argv: Object.assign(argvReturn, argv),
+            aliases: Object.assign({}, flags.aliases),
+            argv: Object.assign(argvReturn, argv1),
             configuration: configuration,
-            defaulted: Object.assign({
-            }, defaulted),
+            defaulted: Object.assign({}, defaulted),
             error: error,
-            newAliases: Object.assign({
-            }, newAliases)
+            newAliases: Object.assign({}, newAliases)
         };
     }
 }
@@ -9990,18 +9947,18 @@ function combineAliases(aliases) {
     const aliasArrays = [];
     const combined = Object.create(null);
     let change = true;
-    Object.keys(aliases).forEach(function(key) {
-        aliasArrays.push([].concat(aliases[key], key));
+    Object.keys(aliases).forEach(function(key37) {
+        aliasArrays.push([].concat(aliases[key37], key37));
     });
     while(change){
         change = false;
-        for(let i = 0; i < aliasArrays.length; i++){
-            for(let ii = i + 1; ii < aliasArrays.length; ii++){
-                const intersect = aliasArrays[i].filter(function(v) {
+        for(let i49 = 0; i49 < aliasArrays.length; i49++){
+            for(let ii = i49 + 1; ii < aliasArrays.length; ii++){
+                const intersect = aliasArrays[i49].filter(function(v) {
                     return aliasArrays[ii].indexOf(v) !== -1;
                 });
                 if (intersect.length) {
-                    aliasArrays[i] = aliasArrays[i].concat(aliasArrays[ii]);
+                    aliasArrays[i49] = aliasArrays[i49].concat(aliasArrays[ii]);
                     aliasArrays.splice(ii, 1);
                     change = true;
                     break;
@@ -10010,8 +9967,8 @@ function combineAliases(aliases) {
         }
     }
     aliasArrays.forEach(function(aliasArray) {
-        aliasArray = aliasArray.filter(function(v, i, self) {
-            return self.indexOf(v) === i;
+        aliasArray = aliasArray.filter(function(v, i50, self) {
+            return self.indexOf(v) === i50;
         });
         const lastAlias = aliasArray.pop();
         if (lastAlias !== undefined && typeof lastAlias === 'string') {
@@ -10023,9 +9980,9 @@ function combineAliases(aliases) {
 function increment(orig) {
     return orig !== undefined ? orig + 1 : 1;
 }
-function sanitizeKey(key) {
-    if (key === '__proto__') return '___proto___';
-    return key;
+function sanitizeKey(key38) {
+    if (key38 === '__proto__') return '___proto___';
+    return key38;
 }
 const parser = new YargsParser({
     cwd: Deno.cwd,
@@ -10037,11 +9994,11 @@ const parser = new YargsParser({
     },
     normalize: mod3.normalize,
     resolve: mod3.resolve,
-    require: (path)=>{
-        if (!path.match(/\.json$/)) {
+    require: (path111)=>{
+        if (!path111.match(/\.json$/)) {
             throw Error('only .json config files are supported in Deno');
         } else {
-            return JSON.parse(Deno.readTextFileSync(path));
+            return JSON.parse(Deno.readTextFileSync(path111));
         }
     }
 });
@@ -10058,14 +10015,12 @@ yargsParser.looksLikeNumber = looksLikeNumber;
 let shim;
 class Y18N {
     constructor(opts){
-        opts = opts || {
-        };
+        opts = opts || {};
         this.directory = opts.directory || './locales';
         this.updateFiles = typeof opts.updateFiles === 'boolean' ? opts.updateFiles : true;
         this.locale = opts.locale || 'en';
         this.fallbackToLanguage = typeof opts.fallbackToLanguage === 'boolean' ? opts.fallbackToLanguage : true;
-        this.cache = {
-        };
+        this.cache = {};
         this.writeQueue = [];
     }
     __(...args) {
@@ -10073,11 +10028,9 @@ class Y18N {
             return this._taggedLiteral(arguments[0], ...arguments);
         }
         const str = args.shift();
-        let cb = function() {
-        };
+        let cb = function() {};
         if (typeof args[args.length - 1] === 'function') cb = args.pop();
-        cb = cb || function() {
-        };
+        cb = cb || function() {};
         if (!this.cache[this.locale]) this._readLocaleFile();
         if (!this.cache[this.locale][str] && this.updateFiles) {
             this.cache[this.locale][str] = str;
@@ -10098,8 +10051,7 @@ class Y18N {
         const singular = args.shift();
         const plural = args.shift();
         const quantity = args.shift();
-        let cb = function() {
-        };
+        let cb = function() {};
         if (typeof args[args.length - 1] === 'function') cb = args.pop();
         if (!this.cache[this.locale]) this._readLocaleFile();
         let str = quantity === 1 ? singular : plural;
@@ -10134,16 +10086,16 @@ class Y18N {
     }
     updateLocale(obj) {
         if (!this.cache[this.locale]) this._readLocaleFile();
-        for(const key in obj){
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                this.cache[this.locale][key] = obj[key];
+        for(const key39 in obj){
+            if (Object.prototype.hasOwnProperty.call(obj, key39)) {
+                this.cache[this.locale][key39] = obj[key39];
             }
         }
     }
     _taggedLiteral(parts, ...args) {
         let str = '';
-        parts.forEach(function(part, i) {
-            var arg = args[i + 1];
+        parts.forEach(function(part, i51) {
+            var arg = args[i51 + 1];
             str += part;
             if (typeof arg !== 'undefined') {
                 str += '%s';
@@ -10172,8 +10124,7 @@ class Y18N {
         });
     }
     _readLocaleFile() {
-        var localeLookup = {
-        };
+        var localeLookup = {};
         var languageFile = this._resolveLocaleFile(this.directory, this.locale);
         try {
             localeLookup = JSON.parse(shim.fs.readFileSync(languageFile, 'utf-8'));
@@ -10181,8 +10132,7 @@ class Y18N {
             if (err instanceof SyntaxError) {
                 err.message = 'syntax error in ' + languageFile;
             }
-            if (err.code === 'ENOENT') localeLookup = {
-            };
+            if (err.code === 'ENOENT') localeLookup = {};
             else throw err;
         }
         this.cache[this.locale] = localeLookup;
@@ -10201,31 +10151,29 @@ class Y18N {
 }
 function y18n(opts, _shim) {
     shim = _shim;
-    const y18n = new Y18N(opts);
+    const y18n1 = new Y18N(opts);
     return {
-        __: y18n.__.bind(y18n),
-        __n: y18n.__n.bind(y18n),
-        setLocale: y18n.setLocale.bind(y18n),
-        getLocale: y18n.getLocale.bind(y18n),
-        updateLocale: y18n.updateLocale.bind(y18n),
-        locale: y18n.locale
+        __: y18n1.__.bind(y18n1),
+        __n: y18n1.__n.bind(y18n1),
+        setLocale: y18n1.setLocale.bind(y18n1),
+        getLocale: y18n1.getLocale.bind(y18n1),
+        updateLocale: y18n1.updateLocale.bind(y18n1),
+        locale: y18n1.locale
     };
 }
 var State;
-(function(State) {
-    State[State["PASSTHROUGH"] = 0] = "PASSTHROUGH";
-    State[State["PERCENT"] = 1] = "PERCENT";
-    State[State["POSITIONAL"] = 2] = "POSITIONAL";
-    State[State["PRECISION"] = 3] = "PRECISION";
-    State[State["WIDTH"] = 4] = "WIDTH";
-})(State || (State = {
-}));
+(function(State1) {
+    State1[State1["PASSTHROUGH"] = 0] = "PASSTHROUGH";
+    State1[State1["PERCENT"] = 1] = "PERCENT";
+    State1[State1["POSITIONAL"] = 2] = "POSITIONAL";
+    State1[State1["PRECISION"] = 3] = "PRECISION";
+    State1[State1["WIDTH"] = 4] = "WIDTH";
+})(State || (State = {}));
 var WorP;
-(function(WorP) {
-    WorP[WorP["WIDTH"] = 0] = "WIDTH";
-    WorP[WorP["PRECISION"] = 1] = "PRECISION";
-})(WorP || (WorP = {
-}));
+(function(WorP1) {
+    WorP1[WorP1["WIDTH"] = 0] = "WIDTH";
+    WorP1[WorP1["PRECISION"] = 1] = "PRECISION";
+})(WorP || (WorP = {}));
 class Flags {
     plus;
     dash;
@@ -10240,14 +10188,13 @@ const min = Math.min;
 const UNICODE_REPLACEMENT_CHARACTER = "\ufffd";
 const FLOAT_REGEXP = /(-?)(\d)\.?(\d*)e([+-])(\d+)/;
 var F;
-(function(F) {
-    F[F["sign"] = 1] = "sign";
-    F[F["mantissa"] = 2] = "mantissa";
-    F[F["fractional"] = 3] = "fractional";
-    F[F["esign"] = 4] = "esign";
-    F[F["exponent"] = 5] = "exponent";
-})(F || (F = {
-}));
+(function(F1) {
+    F1[F1["sign"] = 1] = "sign";
+    F1[F1["mantissa"] = 2] = "mantissa";
+    F1[F1["fractional"] = 3] = "fractional";
+    F1[F1["esign"] = 4] = "esign";
+    F1[F1["exponent"] = 5] = "exponent";
+})(F || (F = {}));
 class Printf {
     format;
     args;
@@ -10259,8 +10206,8 @@ class Printf {
     flags = new Flags();
     haveSeen;
     tmpError;
-    constructor(format, ...args){
-        this.format = format;
+    constructor(format7, ...args){
+        this.format = format7;
         this.args = args;
         this.haveSeen = new Array(args.length);
         this.i = 0;
@@ -10290,10 +10237,10 @@ class Printf {
         }
         let extras = false;
         let err = "%!(EXTRA";
-        for(let i = 0; i !== this.haveSeen.length; ++i){
-            if (!this.haveSeen[i]) {
+        for(let i52 = 0; i52 !== this.haveSeen.length; ++i52){
+            if (!this.haveSeen[i52]) {
                 extras = true;
-                err += ` '${Deno.inspect(this.args[i])}'`;
+                err += ` '${Deno.inspect(this.args[i52])}'`;
             }
         }
         err += ")";
@@ -10438,15 +10385,15 @@ class Printf {
             throw new Error("Can't happen? Bug.");
         }
         let positional = 0;
-        const format = this.format;
+        const format8 = this.format;
         this.i++;
         let err = false;
         for(; this.i !== this.format.length; ++this.i){
-            if (format[this.i] === "]") {
+            if (format8[this.i] === "]") {
                 break;
             }
             positional *= 10;
-            const val = parseInt(format[this.i]);
+            const val = parseInt(format8[this.i]);
             if (isNaN(val)) {
                 this.tmpError = "%!(BAD INDEX)";
                 err = true;
@@ -10462,14 +10409,13 @@ class Printf {
     }
     handleLessThan() {
         const arg = this.args[this.argNum];
-        if ((arg || {
-        }).constructor.name !== "Array") {
+        if ((arg || {}).constructor.name !== "Array") {
             throw new Error(`arg ${arg} is not an array. Todo better error handling`);
         }
         let str = "[ ";
-        for(let i = 0; i !== arg.length; ++i){
-            if (i !== 0) str += ", ";
-            str += this._handleVerb(arg[i]);
+        for(let i53 = 0; i53 !== arg.length; ++i53){
+            if (i53 !== 0) str += ", ";
+            str += this._handleVerb(arg[i53]);
         }
         return str + " ]";
     }
@@ -10556,23 +10502,23 @@ class Printf {
             nStr = sign + nStr;
         }
         const pad = zero ? "0" : " ";
-        const len = zero ? this.flags.width - sign.length : this.flags.width;
+        const len15 = zero ? this.flags.width - sign.length : this.flags.width;
         if (this.flags.dash) {
-            nStr = nStr.padEnd(len, pad);
+            nStr = nStr.padEnd(len15, pad);
         } else {
-            nStr = nStr.padStart(len, pad);
+            nStr = nStr.padStart(len15, pad);
         }
         if (zero) {
             nStr = sign + nStr;
         }
         return nStr;
     }
-    fmtNumber(n, radix, upcase = false) {
-        let num = Math.abs(n).toString(radix);
+    fmtNumber(n27, radix, upcase = false) {
+        let num = Math.abs(n27).toString(radix);
         const prec = this.flags.precision;
         if (prec !== -1) {
             this.flags.zero = false;
-            num = n === 0 && prec === 0 ? "" : num;
+            num = n27 === 0 && prec === 0 ? "" : num;
             while(num.length < prec){
                 num = "0" + num;
             }
@@ -10597,28 +10543,28 @@ class Printf {
         if (upcase) {
             num = num.toUpperCase();
         }
-        return this.padNum(num, n < 0);
+        return this.padNum(num, n27 < 0);
     }
-    fmtNumberCodePoint(n) {
+    fmtNumberCodePoint(n28) {
         let s = "";
         try {
-            s = String.fromCodePoint(n);
+            s = String.fromCodePoint(n28);
         } catch (RangeError) {
             s = UNICODE_REPLACEMENT_CHARACTER;
         }
         return this.pad(s);
     }
-    fmtFloatSpecial(n) {
-        if (isNaN(n)) {
+    fmtFloatSpecial(n29) {
+        if (isNaN(n29)) {
             this.flags.zero = false;
             return this.padNum("NaN", false);
         }
-        if (n === Number.POSITIVE_INFINITY) {
+        if (n29 === Number.POSITIVE_INFINITY) {
             this.flags.zero = false;
             this.flags.plus = true;
             return this.padNum("Inf", false);
         }
-        if (n === Number.NEGATIVE_INFINITY) {
+        if (n29 === Number.NEGATIVE_INFINITY) {
             this.flags.zero = false;
             return this.padNum("Inf", true);
         }
@@ -10638,12 +10584,12 @@ class Printf {
         }
         return fractional;
     }
-    fmtFloatE(n, upcase = false) {
-        const special = this.fmtFloatSpecial(n);
+    fmtFloatE(n30, upcase = false) {
+        const special = this.fmtFloatSpecial(n30);
         if (special !== "") {
             return special;
         }
-        const m = n.toExponential().match(FLOAT_REGEXP);
+        const m = n30.toExponential().match(FLOAT_REGEXP);
         if (!m) {
             throw Error("can't happen, bug");
         }
@@ -10653,23 +10599,23 @@ class Printf {
         let e = m[F.exponent];
         e = e.length == 1 ? "0" + e : e;
         const val = `${m[F.mantissa]}.${fractional}${upcase ? "E" : "e"}${m[F.esign]}${e}`;
-        return this.padNum(val, n < 0);
+        return this.padNum(val, n30 < 0);
     }
-    fmtFloatF(n) {
-        const special = this.fmtFloatSpecial(n);
+    fmtFloatF(n1) {
+        const special = this.fmtFloatSpecial(n1);
         if (special !== "") {
             return special;
         }
-        function expandNumber(n) {
-            if (Number.isSafeInteger(n)) {
-                return n.toString() + ".";
+        function expandNumber(n31) {
+            if (Number.isSafeInteger(n31)) {
+                return n31.toString() + ".";
             }
-            const t = n.toExponential().split("e");
+            const t = n31.toExponential().split("e");
             let m = t[0].replace(".", "");
             const e = parseInt(t[1]);
             if (e < 0) {
                 let nStr = "0.";
-                for(let i = 0; i !== Math.abs(e) - 1; ++i){
+                for(let i54 = 0; i54 !== Math.abs(e) - 1; ++i54){
                     nStr += "0";
                 }
                 return nStr += m;
@@ -10681,22 +10627,22 @@ class Printf {
                 return m.substr(0, splIdx) + "." + m.substr(splIdx);
             }
         }
-        const val = expandNumber(Math.abs(n));
+        const val = expandNumber(Math.abs(n1));
         const arr = val.split(".");
         const dig = arr[0];
         let fractional = arr[1];
         const precision = this.flags.precision !== -1 ? this.flags.precision : 6;
         fractional = this.roundFractionToPrecision(fractional, precision);
-        return this.padNum(`${dig}.${fractional}`, n < 0);
+        return this.padNum(`${dig}.${fractional}`, n1 < 0);
     }
-    fmtFloatG(n, upcase = false) {
-        const special = this.fmtFloatSpecial(n);
+    fmtFloatG(n32, upcase = false) {
+        const special = this.fmtFloatSpecial(n32);
         if (special !== "") {
             return special;
         }
         let P = this.flags.precision !== -1 ? this.flags.precision : 6;
         P = P === 0 ? 1 : P;
-        const m = n.toExponential().match(FLOAT_REGEXP);
+        const m = n32.toExponential().match(FLOAT_REGEXP);
         if (!m) {
             throw Error("can't happen");
         }
@@ -10704,13 +10650,13 @@ class Printf {
         let nStr = "";
         if (P > X && X >= -4) {
             this.flags.precision = P - (X + 1);
-            nStr = this.fmtFloatF(n);
+            nStr = this.fmtFloatF(n32);
             if (!this.flags.sharp) {
                 nStr = nStr.replace(/\.?0*$/, "");
             }
         } else {
             this.flags.precision = P - 1;
-            nStr = this.fmtFloatE(n);
+            nStr = this.fmtFloatE(n32);
             if (!this.flags.sharp) {
                 nStr = nStr.replace(/\.?0*e/, upcase ? "E" : "e");
             }
@@ -10733,11 +10679,11 @@ class Printf {
                     let hex = sharp ? "0x" : "";
                     const prec = this.flags.precision;
                     const end = prec !== -1 ? min(prec, val.length) : val.length;
-                    for(let i = 0; i !== end; ++i){
-                        if (i !== 0 && this.flags.space) {
+                    for(let i55 = 0; i55 !== end; ++i55){
+                        if (i55 !== 0 && this.flags.space) {
                             hex += sharp ? " 0x" : " ";
                         }
-                        const c = (val.charCodeAt(i) & 255).toString(16);
+                        const c = (val.charCodeAt(i55) & 255).toString(16);
                         hex += c.length === 1 ? `0${c}` : c;
                     }
                     if (upper) {
@@ -10753,8 +10699,7 @@ class Printf {
         if (this.flags.sharp) {
             const options = this.flags.precision !== -1 ? {
                 depth: this.flags.precision
-            } : {
-            };
+            } : {};
             return this.pad(Deno.inspect(val, options));
         } else {
             const p = this.flags.precision;
@@ -10765,15 +10710,15 @@ class Printf {
         return JSON.stringify(val);
     }
 }
-function sprintf(format, ...args) {
-    const printf = new Printf(format, ...args);
-    return printf.doPrintf();
+function sprintf(format9, ...args) {
+    const printf1 = new Printf(format9, ...args);
+    return printf1.doPrintf();
 }
 const __default4 = {
     fs: {
-        readFileSync: (path)=>{
+        readFileSync: (path61)=>{
             try {
-                return Deno.readTextFileSync(path);
+                return Deno.readTextFileSync(path61);
             } catch (err) {
                 err.code = 'ENOENT';
                 throw err;
@@ -10785,8 +10730,7 @@ const __default4 = {
     resolve: (base, p1, p2)=>{
         try {
             return mod3.resolve(base, p1, p2);
-        } catch (err) {
-        }
+        } catch (err) {}
     },
     exists: (file)=>{
         try {
@@ -10818,14 +10762,13 @@ const argv = [
 ];
 const __dirname = new URL('.', importMeta.url).pathname;
 let cwd = '';
-let env = {
-};
+let env = {};
 try {
     env = Deno.env.toObject();
     cwd = Deno.cwd();
-} catch (err1) {
-    if (err1.name !== 'PermissionDenied') {
-        throw err1;
+} catch (err) {
+    if (err.name !== 'PermissionDenied') {
+        throw err;
     }
 }
 const path4 = {
@@ -10835,9 +10778,9 @@ const path4 = {
     relative: (p1, p2)=>{
         try {
             return mod3.relative(p1, p2);
-        } catch (err) {
-            if (err.name !== 'PermissionDenied') {
-                throw err;
+        } catch (err1) {
+            if (err1.name !== 'PermissionDenied') {
+                throw err1;
             }
             return p1;
         }
@@ -10851,8 +10794,8 @@ const __default5 = {
     },
     cliui: ui,
     findUp: __default3,
-    getEnv: (key)=>{
-        return env[key];
+    getEnv: (key40)=>{
+        return env[key40];
     },
     inspect: Deno.inspect,
     getCallerFile: ()=>undefined
@@ -10868,8 +10811,7 @@ const __default5 = {
         ,
         cwd: ()=>cwd
         ,
-        emitWarning: (warning, type)=>{
-        },
+        emitWarning: (warning, type)=>{},
         execPath: ()=>{
             try {
                 return Deno.execPath();
@@ -10898,11 +10840,11 @@ const __default5 = {
         updateFiles: false
     })
 };
-function assertNotStrictEqual(actual, expected, shim, message) {
-    shim.assert.notStrictEqual(actual, expected, message);
+function assertNotStrictEqual(actual, expected, shim2, message) {
+    shim2.assert.notStrictEqual(actual, expected, message);
 }
-function assertSingleKey(actual, shim) {
-    shim.assert.strictEqual(typeof actual, 'string');
+function assertSingleKey(actual, shim3) {
+    shim3.assert.strictEqual(typeof actual, 'string');
 }
 function objectKeys(object) {
     return Object.keys(object);
@@ -10958,21 +10900,21 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
 function isPromise(maybePromise) {
     return !!maybePromise && !!maybePromise.then && typeof maybePromise.then === 'function';
 }
-function parseCommand(cmd) {
-    const extraSpacesStrippedCommand = cmd.replace(/\s{2,}/g, ' ');
+function parseCommand(cmd1) {
+    const extraSpacesStrippedCommand = cmd1.replace(/\s{2,}/g, ' ');
     const splitCommand = extraSpacesStrippedCommand.split(/\s+(?![^[]*]|[^<]*>)/);
     const bregex = /\.*[\][<>]/g;
     const firstCommand = splitCommand.shift();
-    if (!firstCommand) throw new Error(`No command found in: ${cmd}`);
+    if (!firstCommand) throw new Error(`No command found in: ${cmd1}`);
     const parsedCommand = {
         cmd: firstCommand.replace(bregex, ''),
         demanded: [],
         optional: []
     };
-    splitCommand.forEach((cmd, i)=>{
+    splitCommand.forEach((cmd, i56)=>{
         let variadic = false;
         cmd = cmd.replace(/\s/g, '');
-        if (/\.+[\]>]/.test(cmd) && i === splitCommand.length - 1) variadic = true;
+        if (/\.+[\]>]/.test(cmd) && i56 === splitCommand.length - 1) variadic = true;
         if (/^\[/.test(cmd)) {
             parsedCommand.optional.push({
                 cmd: cmd.replace(bregex, '').split('|'),
@@ -10996,7 +10938,7 @@ const positionName = [
     'sixth'
 ];
 function argsert(arg1, arg2, arg3) {
-    function parseArgs() {
+    function parseArgs1() {
         return typeof arg1 === 'object' ? [
             {
                 demanded: [],
@@ -11012,7 +10954,7 @@ function argsert(arg1, arg2, arg3) {
     }
     try {
         let position = 0;
-        const [parsed, callerArguments, _length] = parseArgs();
+        const [parsed, callerArguments, _length] = parseArgs1();
         const args = [].slice.call(callerArguments);
         while(args.length && args[args.length - 1] === undefined)args.pop();
         const length = _length || args.length;
@@ -11040,8 +10982,8 @@ function argsert(arg1, arg2, arg3) {
             if (matchingTypes.length === 0) argumentTypeError(observedType, optional.cmd, position);
             position += 1;
         });
-    } catch (err) {
-        console.warn(err.stack);
+    } catch (err1) {
+        console.warn(err1.stack);
     }
 }
 function guessType(arg) {
@@ -11068,11 +11010,11 @@ class GlobalMiddleware {
             global
         ], arguments.length);
         if (Array.isArray(callback)) {
-            for(let i = 0; i < callback.length; i++){
-                if (typeof callback[i] !== 'function') {
+            for(let i57 = 0; i57 < callback.length; i57++){
+                if (typeof callback[i57] !== 'function') {
                     throw Error('middleware must be a function');
                 }
-                const m = callback[i];
+                const m = callback[i57];
                 m.applyBeforeValidation = applyBeforeValidation;
                 m.global = global;
             }
@@ -11123,7 +11065,7 @@ function commandMiddlewareFactory(commandMiddleware) {
         return middleware;
     });
 }
-function applyMiddleware(argv, yargs, middlewares, beforeValidation) {
+function applyMiddleware(argv6, yargs, middlewares, beforeValidation) {
     return middlewares.reduce((acc, middleware)=>{
         if (middleware.applyBeforeValidation !== beforeValidation) {
             return acc;
@@ -11144,17 +11086,17 @@ function applyMiddleware(argv, yargs, middlewares, beforeValidation) {
             return isPromise(result) ? result.then((middlewareObj)=>Object.assign(acc, middlewareObj)
             ) : Object.assign(acc, result);
         }
-    }, argv);
+    }, argv6);
 }
-function maybeAsyncResult(getResult, resultHandler, errorHandler = (err)=>{
-    throw err;
+function maybeAsyncResult(getResult, resultHandler, errorHandler = (err2)=>{
+    throw err2;
 }) {
     try {
-        const result = isFunction(getResult) ? getResult() : getResult;
-        return isPromise(result) ? result.then((result)=>resultHandler(result)
-        ) : resultHandler(result);
-    } catch (err) {
-        return errorHandler(err);
+        const result1 = isFunction(getResult) ? getResult() : getResult;
+        return isPromise(result1) ? result1.then((result)=>resultHandler(result)
+        ) : resultHandler(result1);
+    } catch (err3) {
+        return errorHandler(err3);
     }
 }
 function isFunction(arg) {
@@ -11162,20 +11104,18 @@ function isFunction(arg) {
 }
 function whichModule(exported) {
     if (typeof require === 'undefined') return null;
-    for(let i = 0, files = Object.keys(require.cache), mod; i < files.length; i++){
-        mod = require.cache[files[i]];
-        if (mod.exports === exported) return mod;
+    for(let i58 = 0, files = Object.keys(require.cache), mod4; i58 < files.length; i58++){
+        mod4 = require.cache[files[i58]];
+        if (mod4.exports === exported) return mod4;
     }
     return null;
 }
-function objFilter(original = {
-}, filter = ()=>true
+function objFilter(original = {}, filter1 = ()=>true
 ) {
-    const obj = {
-    };
-    objectKeys(original).forEach((key)=>{
-        if (filter(key, original[key])) {
-            obj[key] = original[key];
+    const obj = {};
+    objectKeys(original).forEach((key41)=>{
+        if (filter1(key41, original[key41])) {
+            obj[key41] = original[key41];
         }
     });
     return obj;
@@ -11195,10 +11135,9 @@ function setBlocking(blocking) {
 function isBoolean(fail) {
     return typeof fail === 'boolean';
 }
-function usage(yargs, shim) {
-    const __ = shim.y18n.__;
-    const self = {
-    };
+function usage(yargs, shim4) {
+    const __ = shim4.y18n.__;
+    const self = {};
     const fails = [];
     self.failFn = function failFn(f) {
         fails.push(f);
@@ -11215,22 +11154,22 @@ function usage(yargs, shim) {
                 arg2
             ];
         }
-        const [enabled, message] = parseFunctionArgs();
+        const [enabled2, message] = parseFunctionArgs();
         failMessage = message;
-        showHelpOnFail = enabled;
+        showHelpOnFail = enabled2;
         return self;
     };
     let failureOutput = false;
-    self.fail = function fail(msg, err) {
+    self.fail = function fail(msg, err4) {
         const logger = yargs.getInternalMethods().getLoggerInstance();
         if (fails.length) {
-            for(let i = fails.length - 1; i >= 0; --i){
-                const fail = fails[i];
+            for(let i59 = fails.length - 1; i59 >= 0; --i59){
+                const fail = fails[i59];
                 if (isBoolean(fail)) {
-                    if (err) throw err;
+                    if (err4) throw err4;
                     else if (msg) throw Error(msg);
                 } else {
-                    fail(msg, err, self);
+                    fail(msg, err4, self);
                 }
             }
         } else {
@@ -11241,19 +11180,19 @@ function usage(yargs, shim) {
                     yargs.showHelp('error');
                     logger.error();
                 }
-                if (msg || err) logger.error(msg || err);
+                if (msg || err4) logger.error(msg || err4);
                 if (failMessage) {
-                    if (msg || err) logger.error('');
+                    if (msg || err4) logger.error('');
                     logger.error(failMessage);
                 }
             }
-            err = err || new YError(msg);
+            err4 = err4 || new YError(msg);
             if (yargs.getExitProcess()) {
                 return yargs.exit(1);
             } else if (yargs.getInternalMethods().hasParseCallback()) {
-                return yargs.exit(1, err);
+                return yargs.exit(1, err4);
             } else {
-                throw err;
+                throw err4;
             }
         }
     };
@@ -11306,8 +11245,7 @@ function usage(yargs, shim) {
     };
     self.getCommands = ()=>commands
     ;
-    let descriptions = {
-    };
+    let descriptions = {};
     self.describe = function describe(keyOrKeys, desc) {
         if (Array.isArray(keyOrKeys)) {
             keyOrKeys.forEach((k)=>{
@@ -11328,17 +11266,17 @@ function usage(yargs, shim) {
         epilogs.push(msg);
     };
     let wrapSet = false;
-    let wrap;
+    let wrap1;
     self.wrap = (cols)=>{
         wrapSet = true;
-        wrap = cols;
+        wrap1 = cols;
     };
     function getWrap() {
         if (!wrapSet) {
-            wrap = windowWidth();
+            wrap1 = windowWidth();
             wrapSet = true;
         }
-        return wrap;
+        return wrap1;
     }
     const deferY18nLookupPrefix = '__yargsString__:';
     self.deferY18nLookup = (str)=>deferY18nLookupPrefix + str
@@ -11346,7 +11284,7 @@ function usage(yargs, shim) {
     self.help = function help() {
         if (cachedHelpMessage) return cachedHelpMessage;
         normalizeAliases();
-        const base$0 = yargs.customScriptName ? yargs.$0 : shim.path.basename(yargs.$0);
+        const base$0 = yargs.customScriptName ? yargs.$0 : shim4.path.basename(yargs.$0);
         const demandedOptions = yargs.getDemandedOptions();
         const demandedCommands = yargs.getDemandedCommands();
         const deprecatedOptions = yargs.getDeprecatedOptions();
@@ -11358,25 +11296,24 @@ function usage(yargs, shim) {
         keys = keys.concat(Object.keys(demandedCommands));
         keys = keys.concat(Object.keys(options.default));
         keys = keys.filter(filterHiddenOptions);
-        keys = Object.keys(keys.reduce((acc, key)=>{
-            if (key !== '_') acc[key] = true;
+        keys = Object.keys(keys.reduce((acc, key42)=>{
+            if (key42 !== '_') acc[key42] = true;
             return acc;
-        }, {
-        }));
+        }, {}));
         const theWrap = getWrap();
-        const ui = shim.cliui({
+        const ui1 = shim4.cliui({
             width: theWrap,
             wrap: !!theWrap
         });
         if (!usageDisabled) {
             if (usages.length) {
-                usages.forEach((usage)=>{
-                    ui.div({
-                        text: `${usage[0].replace(/\$0/g, base$0)}`
+                usages.forEach((usage1)=>{
+                    ui1.div({
+                        text: `${usage1[0].replace(/\$0/g, base$0)}`
                     });
-                    if (usage[1]) {
-                        ui.div({
-                            text: `${usage[1]}`,
+                    if (usage1[1]) {
+                        ui1.div({
+                            text: `${usage1[1]}`,
                             padding: [
                                 1,
                                 0,
@@ -11386,7 +11323,7 @@ function usage(yargs, shim) {
                         });
                     }
                 });
-                ui.div();
+                ui1.div();
             } else if (commands.length) {
                 let u = null;
                 if (demandedCommands._) {
@@ -11394,11 +11331,11 @@ function usage(yargs, shim) {
                 } else {
                     u = `${base$0} [${__('command')}]\n`;
                 }
-                ui.div(`${u}`);
+                ui1.div(`${u}`);
             }
         }
         if (commands.length > 1 || commands.length === 1 && !commands[0][2]) {
-            ui.div(__('Commands:'));
+            ui1.div(__('Commands:'));
             const context = yargs.getInternalMethods().getContext();
             const parentCommands = context.commands.length ? `${context.commands.join(' ')} ` : '';
             if (yargs.getInternalMethods().getParserConfiguration()['sort-commands'] === true) {
@@ -11406,9 +11343,9 @@ function usage(yargs, shim) {
                 );
             }
             const prefix = base$0 ? `${base$0} ` : '';
-            commands.forEach((command)=>{
-                const commandString = `${prefix}${parentCommands}${command[0].replace(/^\$0 ?/, '')}`;
-                ui.span({
+            commands.forEach((command1)=>{
+                const commandString = `${prefix}${parentCommands}${command1[0].replace(/^\$0 ?/, '')}`;
+                ui1.span({
                     text: commandString,
                     padding: [
                         0,
@@ -11416,24 +11353,24 @@ function usage(yargs, shim) {
                         0,
                         2
                     ],
-                    width: maxWidth(commands, theWrap, `${base$0}${parentCommands}`) + 4
+                    width: maxWidth1(commands, theWrap, `${base$0}${parentCommands}`) + 4
                 }, {
-                    text: command[1]
+                    text: command1[1]
                 });
                 const hints = [];
-                if (command[2]) hints.push(`[${__('default')}]`);
-                if (command[3] && command[3].length) {
-                    hints.push(`[${__('aliases:')} ${command[3].join(', ')}]`);
+                if (command1[2]) hints.push(`[${__('default')}]`);
+                if (command1[3] && command1[3].length) {
+                    hints.push(`[${__('aliases:')} ${command1[3].join(', ')}]`);
                 }
-                if (command[4]) {
-                    if (typeof command[4] === 'string') {
-                        hints.push(`[${__('deprecated: %s', command[4])}]`);
+                if (command1[4]) {
+                    if (typeof command1[4] === 'string') {
+                        hints.push(`[${__('deprecated: %s', command1[4])}]`);
                     } else {
                         hints.push(`[${__('deprecated')}]`);
                     }
                 }
                 if (hints.length) {
-                    ui.div({
+                    ui1.div({
                         text: hints.join(' '),
                         padding: [
                             0,
@@ -11444,13 +11381,13 @@ function usage(yargs, shim) {
                         align: 'right'
                     });
                 } else {
-                    ui.div();
+                    ui1.div();
                 }
             });
-            ui.div();
+            ui1.div();
         }
         const aliasKeys = (Object.keys(options.alias) || []).concat(Object.keys(yargs.parsed.newAliases) || []);
-        keys = keys.filter((key)=>!yargs.parsed.newAliases[key] && aliasKeys.every((alias)=>(options.alias[alias] || []).indexOf(key) === -1
+        keys = keys.filter((key43)=>!yargs.parsed.newAliases[key43] && aliasKeys.every((alias)=>(options.alias[alias] || []).indexOf(key43) === -1
             )
         );
         const defaultGroup = __('Options:');
@@ -11460,12 +11397,12 @@ function usage(yargs, shim) {
         ;
         const displayedGroups = Object.keys(groups).filter((groupName)=>groups[groupName].length > 0
         ).map((groupName)=>{
-            const normalizedKeys = groups[groupName].filter(filterHiddenOptions).map((key)=>{
-                if (aliasKeys.includes(key)) return key;
-                for(let i = 0, aliasKey; (aliasKey = aliasKeys[i]) !== undefined; i++){
-                    if ((options.alias[aliasKey] || []).includes(key)) return aliasKey;
+            const normalizedKeys = groups[groupName].filter(filterHiddenOptions).map((key44)=>{
+                if (aliasKeys.includes(key44)) return key44;
+                for(let i60 = 0, aliasKey; (aliasKey = aliasKeys[i60]) !== undefined; i60++){
+                    if ((options.alias[aliasKey] || []).includes(key44)) return aliasKey;
                 }
-                return key;
+                return key44;
             });
             return {
                 groupName,
@@ -11473,19 +11410,18 @@ function usage(yargs, shim) {
             };
         }).filter(({ normalizedKeys  })=>normalizedKeys.length > 0
         ).map(({ groupName , normalizedKeys  })=>{
-            const switches = normalizedKeys.reduce((acc, key)=>{
-                acc[key] = [
-                    key
-                ].concat(options.alias[key] || []).map((sw)=>{
+            const switches = normalizedKeys.reduce((acc, key45)=>{
+                acc[key45] = [
+                    key45
+                ].concat(options.alias[key45] || []).map((sw)=>{
                     if (groupName === self.getPositionalGroupName()) return sw;
                     else {
-                        return (/^[0-9]$/.test(sw) ? options.boolean.includes(key) ? '-' : '--' : sw.length > 1 ? '--' : '-') + sw;
+                        return (/^[0-9]$/.test(sw) ? options.boolean.includes(key45) ? '-' : '--' : sw.length > 1 ? '--' : '-') + sw;
                     }
                 }).sort((sw1, sw2)=>isLongSwitch(sw1) === isLongSwitch(sw2) ? 0 : isLongSwitch(sw1) ? 1 : -1
                 ).join(', ');
                 return acc;
-            }, {
-            });
+            }, {});
             return {
                 groupName,
                 normalizedKeys,
@@ -11493,42 +11429,42 @@ function usage(yargs, shim) {
             };
         });
         const shortSwitchesUsed = displayedGroups.filter(({ groupName  })=>groupName !== self.getPositionalGroupName()
-        ).some(({ normalizedKeys , switches  })=>!normalizedKeys.every((key)=>isLongSwitch(switches[key])
+        ).some(({ normalizedKeys , switches  })=>!normalizedKeys.every((key46)=>isLongSwitch(switches[key46])
             )
         );
         if (shortSwitchesUsed) {
             displayedGroups.filter(({ groupName  })=>groupName !== self.getPositionalGroupName()
             ).forEach(({ normalizedKeys , switches  })=>{
-                normalizedKeys.forEach((key)=>{
-                    if (isLongSwitch(switches[key])) {
-                        switches[key] = addIndentation(switches[key], '-x, '.length);
+                normalizedKeys.forEach((key47)=>{
+                    if (isLongSwitch(switches[key47])) {
+                        switches[key47] = addIndentation(switches[key47], '-x, '.length);
                     }
                 });
             });
         }
         displayedGroups.forEach(({ groupName , normalizedKeys , switches  })=>{
-            ui.div(groupName);
-            normalizedKeys.forEach((key)=>{
-                const kswitch = switches[key];
-                let desc = descriptions[key] || '';
+            ui1.div(groupName);
+            normalizedKeys.forEach((key48)=>{
+                const kswitch = switches[key48];
+                let desc = descriptions[key48] || '';
                 let type = null;
                 if (desc.includes(deferY18nLookupPrefix)) desc = __(desc.substring(deferY18nLookupPrefix.length));
-                if (options.boolean.includes(key)) type = `[${__('boolean')}]`;
-                if (options.count.includes(key)) type = `[${__('count')}]`;
-                if (options.string.includes(key)) type = `[${__('string')}]`;
-                if (options.normalize.includes(key)) type = `[${__('string')}]`;
-                if (options.array.includes(key)) type = `[${__('array')}]`;
-                if (options.number.includes(key)) type = `[${__('number')}]`;
+                if (options.boolean.includes(key48)) type = `[${__('boolean')}]`;
+                if (options.count.includes(key48)) type = `[${__('count')}]`;
+                if (options.string.includes(key48)) type = `[${__('string')}]`;
+                if (options.normalize.includes(key48)) type = `[${__('string')}]`;
+                if (options.array.includes(key48)) type = `[${__('array')}]`;
+                if (options.number.includes(key48)) type = `[${__('number')}]`;
                 const deprecatedExtra = (deprecated)=>typeof deprecated === 'string' ? `[${__('deprecated: %s', deprecated)}]` : `[${__('deprecated')}]`
                 ;
                 const extra = [
-                    key in deprecatedOptions ? deprecatedExtra(deprecatedOptions[key]) : null,
+                    key48 in deprecatedOptions ? deprecatedExtra(deprecatedOptions[key48]) : null,
                     type,
-                    key in demandedOptions ? `[${__('required')}]` : null,
-                    options.choices && options.choices[key] ? `[${__('choices:')} ${self.stringifiedValues(options.choices[key])}]` : null,
-                    defaultString(options.default[key], options.defaultDescription[key]), 
+                    key48 in demandedOptions ? `[${__('required')}]` : null,
+                    options.choices && options.choices[key48] ? `[${__('choices:')} ${self.stringifiedValues(options.choices[key48])}]` : null,
+                    defaultString(options.default[key48], options.defaultDescription[key48]), 
                 ].filter(Boolean).join(' ');
-                ui.span({
+                ui1.span({
                     text: getText(kswitch),
                     padding: [
                         0,
@@ -11536,9 +11472,9 @@ function usage(yargs, shim) {
                         0,
                         2 + getIndentation(kswitch)
                     ],
-                    width: maxWidth(switches, theWrap) + 4
+                    width: maxWidth1(switches, theWrap) + 4
                 }, desc);
-                if (extra) ui.div({
+                if (extra) ui1.div({
                     text: extra,
                     padding: [
                         0,
@@ -11548,18 +11484,18 @@ function usage(yargs, shim) {
                     ],
                     align: 'right'
                 });
-                else ui.div();
+                else ui1.div();
             });
-            ui.div();
+            ui1.div();
         });
         if (examples.length) {
-            ui.div(__('Examples:'));
+            ui1.div(__('Examples:'));
             examples.forEach((example)=>{
                 example[0] = example[0].replace(/\$0/g, base$0);
             });
             examples.forEach((example)=>{
                 if (example[1] === '') {
-                    ui.div({
+                    ui1.div({
                         text: example[0],
                         padding: [
                             0,
@@ -11569,7 +11505,7 @@ function usage(yargs, shim) {
                         ]
                     });
                 } else {
-                    ui.div({
+                    ui1.div({
                         text: example[0],
                         padding: [
                             0,
@@ -11577,31 +11513,31 @@ function usage(yargs, shim) {
                             0,
                             2
                         ],
-                        width: maxWidth(examples, theWrap) + 4
+                        width: maxWidth1(examples, theWrap) + 4
                     }, {
                         text: example[1]
                     });
                 }
             });
-            ui.div();
+            ui1.div();
         }
         if (epilogs.length > 0) {
             const e = epilogs.map((epilog)=>epilog.replace(/\$0/g, base$0)
             ).join('\n');
-            ui.div(`${e}\n`);
+            ui1.div(`${e}\n`);
         }
-        return ui.toString().replace(/\s*$/, '');
+        return ui1.toString().replace(/\s*$/, '');
     };
-    function maxWidth(table, theWrap, modifier) {
+    function maxWidth1(table2, theWrap, modifier) {
         let width = 0;
-        if (!Array.isArray(table)) {
-            table = Object.values(table).map((v)=>[
+        if (!Array.isArray(table2)) {
+            table2 = Object.values(table2).map((v)=>[
                     v
                 ]
             );
         }
-        table.forEach((v)=>{
-            width = Math.max(shim.stringWidth(modifier ? `${modifier} ${getText(v[0])}` : getText(v[0])) + getIndentation(v[0]), width);
+        table2.forEach((v)=>{
+            width = Math.max(shim4.stringWidth(modifier ? `${modifier} ${getText(v[0])}` : getText(v[0])) + getIndentation(v[0]), width);
         });
         if (theWrap) width = Math.min(width, parseInt((theWrap * 0.5).toString(), 10));
         return width;
@@ -11609,16 +11545,16 @@ function usage(yargs, shim) {
     function normalizeAliases() {
         const demandedOptions = yargs.getDemandedOptions();
         const options = yargs.getOptions();
-        (Object.keys(options.alias) || []).forEach((key)=>{
-            options.alias[key].forEach((alias)=>{
-                if (descriptions[alias]) self.describe(key, descriptions[alias]);
-                if (alias in demandedOptions) yargs.demandOption(key, demandedOptions[alias]);
-                if (options.boolean.includes(alias)) yargs.boolean(key);
-                if (options.count.includes(alias)) yargs.count(key);
-                if (options.string.includes(alias)) yargs.string(key);
-                if (options.normalize.includes(alias)) yargs.normalize(key);
-                if (options.array.includes(alias)) yargs.array(key);
-                if (options.number.includes(alias)) yargs.number(key);
+        (Object.keys(options.alias) || []).forEach((key49)=>{
+            options.alias[key49].forEach((alias)=>{
+                if (descriptions[alias]) self.describe(key49, descriptions[alias]);
+                if (alias in demandedOptions) yargs.demandOption(key49, demandedOptions[alias]);
+                if (options.boolean.includes(alias)) yargs.boolean(key49);
+                if (options.count.includes(alias)) yargs.count(key49);
+                if (options.string.includes(alias)) yargs.string(key49);
+                if (options.normalize.includes(alias)) yargs.normalize(key49);
+                if (options.array.includes(alias)) yargs.array(key49);
+                if (options.number.includes(alias)) yargs.number(key49);
             });
         });
     }
@@ -11638,19 +11574,19 @@ function usage(yargs, shim) {
         Object.keys(groups).forEach((group)=>{
             groupedKeys = groupedKeys.concat(groups[group]);
         });
-        keys.forEach((key)=>{
+        keys.forEach((key50)=>{
             toCheck = [
-                key
-            ].concat(aliases[key]);
+                key50
+            ].concat(aliases[key50]);
             if (!toCheck.some((k)=>groupedKeys.indexOf(k) !== -1
             )) {
-                groups[defaultGroup].push(key);
+                groups[defaultGroup].push(key50);
             }
         });
         return groupedKeys;
     }
-    function filterHiddenOptions(key) {
-        return yargs.getOptions().hiddenOptions.indexOf(key) < 0 || yargs.parsed.argv[yargs.getOptions().showHiddenOpt];
+    function filterHiddenOptions(key51) {
+        return yargs.getOptions().hiddenOptions.indexOf(key51) < 0 || yargs.parsed.argv[yargs.getOptions().showHiddenOpt];
     }
     self.showHelp = (level)=>{
         const logger = yargs.getInternalMethods().getLoggerInstance();
@@ -11659,7 +11595,7 @@ function usage(yargs, shim) {
         emit(self.help());
     };
     self.functionDescription = (fn)=>{
-        const description = fn.name ? shim.Parser.decamelize(fn.name, '-') : __('generated-value');
+        const description = fn.name ? shim4.Parser.decamelize(fn.name, '-') : __('generated-value');
         return [
             '(',
             description,
@@ -11667,38 +11603,38 @@ function usage(yargs, shim) {
         ].join('');
     };
     self.stringifiedValues = function stringifiedValues(values, separator) {
-        let string = '';
-        const sep = separator || ', ';
+        let string3 = '';
+        const sep9 = separator || ', ';
         const array = [].concat(values);
-        if (!values || !array.length) return string;
-        array.forEach((value)=>{
-            if (string.length) string += sep;
-            string += JSON.stringify(value);
+        if (!values || !array.length) return string3;
+        array.forEach((value11)=>{
+            if (string3.length) string3 += sep9;
+            string3 += JSON.stringify(value11);
         });
-        return string;
+        return string3;
     };
-    function defaultString(value, defaultDescription) {
-        let string = `[${__('default:')} `;
-        if (value === undefined && !defaultDescription) return null;
+    function defaultString(value12, defaultDescription) {
+        let string4 = `[${__('default:')} `;
+        if (value12 === undefined && !defaultDescription) return null;
         if (defaultDescription) {
-            string += defaultDescription;
+            string4 += defaultDescription;
         } else {
-            switch(typeof value){
+            switch(typeof value12){
                 case 'string':
-                    string += `"${value}"`;
+                    string4 += `"${value12}"`;
                     break;
                 case 'object':
-                    string += JSON.stringify(value);
+                    string4 += JSON.stringify(value12);
                     break;
                 default:
-                    string += value;
+                    string4 += value12;
             }
         }
-        return `${string}]`;
+        return `${string4}]`;
     }
     function windowWidth() {
-        if (shim.process.stdColumns) {
-            return Math.min(80, shim.process.stdColumns);
+        if (shim4.process.stdColumns) {
+            return Math.min(80, shim4.process.stdColumns);
         } else {
             return 80;
         }
@@ -11767,25 +11703,25 @@ function levenshtein(a, b) {
     if (a.length === 0) return b.length;
     if (b.length === 0) return a.length;
     const matrix = [];
-    let i;
-    for(i = 0; i <= b.length; i++){
-        matrix[i] = [
-            i
+    let i61;
+    for(i61 = 0; i61 <= b.length; i61++){
+        matrix[i61] = [
+            i61
         ];
     }
     let j;
     for(j = 0; j <= a.length; j++){
         matrix[0][j] = j;
     }
-    for(i = 1; i <= b.length; i++){
+    for(i61 = 1; i61 <= b.length; i61++){
         for(j = 1; j <= a.length; j++){
-            if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
+            if (b.charAt(i61 - 1) === a.charAt(j - 1)) {
+                matrix[i61][j] = matrix[i61 - 1][j - 1];
             } else {
-                if (i > 1 && j > 1 && b.charAt(i - 2) === a.charAt(j - 1) && b.charAt(i - 1) === a.charAt(j - 2)) {
-                    matrix[i][j] = matrix[i - 2][j - 2] + 1;
+                if (i61 > 1 && j > 1 && b.charAt(i61 - 2) === a.charAt(j - 1) && b.charAt(i61 - 1) === a.charAt(j - 2)) {
+                    matrix[i61][j] = matrix[i61 - 2][j - 2] + 1;
                 } else {
-                    matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1));
+                    matrix[i61][j] = Math.min(matrix[i61 - 1][j - 1] + 1, Math.min(matrix[i61][j - 1] + 1, matrix[i61 - 1][j] + 1));
                 }
             }
         }
@@ -11797,71 +11733,69 @@ const specialKeys = [
     '--',
     '_'
 ];
-function validation(yargs, usage, shim) {
-    const __ = shim.y18n.__;
-    const __n = shim.y18n.__n;
-    const self = {
-    };
-    self.nonOptionCount = function nonOptionCount(argv) {
+function validation(yargs, usage1, shim5) {
+    const __ = shim5.y18n.__;
+    const __n = shim5.y18n.__n;
+    const self = {};
+    self.nonOptionCount = function nonOptionCount(argv7) {
         const demandedCommands = yargs.getDemandedCommands();
-        const positionalCount = argv._.length + (argv['--'] ? argv['--'].length : 0);
+        const positionalCount = argv7._.length + (argv7['--'] ? argv7['--'].length : 0);
         const _s = positionalCount - yargs.getInternalMethods().getContext().commands.length;
         if (demandedCommands._ && (_s < demandedCommands._.min || _s > demandedCommands._.max)) {
             if (_s < demandedCommands._.min) {
                 if (demandedCommands._.minMsg !== undefined) {
-                    usage.fail(demandedCommands._.minMsg ? demandedCommands._.minMsg.replace(/\$0/g, _s.toString()).replace(/\$1/, demandedCommands._.min.toString()) : null);
+                    usage1.fail(demandedCommands._.minMsg ? demandedCommands._.minMsg.replace(/\$0/g, _s.toString()).replace(/\$1/, demandedCommands._.min.toString()) : null);
                 } else {
-                    usage.fail(__n('Not enough non-option arguments: got %s, need at least %s', 'Not enough non-option arguments: got %s, need at least %s', _s, _s.toString(), demandedCommands._.min.toString()));
+                    usage1.fail(__n('Not enough non-option arguments: got %s, need at least %s', 'Not enough non-option arguments: got %s, need at least %s', _s, _s.toString(), demandedCommands._.min.toString()));
                 }
             } else if (_s > demandedCommands._.max) {
                 if (demandedCommands._.maxMsg !== undefined) {
-                    usage.fail(demandedCommands._.maxMsg ? demandedCommands._.maxMsg.replace(/\$0/g, _s.toString()).replace(/\$1/, demandedCommands._.max.toString()) : null);
+                    usage1.fail(demandedCommands._.maxMsg ? demandedCommands._.maxMsg.replace(/\$0/g, _s.toString()).replace(/\$1/, demandedCommands._.max.toString()) : null);
                 } else {
-                    usage.fail(__n('Too many non-option arguments: got %s, maximum of %s', 'Too many non-option arguments: got %s, maximum of %s', _s, _s.toString(), demandedCommands._.max.toString()));
+                    usage1.fail(__n('Too many non-option arguments: got %s, maximum of %s', 'Too many non-option arguments: got %s, maximum of %s', _s, _s.toString(), demandedCommands._.max.toString()));
                 }
             }
         }
     };
     self.positionalCount = function positionalCount(required, observed) {
         if (observed < required) {
-            usage.fail(__n('Not enough non-option arguments: got %s, need at least %s', 'Not enough non-option arguments: got %s, need at least %s', observed, observed + '', required + ''));
+            usage1.fail(__n('Not enough non-option arguments: got %s, need at least %s', 'Not enough non-option arguments: got %s, need at least %s', observed, observed + '', required + ''));
         }
     };
-    self.requiredArguments = function requiredArguments(argv, demandedOptions) {
+    self.requiredArguments = function requiredArguments(argv8, demandedOptions) {
         let missing = null;
-        for (const key of Object.keys(demandedOptions)){
-            if (!Object.prototype.hasOwnProperty.call(argv, key) || typeof argv[key] === 'undefined') {
-                missing = missing || {
-                };
-                missing[key] = demandedOptions[key];
+        for (const key52 of Object.keys(demandedOptions)){
+            if (!Object.prototype.hasOwnProperty.call(argv8, key52) || typeof argv8[key52] === 'undefined') {
+                missing = missing || {};
+                missing[key52] = demandedOptions[key52];
             }
         }
         if (missing) {
             const customMsgs = [];
-            for (const key of Object.keys(missing)){
-                const msg = missing[key];
+            for (const key53 of Object.keys(missing)){
+                const msg = missing[key53];
                 if (msg && customMsgs.indexOf(msg) < 0) {
                     customMsgs.push(msg);
                 }
             }
             const customMsg = customMsgs.length ? `\n${customMsgs.join('\n')}` : '';
-            usage.fail(__n('Missing required argument: %s', 'Missing required arguments: %s', Object.keys(missing).length, Object.keys(missing).join(', ') + customMsg));
+            usage1.fail(__n('Missing required argument: %s', 'Missing required arguments: %s', Object.keys(missing).length, Object.keys(missing).join(', ') + customMsg));
         }
     };
-    self.unknownArguments = function unknownArguments(argv, aliases, positionalMap, isDefaultCommand, checkPositionals = true) {
+    self.unknownArguments = function unknownArguments(argv9, aliases, positionalMap, isDefaultCommand, checkPositionals = true) {
         var _a;
         const commandKeys = yargs.getInternalMethods().getCommandInstance().getCommands();
         const unknown = [];
         const currentContext = yargs.getInternalMethods().getContext();
-        Object.keys(argv).forEach((key)=>{
-            if (!specialKeys.includes(key) && !Object.prototype.hasOwnProperty.call(positionalMap, key) && !Object.prototype.hasOwnProperty.call(yargs.getInternalMethods().getParseContext(), key) && !self.isValidAndSomeAliasIsNotNew(key, aliases)) {
-                unknown.push(key);
+        Object.keys(argv9).forEach((key54)=>{
+            if (!specialKeys.includes(key54) && !Object.prototype.hasOwnProperty.call(positionalMap, key54) && !Object.prototype.hasOwnProperty.call(yargs.getInternalMethods().getParseContext(), key54) && !self.isValidAndSomeAliasIsNotNew(key54, aliases)) {
+                unknown.push(key54);
             }
         });
         if (checkPositionals && (currentContext.commands.length > 0 || commandKeys.length > 0 || isDefaultCommand)) {
-            argv._.slice(currentContext.commands.length).forEach((key)=>{
-                if (!commandKeys.includes('' + key)) {
-                    unknown.push('' + key);
+            argv9._.slice(currentContext.commands.length).forEach((key55)=>{
+                if (!commandKeys.includes('' + key55)) {
+                    unknown.push('' + key55);
                 }
             });
         }
@@ -11869,58 +11803,57 @@ function validation(yargs, usage, shim) {
             const demandedCommands = yargs.getDemandedCommands();
             const maxNonOptDemanded = ((_a = demandedCommands._) === null || _a === void 0 ? void 0 : _a.max) || 0;
             const expected = currentContext.commands.length + maxNonOptDemanded;
-            if (expected < argv._.length) {
-                argv._.slice(expected).forEach((key)=>{
-                    key = String(key);
-                    if (!currentContext.commands.includes(key) && !unknown.includes(key)) {
-                        unknown.push(key);
+            if (expected < argv9._.length) {
+                argv9._.slice(expected).forEach((key56)=>{
+                    key56 = String(key56);
+                    if (!currentContext.commands.includes(key56) && !unknown.includes(key56)) {
+                        unknown.push(key56);
                     }
                 });
             }
         }
         if (unknown.length) {
-            usage.fail(__n('Unknown argument: %s', 'Unknown arguments: %s', unknown.length, unknown.join(', ')));
+            usage1.fail(__n('Unknown argument: %s', 'Unknown arguments: %s', unknown.length, unknown.join(', ')));
         }
     };
-    self.unknownCommands = function unknownCommands(argv) {
+    self.unknownCommands = function unknownCommands(argv10) {
         const commandKeys = yargs.getInternalMethods().getCommandInstance().getCommands();
         const unknown = [];
         const currentContext = yargs.getInternalMethods().getContext();
         if (currentContext.commands.length > 0 || commandKeys.length > 0) {
-            argv._.slice(currentContext.commands.length).forEach((key)=>{
-                if (!commandKeys.includes('' + key)) {
-                    unknown.push('' + key);
+            argv10._.slice(currentContext.commands.length).forEach((key57)=>{
+                if (!commandKeys.includes('' + key57)) {
+                    unknown.push('' + key57);
                 }
             });
         }
         if (unknown.length > 0) {
-            usage.fail(__n('Unknown command: %s', 'Unknown commands: %s', unknown.length, unknown.join(', ')));
+            usage1.fail(__n('Unknown command: %s', 'Unknown commands: %s', unknown.length, unknown.join(', ')));
             return true;
         } else {
             return false;
         }
     };
-    self.isValidAndSomeAliasIsNotNew = function isValidAndSomeAliasIsNotNew(key, aliases) {
-        if (!Object.prototype.hasOwnProperty.call(aliases, key)) {
+    self.isValidAndSomeAliasIsNotNew = function isValidAndSomeAliasIsNotNew(key58, aliases) {
+        if (!Object.prototype.hasOwnProperty.call(aliases, key58)) {
             return false;
         }
         const newAliases = yargs.parsed.newAliases;
         return [
-            key,
-            ...aliases[key]
-        ].some((a)=>!Object.prototype.hasOwnProperty.call(newAliases, a) || !newAliases[key]
+            key58,
+            ...aliases[key58]
+        ].some((a)=>!Object.prototype.hasOwnProperty.call(newAliases, a) || !newAliases[key58]
         );
     };
-    self.limitedChoices = function limitedChoices(argv) {
+    self.limitedChoices = function limitedChoices(argv11) {
         const options = yargs.getOptions();
-        const invalid = {
-        };
+        const invalid = {};
         if (!Object.keys(options.choices).length) return;
-        Object.keys(argv).forEach((key)=>{
-            if (specialKeys.indexOf(key) === -1 && Object.prototype.hasOwnProperty.call(options.choices, key)) {
-                [].concat(argv[key]).forEach((value)=>{
-                    if (options.choices[key].indexOf(value) === -1 && value !== undefined) {
-                        invalid[key] = (invalid[key] || []).concat(value);
+        Object.keys(argv11).forEach((key59)=>{
+            if (specialKeys.indexOf(key59) === -1 && Object.prototype.hasOwnProperty.call(options.choices, key59)) {
+                [].concat(argv11[key59]).forEach((value13)=>{
+                    if (options.choices[key59].indexOf(value13) === -1 && value13 !== undefined) {
+                        invalid[key59] = (invalid[key59] || []).concat(value13);
                     }
                 });
             }
@@ -11928,115 +11861,113 @@ function validation(yargs, usage, shim) {
         const invalidKeys = Object.keys(invalid);
         if (!invalidKeys.length) return;
         let msg = __('Invalid values:');
-        invalidKeys.forEach((key)=>{
-            msg += `\n  ${__('Argument: %s, Given: %s, Choices: %s', key, usage.stringifiedValues(invalid[key]), usage.stringifiedValues(options.choices[key]))}`;
+        invalidKeys.forEach((key60)=>{
+            msg += `\n  ${__('Argument: %s, Given: %s, Choices: %s', key60, usage1.stringifiedValues(invalid[key60]), usage1.stringifiedValues(options.choices[key60]))}`;
         });
-        usage.fail(msg);
+        usage1.fail(msg);
     };
-    let implied = {
-    };
-    self.implies = function implies(key, value) {
+    let implied = {};
+    self.implies = function implies(key61, value14) {
         argsert('<string|object> [array|number|string]', [
-            key,
-            value
+            key61,
+            value14
         ], arguments.length);
-        if (typeof key === 'object') {
-            Object.keys(key).forEach((k)=>{
-                self.implies(k, key[k]);
+        if (typeof key61 === 'object') {
+            Object.keys(key61).forEach((k)=>{
+                self.implies(k, key61[k]);
             });
         } else {
-            yargs.global(key);
-            if (!implied[key]) {
-                implied[key] = [];
+            yargs.global(key61);
+            if (!implied[key61]) {
+                implied[key61] = [];
             }
-            if (Array.isArray(value)) {
-                value.forEach((i)=>self.implies(key, i)
+            if (Array.isArray(value14)) {
+                value14.forEach((i62)=>self.implies(key61, i62)
                 );
             } else {
-                assertNotStrictEqual(value, undefined, shim);
-                implied[key].push(value);
+                assertNotStrictEqual(value14, undefined, shim5);
+                implied[key61].push(value14);
             }
         }
     };
     self.getImplied = function getImplied() {
         return implied;
     };
-    function keyExists(argv, val) {
+    function keyExists(argv12, val) {
         const num = Number(val);
         val = isNaN(num) ? val : num;
         if (typeof val === 'number') {
-            val = argv._.length >= val;
+            val = argv12._.length >= val;
         } else if (val.match(/^--no-.+/)) {
             val = val.match(/^--no-(.+)/)[1];
-            val = !Object.prototype.hasOwnProperty.call(argv, val);
+            val = !Object.prototype.hasOwnProperty.call(argv12, val);
         } else {
-            val = Object.prototype.hasOwnProperty.call(argv, val);
+            val = Object.prototype.hasOwnProperty.call(argv12, val);
         }
         return val;
     }
-    self.implications = function implications(argv) {
+    self.implications = function implications(argv13) {
         const implyFail = [];
-        Object.keys(implied).forEach((key)=>{
-            const origKey = key;
-            (implied[key] || []).forEach((value)=>{
-                let key = origKey;
-                const origValue = value;
-                key = keyExists(argv, key);
-                value = keyExists(argv, value);
-                if (key && !value) {
+        Object.keys(implied).forEach((key1)=>{
+            const origKey = key1;
+            (implied[key1] || []).forEach((value15)=>{
+                let key62 = origKey;
+                const origValue = value15;
+                key62 = keyExists(argv13, key62);
+                value15 = keyExists(argv13, value15);
+                if (key62 && !value15) {
                     implyFail.push(` ${origKey} -> ${origValue}`);
                 }
             });
         });
         if (implyFail.length) {
             let msg = `${__('Implications failed:')}\n`;
-            implyFail.forEach((value)=>{
-                msg += value;
+            implyFail.forEach((value16)=>{
+                msg += value16;
             });
-            usage.fail(msg);
+            usage1.fail(msg);
         }
     };
-    let conflicting = {
-    };
-    self.conflicts = function conflicts(key, value) {
+    let conflicting = {};
+    self.conflicts = function conflicts(key63, value17) {
         argsert('<string|object> [array|string]', [
-            key,
-            value
+            key63,
+            value17
         ], arguments.length);
-        if (typeof key === 'object') {
-            Object.keys(key).forEach((k)=>{
-                self.conflicts(k, key[k]);
+        if (typeof key63 === 'object') {
+            Object.keys(key63).forEach((k)=>{
+                self.conflicts(k, key63[k]);
             });
         } else {
-            yargs.global(key);
-            if (!conflicting[key]) {
-                conflicting[key] = [];
+            yargs.global(key63);
+            if (!conflicting[key63]) {
+                conflicting[key63] = [];
             }
-            if (Array.isArray(value)) {
-                value.forEach((i)=>self.conflicts(key, i)
+            if (Array.isArray(value17)) {
+                value17.forEach((i63)=>self.conflicts(key63, i63)
                 );
             } else {
-                conflicting[key].push(value);
+                conflicting[key63].push(value17);
             }
         }
     };
     self.getConflicting = ()=>conflicting
     ;
-    self.conflicting = function conflictingFn(argv) {
-        Object.keys(argv).forEach((key)=>{
-            if (conflicting[key]) {
-                conflicting[key].forEach((value)=>{
-                    if (value && argv[key] !== undefined && argv[value] !== undefined) {
-                        usage.fail(__('Arguments %s and %s are mutually exclusive', key, value));
+    self.conflicting = function conflictingFn(argv14) {
+        Object.keys(argv14).forEach((key64)=>{
+            if (conflicting[key64]) {
+                conflicting[key64].forEach((value18)=>{
+                    if (value18 && argv14[key64] !== undefined && argv14[value18] !== undefined) {
+                        usage1.fail(__('Arguments %s and %s are mutually exclusive', key64, value18));
                     }
                 });
             }
         });
         if (yargs.getInternalMethods().getParserConfiguration()['strip-dashed']) {
-            Object.keys(conflicting).forEach((key)=>{
-                conflicting[key].forEach((value)=>{
-                    if (value && argv[shim.Parser.camelCase(key)] !== undefined && argv[shim.Parser.camelCase(value)] !== undefined) {
-                        usage.fail(__('Arguments %s and %s are mutually exclusive', key, value));
+            Object.keys(conflicting).forEach((key65)=>{
+                conflicting[key65].forEach((value19)=>{
+                    if (value19 && argv14[shim5.Parser.camelCase(key65)] !== undefined && argv14[shim5.Parser.camelCase(value19)] !== undefined) {
+                        usage1.fail(__('Arguments %s and %s are mutually exclusive', key65, value19));
                     }
                 });
             });
@@ -12048,14 +11979,14 @@ function validation(yargs, usage, shim) {
         );
         let recommended = null;
         let bestDistance = Infinity;
-        for(let i = 0, candidate; (candidate = potentialCommands[i]) !== undefined; i++){
+        for(let i64 = 0, candidate; (candidate = potentialCommands[i64]) !== undefined; i64++){
             const d = levenshtein(cmd, candidate);
             if (d <= threshold && d < bestDistance) {
                 bestDistance = d;
                 recommended = candidate;
             }
         }
-        if (recommended) usage.fail(__('Did you mean %s?', recommended));
+        if (recommended) usage1.fail(__('Did you mean %s?', recommended));
     };
     self.reset = function reset(localLookup) {
         implied = objFilter(implied, (k)=>!localLookup[k]
@@ -12073,69 +12004,66 @@ function validation(yargs, usage, shim) {
     };
     self.unfreeze = function unfreeze() {
         const frozen = frozens.pop();
-        assertNotStrictEqual(frozen, undefined, shim);
+        assertNotStrictEqual(frozen, undefined, shim5);
         ({ implied , conflicting  } = frozen);
     };
     return self;
 }
 let previouslyVisitedConfigs = [];
 let shim1;
-function applyExtends(config, cwd, mergeExtends, _shim) {
+function applyExtends(config3, cwd1, mergeExtends, _shim) {
     shim1 = _shim;
-    let defaultConfig = {
-    };
-    if (Object.prototype.hasOwnProperty.call(config, 'extends')) {
-        if (typeof config.extends !== 'string') return defaultConfig;
-        const isPath = /\.json|\..*rc$/.test(config.extends);
+    let defaultConfig = {};
+    if (Object.prototype.hasOwnProperty.call(config3, 'extends')) {
+        if (typeof config3.extends !== 'string') return defaultConfig;
+        const isPath = /\.json|\..*rc$/.test(config3.extends);
         let pathToDefault = null;
         if (!isPath) {
             try {
-                pathToDefault = require.resolve(config.extends);
+                pathToDefault = require.resolve(config3.extends);
             } catch (_err) {
-                return config;
+                return config3;
             }
         } else {
-            pathToDefault = getPathToDefaultConfig(cwd, config.extends);
+            pathToDefault = getPathToDefaultConfig(cwd1, config3.extends);
         }
         checkForCircularExtends(pathToDefault);
         previouslyVisitedConfigs.push(pathToDefault);
-        defaultConfig = isPath ? JSON.parse(shim1.readFileSync(pathToDefault, 'utf8')) : require(config.extends);
-        delete config.extends;
+        defaultConfig = isPath ? JSON.parse(shim1.readFileSync(pathToDefault, 'utf8')) : require(config3.extends);
+        delete config3.extends;
         defaultConfig = applyExtends(defaultConfig, shim1.path.dirname(pathToDefault), mergeExtends, shim1);
     }
     previouslyVisitedConfigs = [];
-    return mergeExtends ? mergeDeep(defaultConfig, config) : Object.assign({
-    }, defaultConfig, config);
+    return mergeExtends ? mergeDeep(defaultConfig, config3) : Object.assign({}, defaultConfig, config3);
 }
 function checkForCircularExtends(cfgPath) {
     if (previouslyVisitedConfigs.indexOf(cfgPath) > -1) {
         throw new YError(`Circular extended configurations: '${cfgPath}'.`);
     }
 }
-function getPathToDefaultConfig(cwd, pathToExtend) {
-    return shim1.path.resolve(cwd, pathToExtend);
+function getPathToDefaultConfig(cwd2, pathToExtend) {
+    return shim1.path.resolve(cwd2, pathToExtend);
 }
 function mergeDeep(config1, config2) {
-    const target = {
-    };
+    const target = {};
     function isObject(obj) {
         return obj && typeof obj === 'object' && !Array.isArray(obj);
     }
     Object.assign(target, config1);
-    for (const key of Object.keys(config2)){
-        if (isObject(config2[key]) && isObject(target[key])) {
-            target[key] = mergeDeep(config1[key], config2[key]);
+    for (const key66 of Object.keys(config2)){
+        if (isObject(config2[key66]) && isObject(target[key66])) {
+            target[key66] = mergeDeep(config1[key66], config2[key66]);
         } else {
-            target[key] = config2[key];
+            target[key66] = config2[key66];
         }
     }
     return target;
 }
-var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function(receiver, state, value, kind, f) {
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function(receiver, state, value20, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+    return kind === "a" ? f.call(receiver, value20) : f ? f.value = value20 : state.set(receiver, value20), value20;
 };
 const DEFAULT_MARKER = /(^\*)|(^\$0)/;
 var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function(receiver, state, kind, f) {
@@ -12145,8 +12073,8 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function(rec
 };
 var _YargsInstance_command, _YargsInstance_cwd, _YargsInstance_context, _YargsInstance_completion, _YargsInstance_completionCommand, _YargsInstance_defaultShowHiddenOpt, _YargsInstance_exitError, _YargsInstance_detectLocale, _YargsInstance_emittedWarnings, _YargsInstance_exitProcess, _YargsInstance_frozens, _YargsInstance_globalMiddleware, _YargsInstance_groups, _YargsInstance_hasOutput, _YargsInstance_helpOpt, _YargsInstance_logger, _YargsInstance_output, _YargsInstance_options, _YargsInstance_parentRequire, _YargsInstance_parserConfig, _YargsInstance_parseFn, _YargsInstance_parseContext, _YargsInstance_pkgs, _YargsInstance_preservedGroups, _YargsInstance_processArgs, _YargsInstance_recommendCommands, _YargsInstance_shim, _YargsInstance_strict, _YargsInstance_strictCommands, _YargsInstance_strictOptions, _YargsInstance_usage, _YargsInstance_versionOpt, _YargsInstance_validation;
 function YargsFactory(_shim) {
-    return (processArgs = [], cwd = _shim.process.cwd(), parentRequire)=>{
-        const yargs = new YargsInstance(processArgs, cwd, parentRequire, _shim);
+    return (processArgs = [], cwd3 = _shim.process.cwd(), parentRequire)=>{
+        const yargs = new YargsInstance(processArgs, cwd3, parentRequire, _shim);
         Object.defineProperty(yargs, 'argv', {
             get: ()=>{
                 return yargs.parse();
@@ -12196,21 +12124,18 @@ function isYargsInstance(y) {
     return !!y && typeof y.getInternalMethods === 'function';
 }
 class CommandInstance {
-    constructor(usage, validation, globalMiddleware, shim){
+    constructor(usage2, validation1, globalMiddleware, shim6){
         this.requireCache = new Set();
-        this.handlers = {
-        };
-        this.aliasMap = {
-        };
+        this.handlers = {};
+        this.aliasMap = {};
         this.frozens = [];
-        this.shim = shim;
-        this.usage = usage;
+        this.shim = shim6;
+        this.usage = usage2;
         this.globalMiddleware = globalMiddleware;
-        this.validation = validation;
+        this.validation = validation1;
     }
     addDirectory(dir, req, callerFile, opts) {
-        opts = opts || {
-        };
+        opts = opts || {};
         if (typeof opts.recurse !== 'boolean') opts.recurse = false;
         if (!Array.isArray(opts.extensions)) opts.extensions = [
             'js'
@@ -12234,20 +12159,19 @@ class CommandInstance {
     addHandler(cmd, description, builder, handler, commandMiddleware, deprecated) {
         let aliases = [];
         const middlewares = commandMiddlewareFactory(commandMiddleware);
-        handler = handler || (()=>{
-        });
+        handler = handler || (()=>{});
         if (Array.isArray(cmd)) {
             if (isCommandAndAliases(cmd)) {
                 [cmd, ...aliases] = cmd;
             } else {
-                for (const command of cmd){
-                    this.addHandler(command);
+                for (const command1 of cmd){
+                    this.addHandler(command1);
                 }
             }
         } else if (isCommandHandlerDefinition(cmd)) {
-            let command = Array.isArray(cmd.command) || typeof cmd.command === 'string' ? cmd.command : this.moduleName(cmd);
-            if (cmd.aliases) command = [].concat(command).concat(cmd.aliases);
-            this.addHandler(command, this.extractDesc(cmd), cmd.builder, cmd.handler, cmd.middlewares, cmd.deprecated);
+            let command2 = Array.isArray(cmd.command) || typeof cmd.command === 'string' ? cmd.command : this.moduleName(cmd);
+            if (cmd.aliases) command2 = [].concat(command2).concat(cmd.aliases);
+            this.addHandler(command2, this.extractDesc(cmd), cmd.builder, cmd.handler, cmd.middlewares, cmd.deprecated);
             return;
         } else if (isCommandBuilderDefinition(builder)) {
             this.addHandler([
@@ -12285,8 +12209,7 @@ class CommandInstance {
                 original: cmd,
                 description,
                 handler,
-                builder: builder || {
-                },
+                builder: builder || {},
                 middlewares,
                 deprecated,
                 demanded: parsedCommand.demanded,
@@ -12304,13 +12227,13 @@ class CommandInstance {
     hasDefaultCommand() {
         return !!this.defaultCommand;
     }
-    runCommand(command, yargs, parsed, commandIndex, helpOnly, helpOrVersionSet) {
-        const commandHandler = this.handlers[command] || this.handlers[this.aliasMap[command]] || this.defaultCommand;
+    runCommand(command3, yargs, parsed, commandIndex, helpOnly, helpOrVersionSet) {
+        const commandHandler = this.handlers[command3] || this.handlers[this.aliasMap[command3]] || this.defaultCommand;
         const currentContext = yargs.getInternalMethods().getContext();
         const parentCommands = currentContext.commands.slice();
-        const isDefaultCommand = !command;
-        if (command) {
-            currentContext.commands.push(command);
+        const isDefaultCommand = !command3;
+        if (command3) {
+            currentContext.commands.push(command3);
             currentContext.fullCommands.push(commandHandler.original);
         }
         const builderResult = this.applyBuilderUpdateUsageAndParse(isDefaultCommand, commandHandler, yargs, parsed.aliases, parentCommands, commandIndex, helpOnly, helpOrVersionSet);
@@ -12330,8 +12253,8 @@ class CommandInstance {
             }
         } else if (isCommandBuilderOptionDefinitions(builder)) {
             innerYargs = yargs.getInternalMethods().reset(aliases);
-            Object.keys(commandHandler.builder).forEach((key)=>{
-                innerYargs.option(key, builder[key]);
+            Object.keys(commandHandler.builder).forEach((key67)=>{
+                innerYargs.option(key67, builder[key67]);
             });
         }
         return this.parseAndUpdateUsage(isDefaultCommand, commandHandler, innerYargs, parentCommands, commandIndex, helpOnly);
@@ -12342,9 +12265,9 @@ class CommandInstance {
             innerYargs.getInternalMethods().getUsageInstance().usage(this.usageFromParentCommandsCommandHandler(parentCommands, commandHandler), commandHandler.description);
         }
         const innerArgv = innerYargs.getInternalMethods().runYargsParserAndExecuteCommands(null, undefined, true, commandIndex, helpOnly);
-        return isPromise(innerArgv) ? innerArgv.then((argv)=>({
+        return isPromise(innerArgv) ? innerArgv.then((argv15)=>({
                 aliases: innerYargs.parsed.aliases,
-                innerArgv: argv
+                innerArgv: argv15
             })
         ) : {
             aliases: innerYargs.parsed.aliases,
@@ -12355,16 +12278,15 @@ class CommandInstance {
         return !yargs.getInternalMethods().getUsageInstance().getUsageDisabled() && yargs.getInternalMethods().getUsageInstance().getUsage().length === 0;
     }
     usageFromParentCommandsCommandHandler(parentCommands, commandHandler) {
-        const c = DEFAULT_MARKER.test(commandHandler.original) ? commandHandler.original.replace(DEFAULT_MARKER, '').trim() : commandHandler.original;
+        const c1 = DEFAULT_MARKER.test(commandHandler.original) ? commandHandler.original.replace(DEFAULT_MARKER, '').trim() : commandHandler.original;
         const pc = parentCommands.filter((c)=>{
             return !DEFAULT_MARKER.test(c);
         });
-        pc.push(c);
+        pc.push(c1);
         return `$0 ${pc.join(' ')}`;
     }
     applyMiddlewareAndGetResult(isDefaultCommand, commandHandler, innerArgv, currentContext, helpOnly, aliases, yargs) {
-        let positionalMap = {
-        };
+        let positionalMap = {};
         if (helpOnly) return innerArgv;
         if (!yargs.getInternalMethods().getHasOutput()) {
             positionalMap = this.populatePositionals(commandHandler, innerArgv, currentContext, yargs);
@@ -12372,9 +12294,9 @@ class CommandInstance {
         const middlewares = this.globalMiddleware.getMiddleware().slice(0).concat(commandHandler.middlewares);
         innerArgv = applyMiddleware(innerArgv, yargs, middlewares, true);
         if (!yargs.getInternalMethods().getHasOutput()) {
-            const validation = yargs.getInternalMethods().runValidation(aliases, positionalMap, yargs.parsed.error, isDefaultCommand);
+            const validation2 = yargs.getInternalMethods().runValidation(aliases, positionalMap, yargs.parsed.error, isDefaultCommand);
             innerArgv = maybeAsyncResult(innerArgv, (result)=>{
-                validation(result);
+                validation2(result);
                 return result;
             });
         }
@@ -12395,8 +12317,7 @@ class CommandInstance {
                 innerArgv.catch((error)=>{
                     try {
                         yargs.getInternalMethods().getUsageInstance().fail(null, error);
-                    } catch (_err) {
-                    }
+                    } catch (_err) {}
                 });
             }
         }
@@ -12406,45 +12327,41 @@ class CommandInstance {
         }
         return innerArgv;
     }
-    populatePositionals(commandHandler, argv, context, yargs) {
-        argv._ = argv._.slice(context.commands.length);
+    populatePositionals(commandHandler, argv16, context, yargs) {
+        argv16._ = argv16._.slice(context.commands.length);
         const demanded = commandHandler.demanded.slice(0);
         const optional = commandHandler.optional.slice(0);
-        const positionalMap = {
-        };
-        this.validation.positionalCount(demanded.length, argv._.length);
+        const positionalMap = {};
+        this.validation.positionalCount(demanded.length, argv16._.length);
         while(demanded.length){
             const demand = demanded.shift();
-            this.populatePositional(demand, argv, positionalMap);
+            this.populatePositional(demand, argv16, positionalMap);
         }
         while(optional.length){
             const maybe = optional.shift();
-            this.populatePositional(maybe, argv, positionalMap);
+            this.populatePositional(maybe, argv16, positionalMap);
         }
-        argv._ = context.commands.concat(argv._.map((a)=>'' + a
+        argv16._ = context.commands.concat(argv16._.map((a)=>'' + a
         ));
-        this.postProcessPositionals(argv, positionalMap, this.cmdToParseOptions(commandHandler.original), yargs);
+        this.postProcessPositionals(argv16, positionalMap, this.cmdToParseOptions(commandHandler.original), yargs);
         return positionalMap;
     }
-    populatePositional(positional, argv, positionalMap) {
+    populatePositional(positional, argv17, positionalMap) {
         const cmd = positional.cmd[0];
         if (positional.variadic) {
-            positionalMap[cmd] = argv._.splice(0).map(String);
+            positionalMap[cmd] = argv17._.splice(0).map(String);
         } else {
-            if (argv._.length) positionalMap[cmd] = [
-                String(argv._.shift())
+            if (argv17._.length) positionalMap[cmd] = [
+                String(argv17._.shift())
             ];
         }
     }
     cmdToParseOptions(cmdString) {
         const parseOptions = {
             array: [],
-            default: {
-            },
-            alias: {
-            },
-            demand: {
-            }
+            default: {},
+            alias: {},
+            demand: {}
         };
         const parsed = parseCommand(cmdString);
         parsed.demanded.forEach((d)=>{
@@ -12466,48 +12383,44 @@ class CommandInstance {
         });
         return parseOptions;
     }
-    postProcessPositionals(argv, positionalMap, parseOptions, yargs) {
-        const options = Object.assign({
-        }, yargs.getOptions());
+    postProcessPositionals(argv18, positionalMap, parseOptions, yargs) {
+        const options = Object.assign({}, yargs.getOptions());
         options.default = Object.assign(parseOptions.default, options.default);
-        for (const key of Object.keys(parseOptions.alias)){
-            options.alias[key] = (options.alias[key] || []).concat(parseOptions.alias[key]);
+        for (const key1 of Object.keys(parseOptions.alias)){
+            options.alias[key1] = (options.alias[key1] || []).concat(parseOptions.alias[key1]);
         }
         options.array = options.array.concat(parseOptions.array);
-        options.config = {
-        };
+        options.config = {};
         const unparsed = [];
-        Object.keys(positionalMap).forEach((key)=>{
-            positionalMap[key].map((value)=>{
-                if (options.configuration['unknown-options-as-args']) options.key[key] = true;
-                unparsed.push(`--${key}`);
-                unparsed.push(value);
+        Object.keys(positionalMap).forEach((key68)=>{
+            positionalMap[key68].map((value21)=>{
+                if (options.configuration['unknown-options-as-args']) options.key[key68] = true;
+                unparsed.push(`--${key68}`);
+                unparsed.push(value21);
             });
         });
         if (!unparsed.length) return;
-        const config = Object.assign({
-        }, options.configuration, {
+        const config4 = Object.assign({}, options.configuration, {
             'populate--': false
         });
-        const parsed = this.shim.Parser.detailed(unparsed, Object.assign({
-        }, options, {
-            configuration: config
+        const parsed = this.shim.Parser.detailed(unparsed, Object.assign({}, options, {
+            configuration: config4
         }));
         if (parsed.error) {
             yargs.getInternalMethods().getUsageInstance().fail(parsed.error.message, parsed.error);
         } else {
             const positionalKeys = Object.keys(positionalMap);
-            Object.keys(positionalMap).forEach((key)=>{
-                positionalKeys.push(...parsed.aliases[key]);
+            Object.keys(positionalMap).forEach((key69)=>{
+                positionalKeys.push(...parsed.aliases[key69]);
             });
             const defaults = yargs.getOptions().default;
-            Object.keys(parsed.argv).forEach((key)=>{
-                if (positionalKeys.includes(key)) {
-                    if (!positionalMap[key]) positionalMap[key] = parsed.argv[key];
-                    if (!Object.prototype.hasOwnProperty.call(defaults, key) && Object.prototype.hasOwnProperty.call(argv, key) && Object.prototype.hasOwnProperty.call(parsed.argv, key) && (Array.isArray(argv[key]) || Array.isArray(parsed.argv[key]))) {
-                        argv[key] = [].concat(argv[key], parsed.argv[key]);
+            Object.keys(parsed.argv).forEach((key70)=>{
+                if (positionalKeys.includes(key70)) {
+                    if (!positionalMap[key70]) positionalMap[key70] = parsed.argv[key70];
+                    if (!Object.prototype.hasOwnProperty.call(defaults, key70) && Object.prototype.hasOwnProperty.call(argv18, key70) && Object.prototype.hasOwnProperty.call(parsed.argv, key70) && (Array.isArray(argv18[key70]) || Array.isArray(parsed.argv[key70]))) {
+                        argv18[key70] = [].concat(argv18[key70], parsed.argv[key70]);
                     } else {
-                        argv[key] = parsed.argv[key];
+                        argv18[key70] = parsed.argv[key70];
                     }
                 }
             });
@@ -12523,16 +12436,16 @@ class CommandInstance {
         if (isCommandBuilderCallback(builder)) {
             return builder(yargs, true);
         } else if (!isCommandBuilderDefinition(builder)) {
-            Object.keys(builder).forEach((key)=>{
-                yargs.option(key, builder[key]);
+            Object.keys(builder).forEach((key71)=>{
+                yargs.option(key71, builder[key71]);
             });
         }
         return undefined;
     }
     moduleName(obj) {
-        const mod = whichModule(obj);
-        if (!mod) throw new Error(`No command name given for module: ${this.shim.inspect(obj)}`);
-        return this.commandFromFilename(mod.filename);
+        const mod5 = whichModule(obj);
+        if (!mod5) throw new Error(`No command name given for module: ${this.shim.inspect(obj)}`);
+        return this.commandFromFilename(mod5.filename);
     }
     commandFromFilename(filename) {
         return this.shim.path.basename(filename, this.shim.path.extname(filename));
@@ -12561,17 +12474,15 @@ class CommandInstance {
         ({ handlers: this.handlers , aliasMap: this.aliasMap , defaultCommand: this.defaultCommand ,  } = frozen);
     }
     reset() {
-        this.handlers = {
-        };
-        this.aliasMap = {
-        };
+        this.handlers = {};
+        this.aliasMap = {};
         this.defaultCommand = undefined;
         this.requireCache = new Set();
         return this;
     }
 }
-function command1(usage, validation, globalMiddleware, shim) {
-    return new CommandInstance(usage, validation, globalMiddleware, shim);
+function command(usage3, validation3, globalMiddleware, shim7) {
+    return new CommandInstance(usage3, validation3, globalMiddleware, shim7);
 }
 function isCommandBuilderDefinition(builder) {
     return typeof builder === 'object' && !!builder.builder && typeof builder.handler === 'function';
@@ -12584,22 +12495,22 @@ function isCommandBuilderCallback(builder) {
     return typeof builder === 'function';
 }
 class Completion {
-    constructor(yargs, usage, command, shim){
+    constructor(yargs, usage4, command2, shim8){
         var _a, _b, _c;
         this.yargs = yargs;
-        this.usage = usage;
-        this.command = command;
-        this.shim = shim;
+        this.usage = usage4;
+        this.command = command2;
+        this.shim = shim8;
         this.completionKey = 'get-yargs-completions';
         this.aliases = null;
         this.customCompletionFunction = null;
         this.zshShell = (_c = ((_a = this.shim.getEnv('SHELL')) === null || _a === void 0 ? void 0 : _a.includes('zsh')) || ((_b = this.shim.getEnv('ZSH_NAME')) === null || _b === void 0 ? void 0 : _b.includes('zsh'))) !== null && _c !== void 0 ? _c : false;
     }
-    defaultCompletion(args, argv, current, done) {
+    defaultCompletion(args, argv19, current, done) {
         const handlers = this.command.getCommandHandlers();
-        for(let i = 0, ii = args.length; i < ii; ++i){
-            if (handlers[args[i]] && handlers[args[i]].builder) {
-                const builder = handlers[args[i]].builder;
+        for(let i65 = 0, ii = args.length; i65 < ii; ++i65){
+            if (handlers[args[i65]] && handlers[args[i65]].builder) {
+                const builder = handlers[args[i65]].builder;
                 if (isCommandBuilderCallback(builder)) {
                     const y = this.yargs.getInternalMethods().reset();
                     builder(y, true);
@@ -12609,8 +12520,8 @@ class Completion {
         }
         const completions = [];
         this.commandCompletions(completions, args, current);
-        this.optionCompletions(completions, args, argv, current);
-        this.choicesCompletions(completions, args, argv, current);
+        this.optionCompletions(completions, args, argv19, current);
+        this.choicesCompletions(completions, args, argv19, current);
         done(null, completions);
     }
     commandCompletions(completions, args, current) {
@@ -12629,16 +12540,16 @@ class Completion {
             });
         }
     }
-    optionCompletions(completions, args, argv, current) {
+    optionCompletions(completions, args, argv20, current) {
         if ((current.match(/^-/) || current === '' && completions.length === 0) && !this.previousArgHasChoices(args)) {
             const options = this.yargs.getOptions();
             const positionalKeys = this.yargs.getGroups()[this.usage.getPositionalGroupName()] || [];
-            Object.keys(options.key).forEach((key)=>{
-                const negable = !!options.configuration['boolean-negation'] && options.boolean.includes(key);
-                const isPositionalKey = positionalKeys.includes(key);
-                if (!isPositionalKey && !this.argsContainKey(args, argv, key, negable)) {
-                    this.completeOptionKey(key, completions, current);
-                    if (negable && !!options.default[key]) this.completeOptionKey(`no-${key}`, completions, current);
+            Object.keys(options.key).forEach((key72)=>{
+                const negable = !!options.configuration['boolean-negation'] && options.boolean.includes(key72);
+                const isPositionalKey = positionalKeys.includes(key72);
+                if (!isPositionalKey && !this.argsContainKey(args, argv20, key72, negable)) {
+                    this.completeOptionKey(key72, completions, current);
+                    if (negable && !!options.default[key72]) this.completeOptionKey(`no-${key72}`, completions, current);
                 }
             });
         }
@@ -12654,17 +12565,17 @@ class Completion {
     getPreviousArgChoices(args) {
         if (args.length < 1) return;
         let previousArg = args[args.length - 1];
-        let filter = '';
+        let filter2 = '';
         if (!previousArg.startsWith('--') && args.length > 1) {
-            filter = previousArg;
+            filter2 = previousArg;
             previousArg = args[args.length - 2];
         }
         if (!previousArg.startsWith('--')) return;
         const previousArgKey = previousArg.replace(/-/g, '');
         const options = this.yargs.getOptions();
-        if (Object.keys(options.key).some((key)=>key === previousArgKey
+        if (Object.keys(options.key).some((key73)=>key73 === previousArgKey
         ) && Array.isArray(options.choices[previousArgKey])) {
-            return options.choices[previousArgKey].filter((choice)=>!filter || choice.startsWith(filter)
+            return options.choices[previousArgKey].filter((choice)=>!filter2 || choice.startsWith(filter2)
             );
         }
     }
@@ -12672,64 +12583,64 @@ class Completion {
         const choices = this.getPreviousArgChoices(args);
         return choices !== undefined && choices.length > 0;
     }
-    argsContainKey(args, argv, key, negable) {
-        if (args.indexOf(`--${key}`) !== -1) return true;
-        if (negable && args.indexOf(`--no-${key}`) !== -1) return true;
+    argsContainKey(args, argv21, key74, negable) {
+        if (args.indexOf(`--${key74}`) !== -1) return true;
+        if (negable && args.indexOf(`--no-${key74}`) !== -1) return true;
         if (this.aliases) {
-            for (const alias of this.aliases[key]){
-                if (argv[alias] !== undefined) return true;
+            for (const alias of this.aliases[key74]){
+                if (argv21[alias] !== undefined) return true;
             }
         }
         return false;
     }
-    completeOptionKey(key, completions, current) {
+    completeOptionKey(key75, completions, current) {
         const descs = this.usage.getDescriptions();
         const startsByTwoDashes = (s)=>/^--/.test(s)
         ;
         const isShortOption = (s)=>/^[^0-9]$/.test(s)
         ;
-        const dashes = !startsByTwoDashes(current) && isShortOption(key) ? '-' : '--';
+        const dashes = !startsByTwoDashes(current) && isShortOption(key75) ? '-' : '--';
         if (!this.zshShell) {
-            completions.push(dashes + key);
+            completions.push(dashes + key75);
         } else {
-            const desc = descs[key] || '';
-            completions.push(dashes + `${key.replace(/:/g, '\\:')}:${desc.replace('__yargsString__:', '')}`);
+            const desc = descs[key75] || '';
+            completions.push(dashes + `${key75.replace(/:/g, '\\:')}:${desc.replace('__yargsString__:', '')}`);
         }
     }
-    customCompletion(args, argv, current, done) {
+    customCompletion(args, argv22, current, done) {
         assertNotStrictEqual(this.customCompletionFunction, null, this.shim);
         if (isSyncCompletionFunction(this.customCompletionFunction)) {
-            const result = this.customCompletionFunction(current, argv);
+            const result = this.customCompletionFunction(current, argv22);
             if (isPromise(result)) {
                 return result.then((list)=>{
                     this.shim.process.nextTick(()=>{
                         done(null, list);
                     });
-                }).catch((err)=>{
+                }).catch((err5)=>{
                     this.shim.process.nextTick(()=>{
-                        done(err, undefined);
+                        done(err5, undefined);
                     });
                 });
             }
             return done(null, result);
         } else if (isFallbackCompletionFunction(this.customCompletionFunction)) {
-            return this.customCompletionFunction(current, argv, (onCompleted = done)=>this.defaultCompletion(args, argv, current, onCompleted)
+            return this.customCompletionFunction(current, argv22, (onCompleted = done)=>this.defaultCompletion(args, argv22, current, onCompleted)
             , (completions)=>{
                 done(null, completions);
             });
         } else {
-            return this.customCompletionFunction(current, argv, (completions)=>{
+            return this.customCompletionFunction(current, argv22, (completions)=>{
                 done(null, completions);
             });
         }
     }
     getCompletion(args, done) {
         const current = args.length ? args[args.length - 1] : '';
-        const argv = this.yargs.parse(args, true);
-        const completionFunction = this.customCompletionFunction ? (argv)=>this.customCompletion(args, argv, current, done)
-         : (argv)=>this.defaultCompletion(args, argv, current, done)
+        const argv1 = this.yargs.parse(args, true);
+        const completionFunction = this.customCompletionFunction ? (argv23)=>this.customCompletion(args, argv23, current, done)
+         : (argv24)=>this.defaultCompletion(args, argv24, current, done)
         ;
-        return isPromise(argv) ? argv.then(completionFunction) : completionFunction(argv);
+        return isPromise(argv1) ? argv1.then(completionFunction) : completionFunction(argv1);
     }
     generateCompletionScript($0, cmd) {
         let script = this.zshShell ? completionZshTemplate : completionShTemplate;
@@ -12746,11 +12657,11 @@ class Completion {
         this.aliases = parsed.aliases;
     }
 }
-function completion(yargs, usage, command, shim) {
-    return new Completion(yargs, usage, command, shim);
+function completion(yargs, usage5, command3, shim9) {
+    return new Completion(yargs, usage5, command3, shim9);
 }
 class YargsInstance {
-    constructor(processArgs = [], cwd, parentRequire, shim){
+    constructor(processArgs = [], cwd4, parentRequire, shim10){
         this.customScriptName = false;
         this.parsed = false;
         _YargsInstance_command.set(this, void 0);
@@ -12764,27 +12675,22 @@ class YargsInstance {
         _YargsInstance_defaultShowHiddenOpt.set(this, 'show-hidden');
         _YargsInstance_exitError.set(this, null);
         _YargsInstance_detectLocale.set(this, true);
-        _YargsInstance_emittedWarnings.set(this, {
-        });
+        _YargsInstance_emittedWarnings.set(this, {});
         _YargsInstance_exitProcess.set(this, true);
         _YargsInstance_frozens.set(this, []);
         _YargsInstance_globalMiddleware.set(this, void 0);
-        _YargsInstance_groups.set(this, {
-        });
+        _YargsInstance_groups.set(this, {});
         _YargsInstance_hasOutput.set(this, false);
         _YargsInstance_helpOpt.set(this, null);
         _YargsInstance_logger.set(this, void 0);
         _YargsInstance_output.set(this, '');
         _YargsInstance_options.set(this, void 0);
         _YargsInstance_parentRequire.set(this, void 0);
-        _YargsInstance_parserConfig.set(this, {
-        });
+        _YargsInstance_parserConfig.set(this, {});
         _YargsInstance_parseFn.set(this, null);
         _YargsInstance_parseContext.set(this, null);
-        _YargsInstance_pkgs.set(this, {
-        });
-        _YargsInstance_preservedGroups.set(this, {
-        });
+        _YargsInstance_pkgs.set(this, {});
+        _YargsInstance_preservedGroups.set(this, {});
         _YargsInstance_processArgs.set(this, void 0);
         _YargsInstance_recommendCommands.set(this, false);
         _YargsInstance_shim.set(this, void 0);
@@ -12794,9 +12700,9 @@ class YargsInstance {
         _YargsInstance_usage.set(this, void 0);
         _YargsInstance_versionOpt.set(this, null);
         _YargsInstance_validation.set(this, void 0);
-        __classPrivateFieldSet(this, _YargsInstance_shim, shim, "f");
+        __classPrivateFieldSet(this, _YargsInstance_shim, shim10, "f");
         __classPrivateFieldSet(this, _YargsInstance_processArgs, processArgs, "f");
-        __classPrivateFieldSet(this, _YargsInstance_cwd, cwd, "f");
+        __classPrivateFieldSet(this, _YargsInstance_cwd, cwd4, "f");
         __classPrivateFieldSet(this, _YargsInstance_parentRequire, parentRequire, "f");
         __classPrivateFieldSet(this, _YargsInstance_globalMiddleware, new GlobalMiddleware(this), "f");
         this.$0 = this[kGetDollarZero]();
@@ -12842,12 +12748,12 @@ class YargsInstance {
     showHidden(opt, msg) {
         return this.addShowHiddenOpt(opt, msg);
     }
-    alias(key, value) {
+    alias(key76, value22) {
         argsert('<object|string|array> [string|array]', [
-            key,
-            value
+            key76,
+            value22
         ], arguments.length);
-        this[kPopulateParserHintArrayDictionary](this.alias.bind(this), 'alias', key, value);
+        this[kPopulateParserHintArrayDictionary](this.alias.bind(this), 'alias', key76, value22);
         return this;
     }
     array(keys) {
@@ -12871,69 +12777,69 @@ class YargsInstance {
             f,
             global
         ], arguments.length);
-        this.middleware((argv, _yargs)=>{
+        this.middleware((argv25, _yargs)=>{
             return maybeAsyncResult(()=>{
-                return f(argv);
+                return f(argv25);
             }, (result)=>{
                 if (!result) {
                     __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(__classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.__('Argument check failed: %s', f.toString()));
                 } else if (typeof result === 'string' || result instanceof Error) {
                     __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(result.toString(), result);
                 }
-                return argv;
-            }, (err)=>{
-                __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(err.message ? err.message : err.toString(), err);
-                return argv;
+                return argv25;
+            }, (err6)=>{
+                __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(err6.message ? err6.message : err6.toString(), err6);
+                return argv25;
             });
         }, false, global);
         return this;
     }
-    choices(key, value) {
+    choices(key77, value23) {
         argsert('<object|string|array> [string|array]', [
-            key,
-            value
+            key77,
+            value23
         ], arguments.length);
-        this[kPopulateParserHintArrayDictionary](this.choices.bind(this), 'choices', key, value);
+        this[kPopulateParserHintArrayDictionary](this.choices.bind(this), 'choices', key77, value23);
         return this;
     }
-    coerce(keys, value) {
+    coerce(keys, value24) {
         argsert('<object|string|array> [function]', [
             keys,
-            value
+            value24
         ], arguments.length);
         if (Array.isArray(keys)) {
-            if (!value) {
+            if (!value24) {
                 throw new YError('coerce callback must be provided');
             }
-            for (const key of keys){
-                this.coerce(key, value);
+            for (const key78 of keys){
+                this.coerce(key78, value24);
             }
             return this;
         } else if (typeof keys === 'object') {
-            for (const key of Object.keys(keys)){
-                this.coerce(key, keys[key]);
+            for (const key79 of Object.keys(keys)){
+                this.coerce(key79, keys[key79]);
             }
             return this;
         }
-        if (!value) {
+        if (!value24) {
             throw new YError('coerce callback must be provided');
         }
         __classPrivateFieldGet(this, _YargsInstance_options, "f").key[keys] = true;
-        __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").addCoerceMiddleware((argv, yargs)=>{
+        __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").addCoerceMiddleware((argv26, yargs)=>{
             let aliases;
             return maybeAsyncResult(()=>{
                 aliases = yargs.getAliases();
-                return value(argv[keys]);
+                return value24(argv26[keys]);
             }, (result)=>{
-                argv[keys] = result;
+                argv26[keys] = result;
                 if (aliases[keys]) {
                     for (const alias of aliases[keys]){
-                        argv[alias] = result;
+                        argv26[alias] = result;
                     }
                 }
-                return argv;
-            }, (err)=>{
-                throw new YError(err.message);
+                return argv26;
+            }, (err7)=>{
+                throw new YError(err7.message);
             });
         }, keys);
         return this;
@@ -12946,24 +12852,24 @@ class YargsInstance {
         __classPrivateFieldGet(this, _YargsInstance_validation, "f").conflicts(key1, key2);
         return this;
     }
-    config(key = 'config', msg, parseFn) {
+    config(key80 = 'config', msg, parseFn) {
         argsert('[object|string] [string|function] [function]', [
-            key,
+            key80,
             msg,
             parseFn
         ], arguments.length);
-        if (typeof key === 'object' && !Array.isArray(key)) {
-            key = applyExtends(key, __classPrivateFieldGet(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || []).concat(key);
+        if (typeof key80 === 'object' && !Array.isArray(key80)) {
+            key80 = applyExtends(key80, __classPrivateFieldGet(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+            __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || []).concat(key80);
             return this;
         }
         if (typeof msg === 'function') {
             parseFn = msg;
             msg = undefined;
         }
-        this.describe(key, msg || __classPrivateFieldGet(this, _YargsInstance_usage, "f").deferY18nLookup('Path to JSON config file'));
-        (Array.isArray(key) ? key : [
-            key
+        this.describe(key80, msg || __classPrivateFieldGet(this, _YargsInstance_usage, "f").deferY18nLookup('Path to JSON config file'));
+        (Array.isArray(key80) ? key80 : [
+            key80
         ]).forEach((k)=>{
             __classPrivateFieldGet(this, _YargsInstance_options, "f").config[k] = parseFn || true;
         });
@@ -13019,30 +12925,30 @@ class YargsInstance {
         this[kTrackManuallySetKeys](keys);
         return this;
     }
-    default(key, value, defaultDescription) {
+    default(key81, value25, defaultDescription) {
         argsert('<object|string|array> [*] [string]', [
-            key,
-            value,
+            key81,
+            value25,
             defaultDescription
         ], arguments.length);
         if (defaultDescription) {
-            assertSingleKey(key, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key] = defaultDescription;
+            assertSingleKey(key81, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+            __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key81] = defaultDescription;
         }
-        if (typeof value === 'function') {
-            assertSingleKey(key, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-            if (!__classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key]) __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key] = __classPrivateFieldGet(this, _YargsInstance_usage, "f").functionDescription(value);
-            value = value.call();
+        if (typeof value25 === 'function') {
+            assertSingleKey(key81, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+            if (!__classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key81]) __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key81] = __classPrivateFieldGet(this, _YargsInstance_usage, "f").functionDescription(value25);
+            value25 = value25.call();
         }
-        this[kPopulateParserHintSingleValueDictionary](this.default.bind(this), 'default', key, value);
+        this[kPopulateParserHintSingleValueDictionary](this.default.bind(this), 'default', key81, value25);
         return this;
     }
-    defaults(key, value, defaultDescription) {
-        return this.default(key, value, defaultDescription);
+    defaults(key82, value26, defaultDescription) {
+        return this.default(key82, value26, defaultDescription);
     }
-    demandCommand(min = 1, max, minMsg, maxMsg) {
+    demandCommand(min1 = 1, max, minMsg, maxMsg) {
         argsert('[number] [number|string] [string|null|undefined] [string|null|undefined]', [
-            min,
+            min1,
             max,
             minMsg,
             maxMsg
@@ -13053,7 +12959,7 @@ class YargsInstance {
         }
         this.global('_', false);
         __classPrivateFieldGet(this, _YargsInstance_options, "f").demandedCommands._ = {
-            min,
+            min: min1,
             max,
             minMsg,
             maxMsg
@@ -13062,9 +12968,9 @@ class YargsInstance {
     }
     demand(keys, max, msg) {
         if (Array.isArray(max)) {
-            max.forEach((key)=>{
+            max.forEach((key83)=>{
                 assertNotStrictEqual(msg, true, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-                this.demandOption(key, msg);
+                this.demandOption(key83, msg);
             });
             max = Infinity;
         } else if (typeof max !== 'number') {
@@ -13075,9 +12981,9 @@ class YargsInstance {
             assertNotStrictEqual(msg, true, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
             this.demandCommand(keys, max, msg, msg);
         } else if (Array.isArray(keys)) {
-            keys.forEach((key)=>{
+            keys.forEach((key84)=>{
                 assertNotStrictEqual(msg, true, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
-                this.demandOption(key, msg);
+                this.demandOption(key84, msg);
             });
         } else {
             if (typeof msg === 'string') {
@@ -13151,16 +13057,16 @@ class YargsInstance {
         }
         return this;
     }
-    exit(code, err) {
+    exit(code49, err8) {
         __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
-        __classPrivateFieldSet(this, _YargsInstance_exitError, err, "f");
-        if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f")) __classPrivateFieldGet(this, _YargsInstance_shim, "f").process.exit(code);
+        __classPrivateFieldSet(this, _YargsInstance_exitError, err8, "f");
+        if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f")) __classPrivateFieldGet(this, _YargsInstance_shim, "f").process.exit(code49);
     }
-    exitProcess(enabled = true) {
+    exitProcess(enabled3 = true) {
         argsert('[boolean]', [
-            enabled
+            enabled3
         ], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_exitProcess, enabled, "f");
+        __classPrivateFieldSet(this, _YargsInstance_exitProcess, enabled3, "f");
         return this;
     }
     fail(f) {
@@ -13174,8 +13080,7 @@ class YargsInstance {
         return this;
     }
     getAliases() {
-        return this.parsed ? this.parsed.aliases : {
-        };
+        return this.parsed ? this.parsed.aliases : {};
     }
     async getCompletion(args, done) {
         argsert('<array> [function]', [
@@ -13183,10 +13088,10 @@ class YargsInstance {
             done
         ], arguments.length);
         if (!done) {
-            return new Promise((resolve, reject)=>{
-                __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(args, (err, completions)=>{
-                    if (err) reject(err);
-                    else resolve(completions);
+            return new Promise((resolve7, reject)=>{
+                __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(args, (err9, completions)=>{
+                    if (err9) reject(err9);
+                    else resolve7(completions);
                 });
             });
         } else {
@@ -13212,16 +13117,15 @@ class YargsInstance {
         return __classPrivateFieldGet(this, _YargsInstance_exitProcess, "f");
     }
     getGroups() {
-        return Object.assign({
-        }, __classPrivateFieldGet(this, _YargsInstance_groups, "f"), __classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f"));
+        return Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_groups, "f"), __classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f"));
     }
     getHelp() {
         __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
         if (!__classPrivateFieldGet(this, _YargsInstance_usage, "f").hasCachedHelpMessage()) {
             if (!this.parsed) {
-                const parse = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
-                if (isPromise(parse)) {
-                    return parse.then(()=>{
+                const parse7 = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
+                if (isPromise(parse7)) {
+                    return parse7.then(()=>{
                         return __classPrivateFieldGet(this, _YargsInstance_usage, "f").help();
                     });
                 }
@@ -13272,27 +13176,26 @@ class YargsInstance {
         if (__classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f")[groupName]) {
             delete __classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f")[groupName];
         }
-        const seen = {
-        };
-        __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName] = (existing || []).concat(opts).filter((key)=>{
-            if (seen[key]) return false;
-            return seen[key] = true;
+        const seen = {};
+        __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName] = (existing || []).concat(opts).filter((key85)=>{
+            if (seen[key85]) return false;
+            return seen[key85] = true;
         });
         return this;
     }
-    hide(key) {
+    hide(key86) {
         argsert('<string>', [
-            key
+            key86
         ], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_options, "f").hiddenOptions.push(key);
+        __classPrivateFieldGet(this, _YargsInstance_options, "f").hiddenOptions.push(key86);
         return this;
     }
-    implies(key, value) {
+    implies(key87, value27) {
         argsert('<string|object> [number|string|array]', [
-            key,
-            value
+            key87,
+            value27
         ], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_validation, "f").implies(key, value);
+        __classPrivateFieldGet(this, _YargsInstance_validation, "f").implies(key87, value27);
         return this;
     }
     locale(locale) {
@@ -13310,12 +13213,12 @@ class YargsInstance {
     middleware(callback, applyBeforeValidation, global) {
         return __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").addMiddleware(callback, !!applyBeforeValidation, global);
     }
-    nargs(key, value) {
+    nargs(key88, value28) {
         argsert('<string|object|array> [number]', [
-            key,
-            value
+            key88,
+            value28
         ], arguments.length);
-        this[kPopulateParserHintSingleValueDictionary](this.nargs.bind(this), 'narg', key, value);
+        this[kPopulateParserHintSingleValueDictionary](this.nargs.bind(this), 'narg', key88, value28);
         return this;
     }
     normalize(keys) {
@@ -13333,22 +13236,21 @@ class YargsInstance {
         this[kTrackManuallySetKeys](keys);
         return this;
     }
-    option(key, opt) {
+    option(key89, opt) {
         argsert('<string|object> [object]', [
-            key,
+            key89,
             opt
         ], arguments.length);
-        if (typeof key === 'object') {
-            Object.keys(key).forEach((k)=>{
-                this.options(k, key[k]);
+        if (typeof key89 === 'object') {
+            Object.keys(key89).forEach((k)=>{
+                this.options(k, key89[k]);
             });
         } else {
             if (typeof opt !== 'object') {
-                opt = {
-                };
+                opt = {};
             }
-            this[kTrackManuallySetKeys](key);
-            if (__classPrivateFieldGet(this, _YargsInstance_versionOpt, "f") && (key === 'version' || (opt === null || opt === void 0 ? void 0 : opt.alias) === 'version')) {
+            this[kTrackManuallySetKeys](key89);
+            if (__classPrivateFieldGet(this, _YargsInstance_versionOpt, "f") && (key89 === 'version' || (opt === null || opt === void 0 ? void 0 : opt.alias) === 'version')) {
                 this[kEmitWarning]([
                     '"version" is a reserved word.',
                     'Please do one of the following:',
@@ -13358,87 +13260,87 @@ class YargsInstance {
                     'https://yargs.js.org/docs/#api-reference-version', 
                 ].join('\n'), undefined, 'versionWarning');
             }
-            __classPrivateFieldGet(this, _YargsInstance_options, "f").key[key] = true;
-            if (opt.alias) this.alias(key, opt.alias);
+            __classPrivateFieldGet(this, _YargsInstance_options, "f").key[key89] = true;
+            if (opt.alias) this.alias(key89, opt.alias);
             const deprecate = opt.deprecate || opt.deprecated;
             if (deprecate) {
-                this.deprecateOption(key, deprecate);
+                this.deprecateOption(key89, deprecate);
             }
             const demand = opt.demand || opt.required || opt.require;
             if (demand) {
-                this.demand(key, demand);
+                this.demand(key89, demand);
             }
             if (opt.demandOption) {
-                this.demandOption(key, typeof opt.demandOption === 'string' ? opt.demandOption : undefined);
+                this.demandOption(key89, typeof opt.demandOption === 'string' ? opt.demandOption : undefined);
             }
             if (opt.conflicts) {
-                this.conflicts(key, opt.conflicts);
+                this.conflicts(key89, opt.conflicts);
             }
             if ('default' in opt) {
-                this.default(key, opt.default);
+                this.default(key89, opt.default);
             }
             if (opt.implies !== undefined) {
-                this.implies(key, opt.implies);
+                this.implies(key89, opt.implies);
             }
             if (opt.nargs !== undefined) {
-                this.nargs(key, opt.nargs);
+                this.nargs(key89, opt.nargs);
             }
             if (opt.config) {
-                this.config(key, opt.configParser);
+                this.config(key89, opt.configParser);
             }
             if (opt.normalize) {
-                this.normalize(key);
+                this.normalize(key89);
             }
             if (opt.choices) {
-                this.choices(key, opt.choices);
+                this.choices(key89, opt.choices);
             }
             if (opt.coerce) {
-                this.coerce(key, opt.coerce);
+                this.coerce(key89, opt.coerce);
             }
             if (opt.group) {
-                this.group(key, opt.group);
+                this.group(key89, opt.group);
             }
             if (opt.boolean || opt.type === 'boolean') {
-                this.boolean(key);
+                this.boolean(key89);
                 if (opt.alias) this.boolean(opt.alias);
             }
             if (opt.array || opt.type === 'array') {
-                this.array(key);
+                this.array(key89);
                 if (opt.alias) this.array(opt.alias);
             }
             if (opt.number || opt.type === 'number') {
-                this.number(key);
+                this.number(key89);
                 if (opt.alias) this.number(opt.alias);
             }
             if (opt.string || opt.type === 'string') {
-                this.string(key);
+                this.string(key89);
                 if (opt.alias) this.string(opt.alias);
             }
             if (opt.count || opt.type === 'count') {
-                this.count(key);
+                this.count(key89);
             }
             if (typeof opt.global === 'boolean') {
-                this.global(key, opt.global);
+                this.global(key89, opt.global);
             }
             if (opt.defaultDescription) {
-                __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key] = opt.defaultDescription;
+                __classPrivateFieldGet(this, _YargsInstance_options, "f").defaultDescription[key89] = opt.defaultDescription;
             }
             if (opt.skipValidation) {
-                this.skipValidation(key);
+                this.skipValidation(key89);
             }
             const desc = opt.describe || opt.description || opt.desc;
-            this.describe(key, desc);
+            this.describe(key89, desc);
             if (opt.hidden) {
-                this.hide(key);
+                this.hide(key89);
             }
             if (opt.requiresArg) {
-                this.requiresArg(key);
+                this.requiresArg(key89);
             }
         }
         return this;
     }
-    options(key, opt) {
-        return this.option(key, opt);
+    options(key90, opt) {
+        return this.option(key90, opt);
     }
     parse(args, shortCircuit, _parseFn) {
         argsert('[string|array] [function|boolean|object] [function]', [
@@ -13464,14 +13366,14 @@ class YargsInstance {
         const tmpParsed = this.parsed;
         __classPrivateFieldGet(this, _YargsInstance_completion, "f").setParsed(this.parsed);
         if (isPromise(parsed)) {
-            return parsed.then((argv)=>{
-                if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f")) __classPrivateFieldGet(this, _YargsInstance_parseFn, "f").call(this, __classPrivateFieldGet(this, _YargsInstance_exitError, "f"), argv, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
-                return argv;
-            }).catch((err)=>{
+            return parsed.then((argv27)=>{
+                if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f")) __classPrivateFieldGet(this, _YargsInstance_parseFn, "f").call(this, __classPrivateFieldGet(this, _YargsInstance_exitError, "f"), argv27, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
+                return argv27;
+            }).catch((err10)=>{
                 if (__classPrivateFieldGet(this, _YargsInstance_parseFn, "f")) {
-                    __classPrivateFieldGet(this, _YargsInstance_parseFn, "f")(err, this.parsed.argv, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
+                    __classPrivateFieldGet(this, _YargsInstance_parseFn, "f")(err10, this.parsed.argv, __classPrivateFieldGet(this, _YargsInstance_output, "f"));
                 }
-                throw err;
+                throw err10;
             }).finally(()=>{
                 this[kUnfreeze]();
                 this.parsed = tmpParsed;
@@ -13494,29 +13396,29 @@ class YargsInstance {
         }
         return maybePromise;
     }
-    parserConfiguration(config) {
+    parserConfiguration(config5) {
         argsert('<object>', [
-            config
+            config5
         ], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_parserConfig, config, "f");
+        __classPrivateFieldSet(this, _YargsInstance_parserConfig, config5, "f");
         return this;
     }
-    pkgConf(key, rootPath) {
+    pkgConf(key91, rootPath) {
         argsert('<string> [string]', [
-            key,
+            key91,
             rootPath
         ], arguments.length);
         let conf = null;
         const obj = this[kPkgUp](rootPath || __classPrivateFieldGet(this, _YargsInstance_cwd, "f"));
-        if (obj[key] && typeof obj[key] === 'object') {
-            conf = applyExtends(obj[key], rootPath || __classPrivateFieldGet(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
+        if (obj[key91] && typeof obj[key91] === 'object') {
+            conf = applyExtends(obj[key91], rootPath || __classPrivateFieldGet(this, _YargsInstance_cwd, "f"), this[kGetParserConfiguration]()['deep-merge-config'] || false, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
             __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = (__classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || []).concat(conf);
         }
         return this;
     }
-    positional(key, opts) {
+    positional(key92, opts) {
         argsert('<string> <object>', [
-            key,
+            key92,
             opts
         ], arguments.length);
         const supportedOpts = [
@@ -13544,23 +13446,20 @@ class YargsInstance {
         const fullCommand = __classPrivateFieldGet(this, _YargsInstance_context, "f").fullCommands[__classPrivateFieldGet(this, _YargsInstance_context, "f").fullCommands.length - 1];
         const parseOptions = fullCommand ? __classPrivateFieldGet(this, _YargsInstance_command, "f").cmdToParseOptions(fullCommand) : {
             array: [],
-            alias: {
-            },
-            default: {
-            },
-            demand: {
-            }
+            alias: {},
+            default: {},
+            demand: {}
         };
         objectKeys(parseOptions).forEach((pk)=>{
             const parseOption = parseOptions[pk];
             if (Array.isArray(parseOption)) {
-                if (parseOption.indexOf(key) !== -1) opts[pk] = true;
+                if (parseOption.indexOf(key92) !== -1) opts[pk] = true;
             } else {
-                if (parseOption[key] && !(pk in opts)) opts[pk] = parseOption[key];
+                if (parseOption[key92] && !(pk in opts)) opts[pk] = parseOption[key92];
             }
         });
-        this.group(key, __classPrivateFieldGet(this, _YargsInstance_usage, "f").getPositionalGroupName());
-        return this.option(key, opts);
+        this.group(key92, __classPrivateFieldGet(this, _YargsInstance_usage, "f").getPositionalGroupName());
+        return this.option(key92, opts);
     }
     recommendCommands(recommend = true) {
         argsert('[boolean]', [
@@ -13602,9 +13501,9 @@ class YargsInstance {
         __classPrivateFieldSet(this, _YargsInstance_hasOutput, true, "f");
         if (!__classPrivateFieldGet(this, _YargsInstance_usage, "f").hasCachedHelpMessage()) {
             if (!this.parsed) {
-                const parse = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
-                if (isPromise(parse)) {
-                    parse.then(()=>{
+                const parse8 = this[kRunYargsParserAndExecuteCommands](__classPrivateFieldGet(this, _YargsInstance_processArgs, "f"), undefined, undefined, 0, true);
+                if (isPromise(parse8)) {
+                    parse8.then(()=>{
                         __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelp(level);
                     });
                     return this;
@@ -13626,12 +13525,12 @@ class YargsInstance {
         this.$0 = scriptName;
         return this;
     }
-    showHelpOnFail(enabled, message) {
+    showHelpOnFail(enabled4, message) {
         argsert('[boolean|string] [string]', [
-            enabled,
+            enabled4,
             message
         ], arguments.length);
-        __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelpOnFail(enabled, message);
+        __classPrivateFieldGet(this, _YargsInstance_usage, "f").showHelpOnFail(enabled4, message);
         return this;
     }
     showVersion(level) {
@@ -13648,25 +13547,25 @@ class YargsInstance {
         this[kPopulateParserHintArray]('skipValidation', keys);
         return this;
     }
-    strict(enabled) {
+    strict(enabled5) {
         argsert('[boolean]', [
-            enabled
+            enabled5
         ], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_strict, enabled !== false, "f");
+        __classPrivateFieldSet(this, _YargsInstance_strict, enabled5 !== false, "f");
         return this;
     }
-    strictCommands(enabled) {
+    strictCommands(enabled6) {
         argsert('[boolean]', [
-            enabled
+            enabled6
         ], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_strictCommands, enabled !== false, "f");
+        __classPrivateFieldSet(this, _YargsInstance_strictCommands, enabled6 !== false, "f");
         return this;
     }
-    strictOptions(enabled) {
+    strictOptions(enabled7) {
         argsert('[boolean]', [
-            enabled
+            enabled7
         ], arguments.length);
-        __classPrivateFieldSet(this, _YargsInstance_strictOptions, enabled !== false, "f");
+        __classPrivateFieldSet(this, _YargsInstance_strictOptions, enabled7 !== false, "f");
         return this;
     }
     string(keys) {
@@ -13750,14 +13649,13 @@ class YargsInstance {
         __classPrivateFieldGet(this, _YargsInstance_usage, "f").wrap(cols);
         return this;
     }
-    [(_YargsInstance_command = new WeakMap(), _YargsInstance_cwd = new WeakMap(), _YargsInstance_context = new WeakMap(), _YargsInstance_completion = new WeakMap(), _YargsInstance_completionCommand = new WeakMap(), _YargsInstance_defaultShowHiddenOpt = new WeakMap(), _YargsInstance_exitError = new WeakMap(), _YargsInstance_detectLocale = new WeakMap(), _YargsInstance_emittedWarnings = new WeakMap(), _YargsInstance_exitProcess = new WeakMap(), _YargsInstance_frozens = new WeakMap(), _YargsInstance_globalMiddleware = new WeakMap(), _YargsInstance_groups = new WeakMap(), _YargsInstance_hasOutput = new WeakMap(), _YargsInstance_helpOpt = new WeakMap(), _YargsInstance_logger = new WeakMap(), _YargsInstance_output = new WeakMap(), _YargsInstance_options = new WeakMap(), _YargsInstance_parentRequire = new WeakMap(), _YargsInstance_parserConfig = new WeakMap(), _YargsInstance_parseFn = new WeakMap(), _YargsInstance_parseContext = new WeakMap(), _YargsInstance_pkgs = new WeakMap(), _YargsInstance_preservedGroups = new WeakMap(), _YargsInstance_processArgs = new WeakMap(), _YargsInstance_recommendCommands = new WeakMap(), _YargsInstance_shim = new WeakMap(), _YargsInstance_strict = new WeakMap(), _YargsInstance_strictCommands = new WeakMap(), _YargsInstance_strictOptions = new WeakMap(), _YargsInstance_usage = new WeakMap(), _YargsInstance_versionOpt = new WeakMap(), _YargsInstance_validation = new WeakMap(), kCopyDoubleDash)](argv) {
-        if (!argv._ || !argv['--']) return argv;
-        argv._.push.apply(argv._, argv['--']);
+    [(_YargsInstance_command = new WeakMap(), _YargsInstance_cwd = new WeakMap(), _YargsInstance_context = new WeakMap(), _YargsInstance_completion = new WeakMap(), _YargsInstance_completionCommand = new WeakMap(), _YargsInstance_defaultShowHiddenOpt = new WeakMap(), _YargsInstance_exitError = new WeakMap(), _YargsInstance_detectLocale = new WeakMap(), _YargsInstance_emittedWarnings = new WeakMap(), _YargsInstance_exitProcess = new WeakMap(), _YargsInstance_frozens = new WeakMap(), _YargsInstance_globalMiddleware = new WeakMap(), _YargsInstance_groups = new WeakMap(), _YargsInstance_hasOutput = new WeakMap(), _YargsInstance_helpOpt = new WeakMap(), _YargsInstance_logger = new WeakMap(), _YargsInstance_output = new WeakMap(), _YargsInstance_options = new WeakMap(), _YargsInstance_parentRequire = new WeakMap(), _YargsInstance_parserConfig = new WeakMap(), _YargsInstance_parseFn = new WeakMap(), _YargsInstance_parseContext = new WeakMap(), _YargsInstance_pkgs = new WeakMap(), _YargsInstance_preservedGroups = new WeakMap(), _YargsInstance_processArgs = new WeakMap(), _YargsInstance_recommendCommands = new WeakMap(), _YargsInstance_shim = new WeakMap(), _YargsInstance_strict = new WeakMap(), _YargsInstance_strictCommands = new WeakMap(), _YargsInstance_strictOptions = new WeakMap(), _YargsInstance_usage = new WeakMap(), _YargsInstance_versionOpt = new WeakMap(), _YargsInstance_validation = new WeakMap(), kCopyDoubleDash)](argv28) {
+        if (!argv28._ || !argv28['--']) return argv28;
+        argv28._.push.apply(argv28._, argv28['--']);
         try {
-            delete argv['--'];
-        } catch (_err) {
-        }
-        return argv;
+            delete argv28['--'];
+        } catch (_err) {}
+        return argv28;
     }
     [kCreateLogger]() {
         return {
@@ -13777,7 +13675,7 @@ class YargsInstance {
     }
     [kDeleteFromParserHintObject](optionKey) {
         objectKeys(__classPrivateFieldGet(this, _YargsInstance_options, "f")).forEach((hintKey)=>{
-            if (((key)=>key === 'configObjects'
+            if (((key93)=>key93 === 'configObjects'
             )(hintKey)) return;
             const hint = __classPrivateFieldGet(this, _YargsInstance_options, "f")[hintKey];
             if (Array.isArray(hint)) {
@@ -13845,20 +13743,19 @@ class YargsInstance {
         const obj = this[kPkgUp]();
         return obj.version || 'unknown';
     }
-    [kParsePositionalNumbers](argv) {
-        const args = argv['--'] ? argv['--'] : argv._;
-        for(let i = 0, arg; (arg = args[i]) !== undefined; i++){
+    [kParsePositionalNumbers](argv29) {
+        const args = argv29['--'] ? argv29['--'] : argv29._;
+        for(let i66 = 0, arg; (arg = args[i66]) !== undefined; i66++){
             if (__classPrivateFieldGet(this, _YargsInstance_shim, "f").Parser.looksLikeNumber(arg) && Number.isSafeInteger(Math.floor(parseFloat(`${arg}`)))) {
-                args[i] = Number(arg);
+                args[i66] = Number(arg);
             }
         }
-        return argv;
+        return argv29;
     }
     [kPkgUp](rootPath) {
         const npath = rootPath || '*';
         if (__classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath]) return __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath];
-        let obj = {
-        };
+        let obj = {};
         try {
             let startDir = rootPath || __classPrivateFieldGet(this, _YargsInstance_shim, "f").mainFilename;
             if (!rootPath && __classPrivateFieldGet(this, _YargsInstance_shim, "f").path.extname(startDir)) {
@@ -13873,49 +13770,47 @@ class YargsInstance {
             });
             assertNotStrictEqual(pkgJsonPath, undefined, __classPrivateFieldGet(this, _YargsInstance_shim, "f"));
             obj = JSON.parse(__classPrivateFieldGet(this, _YargsInstance_shim, "f").readFileSync(pkgJsonPath, 'utf8'));
-        } catch (_noop) {
-        }
-        __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath] = obj || {
-        };
+        } catch (_noop) {}
+        __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath] = obj || {};
         return __classPrivateFieldGet(this, _YargsInstance_pkgs, "f")[npath];
     }
     [kPopulateParserHintArray](type, keys) {
         keys = [].concat(keys);
-        keys.forEach((key)=>{
-            key = this[kSanitizeKey](key);
-            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type].push(key);
+        keys.forEach((key94)=>{
+            key94 = this[kSanitizeKey](key94);
+            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type].push(key94);
         });
     }
-    [kPopulateParserHintSingleValueDictionary](builder, type, key, value) {
-        this[kPopulateParserHintDictionary](builder, type, key, value, (type, key, value)=>{
-            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key] = value;
+    [kPopulateParserHintSingleValueDictionary](builder, type1, key1, value1) {
+        this[kPopulateParserHintDictionary](builder, type1, key1, value1, (type, key95, value29)=>{
+            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key95] = value29;
         });
     }
-    [kPopulateParserHintArrayDictionary](builder, type, key, value) {
-        this[kPopulateParserHintDictionary](builder, type, key, value, (type, key, value)=>{
-            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key] = (__classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key] || []).concat(value);
+    [kPopulateParserHintArrayDictionary](builder, type2, key2, value2) {
+        this[kPopulateParserHintDictionary](builder, type2, key2, value2, (type, key96, value30)=>{
+            __classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key96] = (__classPrivateFieldGet(this, _YargsInstance_options, "f")[type][key96] || []).concat(value30);
         });
     }
-    [kPopulateParserHintDictionary](builder, type, key, value, singleKeyHandler) {
-        if (Array.isArray(key)) {
-            key.forEach((k)=>{
-                builder(k, value);
+    [kPopulateParserHintDictionary](builder, type, key3, value31, singleKeyHandler) {
+        if (Array.isArray(key3)) {
+            key3.forEach((k)=>{
+                builder(k, value31);
             });
-        } else if (((key)=>typeof key === 'object'
-        )(key)) {
-            for (const k of objectKeys(key)){
-                builder(k, key[k]);
+        } else if (((key97)=>typeof key97 === 'object'
+        )(key3)) {
+            for (const k of objectKeys(key3)){
+                builder(k, key3[k]);
             }
         } else {
-            singleKeyHandler(type, this[kSanitizeKey](key), value);
+            singleKeyHandler(type, this[kSanitizeKey](key3), value31);
         }
     }
-    [kSanitizeKey](key) {
-        if (key === '__proto__') return '___proto___';
-        return key;
+    [kSanitizeKey](key98) {
+        if (key98 === '__proto__') return '___proto___';
+        return key98;
     }
-    [kSetKey](key, set) {
-        this[kPopulateParserHintSingleValueDictionary](this[kSetKey].bind(this), 'key', key, set);
+    [kSetKey](key99, set) {
+        this[kPopulateParserHintSingleValueDictionary](this[kSetKey].bind(this), 'key', key99, set);
         return this;
     }
     [kUnfreeze]() {
@@ -13928,48 +13823,48 @@ class YargsInstance {
                 __classPrivateFieldSet(_a, _YargsInstance_options, _o, "f");
             }
         }).value , configObjects , exitProcess: ({
-            set value (_o1){
-                __classPrivateFieldSet(_b, _YargsInstance_exitProcess, _o1, "f");
+            set value (_o){
+                __classPrivateFieldSet(_b, _YargsInstance_exitProcess, _o, "f");
             }
         }).value , groups: ({
-            set value (_o2){
-                __classPrivateFieldSet(_c, _YargsInstance_groups, _o2, "f");
+            set value (_o){
+                __classPrivateFieldSet(_c, _YargsInstance_groups, _o, "f");
             }
         }).value , output: ({
-            set value (_o3){
-                __classPrivateFieldSet(_d, _YargsInstance_output, _o3, "f");
+            set value (_o){
+                __classPrivateFieldSet(_d, _YargsInstance_output, _o, "f");
             }
         }).value , exitError: ({
-            set value (_o4){
-                __classPrivateFieldSet(_e, _YargsInstance_exitError, _o4, "f");
+            set value (_o){
+                __classPrivateFieldSet(_e, _YargsInstance_exitError, _o, "f");
             }
         }).value , hasOutput: ({
-            set value (_o5){
-                __classPrivateFieldSet(_f, _YargsInstance_hasOutput, _o5, "f");
+            set value (_o){
+                __classPrivateFieldSet(_f, _YargsInstance_hasOutput, _o, "f");
             }
         }).value , parsed: this.parsed , strict: ({
-            set value (_o6){
-                __classPrivateFieldSet(_g, _YargsInstance_strict, _o6, "f");
+            set value (_o){
+                __classPrivateFieldSet(_g, _YargsInstance_strict, _o, "f");
             }
         }).value , strictCommands: ({
-            set value (_o7){
-                __classPrivateFieldSet(_h, _YargsInstance_strictCommands, _o7, "f");
+            set value (_o){
+                __classPrivateFieldSet(_h, _YargsInstance_strictCommands, _o, "f");
             }
         }).value , strictOptions: ({
-            set value (_o8){
-                __classPrivateFieldSet(_j, _YargsInstance_strictOptions, _o8, "f");
+            set value (_o){
+                __classPrivateFieldSet(_j, _YargsInstance_strictOptions, _o, "f");
             }
         }).value , completionCommand: ({
-            set value (_o9){
-                __classPrivateFieldSet(_k, _YargsInstance_completionCommand, _o9, "f");
+            set value (_o){
+                __classPrivateFieldSet(_k, _YargsInstance_completionCommand, _o, "f");
             }
         }).value , parseFn: ({
-            set value (_o10){
-                __classPrivateFieldSet(_l, _YargsInstance_parseFn, _o10, "f");
+            set value (_o){
+                __classPrivateFieldSet(_l, _YargsInstance_parseFn, _o, "f");
             }
         }).value , parseContext: ({
-            set value (_o11){
-                __classPrivateFieldSet(_m, _YargsInstance_parseContext, _o11, "f");
+            set value (_o){
+                __classPrivateFieldSet(_m, _YargsInstance_parseContext, _o, "f");
             }
         }).value ,  } = frozen;
         __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects = configObjects;
@@ -13978,9 +13873,9 @@ class YargsInstance {
         __classPrivateFieldGet(this, _YargsInstance_command, "f").unfreeze();
         __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").unfreeze();
     }
-    [kValidateAsync](validation, argv) {
-        return maybeAsyncResult(argv, (result)=>{
-            validation(result);
+    [kValidateAsync](validation4, argv30) {
+        return maybeAsyncResult(argv30, (result)=>{
+            validation4(result);
             return result;
         });
     }
@@ -14015,8 +13910,7 @@ class YargsInstance {
         return __classPrivateFieldGet(this, _YargsInstance_logger, "f");
     }
     [kGetParseContext]() {
-        return __classPrivateFieldGet(this, _YargsInstance_parseContext, "f") || {
-        };
+        return __classPrivateFieldGet(this, _YargsInstance_parseContext, "f") || {};
     }
     [kGetUsageInstance]() {
         return __classPrivateFieldGet(this, _YargsInstance_usage, "f");
@@ -14027,31 +13921,27 @@ class YargsInstance {
     [kHasParseCallback]() {
         return !!__classPrivateFieldGet(this, _YargsInstance_parseFn, "f");
     }
-    [kPostProcess](argv, populateDoubleDash, calledFromCommand, runGlobalMiddleware) {
-        if (calledFromCommand) return argv;
-        if (isPromise(argv)) return argv;
+    [kPostProcess](argv31, populateDoubleDash, calledFromCommand, runGlobalMiddleware) {
+        if (calledFromCommand) return argv31;
+        if (isPromise(argv31)) return argv31;
         if (!populateDoubleDash) {
-            argv = this[kCopyDoubleDash](argv);
+            argv31 = this[kCopyDoubleDash](argv31);
         }
         const parsePositionalNumbers = this[kGetParserConfiguration]()['parse-positional-numbers'] || this[kGetParserConfiguration]()['parse-positional-numbers'] === undefined;
         if (parsePositionalNumbers) {
-            argv = this[kParsePositionalNumbers](argv);
+            argv31 = this[kParsePositionalNumbers](argv31);
         }
         if (runGlobalMiddleware) {
-            argv = applyMiddleware(argv, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
+            argv31 = applyMiddleware(argv31, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
         }
-        return argv;
+        return argv31;
     }
-    [kReset](aliases = {
-    }) {
-        __classPrivateFieldSet(this, _YargsInstance_options, __classPrivateFieldGet(this, _YargsInstance_options, "f") || {
-        }, "f");
-        const tmpOptions = {
-        };
+    [kReset](aliases = {}) {
+        __classPrivateFieldSet(this, _YargsInstance_options, __classPrivateFieldGet(this, _YargsInstance_options, "f") || {}, "f");
+        const tmpOptions = {};
         tmpOptions.local = __classPrivateFieldGet(this, _YargsInstance_options, "f").local || [];
         tmpOptions.configObjects = __classPrivateFieldGet(this, _YargsInstance_options, "f").configObjects || [];
-        const localLookup = {
-        };
+        const localLookup = {};
         tmpOptions.local.forEach((l)=>{
             localLookup[l] = true;
             (aliases[l] || []).forEach((a)=>{
@@ -14059,16 +13949,14 @@ class YargsInstance {
             });
         });
         Object.assign(__classPrivateFieldGet(this, _YargsInstance_preservedGroups, "f"), Object.keys(__classPrivateFieldGet(this, _YargsInstance_groups, "f")).reduce((acc, groupName)=>{
-            const keys = __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName].filter((key)=>!(key in localLookup)
+            const keys = __classPrivateFieldGet(this, _YargsInstance_groups, "f")[groupName].filter((key100)=>!(key100 in localLookup)
             );
             if (keys.length > 0) {
                 acc[groupName] = keys;
             }
             return acc;
-        }, {
-        }));
-        __classPrivateFieldSet(this, _YargsInstance_groups, {
-        }, "f");
+        }, {}));
+        __classPrivateFieldSet(this, _YargsInstance_groups, {}, "f");
         const arrayOptions = [
             'array',
             'boolean',
@@ -14091,19 +13979,19 @@ class YargsInstance {
             'demandedCommands',
             'deprecatedOptions', 
         ];
-        arrayOptions.forEach((k)=>{
-            tmpOptions[k] = (__classPrivateFieldGet(this, _YargsInstance_options, "f")[k] || []).filter((k)=>!localLookup[k]
+        arrayOptions.forEach((k1)=>{
+            tmpOptions[k1] = (__classPrivateFieldGet(this, _YargsInstance_options, "f")[k1] || []).filter((k)=>!localLookup[k]
             );
         });
-        objectOptions.forEach((k)=>{
-            tmpOptions[k] = objFilter(__classPrivateFieldGet(this, _YargsInstance_options, "f")[k], (k)=>!localLookup[k]
+        objectOptions.forEach((k2)=>{
+            tmpOptions[k2] = objFilter(__classPrivateFieldGet(this, _YargsInstance_options, "f")[k2], (k)=>!localLookup[k]
             );
         });
         tmpOptions.envPrefix = __classPrivateFieldGet(this, _YargsInstance_options, "f").envPrefix;
         __classPrivateFieldSet(this, _YargsInstance_options, tmpOptions, "f");
         __classPrivateFieldSet(this, _YargsInstance_usage, __classPrivateFieldGet(this, _YargsInstance_usage, "f") ? __classPrivateFieldGet(this, _YargsInstance_usage, "f").reset(localLookup) : usage(this, __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
         __classPrivateFieldSet(this, _YargsInstance_validation, __classPrivateFieldGet(this, _YargsInstance_validation, "f") ? __classPrivateFieldGet(this, _YargsInstance_validation, "f").reset(localLookup) : validation(this, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
-        __classPrivateFieldSet(this, _YargsInstance_command, __classPrivateFieldGet(this, _YargsInstance_command, "f") ? __classPrivateFieldGet(this, _YargsInstance_command, "f").reset() : command1(__classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_validation, "f"), __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
+        __classPrivateFieldSet(this, _YargsInstance_command, __classPrivateFieldGet(this, _YargsInstance_command, "f") ? __classPrivateFieldGet(this, _YargsInstance_command, "f").reset() : command(__classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_validation, "f"), __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
         if (!__classPrivateFieldGet(this, _YargsInstance_completion, "f")) __classPrivateFieldSet(this, _YargsInstance_completion, completion(this, __classPrivateFieldGet(this, _YargsInstance_usage, "f"), __classPrivateFieldGet(this, _YargsInstance_command, "f"), __classPrivateFieldGet(this, _YargsInstance_shim, "f")), "f");
         __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").reset();
         __classPrivateFieldSet(this, _YargsInstance_completionCommand, null, "f");
@@ -14122,30 +14010,28 @@ class YargsInstance {
         __classPrivateFieldGet(this, _YargsInstance_options, "f").__ = __classPrivateFieldGet(this, _YargsInstance_shim, "f").y18n.__;
         __classPrivateFieldGet(this, _YargsInstance_options, "f").configuration = this[kGetParserConfiguration]();
         const populateDoubleDash = !!__classPrivateFieldGet(this, _YargsInstance_options, "f").configuration['populate--'];
-        const config = Object.assign({
-        }, __classPrivateFieldGet(this, _YargsInstance_options, "f").configuration, {
+        const config6 = Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_options, "f").configuration, {
             'populate--': true
         });
-        const parsed = __classPrivateFieldGet(this, _YargsInstance_shim, "f").Parser.detailed(args, Object.assign({
-        }, __classPrivateFieldGet(this, _YargsInstance_options, "f"), {
+        const parsed = __classPrivateFieldGet(this, _YargsInstance_shim, "f").Parser.detailed(args, Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_options, "f"), {
             configuration: {
                 'parse-positional-numbers': false,
-                ...config
+                ...config6
             }
         }));
-        const argv = Object.assign(parsed.argv, __classPrivateFieldGet(this, _YargsInstance_parseContext, "f"));
+        const argv32 = Object.assign(parsed.argv, __classPrivateFieldGet(this, _YargsInstance_parseContext, "f"));
         let argvPromise = undefined;
         const aliases = parsed.aliases;
         let helpOptSet = false;
         let versionOptSet = false;
-        Object.keys(argv).forEach((key)=>{
-            if (key === __classPrivateFieldGet(this, _YargsInstance_helpOpt, "f") && argv[key]) {
+        Object.keys(argv32).forEach((key101)=>{
+            if (key101 === __classPrivateFieldGet(this, _YargsInstance_helpOpt, "f") && argv32[key101]) {
                 helpOptSet = true;
-            } else if (key === __classPrivateFieldGet(this, _YargsInstance_versionOpt, "f") && argv[key]) {
+            } else if (key101 === __classPrivateFieldGet(this, _YargsInstance_versionOpt, "f") && argv32[key101]) {
                 versionOptSet = true;
             }
         });
-        argv.$0 = this.$0;
+        argv32.$0 = this.$0;
         this.parsed = parsed;
         if (commandIndex === 0) {
             __classPrivateFieldGet(this, _YargsInstance_usage, "f").clearCachedHelpMessage();
@@ -14153,28 +14039,28 @@ class YargsInstance {
         try {
             this[kGuessLocale]();
             if (shortCircuit) {
-                return this[kPostProcess](argv, populateDoubleDash, !!calledFromCommand, false);
+                return this[kPostProcess](argv32, populateDoubleDash, !!calledFromCommand, false);
             }
             if (__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")) {
                 const helpCmds = [
                     __classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")
                 ].concat(aliases[__classPrivateFieldGet(this, _YargsInstance_helpOpt, "f")] || []).filter((k)=>k.length > 1
                 );
-                if (helpCmds.includes('' + argv._[argv._.length - 1])) {
-                    argv._.pop();
+                if (helpCmds.includes('' + argv32._[argv32._.length - 1])) {
+                    argv32._.pop();
                     helpOptSet = true;
                 }
             }
             const handlerKeys = __classPrivateFieldGet(this, _YargsInstance_command, "f").getCommands();
-            const requestCompletions = __classPrivateFieldGet(this, _YargsInstance_completion, "f").completionKey in argv;
+            const requestCompletions = __classPrivateFieldGet(this, _YargsInstance_completion, "f").completionKey in argv32;
             const skipRecommendation = helpOptSet || requestCompletions || helpOnly;
-            if (argv._.length) {
+            if (argv32._.length) {
                 if (handlerKeys.length) {
                     let firstUnknownCommand;
-                    for(let i = commandIndex || 0, cmd; argv._[i] !== undefined; i++){
-                        cmd = String(argv._[i]);
+                    for(let i67 = commandIndex || 0, cmd; argv32._[i67] !== undefined; i67++){
+                        cmd = String(argv32._[i67]);
                         if (handlerKeys.includes(cmd) && cmd !== __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) {
-                            const innerArgv = __classPrivateFieldGet(this, _YargsInstance_command, "f").runCommand(cmd, this, parsed, i + 1, helpOnly, helpOptSet || versionOptSet || helpOnly);
+                            const innerArgv = __classPrivateFieldGet(this, _YargsInstance_command, "f").runCommand(cmd, this, parsed, i67 + 1, helpOnly, helpOptSet || versionOptSet || helpOnly);
                             return this[kPostProcess](innerArgv, populateDoubleDash, !!calledFromCommand, false);
                         } else if (!firstUnknownCommand && cmd !== __classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) {
                             firstUnknownCommand = cmd;
@@ -14185,7 +14071,7 @@ class YargsInstance {
                         __classPrivateFieldGet(this, _YargsInstance_validation, "f").recommendCommands(firstUnknownCommand, handlerKeys);
                     }
                 }
-                if (__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f") && argv._.includes(__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) && !requestCompletions) {
+                if (__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f") && argv32._.includes(__classPrivateFieldGet(this, _YargsInstance_completionCommand, "f")) && !requestCompletions) {
                     if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f")) setBlocking(true);
                     this.showCompletionScript();
                     this.exit(0);
@@ -14199,14 +14085,14 @@ class YargsInstance {
                 if (__classPrivateFieldGet(this, _YargsInstance_exitProcess, "f")) setBlocking(true);
                 args = [].concat(args);
                 const completionArgs = args.slice(args.indexOf(`--${__classPrivateFieldGet(this, _YargsInstance_completion, "f").completionKey}`) + 1);
-                __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(completionArgs, (err, completions)=>{
-                    if (err) throw new YError(err.message);
-                    (completions || []).forEach((completion)=>{
-                        __classPrivateFieldGet(this, _YargsInstance_logger, "f").log(completion);
+                __classPrivateFieldGet(this, _YargsInstance_completion, "f").getCompletion(completionArgs, (err11, completions)=>{
+                    if (err11) throw new YError(err11.message);
+                    (completions || []).forEach((completion1)=>{
+                        __classPrivateFieldGet(this, _YargsInstance_logger, "f").log(completion1);
                     });
                     this.exit(0);
                 });
-                return this[kPostProcess](argv, !populateDoubleDash, !!calledFromCommand, false);
+                return this[kPostProcess](argv32, !populateDoubleDash, !!calledFromCommand, false);
             }
             if (!__classPrivateFieldGet(this, _YargsInstance_hasOutput, "f")) {
                 if (helpOptSet) {
@@ -14222,52 +14108,50 @@ class YargsInstance {
                 }
             }
             if (!skipValidation && __classPrivateFieldGet(this, _YargsInstance_options, "f").skipValidation.length > 0) {
-                skipValidation = Object.keys(argv).some((key)=>__classPrivateFieldGet(this, _YargsInstance_options, "f").skipValidation.indexOf(key) >= 0 && argv[key] === true
+                skipValidation = Object.keys(argv32).some((key102)=>__classPrivateFieldGet(this, _YargsInstance_options, "f").skipValidation.indexOf(key102) >= 0 && argv32[key102] === true
                 );
             }
             if (!skipValidation) {
                 if (parsed.error) throw new YError(parsed.error.message);
                 if (!requestCompletions) {
-                    const validation = this[kRunValidation](aliases, {
-                    }, parsed.error);
+                    const validation5 = this[kRunValidation](aliases, {}, parsed.error);
                     if (!calledFromCommand) {
-                        argvPromise = applyMiddleware(argv, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), true);
+                        argvPromise = applyMiddleware(argv32, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), true);
                     }
-                    argvPromise = this[kValidateAsync](validation, argvPromise !== null && argvPromise !== void 0 ? argvPromise : argv);
+                    argvPromise = this[kValidateAsync](validation5, argvPromise !== null && argvPromise !== void 0 ? argvPromise : argv32);
                     if (isPromise(argvPromise) && !calledFromCommand) {
                         argvPromise = argvPromise.then(()=>{
-                            return applyMiddleware(argv, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
+                            return applyMiddleware(argv32, this, __classPrivateFieldGet(this, _YargsInstance_globalMiddleware, "f").getMiddleware(), false);
                         });
                     }
                 }
             }
-        } catch (err) {
-            if (err instanceof YError) __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(err.message, err);
-            else throw err;
+        } catch (err12) {
+            if (err12 instanceof YError) __classPrivateFieldGet(this, _YargsInstance_usage, "f").fail(err12.message, err12);
+            else throw err12;
         }
-        return this[kPostProcess](argvPromise !== null && argvPromise !== void 0 ? argvPromise : argv, populateDoubleDash, !!calledFromCommand, true);
+        return this[kPostProcess](argvPromise !== null && argvPromise !== void 0 ? argvPromise : argv32, populateDoubleDash, !!calledFromCommand, true);
     }
     [kRunValidation](aliases, positionalMap, parseErrors, isDefaultCommand) {
         const demandedOptions = {
             ...this.getDemandedOptions()
         };
-        return (argv)=>{
+        return (argv33)=>{
             if (parseErrors) throw new YError(parseErrors.message);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").nonOptionCount(argv);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").requiredArguments(argv, demandedOptions);
+            __classPrivateFieldGet(this, _YargsInstance_validation, "f").nonOptionCount(argv33);
+            __classPrivateFieldGet(this, _YargsInstance_validation, "f").requiredArguments(argv33, demandedOptions);
             let failedStrictCommands = false;
             if (__classPrivateFieldGet(this, _YargsInstance_strictCommands, "f")) {
-                failedStrictCommands = __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownCommands(argv);
+                failedStrictCommands = __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownCommands(argv33);
             }
             if (__classPrivateFieldGet(this, _YargsInstance_strict, "f") && !failedStrictCommands) {
-                __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownArguments(argv, aliases, positionalMap, !!isDefaultCommand);
+                __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownArguments(argv33, aliases, positionalMap, !!isDefaultCommand);
             } else if (__classPrivateFieldGet(this, _YargsInstance_strictOptions, "f")) {
-                __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownArguments(argv, aliases, {
-                }, false, false);
+                __classPrivateFieldGet(this, _YargsInstance_validation, "f").unknownArguments(argv33, aliases, {}, false, false);
             }
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").limitedChoices(argv);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").implications(argv);
-            __classPrivateFieldGet(this, _YargsInstance_validation, "f").conflicting(argv);
+            __classPrivateFieldGet(this, _YargsInstance_validation, "f").limitedChoices(argv33);
+            __classPrivateFieldGet(this, _YargsInstance_validation, "f").implications(argv33);
+            __classPrivateFieldGet(this, _YargsInstance_validation, "f").conflicting(argv33);
         };
     }
     [kSetHasOutput]() {
@@ -14320,7 +14204,7 @@ const Z_STREAM_ERROR = -2;
 const Z_DATA_ERROR = -3;
 const Z_BUF_ERROR = -5;
 function extractArray(array) {
-    return flatArray(array.map(([length, value])=>new Array(length).fill(value, 0, length)
+    return flatArray(array.map(([length, value32])=>new Array(length).fill(value32, 0, length)
     ));
 }
 function flatArray(array) {
@@ -14451,7 +14335,7 @@ function Tree() {
         const base = that.stat_desc.extra_base;
         const max_length = that.stat_desc.max_length;
         let h;
-        let n, m;
+        let n33, m;
         let bits;
         let xbits;
         let f;
@@ -14459,20 +14343,20 @@ function Tree() {
         for(bits = 0; bits <= 15; bits++)s.bl_count[bits] = 0;
         tree[s.heap[s.heap_max] * 2 + 1] = 0;
         for(h = s.heap_max + 1; h < HEAP_SIZE; h++){
-            n = s.heap[h];
-            bits = tree[tree[n * 2 + 1] * 2 + 1] + 1;
+            n33 = s.heap[h];
+            bits = tree[tree[n33 * 2 + 1] * 2 + 1] + 1;
             if (bits > max_length) {
                 bits = max_length;
                 overflow++;
             }
-            tree[n * 2 + 1] = bits;
-            if (n > that.max_code) continue;
+            tree[n33 * 2 + 1] = bits;
+            if (n33 > that.max_code) continue;
             s.bl_count[bits]++;
             xbits = 0;
-            if (n >= base) xbits = extra[n - base];
-            f = tree[n * 2];
+            if (n33 >= base) xbits = extra[n33 - base];
+            f = tree[n33 * 2];
             s.opt_len += f * (bits + xbits);
-            if (stree) s.static_len += f * (stree[n * 2 + 1] + xbits);
+            if (stree) s.static_len += f * (stree[n33 * 2 + 1] + xbits);
         }
         if (overflow === 0) return;
         do {
@@ -14484,57 +14368,57 @@ function Tree() {
             overflow -= 2;
         }while (overflow > 0)
         for(bits = max_length; bits !== 0; bits--){
-            n = s.bl_count[bits];
-            while(n !== 0){
+            n33 = s.bl_count[bits];
+            while(n33 !== 0){
                 m = s.heap[--h];
                 if (m > that.max_code) continue;
                 if (tree[m * 2 + 1] != bits) {
                     s.opt_len += (bits - tree[m * 2 + 1]) * tree[m * 2];
                     tree[m * 2 + 1] = bits;
                 }
-                n--;
+                n33--;
             }
         }
     }
-    function bi_reverse(code, len) {
+    function bi_reverse(code50, len16) {
         let res = 0;
         do {
-            res |= code & 1;
-            code >>>= 1;
+            res |= code50 & 1;
+            code50 >>>= 1;
             res <<= 1;
-        }while (--len > 0)
+        }while (--len16 > 0)
         return res >>> 1;
     }
     function gen_codes(tree, max_code, bl_count) {
         const next_code = [];
-        let code = 0;
+        let code51 = 0;
         let bits;
-        let n;
-        let len;
+        let n34;
+        let len17;
         for(bits = 1; bits <= 15; bits++){
-            next_code[bits] = code = code + bl_count[bits - 1] << 1;
+            next_code[bits] = code51 = code51 + bl_count[bits - 1] << 1;
         }
-        for(n = 0; n <= max_code; n++){
-            len = tree[n * 2 + 1];
-            if (len === 0) continue;
-            tree[n * 2] = bi_reverse(next_code[len]++, len);
+        for(n34 = 0; n34 <= max_code; n34++){
+            len17 = tree[n34 * 2 + 1];
+            if (len17 === 0) continue;
+            tree[n34 * 2] = bi_reverse(next_code[len17]++, len17);
         }
     }
     that.build_tree = function(s) {
         const tree = that.dyn_tree;
         const stree = that.stat_desc.static_tree;
         const elems = that.stat_desc.elems;
-        let n, m;
+        let n35, m;
         let max_code = -1;
         let node;
         s.heap_len = 0;
         s.heap_max = HEAP_SIZE;
-        for(n = 0; n < elems; n++){
-            if (tree[n * 2] !== 0) {
-                s.heap[++s.heap_len] = max_code = n;
-                s.depth[n] = 0;
+        for(n35 = 0; n35 < elems; n35++){
+            if (tree[n35 * 2] !== 0) {
+                s.heap[++s.heap_len] = max_code = n35;
+                s.depth[n35] = 0;
             } else {
-                tree[n * 2 + 1] = 0;
+                tree[n35 * 2 + 1] = 0;
             }
         }
         while(s.heap_len < 2){
@@ -14545,18 +14429,18 @@ function Tree() {
             if (stree) s.static_len -= stree[node * 2 + 1];
         }
         that.max_code = max_code;
-        for(n = Math.floor(s.heap_len / 2); n >= 1; n--)s.pqdownheap(tree, n);
+        for(n35 = Math.floor(s.heap_len / 2); n35 >= 1; n35--)s.pqdownheap(tree, n35);
         node = elems;
         do {
-            n = s.heap[1];
+            n35 = s.heap[1];
             s.heap[1] = s.heap[s.heap_len--];
             s.pqdownheap(tree, 1);
             m = s.heap[1];
-            s.heap[--s.heap_max] = n;
+            s.heap[--s.heap_max] = n35;
             s.heap[--s.heap_max] = m;
-            tree[node * 2] = tree[n * 2] + tree[m * 2];
-            s.depth[node] = Math.max(s.depth[n], s.depth[m]) + 1;
-            tree[n * 2 + 1] = tree[m * 2 + 1] = node;
+            tree[node * 2] = tree[n35 * 2] + tree[m * 2];
+            s.depth[node] = Math.max(s.depth[n35], s.depth[m]) + 1;
+            tree[n35 * 2 + 1] = tree[m * 2 + 1] = node;
             s.heap[1] = node++;
             s.pqdownheap(tree, 1);
         }while (s.heap_len >= 2)
@@ -15531,14 +15415,14 @@ const Z_DEFLATED = 8;
 const MIN_MATCH = 3;
 const MAX_MATCH = 258;
 const MIN_LOOKAHEAD = 258 + 3 + 1;
-function smaller(tree, n, m, depth) {
-    const tn2 = tree[n * 2];
+function smaller(tree, n36, m, depth) {
+    const tn2 = tree[n36 * 2];
     const tm2 = tree[m * 2];
-    return tn2 < tm2 || tn2 == tm2 && depth[n] <= depth[m];
+    return tn2 < tm2 || tn2 == tm2 && depth[n36] <= depth[m];
 }
 function Deflate() {
     const that = this;
-    let strm;
+    let strm1;
     let status;
     let pending_buf_size;
     let last_flush;
@@ -15548,7 +15432,7 @@ function Deflate() {
     let window;
     let window_size;
     let prev;
-    let head;
+    let head1;
     let ins_h;
     let hash_size;
     let hash_bits;
@@ -15590,9 +15474,9 @@ function Deflate() {
     bl_tree = [];
     function lm_init() {
         window_size = 2 * w_size;
-        head[hash_size - 1] = 0;
-        for(let i = 0; i < hash_size - 1; i++){
-            head[i] = 0;
+        head1[hash_size - 1] = 0;
+        for(let i68 = 0; i68 < hash_size - 1; i68++){
+            head1[i68] = 0;
         }
         max_lazy_match = config_table[level].max_lazy;
         good_match = config_table[level].good_length;
@@ -15606,10 +15490,10 @@ function Deflate() {
         ins_h = 0;
     }
     function init_block() {
-        let i;
-        for(i = 0; i < L_CODES; i++)dyn_ltree[i * 2] = 0;
-        for(i = 0; i < 30; i++)dyn_dtree[i * 2] = 0;
-        for(i = 0; i < 19; i++)bl_tree[i * 2] = 0;
+        let i69;
+        for(i69 = 0; i69 < L_CODES; i69++)dyn_ltree[i69 * 2] = 0;
+        for(i69 = 0; i69 < 30; i69++)dyn_dtree[i69 * 2] = 0;
+        for(i69 = 0; i69 < 19; i69++)bl_tree[i69 * 2] = 0;
         dyn_ltree[END_BLOCK * 2] = 1;
         that.opt_len = that.static_len = 0;
         last_lit = matches = 0;
@@ -15627,19 +15511,19 @@ function Deflate() {
         init_block();
     }
     that.pqdownheap = function(tree, k) {
-        const heap = that.heap;
-        const v = heap[k];
+        const heap1 = that.heap;
+        const v = heap1[k];
         let j = k << 1;
         while(j <= that.heap_len){
-            if (j < that.heap_len && smaller(tree, heap[j + 1], heap[j], that.depth)) {
+            if (j < that.heap_len && smaller(tree, heap1[j + 1], heap1[j], that.depth)) {
                 j++;
             }
-            if (smaller(tree, v, heap[j], that.depth)) break;
-            heap[k] = heap[j];
+            if (smaller(tree, v, heap1[j], that.depth)) break;
+            heap1[k] = heap1[j];
             k = j;
             j <<= 1;
         }
-        heap[k] = v;
+        heap1[k] = v;
     };
     function scan_tree(tree, max_code) {
         let prevlen = -1;
@@ -15653,9 +15537,9 @@ function Deflate() {
             min_count = 3;
         }
         tree[(max_code + 1) * 2 + 1] = 65535;
-        for(let n = 0; n <= max_code; n++){
+        for(let n37 = 0; n37 <= max_code; n37++){
             curlen = nextlen;
-            nextlen = tree[(n + 1) * 2 + 1];
+            nextlen = tree[(n37 + 1) * 2 + 1];
             if (++count < max_count && curlen == nextlen) {
                 continue;
             } else if (count < min_count) {
@@ -15704,18 +15588,18 @@ function Deflate() {
         put_byte(b >> 8 & 255);
         put_byte(b & 255 & 255);
     }
-    function send_bits(value, length) {
+    function send_bits(value33, length) {
         let val;
-        const len = length;
-        if (bi_valid > Buf_size - len) {
-            val = value;
+        const len18 = length;
+        if (bi_valid > Buf_size - len18) {
+            val = value33;
             bi_buf |= val << bi_valid & 65535;
             put_short(bi_buf);
             bi_buf = val >>> Buf_size - bi_valid;
-            bi_valid += len - Buf_size;
+            bi_valid += len18 - Buf_size;
         } else {
-            bi_buf |= value << bi_valid & 65535;
-            bi_valid += len;
+            bi_buf |= value33 << bi_valid & 65535;
+            bi_valid += len18;
         }
     }
     function send_code(c, tree) {
@@ -15723,7 +15607,7 @@ function Deflate() {
         send_bits(tree[c2] & 65535, tree[c2 + 1] & 65535);
     }
     function send_tree(tree, max_code) {
-        let n;
+        let n38;
         let prevlen = -1;
         let curlen;
         let nextlen = tree[0 * 2 + 1];
@@ -15734,9 +15618,9 @@ function Deflate() {
             max_count = 138;
             min_count = 3;
         }
-        for(n = 0; n <= max_code; n++){
+        for(n38 = 0; n38 <= max_code; n38++){
             curlen = nextlen;
-            nextlen = tree[(n + 1) * 2 + 1];
+            nextlen = tree[(n38 + 1) * 2 + 1];
             if (++count < max_count && curlen == nextlen) {
                 continue;
             } else if (count < min_count) {
@@ -15833,7 +15717,7 @@ function Deflate() {
         let dist;
         let lc;
         let lx = 0;
-        let code;
+        let code52;
         let extra;
         if (last_lit !== 0) {
             do {
@@ -15843,19 +15727,19 @@ function Deflate() {
                 if (dist === 0) {
                     send_code(lc, ltree);
                 } else {
-                    code = Tree._length_code[lc];
-                    send_code(code + 256 + 1, ltree);
-                    extra = Tree.extra_lbits[code];
+                    code52 = Tree._length_code[lc];
+                    send_code(code52 + 256 + 1, ltree);
+                    extra = Tree.extra_lbits[code52];
                     if (extra !== 0) {
-                        lc -= Tree.base_length[code];
+                        lc -= Tree.base_length[code52];
                         send_bits(lc, extra);
                     }
                     dist--;
-                    code = Tree.d_code(dist);
-                    send_code(code, dtree);
-                    extra = Tree.extra_dbits[code];
+                    code52 = Tree.d_code(dist);
+                    send_code(code52, dtree);
+                    extra = Tree.extra_dbits[code52];
                     if (extra !== 0) {
-                        dist -= Tree.base_dist[code];
+                        dist -= Tree.base_dist[code52];
                         send_bits(dist, extra);
                     }
                 }
@@ -15873,15 +15757,15 @@ function Deflate() {
         bi_buf = 0;
         bi_valid = 0;
     }
-    function copy_block(buf, len, header) {
+    function copy_block(buf, len19, header) {
         bi_windup();
         last_eob_len = 8;
         if (header) {
-            put_short(len);
-            put_short(~len);
+            put_short(len19);
+            put_short(~len19);
         }
-        that.pending_buf.set(window.subarray(buf, buf + len), that.pending);
-        that.pending += len;
+        that.pending_buf.set(window.subarray(buf, buf + len19), that.pending);
+        that.pending += len19;
     }
     function _tr_stored_block(buf, stored_len, eof) {
         send_bits((0 << 1) + (eof ? 1 : 0), 3);
@@ -15918,10 +15802,10 @@ function Deflate() {
     function flush_block_only(eof) {
         _tr_flush_block(block_start >= 0 ? block_start : -1, strstart - block_start, eof);
         block_start = strstart;
-        strm.flush_pending();
+        strm1.flush_pending();
     }
     function fill_window() {
-        let n, m;
+        let n39, m;
         let p;
         let more;
         do {
@@ -15935,28 +15819,28 @@ function Deflate() {
                 match_start -= w_size;
                 strstart -= w_size;
                 block_start -= w_size;
-                n = hash_size;
-                p = n;
+                n39 = hash_size;
+                p = n39;
                 do {
-                    m = head[--p] & 65535;
-                    head[p] = m >= w_size ? m - w_size : 0;
-                }while (--n !== 0)
-                n = w_size;
-                p = n;
+                    m = head1[--p] & 65535;
+                    head1[p] = m >= w_size ? m - w_size : 0;
+                }while (--n39 !== 0)
+                n39 = w_size;
+                p = n39;
                 do {
                     m = prev[--p] & 65535;
                     prev[p] = m >= w_size ? m - w_size : 0;
-                }while (--n !== 0)
+                }while (--n39 !== 0)
                 more += w_size;
             }
-            if (strm.avail_in === 0) return;
-            n = strm.read_buf(window, strstart + lookahead, more);
-            lookahead += n;
+            if (strm1.avail_in === 0) return;
+            n39 = strm1.read_buf(window, strstart + lookahead, more);
+            lookahead += n39;
             if (lookahead >= 3) {
                 ins_h = window[strstart] & 255;
                 ins_h = (ins_h << hash_shift ^ window[strstart + 1] & 255) & hash_mask;
             }
-        }while (lookahead < MIN_LOOKAHEAD && strm.avail_in !== 0)
+        }while (lookahead < MIN_LOOKAHEAD && strm1.avail_in !== 0)
     }
     function deflate_stored(flush) {
         let max_block_size = 65535;
@@ -15977,22 +15861,22 @@ function Deflate() {
                 lookahead = strstart - max_start;
                 strstart = max_start;
                 flush_block_only(false);
-                if (strm.avail_out === 0) return 0;
+                if (strm1.avail_out === 0) return 0;
             }
             if (strstart - block_start >= w_size - MIN_LOOKAHEAD) {
                 flush_block_only(false);
-                if (strm.avail_out === 0) return 0;
+                if (strm1.avail_out === 0) return 0;
             }
         }
         flush_block_only(flush == 4);
-        if (strm.avail_out === 0) return flush == 4 ? 2 : 0;
+        if (strm1.avail_out === 0) return flush == 4 ? 2 : 0;
         return flush == 4 ? 3 : 1;
     }
     function longest_match(cur_match) {
         let chain_length = max_chain_length;
         let scan = strstart;
         let match;
-        let len;
+        let len20;
         let best_len = prev_length;
         const limit = strstart > w_size - MIN_LOOKAHEAD ? strstart - (w_size - MIN_LOOKAHEAD) : 0;
         let _nice_match = nice_match;
@@ -16009,14 +15893,13 @@ function Deflate() {
             if (window[match + best_len] != scan_end || window[match + best_len - 1] != scan_end1 || window[match] != window[scan] || window[++match] != window[scan + 1]) continue;
             scan += 2;
             match++;
-            do {
-            }while (window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && scan < strend)
-            len = MAX_MATCH - (strend - scan);
+            do {}while (window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && window[++scan] == window[++match] && scan < strend)
+            len20 = MAX_MATCH - (strend - scan);
             scan = strend - MAX_MATCH;
-            if (len > best_len) {
+            if (len20 > best_len) {
                 match_start = cur_match;
-                best_len = len;
-                if (len >= _nice_match) break;
+                best_len = len20;
+                if (len20 >= _nice_match) break;
                 scan_end1 = window[scan + best_len - 1];
                 scan_end = window[scan + best_len];
             }
@@ -16037,9 +15920,9 @@ function Deflate() {
             }
             if (lookahead >= 3) {
                 ins_h = (ins_h << hash_shift ^ window[strstart + (MIN_MATCH - 1)] & 255) & hash_mask;
-                hash_head = head[ins_h] & 65535;
-                prev[strstart & w_mask] = head[ins_h];
-                head[ins_h] = strstart;
+                hash_head = head1[ins_h] & 65535;
+                prev[strstart & w_mask] = head1[ins_h];
+                head1[ins_h] = strstart;
             }
             if (hash_head !== 0 && (strstart - hash_head & 65535) <= w_size - MIN_LOOKAHEAD) {
                 if (strategy != 2) {
@@ -16054,9 +15937,9 @@ function Deflate() {
                     do {
                         strstart++;
                         ins_h = (ins_h << hash_shift ^ window[strstart + (MIN_MATCH - 1)] & 255) & hash_mask;
-                        hash_head = head[ins_h] & 65535;
-                        prev[strstart & w_mask] = head[ins_h];
-                        head[ins_h] = strstart;
+                        hash_head = head1[ins_h] & 65535;
+                        prev[strstart & w_mask] = head1[ins_h];
+                        head1[ins_h] = strstart;
                     }while (--match_length !== 0)
                     strstart++;
                 } else {
@@ -16072,11 +15955,11 @@ function Deflate() {
             }
             if (bflush) {
                 flush_block_only(false);
-                if (strm.avail_out === 0) return 0;
+                if (strm1.avail_out === 0) return 0;
             }
         }
         flush_block_only(flush == 4);
-        if (strm.avail_out === 0) {
+        if (strm1.avail_out === 0) {
             if (flush == 4) return 2;
             else return 0;
         }
@@ -16096,9 +15979,9 @@ function Deflate() {
             }
             if (lookahead >= 3) {
                 ins_h = (ins_h << hash_shift ^ window[strstart + (MIN_MATCH - 1)] & 255) & hash_mask;
-                hash_head = head[ins_h] & 65535;
-                prev[strstart & w_mask] = head[ins_h];
-                head[ins_h] = strstart;
+                hash_head = head1[ins_h] & 65535;
+                prev[strstart & w_mask] = head1[ins_h];
+                head1[ins_h] = strstart;
             }
             prev_length = match_length;
             prev_match = match_start;
@@ -16119,9 +16002,9 @@ function Deflate() {
                 do {
                     if (++strstart <= max_insert) {
                         ins_h = (ins_h << hash_shift ^ window[strstart + (MIN_MATCH - 1)] & 255) & hash_mask;
-                        hash_head = head[ins_h] & 65535;
-                        prev[strstart & w_mask] = head[ins_h];
-                        head[ins_h] = strstart;
+                        hash_head = head1[ins_h] & 65535;
+                        prev[strstart & w_mask] = head1[ins_h];
+                        head1[ins_h] = strstart;
                     }
                 }while (--prev_length !== 0)
                 match_available = 0;
@@ -16129,7 +16012,7 @@ function Deflate() {
                 strstart++;
                 if (bflush) {
                     flush_block_only(false);
-                    if (strm.avail_out === 0) return 0;
+                    if (strm1.avail_out === 0) return 0;
                 }
             } else if (match_available !== 0) {
                 bflush = _tr_tally(0, window[strstart - 1] & 255);
@@ -16138,7 +16021,7 @@ function Deflate() {
                 }
                 strstart++;
                 lookahead--;
-                if (strm.avail_out === 0) return 0;
+                if (strm1.avail_out === 0) return 0;
             } else {
                 match_available = 1;
                 strstart++;
@@ -16150,7 +16033,7 @@ function Deflate() {
             match_available = 0;
         }
         flush_block_only(flush == 4);
-        if (strm.avail_out === 0) {
+        if (strm1.avail_out === 0) {
             if (flush == 4) return 2;
             else return 0;
         }
@@ -16186,7 +16069,7 @@ function Deflate() {
         hash_shift = Math.floor((hash_bits + MIN_MATCH - 1) / MIN_MATCH);
         window = new Uint8Array(w_size * 2);
         prev = [];
-        head = [];
+        head1 = [];
         lit_bufsize = 1 << memLevel + 6;
         that.pending_buf = new Uint8Array(lit_bufsize * 4);
         pending_buf_size = lit_bufsize * 4;
@@ -16201,14 +16084,14 @@ function Deflate() {
             return Z_STREAM_ERROR;
         }
         that.pending_buf = null;
-        head = null;
+        head1 = null;
         prev = null;
         window = null;
         that.dstate = null;
         return status == BUSY_STATE ? Z_DATA_ERROR : Z_OK;
     };
     that.deflateParams = function(strm, _level, _strategy) {
-        let err = Z_OK;
+        let err13 = Z_OK;
         if (_level == Z_DEFAULT_COMPRESSION) {
             _level = 6;
         }
@@ -16216,7 +16099,7 @@ function Deflate() {
             return Z_STREAM_ERROR;
         }
         if (config_table[level].func != config_table[_level].func && strm.total_in !== 0) {
-            err = strm.deflate(Z_PARTIAL_FLUSH);
+            err13 = strm.deflate(Z_PARTIAL_FLUSH);
         }
         if (level != _level) {
             level = _level;
@@ -16226,11 +16109,11 @@ function Deflate() {
             max_chain_length = config_table[level].max_chain;
         }
         strategy = _strategy;
-        return err;
+        return err13;
     };
     that.deflateSetDictionary = function(strm, dictionary, dictLength) {
         let length = dictLength;
-        let n, index = 0;
+        let n40, index = 0;
         if (!dictionary || status != INIT_STATE) return Z_STREAM_ERROR;
         if (length < MIN_MATCH) return Z_OK;
         if (length > w_size - MIN_LOOKAHEAD) {
@@ -16242,15 +16125,15 @@ function Deflate() {
         block_start = length;
         ins_h = window[0] & 255;
         ins_h = (ins_h << hash_shift ^ window[1] & 255) & hash_mask;
-        for(n = 0; n <= length - MIN_MATCH; n++){
-            ins_h = (ins_h << hash_shift ^ window[n + (MIN_MATCH - 1)] & 255) & hash_mask;
-            prev[n & w_mask] = head[ins_h];
-            head[ins_h] = n;
+        for(n40 = 0; n40 <= length - MIN_MATCH; n40++){
+            ins_h = (ins_h << hash_shift ^ window[n40 + (MIN_MATCH - 1)] & 255) & hash_mask;
+            prev[n40 & w_mask] = head1[ins_h];
+            head1[ins_h] = n40;
         }
         return Z_OK;
     };
     that.deflate = function(_strm, flush) {
-        let i, header, level_flags, old_flush, bstate;
+        let i70, header, level_flags, old_flush, bstate;
         if (flush > Z_FINISH || flush < 0) {
             return Z_STREAM_ERROR;
         }
@@ -16262,7 +16145,7 @@ function Deflate() {
             _strm.msg = z_errmsg[Z_NEED_DICT - Z_BUF_ERROR];
             return Z_BUF_ERROR;
         }
-        strm = _strm;
+        strm1 = _strm;
         old_flush = last_flush;
         last_flush = flush;
         if (status == INIT_STATE) {
@@ -16276,20 +16159,20 @@ function Deflate() {
             putShortMSB(header);
         }
         if (that.pending !== 0) {
-            strm.flush_pending();
-            if (strm.avail_out === 0) {
+            strm1.flush_pending();
+            if (strm1.avail_out === 0) {
                 last_flush = -1;
                 return Z_OK;
             }
-        } else if (strm.avail_in === 0 && flush <= old_flush && flush != Z_FINISH) {
-            strm.msg = z_errmsg[Z_NEED_DICT - Z_BUF_ERROR];
+        } else if (strm1.avail_in === 0 && flush <= old_flush && flush != Z_FINISH) {
+            strm1.msg = z_errmsg[Z_NEED_DICT - Z_BUF_ERROR];
             return Z_BUF_ERROR;
         }
-        if (status == FINISH_STATE && strm.avail_in !== 0) {
+        if (status == FINISH_STATE && strm1.avail_in !== 0) {
             _strm.msg = z_errmsg[Z_NEED_DICT - Z_BUF_ERROR];
             return Z_BUF_ERROR;
         }
-        if (strm.avail_in !== 0 || lookahead !== 0 || flush != Z_NO_FLUSH && status != FINISH_STATE) {
+        if (strm1.avail_in !== 0 || lookahead !== 0 || flush != Z_NO_FLUSH && status != FINISH_STATE) {
             bstate = -1;
             switch(config_table[level].func){
                 case STORED:
@@ -16307,7 +16190,7 @@ function Deflate() {
                 status = FINISH_STATE;
             }
             if (bstate == NeedMore || bstate == FinishStarted) {
-                if (strm.avail_out === 0) {
+                if (strm1.avail_out === 0) {
                     last_flush = -1;
                 }
                 return Z_OK;
@@ -16318,11 +16201,11 @@ function Deflate() {
                 } else {
                     _tr_stored_block(0, 0, false);
                     if (flush == Z_FULL_FLUSH) {
-                        for(i = 0; i < hash_size; i++)head[i] = 0;
+                        for(i70 = 0; i70 < hash_size; i70++)head1[i70] = 0;
                     }
                 }
-                strm.flush_pending();
-                if (strm.avail_out === 0) {
+                strm1.flush_pending();
+                if (strm1.avail_out === 0) {
                     last_flush = -1;
                     return Z_OK;
                 }
@@ -16374,26 +16257,26 @@ ZStream.prototype = {
     },
     read_buf: function(buf, start, size) {
         const that = this;
-        let len = that.avail_in;
-        if (len > size) len = size;
-        if (len === 0) return 0;
-        that.avail_in -= len;
-        buf.set(that.next_in.subarray(that.next_in_index, that.next_in_index + len), start);
-        that.next_in_index += len;
-        that.total_in += len;
-        return len;
+        let len21 = that.avail_in;
+        if (len21 > size) len21 = size;
+        if (len21 === 0) return 0;
+        that.avail_in -= len21;
+        buf.set(that.next_in.subarray(that.next_in_index, that.next_in_index + len21), start);
+        that.next_in_index += len21;
+        that.total_in += len21;
+        return len21;
     },
     flush_pending: function() {
         const that = this;
-        let len = that.dstate.pending;
-        if (len > that.avail_out) len = that.avail_out;
-        if (len === 0) return;
-        that.next_out.set(that.dstate.pending_buf.subarray(that.dstate.pending_out, that.dstate.pending_out + len), that.next_out_index);
-        that.next_out_index += len;
-        that.dstate.pending_out += len;
-        that.total_out += len;
-        that.avail_out -= len;
-        that.dstate.pending -= len;
+        let len22 = that.dstate.pending;
+        if (len22 > that.avail_out) len22 = that.avail_out;
+        if (len22 === 0) return;
+        that.next_out.set(that.dstate.pending_buf.subarray(that.dstate.pending_out, that.dstate.pending_out + len22), that.next_out_index);
+        that.next_out_index += len22;
+        that.dstate.pending_out += len22;
+        that.total_out += len22;
+        that.avail_out -= len22;
+        that.dstate.pending -= len22;
         if (that.dstate.pending === 0) {
             that.dstate.pending_out = 0;
         }
@@ -16410,7 +16293,7 @@ function ZipDeflate(options) {
     z.deflateInit(level);
     z.next_out = buf;
     that.append = function(data, onprogress) {
-        let err, array, lastIndex = 0, bufferIndex = 0, bufferSize = 0;
+        let err14, array, lastIndex = 0, bufferIndex = 0, bufferSize = 0;
         const buffers = [];
         if (!data.length) return;
         z.next_in_index = 0;
@@ -16419,8 +16302,8 @@ function ZipDeflate(options) {
         do {
             z.next_out_index = 0;
             z.avail_out = bufsize;
-            err = z.deflate(flush);
-            if (err != Z_OK) throw new Error("deflating: " + z.msg);
+            err14 = z.deflate(flush);
+            if (err14 != Z_OK) throw new Error("deflating: " + z.msg);
             if (z.next_out_index) if (z.next_out_index == bufsize) buffers.push(new Uint8Array(buf));
             else buffers.push(buf.slice(0, z.next_out_index));
             bufferSize += z.next_out_index;
@@ -16441,13 +16324,13 @@ function ZipDeflate(options) {
         return array;
     };
     that.flush = function() {
-        let err, array, bufferIndex = 0, bufferSize = 0;
+        let err15, array, bufferIndex = 0, bufferSize = 0;
         const buffers = [];
         do {
             z.next_out_index = 0;
             z.avail_out = bufsize;
-            err = z.deflate(Z_FINISH);
-            if (err != Z_STREAM_END && err != Z_OK) throw new Error("deflating: " + z.msg);
+            err15 = z.deflate(Z_FINISH);
+            if (err15 != Z_STREAM_END && err15 != Z_OK) throw new Error("deflating: " + z.msg);
             if (bufsize - z.avail_out > 0) buffers.push(buf.slice(0, z.next_out_index));
             bufferSize += z.next_out_index;
         }while (z.avail_in > 0 || z.avail_out === 0)
@@ -18263,18 +18146,18 @@ const cpdext = [
 const BMAX = 15;
 function InfTree() {
     const that = this;
-    let hn;
-    let v;
-    let c;
+    let hn1;
+    let v1;
+    let c1;
     let r;
     let u;
     let x;
-    function huft_build(b, bindex, n, s, d, e, t, m, hp, hn, v) {
+    function huft_build(b, bindex, n41, s, d, e, t, m, hp, hn, v) {
         let a;
         let f;
         let g;
         let h;
-        let i;
+        let i71;
         let j;
         let k;
         let l;
@@ -18286,58 +18169,58 @@ function InfTree() {
         let y;
         let z;
         p = 0;
-        i = n;
+        i71 = n41;
         do {
-            c[b[bindex + p]]++;
+            c1[b[bindex + p]]++;
             p++;
-            i--;
-        }while (i !== 0)
-        if (c[0] == n) {
+            i71--;
+        }while (i71 !== 0)
+        if (c1[0] == n41) {
             t[0] = -1;
             m[0] = 0;
             return 0;
         }
         l = m[0];
-        for(j = 1; j <= 15; j++)if (c[j] !== 0) break;
+        for(j = 1; j <= 15; j++)if (c1[j] !== 0) break;
         k = j;
         if (l < j) {
             l = j;
         }
-        for(i = BMAX; i !== 0; i--){
-            if (c[i] !== 0) break;
+        for(i71 = BMAX; i71 !== 0; i71--){
+            if (c1[i71] !== 0) break;
         }
-        g = i;
-        if (l > i) {
-            l = i;
+        g = i71;
+        if (l > i71) {
+            l = i71;
         }
         m[0] = l;
-        for(y = 1 << j; j < i; j++, y <<= 1){
-            if ((y -= c[j]) < 0) {
+        for(y = 1 << j; j < i71; j++, y <<= 1){
+            if ((y -= c1[j]) < 0) {
                 return Z_DATA_ERROR1;
             }
         }
-        if ((y -= c[i]) < 0) {
+        if ((y -= c1[i71]) < 0) {
             return Z_DATA_ERROR1;
         }
-        c[i] += y;
+        c1[i71] += y;
         x[1] = j = 0;
         p = 1;
         xp = 2;
-        while(--i !== 0){
-            x[xp] = j += c[p];
+        while(--i71 !== 0){
+            x[xp] = j += c1[p];
             xp++;
             p++;
         }
-        i = 0;
+        i71 = 0;
         p = 0;
         do {
             if ((j = b[bindex + p]) !== 0) {
-                v[x[j]++] = i;
+                v[x[j]++] = i71;
             }
             p++;
-        }while (++i < n)
-        n = x[g];
-        x[0] = i = 0;
+        }while (++i71 < n41)
+        n41 = x[g];
+        x[0] = i71 = 0;
         p = 0;
         h = -1;
         w = -l;
@@ -18345,7 +18228,7 @@ function InfTree() {
         q = 0;
         z = 0;
         for(; k <= g; k++){
-            a = c[k];
+            a = c1[k];
             while((a--) !== 0){
                 while(k > w + l){
                     h++;
@@ -18357,8 +18240,8 @@ function InfTree() {
                         xp = k;
                         if (j < z) {
                             while(++j < z){
-                                if ((f <<= 1) <= c[++xp]) break;
-                                f -= c[xp];
+                                if ((f <<= 1) <= c1[++xp]) break;
+                                f -= c1[xp];
                             }
                         }
                     }
@@ -18369,10 +18252,10 @@ function InfTree() {
                     u[h] = q = hn[0];
                     hn[0] += z;
                     if (h !== 0) {
-                        x[h] = i;
+                        x[h] = i71;
                         r[0] = j;
                         r[1] = l;
-                        j = i >>> w - l;
+                        j = i71 >>> w - l;
                         r[2] = q - u[h - 1] - j;
                         hp.set(r, (u[h - 1] + j) * 3);
                     } else {
@@ -18380,7 +18263,7 @@ function InfTree() {
                     }
                 }
                 r[1] = k - w;
-                if (p >= n) {
+                if (p >= n41) {
                     r[0] = 128 + 64;
                 } else if (v[p] < s) {
                     r[0] = v[p] < 256 ? 0 : 32 + 64;
@@ -18390,15 +18273,15 @@ function InfTree() {
                     r[2] = d[v[p++] - s];
                 }
                 f = 1 << k - w;
-                for(j = i >>> w; j < z; j += f){
+                for(j = i71 >>> w; j < z; j += f){
                     hp.set(r, (q + j) * 3);
                 }
-                for(j = 1 << k - 1; (i & j) !== 0; j >>>= 1){
-                    i ^= j;
+                for(j = 1 << k - 1; (i71 & j) !== 0; j >>>= 1){
+                    i71 ^= j;
                 }
-                i ^= j;
+                i71 ^= j;
                 mask = (1 << w) - 1;
-                while((i & mask) != x[h]){
+                while((i71 & mask) != x[h]){
                     h--;
                     w -= l;
                     mask = (1 << w) - 1;
@@ -18408,35 +18291,35 @@ function InfTree() {
         return y !== 0 && g != 1 ? Z_BUF_ERROR1 : 0;
     }
     function initWorkArea(vsize) {
-        let i;
-        if (!hn) {
-            hn = [];
-            v = [];
-            c = new Int32Array(BMAX + 1);
+        let i72;
+        if (!hn1) {
+            hn1 = [];
+            v1 = [];
+            c1 = new Int32Array(BMAX + 1);
             r = [];
             u = new Int32Array(BMAX);
             x = new Int32Array(BMAX + 1);
         }
-        if (v.length < vsize) {
-            v = [];
+        if (v1.length < vsize) {
+            v1 = [];
         }
-        for(i = 0; i < vsize; i++){
-            v[i] = 0;
+        for(i72 = 0; i72 < vsize; i72++){
+            v1[i72] = 0;
         }
-        for(i = 0; i < 15 + 1; i++){
-            c[i] = 0;
+        for(i72 = 0; i72 < 15 + 1; i72++){
+            c1[i72] = 0;
         }
-        for(i = 0; i < 3; i++){
-            r[i] = 0;
+        for(i72 = 0; i72 < 3; i72++){
+            r[i72] = 0;
         }
-        u.set(c.subarray(0, 15), 0);
-        x.set(c.subarray(0, 15 + 1), 0);
+        u.set(c1.subarray(0, 15), 0);
+        x.set(c1.subarray(0, 15 + 1), 0);
     }
     that.inflate_trees_bits = function(c, bb, tb, hp, z) {
         let result;
         initWorkArea(19);
-        hn[0] = 0;
-        result = huft_build(c, 0, 19, 19, null, null, tb, bb, hp, hn, v);
+        hn1[0] = 0;
+        result = huft_build(c, 0, 19, 19, null, null, tb, bb, hp, hn1, v1);
         if (result == Z_DATA_ERROR1) {
             z.msg = "oversubscribed dynamic bit lengths tree";
         } else if (result == Z_BUF_ERROR1 || bb[0] === 0) {
@@ -18448,8 +18331,8 @@ function InfTree() {
     that.inflate_trees_dynamic = function(nl, nd, c, bl, bd, tl, td, hp, z) {
         let result;
         initWorkArea(288);
-        hn[0] = 0;
-        result = huft_build(c, 0, nl, 257, cplens, cplext, tl, bl, hp, hn, v);
+        hn1[0] = 0;
+        result = huft_build(c, 0, nl, 257, cplens, cplext, tl, bl, hp, hn1, v1);
         if (result != Z_OK1 || bl[0] === 0) {
             if (result == Z_DATA_ERROR1) {
                 z.msg = "oversubscribed literal/length tree";
@@ -18460,7 +18343,7 @@ function InfTree() {
             return result;
         }
         initWorkArea(288);
-        result = huft_build(c, nl, nd, 0, cpdist, cpdext, td, bd, hp, hn, v);
+        result = huft_build(c, nl, nd, 0, cpdist, cpdext, td, bd, hp, hn1, v1);
         if (result != Z_OK1 || bd[0] === 0 && nl > 257) {
             if (result == Z_DATA_ERROR1) {
                 z.msg = "oversubscribed distance tree";
@@ -18495,13 +18378,13 @@ const END = 8;
 const BADCODE = 9;
 function InfCodes() {
     const that = this;
-    let mode;
-    let len = 0;
+    let mode1;
+    let len23 = 0;
     let tree;
     let tree_index = 0;
     let need = 0;
     let lit = 0;
-    let get = 0;
+    let get1 = 0;
     let dist = 0;
     let lbits = 0;
     let dbits = 0;
@@ -18517,7 +18400,7 @@ function InfCodes() {
         let b;
         let k;
         let p;
-        let n;
+        let n42;
         let q;
         let m;
         let ml;
@@ -18527,7 +18410,7 @@ function InfCodes() {
         let r;
         let tp_index_t_3;
         p = z.next_in_index;
-        n = z.avail_in;
+        n42 = z.avail_in;
         b = s.bitb;
         k = s.bitk;
         q = s.write;
@@ -18536,7 +18419,7 @@ function InfCodes() {
         md = inflate_mask[bd];
         do {
             while(k < 20){
-                n--;
+                n42--;
                 b |= (z.read_byte(p++) & 255) << k;
                 k += 8;
             }
@@ -18560,7 +18443,7 @@ function InfCodes() {
                     b >>= e;
                     k -= e;
                     while(k < 15){
-                        n--;
+                        n42--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
@@ -18575,7 +18458,7 @@ function InfCodes() {
                         if ((e & 16) !== 0) {
                             e &= 15;
                             while(k < e){
-                                n--;
+                                n42--;
                                 b |= (z.read_byte(p++) & 255) << k;
                                 k += 8;
                             }
@@ -18634,14 +18517,14 @@ function InfCodes() {
                             e = tp[tp_index_t_3];
                         } else {
                             z.msg = "invalid distance code";
-                            c = z.avail_in - n;
+                            c = z.avail_in - n42;
                             c = k >> 3 < c ? k >> 3 : c;
-                            n += c;
+                            n42 += c;
                             p -= c;
                             k -= c << 3;
                             s.bitb = b;
                             s.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n42;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             s.write = q;
@@ -18662,50 +18545,50 @@ function InfCodes() {
                         break;
                     }
                 } else if ((e & 32) !== 0) {
-                    c = z.avail_in - n;
+                    c = z.avail_in - n42;
                     c = k >> 3 < c ? k >> 3 : c;
-                    n += c;
+                    n42 += c;
                     p -= c;
                     k -= c << 3;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n42;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
                     return 1;
                 } else {
                     z.msg = "invalid literal/length code";
-                    c = z.avail_in - n;
+                    c = z.avail_in - n42;
                     c = k >> 3 < c ? k >> 3 : c;
-                    n += c;
+                    n42 += c;
                     p -= c;
                     k -= c << 3;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n42;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
                     return Z_DATA_ERROR1;
                 }
             }while (true)
-        }while (m >= 258 && n >= 10)
-        c = z.avail_in - n;
+        }while (m >= 258 && n42 >= 10)
+        c = z.avail_in - n42;
         c = k >> 3 < c ? k >> 3 : c;
-        n += c;
+        n42 += c;
         p -= c;
         k -= c << 3;
         s.bitb = b;
         s.bitk = k;
-        z.avail_in = n;
+        z.avail_in = n42;
         z.total_in += p - z.next_in_index;
         z.next_in_index = p;
         s.write = q;
         return 0;
     }
     that.init = function(bl, bd, tl, tl_index, td, td_index) {
-        mode = START;
+        mode1 = START;
         lbits = bl;
         dbits = bd;
         ltree = tl;
@@ -18721,56 +18604,56 @@ function InfCodes() {
         let b = 0;
         let k = 0;
         let p = 0;
-        let n;
+        let n43;
         let q;
         let m;
         let f;
         p = z.next_in_index;
-        n = z.avail_in;
+        n43 = z.avail_in;
         b = s.bitb;
         k = s.bitk;
         q = s.write;
         m = q < s.read ? s.read - q - 1 : s.end - q;
         while(true){
-            switch(mode){
+            switch(mode1){
                 case START:
-                    if (m >= 258 && n >= 10) {
+                    if (m >= 258 && n43 >= 10) {
                         s.bitb = b;
                         s.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n43;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         s.write = q;
                         r = inflate_fast(lbits, dbits, ltree, ltree_index, dtree, dtree_index, s, z);
                         p = z.next_in_index;
-                        n = z.avail_in;
+                        n43 = z.avail_in;
                         b = s.bitb;
                         k = s.bitk;
                         q = s.write;
                         m = q < s.read ? s.read - q - 1 : s.end - q;
                         if (r != Z_OK1) {
-                            mode = r == Z_STREAM_END1 ? WASH : BADCODE;
+                            mode1 = r == Z_STREAM_END1 ? WASH : BADCODE;
                             break;
                         }
                     }
                     need = lbits;
                     tree = ltree;
                     tree_index = ltree_index;
-                    mode = LEN;
+                    mode1 = LEN;
                 case LEN:
                     j = need;
                     while(k < j){
-                        if (n !== 0) r = Z_OK1;
+                        if (n43 !== 0) r = Z_OK1;
                         else {
                             s.bitb = b;
                             s.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n43;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             s.write = q;
                             return s.inflate_flush(z, r);
                         }
-                        n--;
+                        n43--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
@@ -18780,13 +18663,13 @@ function InfCodes() {
                     e = tree[tindex];
                     if (e === 0) {
                         lit = tree[tindex + 2];
-                        mode = LIT;
+                        mode1 = LIT;
                         break;
                     }
                     if ((e & 16) !== 0) {
-                        get = e & 15;
-                        len = tree[tindex + 2];
-                        mode = LENEXT;
+                        get1 = e & 15;
+                        len23 = tree[tindex + 2];
+                        mode1 = LENEXT;
                         break;
                     }
                     if ((e & 64) === 0) {
@@ -18795,57 +18678,57 @@ function InfCodes() {
                         break;
                     }
                     if ((e & 32) !== 0) {
-                        mode = WASH;
+                        mode1 = WASH;
                         break;
                     }
-                    mode = BADCODE;
+                    mode1 = BADCODE;
                     z.msg = "invalid literal/length code";
                     r = Z_DATA_ERROR1;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n43;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
                     return s.inflate_flush(z, r);
                 case LENEXT:
-                    j = get;
+                    j = get1;
                     while(k < j){
-                        if (n !== 0) r = Z_OK1;
+                        if (n43 !== 0) r = Z_OK1;
                         else {
                             s.bitb = b;
                             s.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n43;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             s.write = q;
                             return s.inflate_flush(z, r);
                         }
-                        n--;
+                        n43--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
-                    len += b & inflate_mask[j];
+                    len23 += b & inflate_mask[j];
                     b >>= j;
                     k -= j;
                     need = dbits;
                     tree = dtree;
                     tree_index = dtree_index;
-                    mode = DIST;
+                    mode1 = DIST;
                 case DIST:
                     j = need;
                     while(k < j){
-                        if (n !== 0) r = Z_OK1;
+                        if (n43 !== 0) r = Z_OK1;
                         else {
                             s.bitb = b;
                             s.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n43;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             s.write = q;
                             return s.inflate_flush(z, r);
                         }
-                        n--;
+                        n43--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
@@ -18854,9 +18737,9 @@ function InfCodes() {
                     k -= tree[tindex + 1];
                     e = tree[tindex];
                     if ((e & 16) !== 0) {
-                        get = e & 15;
+                        get1 = e & 15;
                         dist = tree[tindex + 2];
-                        mode = DISTEXT;
+                        mode1 = DISTEXT;
                         break;
                     }
                     if ((e & 64) === 0) {
@@ -18864,43 +18747,43 @@ function InfCodes() {
                         tree_index = tindex / 3 + tree[tindex + 2];
                         break;
                     }
-                    mode = BADCODE;
+                    mode1 = BADCODE;
                     z.msg = "invalid distance code";
                     r = Z_DATA_ERROR1;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n43;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
                     return s.inflate_flush(z, r);
                 case DISTEXT:
-                    j = get;
+                    j = get1;
                     while(k < j){
-                        if (n !== 0) r = Z_OK1;
+                        if (n43 !== 0) r = Z_OK1;
                         else {
                             s.bitb = b;
                             s.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n43;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             s.write = q;
                             return s.inflate_flush(z, r);
                         }
-                        n--;
+                        n43--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
                     dist += b & inflate_mask[j];
                     b >>= j;
                     k -= j;
-                    mode = COPY;
+                    mode1 = COPY;
                 case COPY:
                     f = q - dist;
                     while(f < 0){
                         f += s.end;
                     }
-                    while(len !== 0){
+                    while(len23 !== 0){
                         if (m === 0) {
                             if (q == s.end && s.read !== 0) {
                                 q = 0;
@@ -18918,7 +18801,7 @@ function InfCodes() {
                                 if (m === 0) {
                                     s.bitb = b;
                                     s.bitk = k;
-                                    z.avail_in = n;
+                                    z.avail_in = n43;
                                     z.total_in += p - z.next_in_index;
                                     z.next_in_index = p;
                                     s.write = q;
@@ -18929,9 +18812,9 @@ function InfCodes() {
                         s.window[q++] = s.window[f++];
                         m--;
                         if (f == s.end) f = 0;
-                        len--;
+                        len23--;
                     }
-                    mode = START;
+                    mode1 = START;
                     break;
                 case LIT:
                     if (m === 0) {
@@ -18951,7 +18834,7 @@ function InfCodes() {
                             if (m === 0) {
                                 s.bitb = b;
                                 s.bitk = k;
-                                z.avail_in = n;
+                                z.avail_in = n43;
                                 z.total_in += p - z.next_in_index;
                                 z.next_in_index = p;
                                 s.write = q;
@@ -18962,12 +18845,12 @@ function InfCodes() {
                     r = Z_OK1;
                     s.window[q++] = lit;
                     m--;
-                    mode = START;
+                    mode1 = START;
                     break;
                 case WASH:
                     if (k > 7) {
                         k -= 8;
-                        n++;
+                        n43++;
                         p--;
                     }
                     s.write = q;
@@ -18977,18 +18860,18 @@ function InfCodes() {
                     if (s.read != s.write) {
                         s.bitb = b;
                         s.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n43;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         s.write = q;
                         return s.inflate_flush(z, r);
                     }
-                    mode = END;
+                    mode1 = END;
                 case END:
                     r = Z_STREAM_END1;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n43;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
@@ -18997,7 +18880,7 @@ function InfCodes() {
                     r = Z_DATA_ERROR1;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n43;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
@@ -19006,7 +18889,7 @@ function InfCodes() {
                     r = Z_STREAM_ERROR1;
                     s.bitb = b;
                     s.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n43;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     s.write = q;
@@ -19014,8 +18897,7 @@ function InfCodes() {
             }
         }
     };
-    that.free = function() {
-    };
+    that.free = function() {};
 }
 const border = [
     16,
@@ -19048,11 +18930,11 @@ const CODES = 6;
 const DRY = 7;
 const DONELOCKS = 8;
 const BADBLOCKS = 9;
-function InfBlocks(z, w) {
+function InfBlocks(z1, w) {
     const that = this;
-    let mode = 0;
-    let left = 0;
-    let table = 0;
+    let mode2 = 0;
+    let left1 = 0;
+    let table3 = 0;
     let index = 0;
     let blens;
     const bb = [
@@ -19074,40 +18956,40 @@ function InfBlocks(z, w) {
     that.write = 0;
     that.reset = function(z, c) {
         if (c) c[0] = check;
-        if (mode == CODES) {
+        if (mode2 == CODES) {
             codes.free(z);
         }
-        mode = TYPE;
+        mode2 = TYPE;
         that.bitk = 0;
         that.bitb = 0;
         that.read = that.write = 0;
     };
-    that.reset(z, null);
+    that.reset(z1, null);
     that.inflate_flush = function(z, r) {
-        let n;
+        let n44;
         let p;
         let q;
         p = z.next_out_index;
         q = that.read;
-        n = (q <= that.write ? that.write : that.end) - q;
-        if (n > z.avail_out) n = z.avail_out;
-        if (n !== 0 && r == Z_BUF_ERROR1) r = Z_OK1;
-        z.avail_out -= n;
-        z.total_out += n;
-        z.next_out.set(that.window.subarray(q, q + n), p);
-        p += n;
-        q += n;
+        n44 = (q <= that.write ? that.write : that.end) - q;
+        if (n44 > z.avail_out) n44 = z.avail_out;
+        if (n44 !== 0 && r == Z_BUF_ERROR1) r = Z_OK1;
+        z.avail_out -= n44;
+        z.total_out += n44;
+        z.next_out.set(that.window.subarray(q, q + n44), p);
+        p += n44;
+        q += n44;
         if (q == that.end) {
             q = 0;
             if (that.write == that.end) that.write = 0;
-            n = that.write - q;
-            if (n > z.avail_out) n = z.avail_out;
-            if (n !== 0 && r == Z_BUF_ERROR1) r = Z_OK1;
-            z.avail_out -= n;
-            z.total_out += n;
-            z.next_out.set(that.window.subarray(q, q + n), p);
-            p += n;
-            q += n;
+            n44 = that.write - q;
+            if (n44 > z.avail_out) n44 = z.avail_out;
+            if (n44 !== 0 && r == Z_BUF_ERROR1) r = Z_OK1;
+            z.avail_out -= n44;
+            z.total_out += n44;
+            z.next_out.set(that.window.subarray(q, q + n44), p);
+            p += n44;
+            q += n44;
         }
         z.next_out_index = p;
         that.read = q;
@@ -19118,33 +19000,33 @@ function InfBlocks(z, w) {
         let b;
         let k;
         let p;
-        let n;
+        let n45;
         let q;
         let m;
-        let i;
+        let i73;
         p = z.next_in_index;
-        n = z.avail_in;
+        n45 = z.avail_in;
         b = that.bitb;
         k = that.bitk;
         q = that.write;
         m = q < that.read ? that.read - q - 1 : that.end - q;
         while(true){
             let bl, bd, tl, td, bl_, bd_, tl_, td_;
-            switch(mode){
+            switch(mode2){
                 case TYPE:
                     while(k < 3){
-                        if (n !== 0) {
+                        if (n45 !== 0) {
                             r = Z_OK1;
                         } else {
                             that.bitb = b;
                             that.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n45;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             that.write = q;
                             return that.inflate_flush(z, r);
                         }
-                        n--;
+                        n45--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
@@ -19157,7 +19039,7 @@ function InfBlocks(z, w) {
                             t = k & 7;
                             b >>>= t;
                             k -= t;
-                            mode = LENS;
+                            mode2 = LENS;
                             break;
                         case 1:
                             bl = [];
@@ -19172,22 +19054,22 @@ function InfBlocks(z, w) {
                             codes.init(bl[0], bd[0], tl[0], 0, td[0], 0);
                             b >>>= 3;
                             k -= 3;
-                            mode = CODES;
+                            mode2 = CODES;
                             break;
                         case 2:
                             b >>>= 3;
                             k -= 3;
-                            mode = TABLE;
+                            mode2 = TABLE;
                             break;
                         case 3:
                             b >>>= 3;
                             k -= 3;
-                            mode = BADBLOCKS;
+                            mode2 = BADBLOCKS;
                             z.msg = "invalid block type";
                             r = Z_DATA_ERROR1;
                             that.bitb = b;
                             that.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n45;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             that.write = q;
@@ -19196,42 +19078,42 @@ function InfBlocks(z, w) {
                     break;
                 case LENS:
                     while(k < 32){
-                        if (n !== 0) {
+                        if (n45 !== 0) {
                             r = Z_OK1;
                         } else {
                             that.bitb = b;
                             that.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n45;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             that.write = q;
                             return that.inflate_flush(z, r);
                         }
-                        n--;
+                        n45--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
                     if ((~b >>> 16 & 65535) != (b & 65535)) {
-                        mode = BADBLOCKS;
+                        mode2 = BADBLOCKS;
                         z.msg = "invalid stored block lengths";
                         r = Z_DATA_ERROR1;
                         that.bitb = b;
                         that.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n45;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         that.write = q;
                         return that.inflate_flush(z, r);
                     }
-                    left = b & 65535;
+                    left1 = b & 65535;
                     b = k = 0;
-                    mode = left !== 0 ? STORED1 : last !== 0 ? DRY : TYPE;
+                    mode2 = left1 !== 0 ? STORED1 : last !== 0 ? DRY : TYPE;
                     break;
                 case STORED1:
-                    if (n === 0) {
+                    if (n45 === 0) {
                         that.bitb = b;
                         that.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n45;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         that.write = q;
@@ -19254,7 +19136,7 @@ function InfBlocks(z, w) {
                             if (m === 0) {
                                 that.bitb = b;
                                 that.bitk = k;
-                                z.avail_in = n;
+                                z.avail_in = n45;
                                 z.total_in += p - z.next_in_index;
                                 z.next_in_index = p;
                                 that.write = q;
@@ -19263,42 +19145,42 @@ function InfBlocks(z, w) {
                         }
                     }
                     r = Z_OK1;
-                    t = left;
-                    if (t > n) t = n;
+                    t = left1;
+                    if (t > n45) t = n45;
                     if (t > m) t = m;
                     that.window.set(z.read_buf(p, t), q);
                     p += t;
-                    n -= t;
+                    n45 -= t;
                     q += t;
                     m -= t;
-                    if ((left -= t) !== 0) break;
-                    mode = last !== 0 ? DRY : TYPE;
+                    if ((left1 -= t) !== 0) break;
+                    mode2 = last !== 0 ? DRY : TYPE;
                     break;
                 case TABLE:
                     while(k < 14){
-                        if (n !== 0) {
+                        if (n45 !== 0) {
                             r = Z_OK1;
                         } else {
                             that.bitb = b;
                             that.bitk = k;
-                            z.avail_in = n;
+                            z.avail_in = n45;
                             z.total_in += p - z.next_in_index;
                             z.next_in_index = p;
                             that.write = q;
                             return that.inflate_flush(z, r);
                         }
-                        n--;
+                        n45--;
                         b |= (z.read_byte(p++) & 255) << k;
                         k += 8;
                     }
-                    table = t = b & 16383;
+                    table3 = t = b & 16383;
                     if ((t & 31) > 29 || (t >> 5 & 31) > 29) {
-                        mode = BADBLOCKS;
+                        mode2 = BADBLOCKS;
                         z.msg = "too many length or distance symbols";
                         r = Z_DATA_ERROR1;
                         that.bitb = b;
                         that.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n45;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         that.write = q;
@@ -19308,29 +19190,29 @@ function InfBlocks(z, w) {
                     if (!blens || blens.length < t) {
                         blens = [];
                     } else {
-                        for(i = 0; i < t; i++){
-                            blens[i] = 0;
+                        for(i73 = 0; i73 < t; i73++){
+                            blens[i73] = 0;
                         }
                     }
                     b >>>= 14;
                     k -= 14;
                     index = 0;
-                    mode = BTREE;
+                    mode2 = BTREE;
                 case BTREE:
-                    while(index < 4 + (table >>> 10)){
+                    while(index < 4 + (table3 >>> 10)){
                         while(k < 3){
-                            if (n !== 0) {
+                            if (n45 !== 0) {
                                 r = Z_OK1;
                             } else {
                                 that.bitb = b;
                                 that.bitk = k;
-                                z.avail_in = n;
+                                z.avail_in = n45;
                                 z.total_in += p - z.next_in_index;
                                 z.next_in_index = p;
                                 that.write = q;
                                 return that.inflate_flush(z, r);
                             }
-                            n--;
+                            n45--;
                             b |= (z.read_byte(p++) & 255) << k;
                             k += 8;
                         }
@@ -19347,39 +19229,39 @@ function InfBlocks(z, w) {
                         r = t;
                         if (r == Z_DATA_ERROR1) {
                             blens = null;
-                            mode = BADBLOCKS;
+                            mode2 = BADBLOCKS;
                         }
                         that.bitb = b;
                         that.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n45;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         that.write = q;
                         return that.inflate_flush(z, r);
                     }
                     index = 0;
-                    mode = DTREE;
+                    mode2 = DTREE;
                 case DTREE:
                     while(true){
-                        t = table;
+                        t = table3;
                         if (index >= 258 + (t & 31) + (t >> 5 & 31)) {
                             break;
                         }
                         let j, c;
                         t = bb[0];
                         while(k < t){
-                            if (n !== 0) {
+                            if (n45 !== 0) {
                                 r = Z_OK1;
                             } else {
                                 that.bitb = b;
                                 that.bitk = k;
-                                z.avail_in = n;
+                                z.avail_in = n45;
                                 z.total_in += p - z.next_in_index;
                                 z.next_in_index = p;
                                 that.write = q;
                                 return that.inflate_flush(z, r);
                             }
-                            n--;
+                            n45--;
                             b |= (z.read_byte(p++) & 255) << k;
                             k += 8;
                         }
@@ -19390,49 +19272,49 @@ function InfBlocks(z, w) {
                             k -= t;
                             blens[index++] = c;
                         } else {
-                            i = c == 18 ? 7 : c - 14;
+                            i73 = c == 18 ? 7 : c - 14;
                             j = c == 18 ? 11 : 3;
-                            while(k < t + i){
-                                if (n !== 0) {
+                            while(k < t + i73){
+                                if (n45 !== 0) {
                                     r = Z_OK1;
                                 } else {
                                     that.bitb = b;
                                     that.bitk = k;
-                                    z.avail_in = n;
+                                    z.avail_in = n45;
                                     z.total_in += p - z.next_in_index;
                                     z.next_in_index = p;
                                     that.write = q;
                                     return that.inflate_flush(z, r);
                                 }
-                                n--;
+                                n45--;
                                 b |= (z.read_byte(p++) & 255) << k;
                                 k += 8;
                             }
                             b >>>= t;
                             k -= t;
-                            j += b & inflate_mask[i];
-                            b >>>= i;
-                            k -= i;
-                            i = index;
-                            t = table;
-                            if (i + j > 258 + (t & 31) + (t >> 5 & 31) || c == 16 && i < 1) {
+                            j += b & inflate_mask[i73];
+                            b >>>= i73;
+                            k -= i73;
+                            i73 = index;
+                            t = table3;
+                            if (i73 + j > 258 + (t & 31) + (t >> 5 & 31) || c == 16 && i73 < 1) {
                                 blens = null;
-                                mode = BADBLOCKS;
+                                mode2 = BADBLOCKS;
                                 z.msg = "invalid bit length repeat";
                                 r = Z_DATA_ERROR1;
                                 that.bitb = b;
                                 that.bitk = k;
-                                z.avail_in = n;
+                                z.avail_in = n45;
                                 z.total_in += p - z.next_in_index;
                                 z.next_in_index = p;
                                 that.write = q;
                                 return that.inflate_flush(z, r);
                             }
-                            c = c == 16 ? blens[i - 1] : 0;
+                            c = c == 16 ? blens[i73 - 1] : 0;
                             do {
-                                blens[i++] = c;
+                                blens[i73++] = c;
                             }while (--j !== 0)
-                            index = i;
+                            index = i73;
                         }
                     }
                     tb[0] = -1;
@@ -19442,28 +19324,28 @@ function InfBlocks(z, w) {
                     td_ = [];
                     bl_[0] = 9;
                     bd_[0] = 6;
-                    t = table;
+                    t = table3;
                     t = inftree.inflate_trees_dynamic(257 + (t & 31), 1 + (t >> 5 & 31), blens, bl_, bd_, tl_, td_, hufts, z);
                     if (t != Z_OK1) {
                         if (t == Z_DATA_ERROR1) {
                             blens = null;
-                            mode = BADBLOCKS;
+                            mode2 = BADBLOCKS;
                         }
                         r = t;
                         that.bitb = b;
                         that.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n45;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         that.write = q;
                         return that.inflate_flush(z, r);
                     }
                     codes.init(bl_[0], bd_[0], hufts, tl_[0], hufts, td_[0]);
-                    mode = CODES;
+                    mode2 = CODES;
                 case CODES:
                     that.bitb = b;
                     that.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n45;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     that.write = q;
@@ -19473,16 +19355,16 @@ function InfBlocks(z, w) {
                     r = Z_OK1;
                     codes.free(z);
                     p = z.next_in_index;
-                    n = z.avail_in;
+                    n45 = z.avail_in;
                     b = that.bitb;
                     k = that.bitk;
                     q = that.write;
                     m = q < that.read ? that.read - q - 1 : that.end - q;
                     if (last === 0) {
-                        mode = TYPE;
+                        mode2 = TYPE;
                         break;
                     }
-                    mode = DRY;
+                    mode2 = DRY;
                 case DRY:
                     that.write = q;
                     r = that.inflate_flush(z, r);
@@ -19491,18 +19373,18 @@ function InfBlocks(z, w) {
                     if (that.read != that.write) {
                         that.bitb = b;
                         that.bitk = k;
-                        z.avail_in = n;
+                        z.avail_in = n45;
                         z.total_in += p - z.next_in_index;
                         z.next_in_index = p;
                         that.write = q;
                         return that.inflate_flush(z, r);
                     }
-                    mode = DONELOCKS;
+                    mode2 = DONELOCKS;
                 case DONELOCKS:
                     r = Z_STREAM_END1;
                     that.bitb = b;
                     that.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n45;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     that.write = q;
@@ -19511,7 +19393,7 @@ function InfBlocks(z, w) {
                     r = Z_DATA_ERROR1;
                     that.bitb = b;
                     that.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n45;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     that.write = q;
@@ -19520,7 +19402,7 @@ function InfBlocks(z, w) {
                     r = Z_STREAM_ERROR1;
                     that.bitb = b;
                     that.bitk = k;
-                    z.avail_in = n;
+                    z.avail_in = n45;
                     z.total_in += p - z.next_in_index;
                     z.next_in_index = p;
                     that.write = q;
@@ -19533,12 +19415,12 @@ function InfBlocks(z, w) {
         that.window = null;
         hufts = null;
     };
-    that.set_dictionary = function(d, start, n) {
-        that.window.set(d.subarray(start, start + n), 0);
-        that.read = that.write = n;
+    that.set_dictionary = function(d, start, n46) {
+        that.window.set(d.subarray(start, start + n46), 0);
+        that.read = that.write = n46;
     };
     that.sync_point = function() {
-        return mode == LENS ? 1 : 0;
+        return mode2 == LENS ? 1 : 0;
     };
 }
 const PRESET_DICT1 = 32;
@@ -19710,7 +19592,7 @@ function Inflate() {
         return Z_OK1;
     };
     that.inflateSync = function(z) {
-        let n;
+        let n47;
         let p;
         let m;
         let r, w;
@@ -19720,10 +19602,10 @@ function Inflate() {
             istate.mode = BAD;
             istate.marker = 0;
         }
-        if ((n = z.avail_in) === 0) return Z_BUF_ERROR1;
+        if ((n47 = z.avail_in) === 0) return Z_BUF_ERROR1;
         p = z.next_in_index;
         m = istate.marker;
-        while(n !== 0 && m < 4){
+        while(n47 !== 0 && m < 4){
             if (z.read_byte(p) == mark[m]) {
                 m++;
             } else if (z.read_byte(p) !== 0) {
@@ -19732,11 +19614,11 @@ function Inflate() {
                 m = 4 - m;
             }
             p++;
-            n--;
+            n47--;
         }
         z.total_in += p - z.next_in_index;
         z.next_in_index = p;
-        z.avail_in = n;
+        z.avail_in = n47;
         istate.marker = m;
         if (m != 4) {
             return Z_DATA_ERROR1;
@@ -19754,8 +19636,7 @@ function Inflate() {
         return z.istate.blocks.sync_point();
     };
 }
-function ZStream1() {
-}
+function ZStream1() {}
 ZStream1.prototype = {
     inflateInit: function(bits) {
         const that = this;
@@ -19805,7 +19686,7 @@ function ZipInflate(options) {
     z.next_out = buf;
     that.append = function(data, onprogress) {
         const buffers = [];
-        let err, array, lastIndex = 0, bufferIndex = 0, bufferSize = 0;
+        let err16, array, lastIndex = 0, bufferIndex = 0, bufferSize = 0;
         if (data.length === 0) return;
         z.next_in_index = 0;
         z.next_in = data;
@@ -19817,11 +19698,11 @@ function ZipInflate(options) {
                 z.next_in_index = 0;
                 nomoreinput = true;
             }
-            err = z.inflate(flush);
-            if (nomoreinput && err === Z_BUF_ERROR1) {
+            err16 = z.inflate(flush);
+            if (nomoreinput && err16 === Z_BUF_ERROR1) {
                 if (z.avail_in !== 0) throw new Error("inflating: bad input");
-            } else if (err !== Z_OK1 && err !== Z_STREAM_END1) throw new Error("inflating: " + z.msg);
-            if ((nomoreinput || err === Z_STREAM_END1) && z.avail_in === data.length) throw new Error("inflating: bad input");
+            } else if (err16 !== Z_OK1 && err16 !== Z_STREAM_END1) throw new Error("inflating: " + z.msg);
+            if ((nomoreinput || err16 === Z_STREAM_END1) && z.avail_in === data.length) throw new Error("inflating: bad input");
             if (z.next_out_index) if (z.next_out_index === bufsize) buffers.push(new Uint8Array(buf));
             else buffers.push(buf.slice(0, z.next_out_index));
             bufferSize += z.next_out_index;
@@ -19853,50 +19734,47 @@ const DEFAULT_CONFIGURATION = {
     useWebWorkers: true,
     workerScripts: undefined
 };
-const config1 = Object.assign({
-}, DEFAULT_CONFIGURATION);
+const config = Object.assign({}, DEFAULT_CONFIGURATION);
 function getConfiguration() {
-    return config1;
+    return config;
 }
 function configure(configuration) {
     if (configuration.chunkSize !== undefined) {
-        config1.chunkSize = configuration.chunkSize;
+        config.chunkSize = configuration.chunkSize;
     }
     if (configuration.maxWorkers !== undefined) {
-        config1.maxWorkers = configuration.maxWorkers;
+        config.maxWorkers = configuration.maxWorkers;
     }
     if (configuration.terminateWorkerTimeout !== undefined) {
-        config1.terminateWorkerTimeout = configuration.terminateWorkerTimeout;
+        config.terminateWorkerTimeout = configuration.terminateWorkerTimeout;
     }
     if (configuration.useWebWorkers !== undefined) {
-        config1.useWebWorkers = configuration.useWebWorkers;
+        config.useWebWorkers = configuration.useWebWorkers;
     }
     if (configuration.Deflate !== undefined) {
-        config1.Deflate = configuration.Deflate;
+        config.Deflate = configuration.Deflate;
     }
     if (configuration.Inflate !== undefined) {
-        config1.Inflate = configuration.Inflate;
+        config.Inflate = configuration.Inflate;
     }
     if (configuration.workerScripts !== undefined) {
         if (configuration.workerScripts.deflate) {
             if (!Array.isArray(configuration.workerScripts.deflate)) {
                 throw new Error("workerScripts.deflate must be an array");
             }
-            if (!config1.workerScripts) {
-                config1.workerScripts = {
-                };
+            if (!config.workerScripts) {
+                config.workerScripts = {};
             }
-            config1.workerScripts.deflate = configuration.workerScripts.deflate;
+            config.workerScripts.deflate = configuration.workerScripts.deflate;
         }
         if (configuration.workerScripts.inflate) {
             if (!Array.isArray(configuration.workerScripts.inflate)) {
                 throw new Error("workerScripts.inflate must be an array");
             }
-            if (!config1.workerScripts) {
-                config1.workerScripts = {
-                };
+            if (!config.workerScripts) {
+                config.workerScripts = {};
             }
-            config1.workerScripts.inflate = configuration.workerScripts.inflate;
+            config.workerScripts.inflate = configuration.workerScripts.inflate;
         }
     }
 }
@@ -21479,30 +21357,29 @@ const table = {
     }
 };
 (()=>{
-    const mimeTypes = {
-    };
+    const mimeTypes1 = {};
     for(let type in table){
         if (table.hasOwnProperty(type)) {
             for(let subtype in table[type]){
                 if (table[type].hasOwnProperty(subtype)) {
-                    const value = table[type][subtype];
-                    if (typeof value == "string") {
-                        mimeTypes[value] = type + "/" + subtype;
+                    const value34 = table[type][subtype];
+                    if (typeof value34 == "string") {
+                        mimeTypes1[value34] = type + "/" + subtype;
                     } else {
-                        for(let indexMimeType = 0; indexMimeType < value.length; indexMimeType++){
-                            mimeTypes[value[indexMimeType]] = type + "/" + subtype;
+                        for(let indexMimeType = 0; indexMimeType < value34.length; indexMimeType++){
+                            mimeTypes1[value34[indexMimeType]] = type + "/" + subtype;
                         }
                     }
                 }
             }
         }
     }
-    return mimeTypes;
+    return mimeTypes1;
 })();
 "use strict";
 const table1 = [];
-for(let i1 = 0; i1 < 256; i1++){
-    let t = i1;
+for(let i = 0; i < 256; i++){
+    let t = i;
     for(let j = 0; j < 8; j++){
         if (t & 1) {
             t = t >>> 1 ^ 3988292384;
@@ -21510,7 +21387,7 @@ for(let i1 = 0; i1 < 256; i1++){
             t = t >>> 1;
         }
     }
-    table1[i1] = t;
+    table1[i] = t;
 }
 class Crc32 {
     constructor(crc){
@@ -21548,23 +21425,23 @@ const bitArray = {
         const x = a[l - 1];
         return (l - 1) * 32 + bitArray.getPartial(x);
     },
-    clamp (a, len) {
-        if (a.length * 32 < len) {
+    clamp (a, len24) {
+        if (a.length * 32 < len24) {
             return a;
         }
-        a = a.slice(0, Math.ceil(len / 32));
+        a = a.slice(0, Math.ceil(len24 / 32));
         const l = a.length;
-        len = len & 31;
-        if (l > 0 && len) {
-            a[l - 1] = bitArray.partial(len, a[l - 1] & 2147483648 >> len - 1, 1);
+        len24 = len24 & 31;
+        if (l > 0 && len24) {
+            a[l - 1] = bitArray.partial(len24, a[l - 1] & 2147483648 >> len24 - 1, 1);
         }
         return a;
     },
-    partial (len, x, _end) {
-        if (len === 32) {
+    partial (len25, x, _end) {
+        if (len25 === 32) {
             return x;
         }
-        return (_end ? x | 0 : x << 32 - len) + len * 1099511627776;
+        return (_end ? x | 0 : x << 32 - len25) + len25 * 1099511627776;
     },
     getPartial (x) {
         return Math.round(x / 1099511627776) || 32;
@@ -21580,9 +21457,9 @@ const bitArray = {
         if (shift === 0) {
             return out.concat(a);
         }
-        for(let i = 0; i < a.length; i++){
-            out.push(carry | a[i] >>> shift);
-            carry = a[i] << 32 - shift;
+        for(let i74 = 0; i74 < a.length; i74++){
+            out.push(carry | a[i74] >>> shift);
+            carry = a[i74] << 32 - shift;
         }
         const last2 = a.length ? a[a.length - 1] : 0;
         const shift2 = bitArray.getPartial(last2);
@@ -21597,40 +21474,39 @@ const codec = {
             const byteLength = bl / 8;
             const out = new Uint8Array(byteLength);
             let tmp;
-            for(let i = 0; i < byteLength; i++){
-                if ((i & 3) === 0) {
-                    tmp = arr[i / 4];
+            for(let i75 = 0; i75 < byteLength; i75++){
+                if ((i75 & 3) === 0) {
+                    tmp = arr[i75 / 4];
                 }
-                out[i] = tmp >>> 24;
+                out[i75] = tmp >>> 24;
                 tmp <<= 8;
             }
             return out;
         },
         toBits (bytes) {
             const out = [];
-            let i;
+            let i76;
             let tmp = 0;
-            for(i = 0; i < bytes.length; i++){
-                tmp = tmp << 8 | bytes[i];
-                if ((i & 3) === 3) {
+            for(i76 = 0; i76 < bytes.length; i76++){
+                tmp = tmp << 8 | bytes[i76];
+                if ((i76 & 3) === 3) {
                     out.push(tmp);
                     tmp = 0;
                 }
             }
-            if (i & 3) {
-                out.push(bitArray.partial(8 * (i & 3), tmp));
+            if (i76 & 3) {
+                out.push(bitArray.partial(8 * (i76 & 3), tmp));
             }
             return out;
         }
     }
 };
-const hash = {
-};
-hash.sha1 = function(hash) {
-    if (hash) {
-        this._h = hash._h.slice(0);
-        this._buffer = hash._buffer.slice(0);
-        this._length = hash._length;
+const hash = {};
+hash.sha1 = function(hash1) {
+    if (hash1) {
+        this._h = hash1._h.slice(0);
+        this._buffer = hash1._buffer.slice(0);
+        this._length = hash1._length;
     } else {
         this.reset();
     }
@@ -21657,7 +21533,7 @@ hash.sha1.prototype = {
         }
         const c = new Uint32Array(b);
         let j = 0;
-        for(let i = sha1.blockSize + ol - (sha1.blockSize + ol & sha1.blockSize - 1); i <= nl; i += sha1.blockSize){
+        for(let i77 = sha1.blockSize + ol - (sha1.blockSize + ol & sha1.blockSize - 1); i77 <= nl; i77 += sha1.blockSize){
             sha1._block(c.subarray(16 * j, 16 * (j + 1)));
             j += 1;
         }
@@ -21671,7 +21547,7 @@ hash.sha1.prototype = {
         b = bitArray.concat(b, [
             bitArray.partial(1, 1)
         ]);
-        for(let i = b.length + 2; i & 15; i++){
+        for(let i78 = b.length + 2; i78 & 15; i78++){
             b.push(0);
         }
         b.push(Math.floor(sha1._length / 4294967296));
@@ -21706,8 +21582,8 @@ hash.sha1.prototype = {
             return b ^ c ^ d;
         }
     },
-    _S: function(n, x) {
-        return x << n | x >>> 32 - n;
+    _S: function(n48, x) {
+        return x << n48 | x >>> 32 - n48;
     },
     _block: function(words) {
         const sha1 = this;
@@ -21739,10 +21615,9 @@ hash.sha1.prototype = {
         h[4] = h[4] + e | 0;
     }
 };
-const cipher = {
-};
+const cipher = {};
 cipher.aes = class {
-    constructor(key){
+    constructor(key103){
         const aes = this;
         aes._tables = [
             [
@@ -21765,29 +21640,29 @@ cipher.aes = class {
         }
         const sbox = aes._tables[0][4];
         const decTable = aes._tables[1];
-        const keyLen = key.length;
-        let i, encKey, decKey, rcon = 1;
+        const keyLen = key103.length;
+        let i79, encKey, decKey, rcon = 1;
         if (keyLen !== 4 && keyLen !== 6 && keyLen !== 8) {
             throw new Error("invalid aes key size");
         }
         aes._key = [
-            encKey = key.slice(0),
+            encKey = key103.slice(0),
             decKey = []
         ];
-        for(i = keyLen; i < 4 * keyLen + 28; i++){
-            let tmp = encKey[i - 1];
-            if (i % keyLen === 0 || keyLen === 8 && i % keyLen === 4) {
+        for(i79 = keyLen; i79 < 4 * keyLen + 28; i79++){
+            let tmp = encKey[i79 - 1];
+            if (i79 % keyLen === 0 || keyLen === 8 && i79 % keyLen === 4) {
                 tmp = sbox[tmp >>> 24] << 24 ^ sbox[tmp >> 16 & 255] << 16 ^ sbox[tmp >> 8 & 255] << 8 ^ sbox[tmp & 255];
-                if (i % keyLen === 0) {
+                if (i79 % keyLen === 0) {
                     tmp = tmp << 8 ^ tmp >>> 24 ^ rcon << 24;
                     rcon = rcon << 1 ^ (rcon >> 7) * 283;
                 }
             }
-            encKey[i] = encKey[i - keyLen] ^ tmp;
+            encKey[i79] = encKey[i79 - keyLen] ^ tmp;
         }
-        for(let j = 0; i; j++, i--){
-            const tmp = encKey[j & 3 ? i : i - 4];
-            if (i <= 4 || j < 4) {
+        for(let j = 0; i79; j++, i79--){
+            const tmp = encKey[j & 3 ? i79 : i79 - 4];
+            if (i79 <= 4 || j < 4) {
                 decKey[j] = tmp;
             } else {
                 decKey[j] = decTable[0][sbox[tmp >>> 24]] ^ decTable[1][sbox[tmp >> 16 & 255]] ^ decTable[2][sbox[tmp >> 8 & 255]] ^ decTable[3][sbox[tmp & 255]];
@@ -21808,8 +21683,8 @@ cipher.aes = class {
         const d = [];
         const th = [];
         let xInv, x2, x4, x8;
-        for(let i = 0; i < 256; i++){
-            th[(d[i] = i << 1 ^ (i >> 7) * 283) ^ i] = i;
+        for(let i80 = 0; i80 < 256; i80++){
+            th[(d[i80] = i80 << 1 ^ (i80 >> 7) * 283) ^ i80] = i80;
         }
         for(let x = xInv = 0; !sbox[x]; x ^= x2 || 1, xInv = th[xInv] || 1){
             let s = xInv ^ xInv << 1 ^ xInv << 2 ^ xInv << 3 ^ xInv << 4;
@@ -21819,9 +21694,9 @@ cipher.aes = class {
             x8 = d[x4 = d[x2 = d[x]]];
             let tDec = x8 * 16843009 ^ x4 * 65537 ^ x2 * 257 ^ x * 16843008;
             let tEnc = d[s] * 257 ^ s * 16843008;
-            for(let i = 0; i < 4; i++){
-                encTable[i][x] = tEnc = tEnc << 24 ^ tEnc >>> 8;
-                decTable[i][s] = tDec = tDec << 24 ^ tDec >>> 8;
+            for(let i81 = 0; i81 < 4; i81++){
+                encTable[i81][x] = tEnc = tEnc << 24 ^ tEnc >>> 8;
+                decTable[i81][s] = tDec = tDec << 24 ^ tDec >>> 8;
             }
         }
         for(let i1 = 0; i1 < 5; i1++){
@@ -21833,38 +21708,38 @@ cipher.aes = class {
         if (input.length !== 4) {
             throw new Error("invalid aes block size");
         }
-        const key = this._key[dir];
-        const nInnerRounds = key.length / 4 - 2;
+        const key104 = this._key[dir];
+        const nInnerRounds = key104.length / 4 - 2;
         const out = [
             0,
             0,
             0,
             0
         ];
-        const table = this._tables[dir];
-        const t0 = table[0];
-        const t1 = table[1];
-        const t2 = table[2];
-        const t3 = table[3];
-        const sbox = table[4];
-        let a = input[0] ^ key[0];
-        let b = input[dir ? 3 : 1] ^ key[1];
-        let c = input[2] ^ key[2];
-        let d = input[dir ? 1 : 3] ^ key[3];
+        const table4 = this._tables[dir];
+        const t0 = table4[0];
+        const t1 = table4[1];
+        const t2 = table4[2];
+        const t3 = table4[3];
+        const sbox = table4[4];
+        let a = input[0] ^ key104[0];
+        let b = input[dir ? 3 : 1] ^ key104[1];
+        let c = input[2] ^ key104[2];
+        let d = input[dir ? 1 : 3] ^ key104[3];
         let kIndex = 4;
         let a2, b2, c2;
-        for(let i = 0; i < nInnerRounds; i++){
-            a2 = t0[a >>> 24] ^ t1[b >> 16 & 255] ^ t2[c >> 8 & 255] ^ t3[d & 255] ^ key[kIndex];
-            b2 = t0[b >>> 24] ^ t1[c >> 16 & 255] ^ t2[d >> 8 & 255] ^ t3[a & 255] ^ key[kIndex + 1];
-            c2 = t0[c >>> 24] ^ t1[d >> 16 & 255] ^ t2[a >> 8 & 255] ^ t3[b & 255] ^ key[kIndex + 2];
-            d = t0[d >>> 24] ^ t1[a >> 16 & 255] ^ t2[b >> 8 & 255] ^ t3[c & 255] ^ key[kIndex + 3];
+        for(let i82 = 0; i82 < nInnerRounds; i82++){
+            a2 = t0[a >>> 24] ^ t1[b >> 16 & 255] ^ t2[c >> 8 & 255] ^ t3[d & 255] ^ key104[kIndex];
+            b2 = t0[b >>> 24] ^ t1[c >> 16 & 255] ^ t2[d >> 8 & 255] ^ t3[a & 255] ^ key104[kIndex + 1];
+            c2 = t0[c >>> 24] ^ t1[d >> 16 & 255] ^ t2[a >> 8 & 255] ^ t3[b & 255] ^ key104[kIndex + 2];
+            d = t0[d >>> 24] ^ t1[a >> 16 & 255] ^ t2[b >> 8 & 255] ^ t3[c & 255] ^ key104[kIndex + 3];
             kIndex += 4;
             a = a2;
             b = b2;
             c = c2;
         }
-        for(let i1 = 0; i1 < 4; i1++){
-            out[dir ? 3 & -i1 : i1] = sbox[a >>> 24] << 24 ^ sbox[b >> 16 & 255] << 16 ^ sbox[c >> 8 & 255] << 8 ^ sbox[d & 255] ^ key[kIndex++];
+        for(let i2 = 0; i2 < 4; i2++){
+            out[dir ? 3 & -i2 : i2] = sbox[a >>> 24] << 24 ^ sbox[b >> 16 & 255] << 16 ^ sbox[c >> 8 & 255] << 8 ^ sbox[d & 255] ^ key104[kIndex++];
             a2 = a;
             a = b;
             b = c;
@@ -21874,8 +21749,7 @@ cipher.aes = class {
         return out;
     }
 };
-const mode = {
-};
+const mode = {};
 mode.ctrGladman = class {
     constructor(prf, iv){
         this._prf = prf;
@@ -21928,42 +21802,41 @@ mode.ctrGladman = class {
             return [];
         }
         const bl = bitArray.bitLength(data);
-        for(let i = 0; i < l; i += 4){
+        for(let i83 = 0; i83 < l; i83 += 4){
             this.incCounter(iv);
             const e = prf.encrypt(iv);
-            data[i] ^= e[0];
-            data[i + 1] ^= e[1];
-            data[i + 2] ^= e[2];
-            data[i + 3] ^= e[3];
+            data[i83] ^= e[0];
+            data[i83 + 1] ^= e[1];
+            data[i83 + 2] ^= e[2];
+            data[i83 + 3] ^= e[3];
         }
         return bitArray.clamp(data, bl);
     }
 };
-const misc = {
-};
+const misc = {};
 misc.hmacSha1 = class {
-    constructor(key){
+    constructor(key105){
         const hmac = this;
-        const Hash = hmac._hash = hash.sha1;
+        const Hash1 = hmac._hash = hash.sha1;
         const exKey = [
             [],
             []
         ];
-        const bs = Hash.prototype.blockSize / 32;
+        const bs = Hash1.prototype.blockSize / 32;
         hmac._baseHash = [
-            new Hash(),
-            new Hash()
+            new Hash1(),
+            new Hash1()
         ];
-        if (key.length > bs) {
-            key = Hash.hash(key);
+        if (key105.length > bs) {
+            key105 = Hash1.hash(key105);
         }
-        for(let i = 0; i < bs; i++){
-            exKey[0][i] = key[i] ^ 909522486;
-            exKey[1][i] = key[i] ^ 1549556828;
+        for(let i84 = 0; i84 < bs; i84++){
+            exKey[0][i84] = key105[i84] ^ 909522486;
+            exKey[1][i84] = key105[i84] ^ 1549556828;
         }
         hmac._baseHash[0].update(exKey[0]);
         hmac._baseHash[1].update(exKey[1]);
-        hmac._resultHash = new Hash(hmac._baseHash[0]);
+        hmac._resultHash = new Hash1(hmac._baseHash[0]);
     }
     reset() {
         const hmac = this;
@@ -22132,18 +22005,18 @@ function append(aesCrypto, input, output, paddingStart, paddingEnd, verifySignat
     aesCrypto.pendingInput = subarray(input, offset);
     return output;
 }
-async function createDecryptionKeys(decrypt, preambleArray, password) {
-    await createKeys(decrypt, password, subarray(preambleArray, 0, SALT_LENGTH[decrypt.strength]));
-    const passwordVerification = subarray(preambleArray, SALT_LENGTH[decrypt.strength]);
-    const passwordVerificationKey = decrypt.keys.passwordVerification;
+async function createDecryptionKeys(decrypt1, preambleArray, password) {
+    await createKeys(decrypt1, password, subarray(preambleArray, 0, SALT_LENGTH[decrypt1.strength]));
+    const passwordVerification = subarray(preambleArray, SALT_LENGTH[decrypt1.strength]);
+    const passwordVerificationKey = decrypt1.keys.passwordVerification;
     if (passwordVerificationKey[0] != passwordVerification[0] || passwordVerificationKey[1] != passwordVerification[1]) {
         throw new Error(ERR_INVALID_PASSWORD);
     }
 }
-async function createEncryptionKeys(encrypt, password) {
-    const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH[encrypt.strength]));
-    await createKeys(encrypt, password, salt);
-    return concat1(salt, encrypt.keys.passwordVerification);
+async function createEncryptionKeys(encrypt1, password) {
+    const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH[encrypt1.strength]));
+    await createKeys(encrypt1, password, salt);
+    return concat1(salt, encrypt1.keys.passwordVerification);
 }
 async function createKeys(target, password, salt) {
     const encodedPassword = new TextEncoder().encode(password);
@@ -22312,40 +22185,40 @@ class Inflate1 {
         });
     }
     async append(data) {
-        const codec = this;
-        if (codec.encrypted && data.length) {
-            data = await codec.decrypt.append(data);
+        const codec1 = this;
+        if (codec1.encrypted && data.length) {
+            data = await codec1.decrypt.append(data);
         }
-        if (codec.compressed && data.length) {
-            data = await codec.inflate.append(data);
+        if (codec1.compressed && data.length) {
+            data = await codec1.inflate.append(data);
         }
-        if ((!codec.encrypted || codec.zipCrypto) && codec.signed && data.length) {
-            codec.crc32.append(data);
+        if ((!codec1.encrypted || codec1.zipCrypto) && codec1.signed && data.length) {
+            codec1.crc32.append(data);
         }
         return data;
     }
     async flush() {
-        const codec = this;
+        const codec2 = this;
         let signature;
         let data = new Uint8Array(0);
-        if (codec.encrypted) {
-            const result = codec.decrypt.flush();
+        if (codec2.encrypted) {
+            const result = codec2.decrypt.flush();
             if (!result.valid) {
                 throw new Error(ERR_INVALID_SIGNATURE);
             }
             data = result.data;
         }
-        if ((!codec.encrypted || codec.zipCrypto) && codec.signed) {
+        if ((!codec2.encrypted || codec2.zipCrypto) && codec2.signed) {
             const dataViewSignature = new DataView(new Uint8Array(4).buffer);
-            signature = codec.crc32.get();
+            signature = codec2.crc32.get();
             dataViewSignature.setUint32(0, signature);
-            if (codec.signature != dataViewSignature.getUint32(0, false)) {
+            if (codec2.signature != dataViewSignature.getUint32(0, false)) {
                 throw new Error(ERR_INVALID_SIGNATURE);
             }
         }
-        if (codec.compressed) {
-            data = await codec.inflate.append(data) || new Uint8Array(0);
-            await codec.inflate.flush();
+        if (codec2.compressed) {
+            data = await codec2.inflate.append(data) || new Uint8Array(0);
+            await codec2.inflate.flush();
         }
         return {
             data,
@@ -22369,37 +22242,37 @@ class Deflate1 {
         });
     }
     async append(inputData) {
-        const codec = this;
+        const codec3 = this;
         let data = inputData;
-        if (codec.compressed && inputData.length) {
-            data = await codec.deflate.append(inputData);
+        if (codec3.compressed && inputData.length) {
+            data = await codec3.deflate.append(inputData);
         }
-        if (codec.encrypted && data.length) {
-            data = await codec.encrypt.append(data);
+        if (codec3.encrypted && data.length) {
+            data = await codec3.encrypt.append(data);
         }
-        if ((!codec.encrypted || codec.zipCrypto) && codec.signed && inputData.length) {
-            codec.crc32.append(inputData);
+        if ((!codec3.encrypted || codec3.zipCrypto) && codec3.signed && inputData.length) {
+            codec3.crc32.append(inputData);
         }
         return data;
     }
     async flush() {
-        const codec = this;
+        const codec4 = this;
         let signature;
         let data = new Uint8Array(0);
-        if (codec.compressed) {
-            data = await codec.deflate.flush() || new Uint8Array(0);
+        if (codec4.compressed) {
+            data = await codec4.deflate.flush() || new Uint8Array(0);
         }
-        if (codec.encrypted) {
-            data = await codec.encrypt.append(data);
-            const result = codec.encrypt.flush();
+        if (codec4.encrypted) {
+            data = await codec4.encrypt.append(data);
+            const result = codec4.encrypt.flush();
             signature = result.signature;
             const newData = new Uint8Array(data.length + result.data.length);
             newData.set(data, 0);
             newData.set(result.data, data.length);
             data = newData;
         }
-        if ((!codec.encrypted || codec.zipCrypto) && codec.signed) {
-            signature = codec.crc32.get();
+        if ((!codec4.encrypted || codec4.zipCrypto) && codec4.signed) {
+            signature = codec4.crc32.get();
         }
         return {
             data,
@@ -22407,11 +22280,11 @@ class Deflate1 {
         };
     }
 }
-function createCodec(codecConstructor, options, config) {
+function createCodec(codecConstructor, options, config7) {
     if (options.codecType.startsWith(CODEC_DEFLATE)) {
-        return new Deflate1(codecConstructor, options, config);
+        return new Deflate1(codecConstructor, options, config7);
     } else if (options.codecType.startsWith(CODEC_INFLATE)) {
-        return new Inflate1(codecConstructor, options, config);
+        return new Inflate1(codecConstructor, options, config7);
     }
 }
 "use strict";
@@ -22424,8 +22297,8 @@ const MESSAGE_APPEND = "append";
 const MESSAGE_FLUSH = "flush";
 const MESSAGE_EVENT_TYPE = "message";
 let classicWorkersSupported = true;
-function createWorkerInterface(workerData, config) {
-    const interfaceCodec = createCodec(workerData.codecConstructor, workerData.options, config);
+function createWorkerInterface(workerData, config8) {
+    const interfaceCodec = createCodec(workerData.codecConstructor, workerData.options, config8);
     return {
         async append (data) {
             try {
@@ -22444,7 +22317,7 @@ function createWorkerInterface(workerData, config) {
         }
     };
 }
-function createWebWorkerInterface(workerData, config) {
+function createWebWorkerInterface(workerData, config9) {
     let messageTask;
     const moduleType = {
         type: "module"
@@ -22476,8 +22349,7 @@ function createWebWorkerInterface(workerData, config) {
         };
     }
     return workerData.interface;
-    function getWorker(options = {
-    }) {
+    function getWorker(options = {}) {
         return new Worker(new URL(workerData.scripts[0], importMeta1.url), options);
     }
     async function initAndSendMessage(message) {
@@ -22489,7 +22361,7 @@ function createWebWorkerInterface(workerData, config) {
                 type: MESSAGE_INIT,
                 options,
                 config: {
-                    chunkSize: config.chunkSize
+                    chunkSize: config9.chunkSize
                 }
             });
         }
@@ -22497,8 +22369,8 @@ function createWebWorkerInterface(workerData, config) {
     }
     function sendMessage(message) {
         const worker = workerData.worker;
-        const result = new Promise((resolve, reject)=>messageTask = {
-                resolve,
+        const result = new Promise((resolve8, reject)=>messageTask = {
+                resolve: resolve8,
                 reject
             }
         );
@@ -22549,12 +22421,11 @@ function createWebWorkerInterface(workerData, config) {
         }
     }
 }
-const __default6 = (workerData, codecConstructor, options, config, onTaskFinished, webWorker, scripts)=>{
+const __default6 = (workerData, codecConstructor, options, config10, onTaskFinished, webWorker, scripts)=>{
     Object.assign(workerData, {
         busy: true,
         codecConstructor,
-        options: Object.assign({
-        }, options),
+        options: Object.assign({}, options),
         scripts,
         terminate () {
             if (workerData.worker && !workerData.busy) {
@@ -22567,49 +22438,48 @@ const __default6 = (workerData, codecConstructor, options, config, onTaskFinishe
             onTaskFinished(workerData);
         }
     });
-    return webWorker ? createWebWorkerInterface(workerData, config) : createWorkerInterface(workerData, config);
+    return webWorker ? createWebWorkerInterface(workerData, config10) : createWorkerInterface(workerData, config10);
 };
 "use strict";
 let pool = [];
 let pendingRequests = [];
-function createCodec1(codecConstructor, options, config) {
-    const streamCopy = !options.compressed && !options.signed && !options.encrypted;
-    const webWorker = !streamCopy && (options.useWebWorkers || options.useWebWorkers === undefined && config.useWebWorkers);
-    const scripts = webWorker && config.workerScripts ? config.workerScripts[options.codecType] : [];
-    if (pool.length < config.maxWorkers) {
-        const workerData = {
-        };
+function createCodec1(codecConstructor1, options1, config11) {
+    const streamCopy = !options1.compressed && !options1.signed && !options1.encrypted;
+    const webWorker1 = !streamCopy && (options1.useWebWorkers || options1.useWebWorkers === undefined && config11.useWebWorkers);
+    const scripts1 = webWorker1 && config11.workerScripts ? config11.workerScripts[options1.codecType] : [];
+    if (pool.length < config11.maxWorkers) {
+        const workerData = {};
         pool.push(workerData);
-        return __default6(workerData, codecConstructor, options, config, onTaskFinished, webWorker, scripts);
+        return __default6(workerData, codecConstructor1, options1, config11, onTaskFinished, webWorker1, scripts1);
     } else {
-        const workerData = pool.find((workerData)=>!workerData.busy
+        const workerData1 = pool.find((workerData)=>!workerData.busy
         );
-        if (workerData) {
-            clearTerminateTimeout(workerData);
-            return __default6(workerData, codecConstructor, options, config, onTaskFinished, webWorker, scripts);
+        if (workerData1) {
+            clearTerminateTimeout(workerData1);
+            return __default6(workerData1, codecConstructor1, options1, config11, onTaskFinished, webWorker1, scripts1);
         } else {
-            return new Promise((resolve)=>pendingRequests.push({
-                    resolve,
-                    codecConstructor,
-                    options,
-                    webWorker,
-                    scripts
+            return new Promise((resolve9)=>pendingRequests.push({
+                    resolve: resolve9,
+                    codecConstructor: codecConstructor1,
+                    options: options1,
+                    webWorker: webWorker1,
+                    scripts: scripts1
                 })
             );
         }
     }
     function onTaskFinished(workerData) {
         if (pendingRequests.length) {
-            const [{ resolve , codecConstructor , options , webWorker , scripts  }] = pendingRequests.splice(0, 1);
-            resolve(__default6(workerData, codecConstructor, options, config, onTaskFinished, webWorker, scripts));
+            const [{ resolve: resolve10 , codecConstructor , options , webWorker , scripts  }] = pendingRequests.splice(0, 1);
+            resolve10(__default6(workerData, codecConstructor, options, config11, onTaskFinished, webWorker, scripts));
         } else if (workerData.worker) {
             clearTerminateTimeout(workerData);
-            if (Number.isFinite(config.terminateWorkerTimeout) && config.terminateWorkerTimeout >= 0) {
+            if (Number.isFinite(config11.terminateWorkerTimeout) && config11.terminateWorkerTimeout >= 0) {
                 workerData.terminateTimeout = setTimeout(()=>{
                     pool = pool.filter((data)=>data != workerData
                     );
                     workerData.terminate();
-                }, config.terminateWorkerTimeout);
+                }, config11.terminateWorkerTimeout);
             }
         } else {
             pool = pool.filter((data)=>data != workerData
@@ -22625,7 +22495,7 @@ function clearTerminateTimeout(workerData) {
 }
 const __default7 = ()=>{
     if ("function" == typeof URL.createObjectURL) {
-        const e = '\n\t\t\t\n\nconst t=[];for(let e=0;e<256;e++){let n=e;for(let t=0;t<8;t++)1&n?n=n>>>1^3988292384:n>>>=1;t[e]=n;}class e{constructor(t){this.crc=t||-1;}append(e){let n=0|this.crc;for(let i=0,a=0|e.length;i<a;i++)n=n>>>8^t[255&(n^e[i])];this.crc=n;}get(){return ~this.crc}}const n={concat(t,e){if(0===t.length||0===e.length)return t.concat(e);const i=t[t.length-1],a=n.getPartial(i);return 32===a?t.concat(e):n._shiftRight(e,a,0|i,t.slice(0,t.length-1))},bitLength(t){const e=t.length;if(0===e)return 0;const i=t[e-1];return 32*(e-1)+n.getPartial(i)},clamp(t,e){if(32*t.length<e)return t;const i=(t=t.slice(0,Math.ceil(e/32))).length;return e&=31,i>0&&e&&(t[i-1]=n.partial(e,t[i-1]&2147483648>>e-1,1)),t},partial:(t,e,n)=>32===t?e:(n?0|e:e<<32-t)+1099511627776*t,getPartial:t=>Math.round(t/1099511627776)||32,_shiftRight(t,e,i,a){for(void 0===a&&(a=[]);e>=32;e-=32)a.push(i),i=0;if(0===e)return a.concat(t);for(let n=0;n<t.length;n++)a.push(i|t[n]>>>e),i=t[n]<<32-e;const r=t.length?t[t.length-1]:0,s=n.getPartial(r);return a.push(n.partial(e+s&31,e+s>32?i:a.pop(),1)),a}},i={bytes:{fromBits(t){const e=n.bitLength(t)/8,i=new Uint8Array(e);let a;for(let n=0;n<e;n++)0==(3&n)&&(a=t[n/4]),i[n]=a>>>24,a<<=8;return i},toBits(t){const e=[];let i,a=0;for(i=0;i<t.length;i++)a=a<<8|t[i],3==(3&i)&&(e.push(a),a=0);return 3&i&&e.push(n.partial(8*(3&i),a)),e}}},a={sha1:function(t){t?(this._h=t._h.slice(0),this._buffer=t._buffer.slice(0),this._length=t._length):this.reset();}};a.sha1.prototype={blockSize:512,reset:function(){const t=this;return t._h=this._init.slice(0),t._buffer=[],t._length=0,t},update:function(t){const e=this;"string"==typeof t&&(t=i.utf8String.toBits(t));const a=e._buffer=n.concat(e._buffer,t),r=e._length,s=e._length=r+n.bitLength(t);if(s>9007199254740991)throw new Error("Cannot hash more than 2^53 - 1 bits");const o=new Uint32Array(a);let l=0;for(let t=e.blockSize+r-(e.blockSize+r&e.blockSize-1);t<=s;t+=e.blockSize)e._block(o.subarray(16*l,16*(l+1))),l+=1;return a.splice(0,16*l),e},finalize:function(){const t=this;let e=t._buffer;const i=t._h;e=n.concat(e,[n.partial(1,1)]);for(let t=e.length+2;15&t;t++)e.push(0);for(e.push(Math.floor(t._length/4294967296)),e.push(0|t._length);e.length;)t._block(e.splice(0,16));return t.reset(),i},_init:[1732584193,4023233417,2562383102,271733878,3285377520],_key:[1518500249,1859775393,2400959708,3395469782],_f:function(t,e,n,i){return t<=19?e&n|~e&i:t<=39?e^n^i:t<=59?e&n|e&i|n&i:t<=79?e^n^i:void 0},_S:function(t,e){return e<<t|e>>>32-t},_block:function(t){const e=this,n=e._h,i=Array(80);for(let e=0;e<16;e++)i[e]=t[e];let a=n[0],r=n[1],s=n[2],o=n[3],l=n[4];for(let t=0;t<=79;t++){t>=16&&(i[t]=e._S(1,i[t-3]^i[t-8]^i[t-14]^i[t-16]));const n=e._S(5,a)+e._f(t,r,s,o)+l+i[t]+e._key[Math.floor(t/20)]|0;l=o,o=s,s=e._S(30,r),r=a,a=n;}n[0]=n[0]+a|0,n[1]=n[1]+r|0,n[2]=n[2]+s|0,n[3]=n[3]+o|0,n[4]=n[4]+l|0;}};const r={aes:class{constructor(t){const e=this;e._tables=[[[],[],[],[],[]],[[],[],[],[],[]]],e._tables[0][0][0]||e._precompute();const n=e._tables[0][4],i=e._tables[1],a=t.length;let r,s,o,l=1;if(4!==a&&6!==a&&8!==a)throw new Error("invalid aes key size");for(e._key=[s=t.slice(0),o=[]],r=a;r<4*a+28;r++){let t=s[r-1];(r%a==0||8===a&&r%a==4)&&(t=n[t>>>24]<<24^n[t>>16&255]<<16^n[t>>8&255]<<8^n[255&t],r%a==0&&(t=t<<8^t>>>24^l<<24,l=l<<1^283*(l>>7))),s[r]=s[r-a]^t;}for(let t=0;r;t++,r--){const e=s[3&t?r:r-4];o[t]=r<=4||t<4?e:i[0][n[e>>>24]]^i[1][n[e>>16&255]]^i[2][n[e>>8&255]]^i[3][n[255&e]];}}encrypt(t){return this._crypt(t,0)}decrypt(t){return this._crypt(t,1)}_precompute(){const t=this._tables[0],e=this._tables[1],n=t[4],i=e[4],a=[],r=[];let s,o,l,_;for(let t=0;t<256;t++)r[(a[t]=t<<1^283*(t>>7))^t]=t;for(let d=s=0;!n[d];d^=o||1,s=r[s]||1){let r=s^s<<1^s<<2^s<<3^s<<4;r=r>>8^255&r^99,n[d]=r,i[r]=d,_=a[l=a[o=a[d]]];let c=16843009*_^65537*l^257*o^16843008*d,f=257*a[r]^16843008*r;for(let n=0;n<4;n++)t[n][d]=f=f<<24^f>>>8,e[n][r]=c=c<<24^c>>>8;}for(let n=0;n<5;n++)t[n]=t[n].slice(0),e[n]=e[n].slice(0);}_crypt(t,e){if(4!==t.length)throw new Error("invalid aes block size");const n=this._key[e],i=n.length/4-2,a=[0,0,0,0],r=this._tables[e],s=r[0],o=r[1],l=r[2],_=r[3],d=r[4];let c,f,u,h=t[0]^n[0],b=t[e?3:1]^n[1],w=t[2]^n[2],p=t[e?1:3]^n[3],x=4;for(let t=0;t<i;t++)c=s[h>>>24]^o[b>>16&255]^l[w>>8&255]^_[255&p]^n[x],f=s[b>>>24]^o[w>>16&255]^l[p>>8&255]^_[255&h]^n[x+1],u=s[w>>>24]^o[p>>16&255]^l[h>>8&255]^_[255&b]^n[x+2],p=s[p>>>24]^o[h>>16&255]^l[b>>8&255]^_[255&w]^n[x+3],x+=4,h=c,b=f,w=u;for(let t=0;t<4;t++)a[e?3&-t:t]=d[h>>>24]<<24^d[b>>16&255]<<16^d[w>>8&255]<<8^d[255&p]^n[x++],c=h,h=b,b=w,w=p,p=c;return a}}},s={ctrGladman:class{constructor(t,e){this._prf=t,this._initIv=e,this._iv=e;}reset(){this._iv=this._initIv;}update(t){return this.calculate(this._prf,t,this._iv)}incWord(t){if(255==(t>>24&255)){let e=t>>16&255,n=t>>8&255,i=255&t;255===e?(e=0,255===n?(n=0,255===i?i=0:++i):++n):++e,t=0,t+=e<<16,t+=n<<8,t+=i;}else t+=1<<24;return t}incCounter(t){0===(t[0]=this.incWord(t[0]))&&(t[1]=this.incWord(t[1]));}calculate(t,e,i){let a;if(!(a=e.length))return [];const r=n.bitLength(e);for(let n=0;n<a;n+=4){this.incCounter(i);const a=t.encrypt(i);e[n]^=a[0],e[n+1]^=a[1],e[n+2]^=a[2],e[n+3]^=a[3];}return n.clamp(e,r)}}},o={hmacSha1:class{constructor(t){const e=this,n=e._hash=a.sha1,i=[[],[]],r=n.prototype.blockSize/32;e._baseHash=[new n,new n],t.length>r&&(t=n.hash(t));for(let e=0;e<r;e++)i[0][e]=909522486^t[e],i[1][e]=1549556828^t[e];e._baseHash[0].update(i[0]),e._baseHash[1].update(i[1]),e._resultHash=new n(e._baseHash[0]);}reset(){const t=this;t._resultHash=new t._hash(t._baseHash[0]),t._updated=!1;}update(t){this._updated=!0,this._resultHash.update(t);}digest(){const t=this,e=t._resultHash.finalize(),n=new t._hash(t._baseHash[1]).update(e).finalize();return t.reset(),n}}},l={name:"PBKDF2"},_=Object.assign({hash:{name:"HMAC"}},l),d=Object.assign({iterations:1e3,hash:{name:"SHA-1"}},l),c=["deriveBits"],f=[8,12,16],u=[16,24,32],h=[0,0,0,0],b=i.bytes,w=r.aes,p=s.ctrGladman,x=o.hmacSha1;class g{constructor(t,e,n){Object.assign(this,{password:t,signed:e,strength:n-1,pendingInput:new Uint8Array(0)});}async append(t){const e=this;if(e.password){const n=A(t,0,f[e.strength]+2);await async function(t,e,n){await k(t,n,A(e,0,f[t.strength]));const i=A(e,f[t.strength]),a=t.keys.passwordVerification;if(a[0]!=i[0]||a[1]!=i[1])throw new Error("Invalid pasword")}(e,n,e.password),e.password=null,e.aesCtrGladman=new p(new w(e.keys.key),Array.from(h)),e.hmac=new x(e.keys.authentication),t=A(t,f[e.strength]+2);}return m(e,t,new Uint8Array(t.length-10-(t.length-10)%16),0,10,!0)}flush(){const t=this,e=t.pendingInput,n=A(e,0,e.length-10),i=A(e,e.length-10);let a=new Uint8Array(0);if(n.length){const e=b.toBits(n);t.hmac.update(e);const i=t.aesCtrGladman.update(e);a=b.fromBits(i);}let r=!0;if(t.signed){const e=A(b.fromBits(t.hmac.digest()),0,10);for(let t=0;t<10;t++)e[t]!=i[t]&&(r=!1);}return {valid:r,data:a}}}class y{constructor(t,e){Object.assign(this,{password:t,strength:e-1,pendingInput:new Uint8Array(0)});}async append(t){const e=this;let n=new Uint8Array(0);e.password&&(n=await async function(t,e){const n=crypto.getRandomValues(new Uint8Array(f[t.strength]));return await k(t,e,n),v(n,t.keys.passwordVerification)}(e,e.password),e.password=null,e.aesCtrGladman=new p(new w(e.keys.key),Array.from(h)),e.hmac=new x(e.keys.authentication));const i=new Uint8Array(n.length+t.length-t.length%16);return i.set(n,0),m(e,t,i,n.length,0)}flush(){const t=this;let e=new Uint8Array(0);if(t.pendingInput.length){const n=t.aesCtrGladman.update(b.toBits(t.pendingInput));t.hmac.update(n),e=b.fromBits(n);}const n=A(b.fromBits(t.hmac.digest()),0,10);return {data:v(e,n),signature:n}}}function m(t,e,n,i,a,r){const s=e.length-a;let o;for(t.pendingInput.length&&(e=v(t.pendingInput,e),n=function(t,e){if(e&&e>t.length){const n=t;(t=new Uint8Array(e)).set(n,0);}return t}(n,s-s%16)),o=0;o<=s-16;o+=16){const a=b.toBits(A(e,o,o+16));r&&t.hmac.update(a);const s=t.aesCtrGladman.update(a);r||t.hmac.update(s),n.set(b.fromBits(s),o+i);}return t.pendingInput=A(e,o),n}async function k(t,e,n){const i=(new TextEncoder).encode(e),a=await crypto.subtle.importKey("raw",i,_,!1,c),r=await crypto.subtle.deriveBits(Object.assign({salt:n},d),a,8*(2*u[t.strength]+2)),s=new Uint8Array(r);t.keys={key:b.toBits(A(s,0,u[t.strength])),authentication:b.toBits(A(s,u[t.strength],2*u[t.strength])),passwordVerification:A(s,2*u[t.strength])};}function v(t,e){let n=t;return t.length+e.length&&(n=new Uint8Array(t.length+e.length),n.set(t,0),n.set(e,t.length)),n}function A(t,e,n){return t.subarray(e,n)}class U{constructor(t,e){Object.assign(this,{password:t,passwordVerification:e}),E(this,t);}append(t){const e=this;if(e.password){const n=z(e,t.subarray(0,12));if(e.password=null,n[11]!=e.passwordVerification)throw new Error("Invalid pasword");t=t.subarray(12);}return z(e,t)}flush(){return {valid:!0,data:new Uint8Array(0)}}}class S{constructor(t,e){Object.assign(this,{password:t,passwordVerification:e}),E(this,t);}append(t){const e=this;let n,i;if(e.password){e.password=null;const a=crypto.getRandomValues(new Uint8Array(12));a[11]=e.passwordVerification,n=new Uint8Array(t.length+a.length),n.set(I(e,a),0),i=12;}else n=new Uint8Array(t.length),i=0;return n.set(I(e,t),i),n}flush(){return {data:new Uint8Array(0)}}}function z(t,e){const n=new Uint8Array(e.length);for(let i=0;i<e.length;i++)n[i]=M(t)^e[i],C(t,n[i]);return n}function I(t,e){const n=new Uint8Array(e.length);for(let i=0;i<e.length;i++)n[i]=M(t)^e[i],C(t,e[i]);return n}function E(t,n){t.keys=[305419896,591751049,878082192],t.crcKey0=new e(t.keys[0]),t.crcKey2=new e(t.keys[2]);for(let e=0;e<n.length;e++)C(t,n.charCodeAt(e));}function C(t,e){t.crcKey0.append([e]),t.keys[0]=~t.crcKey0.get(),t.keys[1]=H(t.keys[1]+B(t.keys[0])),t.keys[1]=H(Math.imul(t.keys[1],134775813)+1),t.crcKey2.append([t.keys[1]>>>24]),t.keys[2]=~t.crcKey2.get();}function M(t){const e=2|t.keys[2];return B(Math.imul(e,1^e)>>>8)}function B(t){return 255&t}function H(t){return 4294967295&t}class V{constructor(t,{signature:n,password:i,signed:a,compressed:r,zipCrypto:s,passwordVerification:o,encryptionStrength:l},{chunkSize:_}){const d=Boolean(i);Object.assign(this,{signature:n,encrypted:d,signed:a,compressed:r,inflate:r&&new t({chunkSize:_}),crc32:a&&new e,zipCrypto:s,decrypt:d&&s?new U(i,o):new g(i,a,l)});}async append(t){const e=this;return e.encrypted&&t.length&&(t=await e.decrypt.append(t)),e.compressed&&t.length&&(t=await e.inflate.append(t)),(!e.encrypted||e.zipCrypto)&&e.signed&&t.length&&e.crc32.append(t),t}async flush(){const t=this;let e,n=new Uint8Array(0);if(t.encrypted){const e=t.decrypt.flush();if(!e.valid)throw new Error("Invalid signature");n=e.data;}if((!t.encrypted||t.zipCrypto)&&t.signed){const n=new DataView(new Uint8Array(4).buffer);if(e=t.crc32.get(),n.setUint32(0,e),t.signature!=n.getUint32(0,!1))throw new Error("Invalid signature")}return t.compressed&&(n=await t.inflate.append(n)||new Uint8Array(0),await t.inflate.flush()),{data:n,signature:e}}}class D{constructor(t,{encrypted:n,signed:i,compressed:a,level:r,zipCrypto:s,password:o,passwordVerification:l,encryptionStrength:_},{chunkSize:d}){Object.assign(this,{encrypted:n,signed:i,compressed:a,deflate:a&&new t({level:r||5,chunkSize:d}),crc32:i&&new e,zipCrypto:s,encrypt:n&&s?new S(o,l):new y(o,_)});}async append(t){const e=this;let n=t;return e.compressed&&t.length&&(n=await e.deflate.append(t)),e.encrypted&&n.length&&(n=await e.encrypt.append(n)),(!e.encrypted||e.zipCrypto)&&e.signed&&t.length&&e.crc32.append(t),n}async flush(){const t=this;let e,n=new Uint8Array(0);if(t.compressed&&(n=await t.deflate.flush()||new Uint8Array(0)),t.encrypted){n=await t.encrypt.append(n);const i=t.encrypt.flush();e=i.signature;const a=new Uint8Array(n.length+i.data.length);a.set(n,0),a.set(i.data,n.length),n=a;}return t.encrypted&&!t.zipCrypto||!t.signed||(e=t.crc32.get()),{data:n,signature:e}}}const j={init(t){t.scripts&&t.scripts.length&&importScripts.apply(void 0,t.scripts);const e=t.options;let n;self.initCodec&&self.initCodec(),e.codecType.startsWith("deflate")?n=self.Deflate:e.codecType.startsWith("inflate")&&(n=self.Inflate),O=function(t,e,n){return e.codecType.startsWith("deflate")?new D(t,e,n):e.codecType.startsWith("inflate")?new V(t,e,n):void 0}(n,e,t.config);},append:async t=>({data:await O.append(t.data)}),flush:()=>O.flush()};let O;addEventListener("message",(async t=>{const e=t.data,n=e.type,i=j[n];if(i)try{e.data&&(e.data=new Uint8Array(e.data));const t=await i(e)||{};if(t.type=n,t.data)try{t.data=t.data.buffer,postMessage(t,[t.data]);}catch(e){postMessage(t);}else postMessage(t);}catch(t){postMessage({type:n,error:{message:t.message,stack:t.stack}});}}));function P(t){return K(t.map((([t,e])=>new Array(t).fill(e,0,t))))}function K(t){return t.reduce(((t,e)=>t.concat(Array.isArray(e)?K(e):e)),[])}const G=[0,1,2,3].concat(...P([[2,4],[2,5],[4,6],[4,7],[8,8],[8,9],[16,10],[16,11],[32,12],[32,13],[64,14],[64,15],[2,0],[1,16],[1,17],[2,18],[2,19],[4,20],[4,21],[8,22],[8,23],[16,24],[16,25],[32,26],[32,27],[64,28],[64,29]]));function W(){const t=this;function e(t,e){let n=0;do{n|=1&t,t>>>=1,n<<=1;}while(--e>0);return n>>>1}t.build_tree=function(n){const i=t.dyn_tree,a=t.stat_desc.static_tree,r=t.stat_desc.elems;let s,o,l,_=-1;for(n.heap_len=0,n.heap_max=573,s=0;s<r;s++)0!==i[2*s]?(n.heap[++n.heap_len]=_=s,n.depth[s]=0):i[2*s+1]=0;for(;n.heap_len<2;)l=n.heap[++n.heap_len]=_<2?++_:0,i[2*l]=1,n.depth[l]=0,n.opt_len--,a&&(n.static_len-=a[2*l+1]);for(t.max_code=_,s=Math.floor(n.heap_len/2);s>=1;s--)n.pqdownheap(i,s);l=r;do{s=n.heap[1],n.heap[1]=n.heap[n.heap_len--],n.pqdownheap(i,1),o=n.heap[1],n.heap[--n.heap_max]=s,n.heap[--n.heap_max]=o,i[2*l]=i[2*s]+i[2*o],n.depth[l]=Math.max(n.depth[s],n.depth[o])+1,i[2*s+1]=i[2*o+1]=l,n.heap[1]=l++,n.pqdownheap(i,1);}while(n.heap_len>=2);n.heap[--n.heap_max]=n.heap[1],function(e){const n=t.dyn_tree,i=t.stat_desc.static_tree,a=t.stat_desc.extra_bits,r=t.stat_desc.extra_base,s=t.stat_desc.max_length;let o,l,_,d,c,f,u=0;for(d=0;d<=15;d++)e.bl_count[d]=0;for(n[2*e.heap[e.heap_max]+1]=0,o=e.heap_max+1;o<573;o++)l=e.heap[o],d=n[2*n[2*l+1]+1]+1,d>s&&(d=s,u++),n[2*l+1]=d,l>t.max_code||(e.bl_count[d]++,c=0,l>=r&&(c=a[l-r]),f=n[2*l],e.opt_len+=f*(d+c),i&&(e.static_len+=f*(i[2*l+1]+c)));if(0!==u){do{for(d=s-1;0===e.bl_count[d];)d--;e.bl_count[d]--,e.bl_count[d+1]+=2,e.bl_count[s]--,u-=2;}while(u>0);for(d=s;0!==d;d--)for(l=e.bl_count[d];0!==l;)_=e.heap[--o],_>t.max_code||(n[2*_+1]!=d&&(e.opt_len+=(d-n[2*_+1])*n[2*_],n[2*_+1]=d),l--);}}(n),function(t,n,i){const a=[];let r,s,o,l=0;for(r=1;r<=15;r++)a[r]=l=l+i[r-1]<<1;for(s=0;s<=n;s++)o=t[2*s+1],0!==o&&(t[2*s]=e(a[o]++,o));}(i,t.max_code,n.bl_count);};}function L(t,e,n,i,a){const r=this;r.static_tree=t,r.extra_bits=e,r.extra_base=n,r.elems=i,r.max_length=a;}W._length_code=[0,1,2,3,4,5,6,7].concat(...P([[2,8],[2,9],[2,10],[2,11],[4,12],[4,13],[4,14],[4,15],[8,16],[8,17],[8,18],[8,19],[16,20],[16,21],[16,22],[16,23],[32,24],[32,25],[32,26],[31,27],[1,28]])),W.base_length=[0,1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,0],W.base_dist=[0,1,2,3,4,6,8,12,16,24,32,48,64,96,128,192,256,384,512,768,1024,1536,2048,3072,4096,6144,8192,12288,16384,24576],W.d_code=function(t){return t<256?G[t]:G[256+(t>>>7)]},W.extra_lbits=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0],W.extra_dbits=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13],W.extra_blbits=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7],W.bl_order=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],L.static_ltree=[12,8,140,8,76,8,204,8,44,8,172,8,108,8,236,8,28,8,156,8,92,8,220,8,60,8,188,8,124,8,252,8,2,8,130,8,66,8,194,8,34,8,162,8,98,8,226,8,18,8,146,8,82,8,210,8,50,8,178,8,114,8,242,8,10,8,138,8,74,8,202,8,42,8,170,8,106,8,234,8,26,8,154,8,90,8,218,8,58,8,186,8,122,8,250,8,6,8,134,8,70,8,198,8,38,8,166,8,102,8,230,8,22,8,150,8,86,8,214,8,54,8,182,8,118,8,246,8,14,8,142,8,78,8,206,8,46,8,174,8,110,8,238,8,30,8,158,8,94,8,222,8,62,8,190,8,126,8,254,8,1,8,129,8,65,8,193,8,33,8,161,8,97,8,225,8,17,8,145,8,81,8,209,8,49,8,177,8,113,8,241,8,9,8,137,8,73,8,201,8,41,8,169,8,105,8,233,8,25,8,153,8,89,8,217,8,57,8,185,8,121,8,249,8,5,8,133,8,69,8,197,8,37,8,165,8,101,8,229,8,21,8,149,8,85,8,213,8,53,8,181,8,117,8,245,8,13,8,141,8,77,8,205,8,45,8,173,8,109,8,237,8,29,8,157,8,93,8,221,8,61,8,189,8,125,8,253,8,19,9,275,9,147,9,403,9,83,9,339,9,211,9,467,9,51,9,307,9,179,9,435,9,115,9,371,9,243,9,499,9,11,9,267,9,139,9,395,9,75,9,331,9,203,9,459,9,43,9,299,9,171,9,427,9,107,9,363,9,235,9,491,9,27,9,283,9,155,9,411,9,91,9,347,9,219,9,475,9,59,9,315,9,187,9,443,9,123,9,379,9,251,9,507,9,7,9,263,9,135,9,391,9,71,9,327,9,199,9,455,9,39,9,295,9,167,9,423,9,103,9,359,9,231,9,487,9,23,9,279,9,151,9,407,9,87,9,343,9,215,9,471,9,55,9,311,9,183,9,439,9,119,9,375,9,247,9,503,9,15,9,271,9,143,9,399,9,79,9,335,9,207,9,463,9,47,9,303,9,175,9,431,9,111,9,367,9,239,9,495,9,31,9,287,9,159,9,415,9,95,9,351,9,223,9,479,9,63,9,319,9,191,9,447,9,127,9,383,9,255,9,511,9,0,7,64,7,32,7,96,7,16,7,80,7,48,7,112,7,8,7,72,7,40,7,104,7,24,7,88,7,56,7,120,7,4,7,68,7,36,7,100,7,20,7,84,7,52,7,116,7,3,8,131,8,67,8,195,8,35,8,163,8,99,8,227,8],L.static_dtree=[0,5,16,5,8,5,24,5,4,5,20,5,12,5,28,5,2,5,18,5,10,5,26,5,6,5,22,5,14,5,30,5,1,5,17,5,9,5,25,5,5,5,21,5,13,5,29,5,3,5,19,5,11,5,27,5,7,5,23,5],L.static_l_desc=new L(L.static_ltree,W.extra_lbits,257,286,15),L.static_d_desc=new L(L.static_dtree,W.extra_dbits,0,30,15),L.static_bl_desc=new L(null,W.extra_blbits,0,19,7);function T(t,e,n,i,a){const r=this;r.good_length=t,r.max_lazy=e,r.nice_length=n,r.max_chain=i,r.func=a;}const q=[new T(0,0,0,0,0),new T(4,4,8,4,1),new T(4,5,16,8,1),new T(4,6,32,32,1),new T(4,4,16,16,2),new T(8,16,32,32,2),new T(8,16,128,128,2),new T(8,32,128,256,2),new T(32,128,258,1024,2),new T(32,258,258,4096,2)],R=["need dictionary","stream end","","","stream error","data error","","buffer error","",""];function F(t,e,n,i){const a=t[2*e],r=t[2*n];return a<r||a==r&&i[e]<=i[n]}function J(){const t=this;let e,n,i,a,r,s,o,l,_,d,c,f,u,h,b,w,p,x,g,y,m,k,v,A,U,S,z,I,E,C,M,B,H;const V=new W,D=new W,j=new W;let O,P,K,G,T,J,N,Q;function X(){let e;for(e=0;e<286;e++)M[2*e]=0;for(e=0;e<30;e++)B[2*e]=0;for(e=0;e<19;e++)H[2*e]=0;M[512]=1,t.opt_len=t.static_len=0,K=T=0;}function Y(t,e){let n,i=-1,a=t[1],r=0,s=7,o=4;0===a&&(s=138,o=3),t[2*(e+1)+1]=65535;for(let l=0;l<=e;l++)n=a,a=t[2*(l+1)+1],++r<s&&n==a||(r<o?H[2*n]+=r:0!==n?(n!=i&&H[2*n]++,H[32]++):r<=10?H[34]++:H[36]++,r=0,i=n,0===a?(s=138,o=3):n==a?(s=6,o=3):(s=7,o=4));}function Z(e){t.pending_buf[t.pending++]=e;}function $(t){Z(255&t),Z(t>>>8&255);}function tt(t,e){let n;const i=e;Q>16-i?(n=t,N|=n<<Q&65535,$(N),N=n>>>16-Q,Q+=i-16):(N|=t<<Q&65535,Q+=i);}function et(t,e){const n=2*t;tt(65535&e[n],65535&e[n+1]);}function nt(t,e){let n,i,a=-1,r=t[1],s=0,o=7,l=4;for(0===r&&(o=138,l=3),n=0;n<=e;n++)if(i=r,r=t[2*(n+1)+1],!(++s<o&&i==r)){if(s<l)do{et(i,H);}while(0!=--s);else 0!==i?(i!=a&&(et(i,H),s--),et(16,H),tt(s-3,2)):s<=10?(et(17,H),tt(s-3,3)):(et(18,H),tt(s-11,7));s=0,a=i,0===r?(o=138,l=3):i==r?(o=6,l=3):(o=7,l=4);}}function it(){16==Q?($(N),N=0,Q=0):Q>=8&&(Z(255&N),N>>>=8,Q-=8);}function at(e,n){let i,a,r;if(t.pending_buf[G+2*K]=e>>>8&255,t.pending_buf[G+2*K+1]=255&e,t.pending_buf[O+K]=255&n,K++,0===e?M[2*n]++:(T++,e--,M[2*(W._length_code[n]+256+1)]++,B[2*W.d_code(e)]++),0==(8191&K)&&z>2){for(i=8*K,a=m-p,r=0;r<30;r++)i+=B[2*r]*(5+W.extra_dbits[r]);if(i>>>=3,T<Math.floor(K/2)&&i<Math.floor(a/2))return !0}return K==P-1}function rt(e,n){let i,a,r,s,o=0;if(0!==K)do{i=t.pending_buf[G+2*o]<<8&65280|255&t.pending_buf[G+2*o+1],a=255&t.pending_buf[O+o],o++,0===i?et(a,e):(r=W._length_code[a],et(r+256+1,e),s=W.extra_lbits[r],0!==s&&(a-=W.base_length[r],tt(a,s)),i--,r=W.d_code(i),et(r,n),s=W.extra_dbits[r],0!==s&&(i-=W.base_dist[r],tt(i,s)));}while(o<K);et(256,e),J=e[513];}function st(){Q>8?$(N):Q>0&&Z(255&N),N=0,Q=0;}function ot(e,n,i){tt(0+(i?1:0),3),function(e,n,i){st(),J=8,i&&($(n),$(~n)),t.pending_buf.set(l.subarray(e,e+n),t.pending),t.pending+=n;}(e,n,!0);}function lt(e,n,i){let a,r,s=0;z>0?(V.build_tree(t),D.build_tree(t),s=function(){let e;for(Y(M,V.max_code),Y(B,D.max_code),j.build_tree(t),e=18;e>=3&&0===H[2*W.bl_order[e]+1];e--);return t.opt_len+=3*(e+1)+5+5+4,e}(),a=t.opt_len+3+7>>>3,r=t.static_len+3+7>>>3,r<=a&&(a=r)):a=r=n+5,n+4<=a&&-1!=e?ot(e,n,i):r==a?(tt(2+(i?1:0),3),rt(L.static_ltree,L.static_dtree)):(tt(4+(i?1:0),3),function(t,e,n){let i;for(tt(t-257,5),tt(e-1,5),tt(n-4,4),i=0;i<n;i++)tt(H[2*W.bl_order[i]+1],3);nt(M,t-1),nt(B,e-1);}(V.max_code+1,D.max_code+1,s+1),rt(M,B)),X(),i&&st();}function _t(t){lt(p>=0?p:-1,m-p,t),p=m,e.flush_pending();}function dt(){let t,n,i,a;do{if(a=_-v-m,0===a&&0===m&&0===v)a=r;else if(-1==a)a--;else if(m>=r+r-262){l.set(l.subarray(r,r+r),0),k-=r,m-=r,p-=r,t=u,i=t;do{n=65535&c[--i],c[i]=n>=r?n-r:0;}while(0!=--t);t=r,i=t;do{n=65535&d[--i],d[i]=n>=r?n-r:0;}while(0!=--t);a+=r;}if(0===e.avail_in)return;t=e.read_buf(l,m+v,a),v+=t,v>=3&&(f=255&l[m],f=(f<<w^255&l[m+1])&b);}while(v<262&&0!==e.avail_in)}function ct(t){let e,n,i=U,a=m,s=A;const _=m>r-262?m-(r-262):0;let c=C;const f=o,u=m+258;let h=l[a+s-1],b=l[a+s];A>=E&&(i>>=2),c>v&&(c=v);do{if(e=t,l[e+s]==b&&l[e+s-1]==h&&l[e]==l[a]&&l[++e]==l[a+1]){a+=2,e++;do{}while(l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&a<u);if(n=258-(u-a),a=u-258,n>s){if(k=t,s=n,n>=c)break;h=l[a+s-1],b=l[a+s];}}}while((t=65535&d[t&f])>_&&0!=--i);return s<=v?s:v}function ft(e){return e.total_in=e.total_out=0,e.msg=null,t.pending=0,t.pending_out=0,n=113,a=0,V.dyn_tree=M,V.stat_desc=L.static_l_desc,D.dyn_tree=B,D.stat_desc=L.static_d_desc,j.dyn_tree=H,j.stat_desc=L.static_bl_desc,N=0,Q=0,J=8,X(),function(){_=2*r,c[u-1]=0;for(let t=0;t<u-1;t++)c[t]=0;S=q[z].max_lazy,E=q[z].good_length,C=q[z].nice_length,U=q[z].max_chain,m=0,p=0,v=0,x=A=2,y=0,f=0;}(),0}t.depth=[],t.bl_count=[],t.heap=[],M=[],B=[],H=[],t.pqdownheap=function(e,n){const i=t.heap,a=i[n];let r=n<<1;for(;r<=t.heap_len&&(r<t.heap_len&&F(e,i[r+1],i[r],t.depth)&&r++,!F(e,a,i[r],t.depth));)i[n]=i[r],n=r,r<<=1;i[n]=a;},t.deflateInit=function(e,n,a,_,f,p){return _||(_=8),f||(f=8),p||(p=0),e.msg=null,-1==n&&(n=6),f<1||f>9||8!=_||a<9||a>15||n<0||n>9||p<0||p>2?-2:(e.dstate=t,s=a,r=1<<s,o=r-1,h=f+7,u=1<<h,b=u-1,w=Math.floor((h+3-1)/3),l=new Uint8Array(2*r),d=[],c=[],P=1<<f+6,t.pending_buf=new Uint8Array(4*P),i=4*P,G=Math.floor(P/2),O=3*P,z=n,I=p,ft(e))},t.deflateEnd=function(){return 42!=n&&113!=n&&666!=n?-2:(t.pending_buf=null,c=null,d=null,l=null,t.dstate=null,113==n?-3:0)},t.deflateParams=function(t,e,n){let i=0;return -1==e&&(e=6),e<0||e>9||n<0||n>2?-2:(q[z].func!=q[e].func&&0!==t.total_in&&(i=t.deflate(1)),z!=e&&(z=e,S=q[z].max_lazy,E=q[z].good_length,C=q[z].nice_length,U=q[z].max_chain),I=n,i)},t.deflateSetDictionary=function(t,e,i){let a,s=i,_=0;if(!e||42!=n)return -2;if(s<3)return 0;for(s>r-262&&(s=r-262,_=i-s),l.set(e.subarray(_,_+s),0),m=s,p=s,f=255&l[0],f=(f<<w^255&l[1])&b,a=0;a<=s-3;a++)f=(f<<w^255&l[a+2])&b,d[a&o]=c[f],c[f]=a;return 0},t.deflate=function(_,h){let U,E,C,M,B;if(h>4||h<0)return -2;if(!_.next_out||!_.next_in&&0!==_.avail_in||666==n&&4!=h)return _.msg=R[4],-2;if(0===_.avail_out)return _.msg=R[7],-5;var H;if(e=_,M=a,a=h,42==n&&(E=8+(s-8<<4)<<8,C=(z-1&255)>>1,C>3&&(C=3),E|=C<<6,0!==m&&(E|=32),E+=31-E%31,n=113,Z((H=E)>>8&255),Z(255&H)),0!==t.pending){if(e.flush_pending(),0===e.avail_out)return a=-1,0}else if(0===e.avail_in&&h<=M&&4!=h)return e.msg=R[7],-5;if(666==n&&0!==e.avail_in)return _.msg=R[7],-5;if(0!==e.avail_in||0!==v||0!=h&&666!=n){switch(B=-1,q[z].func){case 0:B=function(t){let n,a=65535;for(a>i-5&&(a=i-5);;){if(v<=1){if(dt(),0===v&&0==t)return 0;if(0===v)break}if(m+=v,v=0,n=p+a,(0===m||m>=n)&&(v=m-n,m=n,_t(!1),0===e.avail_out))return 0;if(m-p>=r-262&&(_t(!1),0===e.avail_out))return 0}return _t(4==t),0===e.avail_out?4==t?2:0:4==t?3:1}(h);break;case 1:B=function(t){let n,i=0;for(;;){if(v<262){if(dt(),v<262&&0==t)return 0;if(0===v)break}if(v>=3&&(f=(f<<w^255&l[m+2])&b,i=65535&c[f],d[m&o]=c[f],c[f]=m),0!==i&&(m-i&65535)<=r-262&&2!=I&&(x=ct(i)),x>=3)if(n=at(m-k,x-3),v-=x,x<=S&&v>=3){x--;do{m++,f=(f<<w^255&l[m+2])&b,i=65535&c[f],d[m&o]=c[f],c[f]=m;}while(0!=--x);m++;}else m+=x,x=0,f=255&l[m],f=(f<<w^255&l[m+1])&b;else n=at(0,255&l[m]),v--,m++;if(n&&(_t(!1),0===e.avail_out))return 0}return _t(4==t),0===e.avail_out?4==t?2:0:4==t?3:1}(h);break;case 2:B=function(t){let n,i,a=0;for(;;){if(v<262){if(dt(),v<262&&0==t)return 0;if(0===v)break}if(v>=3&&(f=(f<<w^255&l[m+2])&b,a=65535&c[f],d[m&o]=c[f],c[f]=m),A=x,g=k,x=2,0!==a&&A<S&&(m-a&65535)<=r-262&&(2!=I&&(x=ct(a)),x<=5&&(1==I||3==x&&m-k>4096)&&(x=2)),A>=3&&x<=A){i=m+v-3,n=at(m-1-g,A-3),v-=A-1,A-=2;do{++m<=i&&(f=(f<<w^255&l[m+2])&b,a=65535&c[f],d[m&o]=c[f],c[f]=m);}while(0!=--A);if(y=0,x=2,m++,n&&(_t(!1),0===e.avail_out))return 0}else if(0!==y){if(n=at(0,255&l[m-1]),n&&_t(!1),m++,v--,0===e.avail_out)return 0}else y=1,m++,v--;}return 0!==y&&(n=at(0,255&l[m-1]),y=0),_t(4==t),0===e.avail_out?4==t?2:0:4==t?3:1}(h);}if(2!=B&&3!=B||(n=666),0==B||2==B)return 0===e.avail_out&&(a=-1),0;if(1==B){if(1==h)tt(2,3),et(256,L.static_ltree),it(),1+J+10-Q<9&&(tt(2,3),et(256,L.static_ltree),it()),J=7;else if(ot(0,0,!1),3==h)for(U=0;U<u;U++)c[U]=0;if(e.flush_pending(),0===e.avail_out)return a=-1,0}}return 4!=h?0:1};}function N(){const t=this;t.next_in_index=0,t.next_out_index=0,t.avail_in=0,t.total_in=0,t.avail_out=0,t.total_out=0;}function Q(t){const e=new N,n=(i=t&&t.chunkSize?t.chunkSize:65536)+5*(Math.floor(i/16383)+1);var i;const a=new Uint8Array(n);let r=t?t.level:-1;void 0===r&&(r=-1),e.deflateInit(r),e.next_out=a,this.append=function(t,i){let r,s,o=0,l=0,_=0;const d=[];if(t.length){e.next_in_index=0,e.next_in=t,e.avail_in=t.length;do{if(e.next_out_index=0,e.avail_out=n,r=e.deflate(0),0!=r)throw new Error("deflating: "+e.msg);e.next_out_index&&(e.next_out_index==n?d.push(new Uint8Array(a)):d.push(a.slice(0,e.next_out_index))),_+=e.next_out_index,i&&e.next_in_index>0&&e.next_in_index!=o&&(i(e.next_in_index),o=e.next_in_index);}while(e.avail_in>0||0===e.avail_out);return d.length>1?(s=new Uint8Array(_),d.forEach((function(t){s.set(t,l),l+=t.length;}))):s=d[0]||new Uint8Array(0),s}},this.flush=function(){let t,i,r=0,s=0;const o=[];do{if(e.next_out_index=0,e.avail_out=n,t=e.deflate(4),1!=t&&0!=t)throw new Error("deflating: "+e.msg);n-e.avail_out>0&&o.push(a.slice(0,e.next_out_index)),s+=e.next_out_index;}while(e.avail_in>0||0===e.avail_out);return e.deflateEnd(),i=new Uint8Array(s),o.forEach((function(t){i.set(t,r),r+=t.length;})),i};}N.prototype={deflateInit:function(t,e){const n=this;return n.dstate=new J,e||(e=15),n.dstate.deflateInit(n,t,e)},deflate:function(t){const e=this;return e.dstate?e.dstate.deflate(e,t):-2},deflateEnd:function(){const t=this;if(!t.dstate)return -2;const e=t.dstate.deflateEnd();return t.dstate=null,e},deflateParams:function(t,e){const n=this;return n.dstate?n.dstate.deflateParams(n,t,e):-2},deflateSetDictionary:function(t,e){const n=this;return n.dstate?n.dstate.deflateSetDictionary(n,t,e):-2},read_buf:function(t,e,n){const i=this;let a=i.avail_in;return a>n&&(a=n),0===a?0:(i.avail_in-=a,t.set(i.next_in.subarray(i.next_in_index,i.next_in_index+a),e),i.next_in_index+=a,i.total_in+=a,a)},flush_pending:function(){const t=this;let e=t.dstate.pending;e>t.avail_out&&(e=t.avail_out),0!==e&&(t.next_out.set(t.dstate.pending_buf.subarray(t.dstate.pending_out,t.dstate.pending_out+e),t.next_out_index),t.next_out_index+=e,t.dstate.pending_out+=e,t.total_out+=e,t.avail_out-=e,t.dstate.pending-=e,0===t.dstate.pending&&(t.dstate.pending_out=0));}};const X=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535],Y=[96,7,256,0,8,80,0,8,16,84,8,115,82,7,31,0,8,112,0,8,48,0,9,192,80,7,10,0,8,96,0,8,32,0,9,160,0,8,0,0,8,128,0,8,64,0,9,224,80,7,6,0,8,88,0,8,24,0,9,144,83,7,59,0,8,120,0,8,56,0,9,208,81,7,17,0,8,104,0,8,40,0,9,176,0,8,8,0,8,136,0,8,72,0,9,240,80,7,4,0,8,84,0,8,20,85,8,227,83,7,43,0,8,116,0,8,52,0,9,200,81,7,13,0,8,100,0,8,36,0,9,168,0,8,4,0,8,132,0,8,68,0,9,232,80,7,8,0,8,92,0,8,28,0,9,152,84,7,83,0,8,124,0,8,60,0,9,216,82,7,23,0,8,108,0,8,44,0,9,184,0,8,12,0,8,140,0,8,76,0,9,248,80,7,3,0,8,82,0,8,18,85,8,163,83,7,35,0,8,114,0,8,50,0,9,196,81,7,11,0,8,98,0,8,34,0,9,164,0,8,2,0,8,130,0,8,66,0,9,228,80,7,7,0,8,90,0,8,26,0,9,148,84,7,67,0,8,122,0,8,58,0,9,212,82,7,19,0,8,106,0,8,42,0,9,180,0,8,10,0,8,138,0,8,74,0,9,244,80,7,5,0,8,86,0,8,22,192,8,0,83,7,51,0,8,118,0,8,54,0,9,204,81,7,15,0,8,102,0,8,38,0,9,172,0,8,6,0,8,134,0,8,70,0,9,236,80,7,9,0,8,94,0,8,30,0,9,156,84,7,99,0,8,126,0,8,62,0,9,220,82,7,27,0,8,110,0,8,46,0,9,188,0,8,14,0,8,142,0,8,78,0,9,252,96,7,256,0,8,81,0,8,17,85,8,131,82,7,31,0,8,113,0,8,49,0,9,194,80,7,10,0,8,97,0,8,33,0,9,162,0,8,1,0,8,129,0,8,65,0,9,226,80,7,6,0,8,89,0,8,25,0,9,146,83,7,59,0,8,121,0,8,57,0,9,210,81,7,17,0,8,105,0,8,41,0,9,178,0,8,9,0,8,137,0,8,73,0,9,242,80,7,4,0,8,85,0,8,21,80,8,258,83,7,43,0,8,117,0,8,53,0,9,202,81,7,13,0,8,101,0,8,37,0,9,170,0,8,5,0,8,133,0,8,69,0,9,234,80,7,8,0,8,93,0,8,29,0,9,154,84,7,83,0,8,125,0,8,61,0,9,218,82,7,23,0,8,109,0,8,45,0,9,186,0,8,13,0,8,141,0,8,77,0,9,250,80,7,3,0,8,83,0,8,19,85,8,195,83,7,35,0,8,115,0,8,51,0,9,198,81,7,11,0,8,99,0,8,35,0,9,166,0,8,3,0,8,131,0,8,67,0,9,230,80,7,7,0,8,91,0,8,27,0,9,150,84,7,67,0,8,123,0,8,59,0,9,214,82,7,19,0,8,107,0,8,43,0,9,182,0,8,11,0,8,139,0,8,75,0,9,246,80,7,5,0,8,87,0,8,23,192,8,0,83,7,51,0,8,119,0,8,55,0,9,206,81,7,15,0,8,103,0,8,39,0,9,174,0,8,7,0,8,135,0,8,71,0,9,238,80,7,9,0,8,95,0,8,31,0,9,158,84,7,99,0,8,127,0,8,63,0,9,222,82,7,27,0,8,111,0,8,47,0,9,190,0,8,15,0,8,143,0,8,79,0,9,254,96,7,256,0,8,80,0,8,16,84,8,115,82,7,31,0,8,112,0,8,48,0,9,193,80,7,10,0,8,96,0,8,32,0,9,161,0,8,0,0,8,128,0,8,64,0,9,225,80,7,6,0,8,88,0,8,24,0,9,145,83,7,59,0,8,120,0,8,56,0,9,209,81,7,17,0,8,104,0,8,40,0,9,177,0,8,8,0,8,136,0,8,72,0,9,241,80,7,4,0,8,84,0,8,20,85,8,227,83,7,43,0,8,116,0,8,52,0,9,201,81,7,13,0,8,100,0,8,36,0,9,169,0,8,4,0,8,132,0,8,68,0,9,233,80,7,8,0,8,92,0,8,28,0,9,153,84,7,83,0,8,124,0,8,60,0,9,217,82,7,23,0,8,108,0,8,44,0,9,185,0,8,12,0,8,140,0,8,76,0,9,249,80,7,3,0,8,82,0,8,18,85,8,163,83,7,35,0,8,114,0,8,50,0,9,197,81,7,11,0,8,98,0,8,34,0,9,165,0,8,2,0,8,130,0,8,66,0,9,229,80,7,7,0,8,90,0,8,26,0,9,149,84,7,67,0,8,122,0,8,58,0,9,213,82,7,19,0,8,106,0,8,42,0,9,181,0,8,10,0,8,138,0,8,74,0,9,245,80,7,5,0,8,86,0,8,22,192,8,0,83,7,51,0,8,118,0,8,54,0,9,205,81,7,15,0,8,102,0,8,38,0,9,173,0,8,6,0,8,134,0,8,70,0,9,237,80,7,9,0,8,94,0,8,30,0,9,157,84,7,99,0,8,126,0,8,62,0,9,221,82,7,27,0,8,110,0,8,46,0,9,189,0,8,14,0,8,142,0,8,78,0,9,253,96,7,256,0,8,81,0,8,17,85,8,131,82,7,31,0,8,113,0,8,49,0,9,195,80,7,10,0,8,97,0,8,33,0,9,163,0,8,1,0,8,129,0,8,65,0,9,227,80,7,6,0,8,89,0,8,25,0,9,147,83,7,59,0,8,121,0,8,57,0,9,211,81,7,17,0,8,105,0,8,41,0,9,179,0,8,9,0,8,137,0,8,73,0,9,243,80,7,4,0,8,85,0,8,21,80,8,258,83,7,43,0,8,117,0,8,53,0,9,203,81,7,13,0,8,101,0,8,37,0,9,171,0,8,5,0,8,133,0,8,69,0,9,235,80,7,8,0,8,93,0,8,29,0,9,155,84,7,83,0,8,125,0,8,61,0,9,219,82,7,23,0,8,109,0,8,45,0,9,187,0,8,13,0,8,141,0,8,77,0,9,251,80,7,3,0,8,83,0,8,19,85,8,195,83,7,35,0,8,115,0,8,51,0,9,199,81,7,11,0,8,99,0,8,35,0,9,167,0,8,3,0,8,131,0,8,67,0,9,231,80,7,7,0,8,91,0,8,27,0,9,151,84,7,67,0,8,123,0,8,59,0,9,215,82,7,19,0,8,107,0,8,43,0,9,183,0,8,11,0,8,139,0,8,75,0,9,247,80,7,5,0,8,87,0,8,23,192,8,0,83,7,51,0,8,119,0,8,55,0,9,207,81,7,15,0,8,103,0,8,39,0,9,175,0,8,7,0,8,135,0,8,71,0,9,239,80,7,9,0,8,95,0,8,31,0,9,159,84,7,99,0,8,127,0,8,63,0,9,223,82,7,27,0,8,111,0,8,47,0,9,191,0,8,15,0,8,143,0,8,79,0,9,255],Z=[80,5,1,87,5,257,83,5,17,91,5,4097,81,5,5,89,5,1025,85,5,65,93,5,16385,80,5,3,88,5,513,84,5,33,92,5,8193,82,5,9,90,5,2049,86,5,129,192,5,24577,80,5,2,87,5,385,83,5,25,91,5,6145,81,5,7,89,5,1537,85,5,97,93,5,24577,80,5,4,88,5,769,84,5,49,92,5,12289,82,5,13,90,5,3073,86,5,193,192,5,24577],$=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,0,0],tt=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,112,112],et=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],nt=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];function it(){let t,e,n,i,a,r;function s(t,e,s,o,l,_,d,c,f,u,h){let b,w,p,x,g,y,m,k,v,A,U,S,z,I,E;A=0,g=s;do{n[t[e+A]]++,A++,g--;}while(0!==g);if(n[0]==s)return d[0]=-1,c[0]=0,0;for(k=c[0],y=1;y<=15&&0===n[y];y++);for(m=y,k<y&&(k=y),g=15;0!==g&&0===n[g];g--);for(p=g,k>g&&(k=g),c[0]=k,I=1<<y;y<g;y++,I<<=1)if((I-=n[y])<0)return -3;if((I-=n[g])<0)return -3;for(n[g]+=I,r[1]=y=0,A=1,z=2;0!=--g;)r[z]=y+=n[A],z++,A++;g=0,A=0;do{0!==(y=t[e+A])&&(h[r[y]++]=g),A++;}while(++g<s);for(s=r[p],r[0]=g=0,A=0,x=-1,S=-k,a[0]=0,U=0,E=0;m<=p;m++)for(b=n[m];0!=b--;){for(;m>S+k;){if(x++,S+=k,E=p-S,E=E>k?k:E,(w=1<<(y=m-S))>b+1&&(w-=b+1,z=m,y<E))for(;++y<E&&!((w<<=1)<=n[++z]);)w-=n[z];if(E=1<<y,u[0]+E>1440)return -3;a[x]=U=u[0],u[0]+=E,0!==x?(r[x]=g,i[0]=y,i[1]=k,y=g>>>S-k,i[2]=U-a[x-1]-y,f.set(i,3*(a[x-1]+y))):d[0]=U;}for(i[1]=m-S,A>=s?i[0]=192:h[A]<o?(i[0]=h[A]<256?0:96,i[2]=h[A++]):(i[0]=_[h[A]-o]+16+64,i[2]=l[h[A++]-o]),w=1<<m-S,y=g>>>S;y<E;y+=w)f.set(i,3*(U+y));for(y=1<<m-1;0!=(g&y);y>>>=1)g^=y;for(g^=y,v=(1<<S)-1;(g&v)!=r[x];)x--,S-=k,v=(1<<S)-1;}return 0!==I&&1!=p?-5:0}function o(s){let o;for(t||(t=[],e=[],n=new Int32Array(16),i=[],a=new Int32Array(15),r=new Int32Array(16)),e.length<s&&(e=[]),o=0;o<s;o++)e[o]=0;for(o=0;o<16;o++)n[o]=0;for(o=0;o<3;o++)i[o]=0;a.set(n.subarray(0,15),0),r.set(n.subarray(0,16),0);}this.inflate_trees_bits=function(n,i,a,r,l){let _;return o(19),t[0]=0,_=s(n,0,19,19,null,null,a,i,r,t,e),-3==_?l.msg="oversubscribed dynamic bit lengths tree":-5!=_&&0!==i[0]||(l.msg="incomplete dynamic bit lengths tree",_=-3),_},this.inflate_trees_dynamic=function(n,i,a,r,l,_,d,c,f){let u;return o(288),t[0]=0,u=s(a,0,n,257,$,tt,_,r,c,t,e),0!=u||0===r[0]?(-3==u?f.msg="oversubscribed literal/length tree":-4!=u&&(f.msg="incomplete literal/length tree",u=-3),u):(o(288),u=s(a,n,i,0,et,nt,d,l,c,t,e),0!=u||0===l[0]&&n>257?(-3==u?f.msg="oversubscribed distance tree":-5==u?(f.msg="incomplete distance tree",u=-3):-4!=u&&(f.msg="empty distance tree with lengths",u=-3),u):0)};}it.inflate_trees_fixed=function(t,e,n,i){return t[0]=9,e[0]=5,n[0]=Y,i[0]=Z,0};function at(){const t=this;let e,n,i,a,r=0,s=0,o=0,l=0,_=0,d=0,c=0,f=0,u=0,h=0;function b(t,e,n,i,a,r,s,o){let l,_,d,c,f,u,h,b,w,p,x,g,y,m,k,v;h=o.next_in_index,b=o.avail_in,f=s.bitb,u=s.bitk,w=s.write,p=w<s.read?s.read-w-1:s.end-w,x=X[t],g=X[e];do{for(;u<20;)b--,f|=(255&o.read_byte(h++))<<u,u+=8;if(l=f&x,_=n,d=i,v=3*(d+l),0!==(c=_[v]))for(;;){if(f>>=_[v+1],u-=_[v+1],0!=(16&c)){for(c&=15,y=_[v+2]+(f&X[c]),f>>=c,u-=c;u<15;)b--,f|=(255&o.read_byte(h++))<<u,u+=8;for(l=f&g,_=a,d=r,v=3*(d+l),c=_[v];;){if(f>>=_[v+1],u-=_[v+1],0!=(16&c)){for(c&=15;u<c;)b--,f|=(255&o.read_byte(h++))<<u,u+=8;if(m=_[v+2]+(f&X[c]),f>>=c,u-=c,p-=y,w>=m)k=w-m,w-k>0&&2>w-k?(s.window[w++]=s.window[k++],s.window[w++]=s.window[k++],y-=2):(s.window.set(s.window.subarray(k,k+2),w),w+=2,k+=2,y-=2);else {k=w-m;do{k+=s.end;}while(k<0);if(c=s.end-k,y>c){if(y-=c,w-k>0&&c>w-k)do{s.window[w++]=s.window[k++];}while(0!=--c);else s.window.set(s.window.subarray(k,k+c),w),w+=c,k+=c,c=0;k=0;}}if(w-k>0&&y>w-k)do{s.window[w++]=s.window[k++];}while(0!=--y);else s.window.set(s.window.subarray(k,k+y),w),w+=y,k+=y,y=0;break}if(0!=(64&c))return o.msg="invalid distance code",y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,-3;l+=_[v+2],l+=f&X[c],v=3*(d+l),c=_[v];}break}if(0!=(64&c))return 0!=(32&c)?(y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,1):(o.msg="invalid literal/length code",y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,-3);if(l+=_[v+2],l+=f&X[c],v=3*(d+l),0===(c=_[v])){f>>=_[v+1],u-=_[v+1],s.window[w++]=_[v+2],p--;break}}else f>>=_[v+1],u-=_[v+1],s.window[w++]=_[v+2],p--;}while(p>=258&&b>=10);return y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,0}t.init=function(t,r,s,o,l,_){e=0,c=t,f=r,i=s,u=o,a=l,h=_,n=null;},t.proc=function(t,w,p){let x,g,y,m,k,v,A,U=0,S=0,z=0;for(z=w.next_in_index,m=w.avail_in,U=t.bitb,S=t.bitk,k=t.write,v=k<t.read?t.read-k-1:t.end-k;;)switch(e){case 0:if(v>=258&&m>=10&&(t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,p=b(c,f,i,u,a,h,t,w),z=w.next_in_index,m=w.avail_in,U=t.bitb,S=t.bitk,k=t.write,v=k<t.read?t.read-k-1:t.end-k,0!=p)){e=1==p?7:9;break}o=c,n=i,s=u,e=1;case 1:for(x=o;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}if(g=3*(s+(U&X[x])),U>>>=n[g+1],S-=n[g+1],y=n[g],0===y){l=n[g+2],e=6;break}if(0!=(16&y)){_=15&y,r=n[g+2],e=2;break}if(0==(64&y)){o=y,s=g/3+n[g+2];break}if(0!=(32&y)){e=7;break}return e=9,w.msg="invalid literal/length code",p=-3,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);case 2:for(x=_;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}r+=U&X[x],U>>=x,S-=x,o=f,n=a,s=h,e=3;case 3:for(x=o;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}if(g=3*(s+(U&X[x])),U>>=n[g+1],S-=n[g+1],y=n[g],0!=(16&y)){_=15&y,d=n[g+2],e=4;break}if(0==(64&y)){o=y,s=g/3+n[g+2];break}return e=9,w.msg="invalid distance code",p=-3,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);case 4:for(x=_;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}d+=U&X[x],U>>=x,S-=x,e=5;case 5:for(A=k-d;A<0;)A+=t.end;for(;0!==r;){if(0===v&&(k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v&&(t.write=k,p=t.inflate_flush(w,p),k=t.write,v=k<t.read?t.read-k-1:t.end-k,k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v)))return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);t.window[k++]=t.window[A++],v--,A==t.end&&(A=0),r--;}e=0;break;case 6:if(0===v&&(k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v&&(t.write=k,p=t.inflate_flush(w,p),k=t.write,v=k<t.read?t.read-k-1:t.end-k,k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v)))return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,t.window[k++]=l,v--,e=0;break;case 7:if(S>7&&(S-=8,m++,z--),t.write=k,p=t.inflate_flush(w,p),k=t.write,v=k<t.read?t.read-k-1:t.end-k,t.read!=t.write)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);e=8;case 8:return p=1,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);case 9:return p=-3,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);default:return p=-2,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p)}},t.free=function(){};}const rt=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];function st(t,e){const n=this;let i,a=0,r=0,s=0,o=0;const l=[0],_=[0],d=new at;let c=0,f=new Int32Array(4320);const u=new it;n.bitk=0,n.bitb=0,n.window=new Uint8Array(e),n.end=e,n.read=0,n.write=0,n.reset=function(t,e){e&&(e[0]=0),6==a&&d.free(t),a=0,n.bitk=0,n.bitb=0,n.read=n.write=0;},n.reset(t,null),n.inflate_flush=function(t,e){let i,a,r;return a=t.next_out_index,r=n.read,i=(r<=n.write?n.write:n.end)-r,i>t.avail_out&&(i=t.avail_out),0!==i&&-5==e&&(e=0),t.avail_out-=i,t.total_out+=i,t.next_out.set(n.window.subarray(r,r+i),a),a+=i,r+=i,r==n.end&&(r=0,n.write==n.end&&(n.write=0),i=n.write-r,i>t.avail_out&&(i=t.avail_out),0!==i&&-5==e&&(e=0),t.avail_out-=i,t.total_out+=i,t.next_out.set(n.window.subarray(r,r+i),a),a+=i,r+=i),t.next_out_index=a,n.read=r,e},n.proc=function(t,e){let h,b,w,p,x,g,y,m;for(p=t.next_in_index,x=t.avail_in,b=n.bitb,w=n.bitk,g=n.write,y=g<n.read?n.read-g-1:n.end-g;;){let k,v,A,U,S,z,I,E;switch(a){case 0:for(;w<3;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}switch(h=7&b,c=1&h,h>>>1){case 0:b>>>=3,w-=3,h=7&w,b>>>=h,w-=h,a=1;break;case 1:k=[],v=[],A=[[]],U=[[]],it.inflate_trees_fixed(k,v,A,U),d.init(k[0],v[0],A[0],0,U[0],0),b>>>=3,w-=3,a=6;break;case 2:b>>>=3,w-=3,a=3;break;case 3:return b>>>=3,w-=3,a=9,t.msg="invalid block type",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e)}break;case 1:for(;w<32;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if((~b>>>16&65535)!=(65535&b))return a=9,t.msg="invalid stored block lengths",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);r=65535&b,b=w=0,a=0!==r?2:0!==c?7:0;break;case 2:if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);if(0===y&&(g==n.end&&0!==n.read&&(g=0,y=g<n.read?n.read-g-1:n.end-g),0===y&&(n.write=g,e=n.inflate_flush(t,e),g=n.write,y=g<n.read?n.read-g-1:n.end-g,g==n.end&&0!==n.read&&(g=0,y=g<n.read?n.read-g-1:n.end-g),0===y)))return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);if(e=0,h=r,h>x&&(h=x),h>y&&(h=y),n.window.set(t.read_buf(p,h),g),p+=h,x-=h,g+=h,y-=h,0!=(r-=h))break;a=0!==c?7:0;break;case 3:for(;w<14;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if(s=h=16383&b,(31&h)>29||(h>>5&31)>29)return a=9,t.msg="too many length or distance symbols",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);if(h=258+(31&h)+(h>>5&31),!i||i.length<h)i=[];else for(m=0;m<h;m++)i[m]=0;b>>>=14,w-=14,o=0,a=4;case 4:for(;o<4+(s>>>10);){for(;w<3;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}i[rt[o++]]=7&b,b>>>=3,w-=3;}for(;o<19;)i[rt[o++]]=0;if(l[0]=7,h=u.inflate_trees_bits(i,l,_,f,t),0!=h)return -3==(e=h)&&(i=null,a=9),n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);o=0,a=5;case 5:for(;h=s,!(o>=258+(31&h)+(h>>5&31));){let r,d;for(h=l[0];w<h;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if(h=f[3*(_[0]+(b&X[h]))+1],d=f[3*(_[0]+(b&X[h]))+2],d<16)b>>>=h,w-=h,i[o++]=d;else {for(m=18==d?7:d-14,r=18==d?11:3;w<h+m;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if(b>>>=h,w-=h,r+=b&X[m],b>>>=m,w-=m,m=o,h=s,m+r>258+(31&h)+(h>>5&31)||16==d&&m<1)return i=null,a=9,t.msg="invalid bit length repeat",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);d=16==d?i[m-1]:0;do{i[m++]=d;}while(0!=--r);o=m;}}if(_[0]=-1,S=[],z=[],I=[],E=[],S[0]=9,z[0]=6,h=s,h=u.inflate_trees_dynamic(257+(31&h),1+(h>>5&31),i,S,z,I,E,f,t),0!=h)return -3==h&&(i=null,a=9),e=h,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);d.init(S[0],z[0],f,I[0],f,E[0]),a=6;case 6:if(n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,1!=(e=d.proc(n,t,e)))return n.inflate_flush(t,e);if(e=0,d.free(t),p=t.next_in_index,x=t.avail_in,b=n.bitb,w=n.bitk,g=n.write,y=g<n.read?n.read-g-1:n.end-g,0===c){a=0;break}a=7;case 7:if(n.write=g,e=n.inflate_flush(t,e),g=n.write,y=g<n.read?n.read-g-1:n.end-g,n.read!=n.write)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);a=8;case 8:return e=1,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);case 9:return e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);default:return e=-2,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e)}}},n.free=function(t){n.reset(t,null),n.window=null,f=null;},n.set_dictionary=function(t,e,i){n.window.set(t.subarray(e,e+i),0),n.read=n.write=i;},n.sync_point=function(){return 1==a?1:0};}const ot=[0,0,255,255];function lt(){const t=this;function e(t){return t&&t.istate?(t.total_in=t.total_out=0,t.msg=null,t.istate.mode=7,t.istate.blocks.reset(t,null),0):-2}t.mode=0,t.method=0,t.was=[0],t.need=0,t.marker=0,t.wbits=0,t.inflateEnd=function(e){return t.blocks&&t.blocks.free(e),t.blocks=null,0},t.inflateInit=function(n,i){return n.msg=null,t.blocks=null,i<8||i>15?(t.inflateEnd(n),-2):(t.wbits=i,n.istate.blocks=new st(n,1<<i),e(n),0)},t.inflate=function(t,e){let n,i;if(!t||!t.istate||!t.next_in)return -2;const a=t.istate;for(e=4==e?-5:0,n=-5;;)switch(a.mode){case 0:if(0===t.avail_in)return n;if(n=e,t.avail_in--,t.total_in++,8!=(15&(a.method=t.read_byte(t.next_in_index++)))){a.mode=13,t.msg="unknown compression method",a.marker=5;break}if(8+(a.method>>4)>a.wbits){a.mode=13,t.msg="invalid window size",a.marker=5;break}a.mode=1;case 1:if(0===t.avail_in)return n;if(n=e,t.avail_in--,t.total_in++,i=255&t.read_byte(t.next_in_index++),((a.method<<8)+i)%31!=0){a.mode=13,t.msg="incorrect header check",a.marker=5;break}if(0==(32&i)){a.mode=7;break}a.mode=2;case 2:if(0===t.avail_in)return n;n=e,t.avail_in--,t.total_in++,a.need=(255&t.read_byte(t.next_in_index++))<<24&4278190080,a.mode=3;case 3:if(0===t.avail_in)return n;n=e,t.avail_in--,t.total_in++,a.need+=(255&t.read_byte(t.next_in_index++))<<16&16711680,a.mode=4;case 4:if(0===t.avail_in)return n;n=e,t.avail_in--,t.total_in++,a.need+=(255&t.read_byte(t.next_in_index++))<<8&65280,a.mode=5;case 5:return 0===t.avail_in?n:(n=e,t.avail_in--,t.total_in++,a.need+=255&t.read_byte(t.next_in_index++),a.mode=6,2);case 6:return a.mode=13,t.msg="need dictionary",a.marker=0,-2;case 7:if(n=a.blocks.proc(t,n),-3==n){a.mode=13,a.marker=0;break}if(0==n&&(n=e),1!=n)return n;n=e,a.blocks.reset(t,a.was),a.mode=12;case 12:return 1;case 13:return -3;default:return -2}},t.inflateSetDictionary=function(t,e,n){let i=0,a=n;if(!t||!t.istate||6!=t.istate.mode)return -2;const r=t.istate;return a>=1<<r.wbits&&(a=(1<<r.wbits)-1,i=n-a),r.blocks.set_dictionary(e,i,a),r.mode=7,0},t.inflateSync=function(t){let n,i,a,r,s;if(!t||!t.istate)return -2;const o=t.istate;if(13!=o.mode&&(o.mode=13,o.marker=0),0===(n=t.avail_in))return -5;for(i=t.next_in_index,a=o.marker;0!==n&&a<4;)t.read_byte(i)==ot[a]?a++:a=0!==t.read_byte(i)?0:4-a,i++,n--;return t.total_in+=i-t.next_in_index,t.next_in_index=i,t.avail_in=n,o.marker=a,4!=a?-3:(r=t.total_in,s=t.total_out,e(t),t.total_in=r,t.total_out=s,o.mode=7,0)},t.inflateSyncPoint=function(t){return t&&t.istate&&t.istate.blocks?t.istate.blocks.sync_point():-2};}function _t(){}function dt(t){const e=new _t,n=t&&t.chunkSize?Math.floor(2*t.chunkSize):131072,i=new Uint8Array(n);let a=!1;e.inflateInit(),e.next_out=i,this.append=function(t,r){const s=[];let o,l,_=0,d=0,c=0;if(0!==t.length){e.next_in_index=0,e.next_in=t,e.avail_in=t.length;do{if(e.next_out_index=0,e.avail_out=n,0!==e.avail_in||a||(e.next_in_index=0,a=!0),o=e.inflate(0),a&&-5===o){if(0!==e.avail_in)throw new Error("inflating: bad input")}else if(0!==o&&1!==o)throw new Error("inflating: "+e.msg);if((a||1===o)&&e.avail_in===t.length)throw new Error("inflating: bad input");e.next_out_index&&(e.next_out_index===n?s.push(new Uint8Array(i)):s.push(i.slice(0,e.next_out_index))),c+=e.next_out_index,r&&e.next_in_index>0&&e.next_in_index!=_&&(r(e.next_in_index),_=e.next_in_index);}while(e.avail_in>0||0===e.avail_out);return s.length>1?(l=new Uint8Array(c),s.forEach((function(t){l.set(t,d),d+=t.length;}))):l=s[0]||new Uint8Array(0),l}},this.flush=function(){e.inflateEnd();};}_t.prototype={inflateInit:function(t){const e=this;return e.istate=new lt,t||(t=15),e.istate.inflateInit(e,t)},inflate:function(t){const e=this;return e.istate?e.istate.inflate(e,t):-2},inflateEnd:function(){const t=this;if(!t.istate)return -2;const e=t.istate.inflateEnd(t);return t.istate=null,e},inflateSync:function(){const t=this;return t.istate?t.istate.inflateSync(t):-2},inflateSetDictionary:function(t,e){const n=this;return n.istate?n.istate.inflateSetDictionary(n,t,e):-2},read_byte:function(t){return this.next_in[t]},read_buf:function(t,e){return this.next_in.subarray(t,t+e)}},self.initCodec=()=>{self.Deflate=Q,self.Inflate=dt;};\n\n\t\t', n = URL.createObjectURL(new Blob([
+        const e = '\n\t\t\t\n\nconst t=[];for(let e=0;e<256;e++){let n=e;for(let t=0;t<8;t++)1&n?n=n>>>1^3988292384:n>>>=1;t[e]=n;}class e{constructor(t){this.crc=t||-1;}append(e){let n=0|this.crc;for(let i=0,a=0|e.length;i<a;i++)n=n>>>8^t[255&(n^e[i])];this.crc=n;}get(){return ~this.crc}}const n={concat(t,e){if(0===t.length||0===e.length)return t.concat(e);const i=t[t.length-1],a=n.getPartial(i);return 32===a?t.concat(e):n._shiftRight(e,a,0|i,t.slice(0,t.length-1))},bitLength(t){const e=t.length;if(0===e)return 0;const i=t[e-1];return 32*(e-1)+n.getPartial(i)},clamp(t,e){if(32*t.length<e)return t;const i=(t=t.slice(0,Math.ceil(e/32))).length;return e&=31,i>0&&e&&(t[i-1]=n.partial(e,t[i-1]&2147483648>>e-1,1)),t},partial:(t,e,n)=>32===t?e:(n?0|e:e<<32-t)+1099511627776*t,getPartial:t=>Math.round(t/1099511627776)||32,_shiftRight(t,e,i,a){for(void 0===a&&(a=[]);e>=32;e-=32)a.push(i),i=0;if(0===e)return a.concat(t);for(let n=0;n<t.length;n++)a.push(i|t[n]>>>e),i=t[n]<<32-e;const r=t.length?t[t.length-1]:0,s=n.getPartial(r);return a.push(n.partial(e+s&31,e+s>32?i:a.pop(),1)),a}},i={bytes:{fromBits(t){const e=n.bitLength(t)/8,i=new Uint8Array(e);let a;for(let n=0;n<e;n++)0==(3&n)&&(a=t[n/4]),i[n]=a>>>24,a<<=8;return i},toBits(t){const e=[];let i,a=0;for(i=0;i<t.length;i++)a=a<<8|t[i],3==(3&i)&&(e.push(a),a=0);return 3&i&&e.push(n.partial(8*(3&i),a)),e}}},a={sha1:function(t){t?(this._h=t._h.slice(0),this._buffer=t._buffer.slice(0),this._length=t._length):this.reset();}};a.sha1.prototype={blockSize:512,reset:function(){const t=this;return t._h=this._init.slice(0),t._buffer=[],t._length=0,t},update:function(t){const e=this;"string"==typeof t&&(t=i.utf8String.toBits(t));const a=e._buffer=n.concat(e._buffer,t),r=e._length,s=e._length=r+n.bitLength(t);if(s>9007199254740991)throw new Error("Cannot hash more than 2^53 - 1 bits");const o=new Uint32Array(a);let l=0;for(let t=e.blockSize+r-(e.blockSize+r&e.blockSize-1);t<=s;t+=e.blockSize)e._block(o.subarray(16*l,16*(l+1))),l+=1;return a.splice(0,16*l),e},finalize:function(){const t=this;let e=t._buffer;const i=t._h;e=n.concat(e,[n.partial(1,1)]);for(let t=e.length+2;15&t;t++)e.push(0);for(e.push(Math.floor(t._length/4294967296)),e.push(0|t._length);e.length;)t._block(e.splice(0,16));return t.reset(),i},_init:[1732584193,4023233417,2562383102,271733878,3285377520],_key:[1518500249,1859775393,2400959708,3395469782],_f:function(t,e,n,i){return t<=19?e&n|~e&i:t<=39?e^n^i:t<=59?e&n|e&i|n&i:t<=79?e^n^i:void 0},_S:function(t,e){return e<<t|e>>>32-t},_block:function(t){const e=this,n=e._h,i=Array(80);for(let e=0;e<16;e++)i[e]=t[e];let a=n[0],r=n[1],s=n[2],o=n[3],l=n[4];for(let t=0;t<=79;t++){t>=16&&(i[t]=e._S(1,i[t-3]^i[t-8]^i[t-14]^i[t-16]));const n=e._S(5,a)+e._f(t,r,s,o)+l+i[t]+e._key[Math.floor(t/20)]|0;l=o,o=s,s=e._S(30,r),r=a,a=n;}n[0]=n[0]+a|0,n[1]=n[1]+r|0,n[2]=n[2]+s|0,n[3]=n[3]+o|0,n[4]=n[4]+l|0;}};const r={aes:class{constructor(t){const e=this;e._tables=[[[],[],[],[],[]],[[],[],[],[],[]]],e._tables[0][0][0]||e._precompute();const n=e._tables[0][4],i=e._tables[1],a=t.length;let r,s,o,l=1;if(4!==a&&6!==a&&8!==a)throw new Error("invalid aes key size");for(e._key=[s=t.slice(0),o=[]],r=a;r<4*a+28;r++){let t=s[r-1];(r%a==0||8===a&&r%a==4)&&(t=n[t>>>24]<<24^n[t>>16&255]<<16^n[t>>8&255]<<8^n[255&t],r%a==0&&(t=t<<8^t>>>24^l<<24,l=l<<1^283*(l>>7))),s[r]=s[r-a]^t;}for(let t=0;r;t++,r--){const e=s[3&t?r:r-4];o[t]=r<=4||t<4?e:i[0][n[e>>>24]]^i[1][n[e>>16&255]]^i[2][n[e>>8&255]]^i[3][n[255&e]];}}encrypt(t){return this._crypt(t,0)}decrypt(t){return this._crypt(t,1)}_precompute(){const t=this._tables[0],e=this._tables[1],n=t[4],i=e[4],a=[],r=[];let s,o,l,_;for(let t=0;t<256;t++)r[(a[t]=t<<1^283*(t>>7))^t]=t;for(let d=s=0;!n[d];d^=o||1,s=r[s]||1){let r=s^s<<1^s<<2^s<<3^s<<4;r=r>>8^255&r^99,n[d]=r,i[r]=d,_=a[l=a[o=a[d]]];let c=16843009*_^65537*l^257*o^16843008*d,f=257*a[r]^16843008*r;for(let n=0;n<4;n++)t[n][d]=f=f<<24^f>>>8,e[n][r]=c=c<<24^c>>>8;}for(let n=0;n<5;n++)t[n]=t[n].slice(0),e[n]=e[n].slice(0);}_crypt(t,e){if(4!==t.length)throw new Error("invalid aes block size");const n=this._key[e],i=n.length/4-2,a=[0,0,0,0],r=this._tables[e],s=r[0],o=r[1],l=r[2],_=r[3],d=r[4];let c,f,u,h=t[0]^n[0],b=t[e?3:1]^n[1],w=t[2]^n[2],p=t[e?1:3]^n[3],x=4;for(let t=0;t<i;t++)c=s[h>>>24]^o[b>>16&255]^l[w>>8&255]^_[255&p]^n[x],f=s[b>>>24]^o[w>>16&255]^l[p>>8&255]^_[255&h]^n[x+1],u=s[w>>>24]^o[p>>16&255]^l[h>>8&255]^_[255&b]^n[x+2],p=s[p>>>24]^o[h>>16&255]^l[b>>8&255]^_[255&w]^n[x+3],x+=4,h=c,b=f,w=u;for(let t=0;t<4;t++)a[e?3&-t:t]=d[h>>>24]<<24^d[b>>16&255]<<16^d[w>>8&255]<<8^d[255&p]^n[x++],c=h,h=b,b=w,w=p,p=c;return a}}},s={ctrGladman:class{constructor(t,e){this._prf=t,this._initIv=e,this._iv=e;}reset(){this._iv=this._initIv;}update(t){return this.calculate(this._prf,t,this._iv)}incWord(t){if(255==(t>>24&255)){let e=t>>16&255,n=t>>8&255,i=255&t;255===e?(e=0,255===n?(n=0,255===i?i=0:++i):++n):++e,t=0,t+=e<<16,t+=n<<8,t+=i;}else t+=1<<24;return t}incCounter(t){0===(t[0]=this.incWord(t[0]))&&(t[1]=this.incWord(t[1]));}calculate(t,e,i){let a;if(!(a=e.length))return [];const r=n.bitLength(e);for(let n=0;n<a;n+=4){this.incCounter(i);const a=t.encrypt(i);e[n]^=a[0],e[n+1]^=a[1],e[n+2]^=a[2],e[n+3]^=a[3];}return n.clamp(e,r)}}},o={hmacSha1:class{constructor(t){const e=this,n=e._hash=a.sha1,i=[[],[]],r=n.prototype.blockSize/32;e._baseHash=[new n,new n],t.length>r&&(t=n.hash(t));for(let e=0;e<r;e++)i[0][e]=909522486^t[e],i[1][e]=1549556828^t[e];e._baseHash[0].update(i[0]),e._baseHash[1].update(i[1]),e._resultHash=new n(e._baseHash[0]);}reset(){const t=this;t._resultHash=new t._hash(t._baseHash[0]),t._updated=!1;}update(t){this._updated=!0,this._resultHash.update(t);}digest(){const t=this,e=t._resultHash.finalize(),n=new t._hash(t._baseHash[1]).update(e).finalize();return t.reset(),n}}},l={name:"PBKDF2"},_=Object.assign({hash:{name:"HMAC"}},l),d=Object.assign({iterations:1e3,hash:{name:"SHA-1"}},l),c=["deriveBits"],f=[8,12,16],u=[16,24,32],h=[0,0,0,0],b=i.bytes,w=r.aes,p=s.ctrGladman,x=o.hmacSha1;class g{constructor(t,e,n){Object.assign(this,{password:t,signed:e,strength:n-1,pendingInput:new Uint8Array(0)});}async append(t){const e=this;if(e.password){const n=A(t,0,f[e.strength]+2);await async function(t,e,n){await k(t,n,A(e,0,f[t.strength]));const i=A(e,f[t.strength]),a=t.keys.passwordVerification;if(a[0]!=i[0]||a[1]!=i[1])throw new Error("Invalid pasword")}(e,n,e.password),e.password=null,e.aesCtrGladman=new p(new w(e.keys.key),Array.from(h)),e.hmac=new x(e.keys.authentication),t=A(t,f[e.strength]+2);}return m(e,t,new Uint8Array(t.length-10-(t.length-10)%16),0,10,!0)}flush(){const t=this,e=t.pendingInput,n=A(e,0,e.length-10),i=A(e,e.length-10);let a=new Uint8Array(0);if(n.length){const e=b.toBits(n);t.hmac.update(e);const i=t.aesCtrGladman.update(e);a=b.fromBits(i);}let r=!0;if(t.signed){const e=A(b.fromBits(t.hmac.digest()),0,10);for(let t=0;t<10;t++)e[t]!=i[t]&&(r=!1);}return {valid:r,data:a}}}class y{constructor(t,e){Object.assign(this,{password:t,strength:e-1,pendingInput:new Uint8Array(0)});}async append(t){const e=this;let n=new Uint8Array(0);e.password&&(n=await async function(t,e){const n=crypto.getRandomValues(new Uint8Array(f[t.strength]));return await k(t,e,n),v(n,t.keys.passwordVerification)}(e,e.password),e.password=null,e.aesCtrGladman=new p(new w(e.keys.key),Array.from(h)),e.hmac=new x(e.keys.authentication));const i=new Uint8Array(n.length+t.length-t.length%16);return i.set(n,0),m(e,t,i,n.length,0)}flush(){const t=this;let e=new Uint8Array(0);if(t.pendingInput.length){const n=t.aesCtrGladman.update(b.toBits(t.pendingInput));t.hmac.update(n),e=b.fromBits(n);}const n=A(b.fromBits(t.hmac.digest()),0,10);return {data:v(e,n),signature:n}}}function m(t,e,n,i,a,r){const s=e.length-a;let o;for(t.pendingInput.length&&(e=v(t.pendingInput,e),n=function(t,e){if(e&&e>t.length){const n=t;(t=new Uint8Array(e)).set(n,0);}return t}(n,s-s%16)),o=0;o<=s-16;o+=16){const a=b.toBits(A(e,o,o+16));r&&t.hmac.update(a);const s=t.aesCtrGladman.update(a);r||t.hmac.update(s),n.set(b.fromBits(s),o+i);}return t.pendingInput=A(e,o),n}async function k(t,e,n){const i=(new TextEncoder).encode(e),a=await crypto.subtle.importKey("raw",i,_,!1,c),r=await crypto.subtle.deriveBits(Object.assign({salt:n},d),a,8*(2*u[t.strength]+2)),s=new Uint8Array(r);t.keys={key:b.toBits(A(s,0,u[t.strength])),authentication:b.toBits(A(s,u[t.strength],2*u[t.strength])),passwordVerification:A(s,2*u[t.strength])};}function v(t,e){let n=t;return t.length+e.length&&(n=new Uint8Array(t.length+e.length),n.set(t,0),n.set(e,t.length)),n}function A(t,e,n){return t.subarray(e,n)}class U{constructor(t,e){Object.assign(this,{password:t,passwordVerification:e}),E(this,t);}append(t){const e=this;if(e.password){const n=z(e,t.subarray(0,12));if(e.password=null,n[11]!=e.passwordVerification)throw new Error("Invalid pasword");t=t.subarray(12);}return z(e,t)}flush(){return {valid:!0,data:new Uint8Array(0)}}}class S{constructor(t,e){Object.assign(this,{password:t,passwordVerification:e}),E(this,t);}append(t){const e=this;let n,i;if(e.password){e.password=null;const a=crypto.getRandomValues(new Uint8Array(12));a[11]=e.passwordVerification,n=new Uint8Array(t.length+a.length),n.set(I(e,a),0),i=12;}else n=new Uint8Array(t.length),i=0;return n.set(I(e,t),i),n}flush(){return {data:new Uint8Array(0)}}}function z(t,e){const n=new Uint8Array(e.length);for(let i=0;i<e.length;i++)n[i]=M(t)^e[i],C(t,n[i]);return n}function I(t,e){const n=new Uint8Array(e.length);for(let i=0;i<e.length;i++)n[i]=M(t)^e[i],C(t,e[i]);return n}function E(t,n){t.keys=[305419896,591751049,878082192],t.crcKey0=new e(t.keys[0]),t.crcKey2=new e(t.keys[2]);for(let e=0;e<n.length;e++)C(t,n.charCodeAt(e));}function C(t,e){t.crcKey0.append([e]),t.keys[0]=~t.crcKey0.get(),t.keys[1]=H(t.keys[1]+B(t.keys[0])),t.keys[1]=H(Math.imul(t.keys[1],134775813)+1),t.crcKey2.append([t.keys[1]>>>24]),t.keys[2]=~t.crcKey2.get();}function M(t){const e=2|t.keys[2];return B(Math.imul(e,1^e)>>>8)}function B(t){return 255&t}function H(t){return 4294967295&t}class V{constructor(t,{signature:n,password:i,signed:a,compressed:r,zipCrypto:s,passwordVerification:o,encryptionStrength:l},{chunkSize:_}){const d=Boolean(i);Object.assign(this,{signature:n,encrypted:d,signed:a,compressed:r,inflate:r&&new t({chunkSize:_}),crc32:a&&new e,zipCrypto:s,decrypt:d&&s?new U(i,o):new g(i,a,l)});}async append(t){const e=this;return e.encrypted&&t.length&&(t=await e.decrypt.append(t)),e.compressed&&t.length&&(t=await e.inflate.append(t)),(!e.encrypted||e.zipCrypto)&&e.signed&&t.length&&e.crc32.append(t),t}async flush(){const t=this;let e,n=new Uint8Array(0);if(t.encrypted){const e=t.decrypt.flush();if(!e.valid)throw new Error("Invalid signature");n=e.data;}if((!t.encrypted||t.zipCrypto)&&t.signed){const n=new DataView(new Uint8Array(4).buffer);if(e=t.crc32.get(),n.setUint32(0,e),t.signature!=n.getUint32(0,!1))throw new Error("Invalid signature")}return t.compressed&&(n=await t.inflate.append(n)||new Uint8Array(0),await t.inflate.flush()),{data:n,signature:e}}}class D{constructor(t,{encrypted:n,signed:i,compressed:a,level:r,zipCrypto:s,password:o,passwordVerification:l,encryptionStrength:_},{chunkSize:d}){Object.assign(this,{encrypted:n,signed:i,compressed:a,deflate:a&&new t({level:r||5,chunkSize:d}),crc32:i&&new e,zipCrypto:s,encrypt:n&&s?new S(o,l):new y(o,_)});}async append(t){const e=this;let n=t;return e.compressed&&t.length&&(n=await e.deflate.append(t)),e.encrypted&&n.length&&(n=await e.encrypt.append(n)),(!e.encrypted||e.zipCrypto)&&e.signed&&t.length&&e.crc32.append(t),n}async flush(){const t=this;let e,n=new Uint8Array(0);if(t.compressed&&(n=await t.deflate.flush()||new Uint8Array(0)),t.encrypted){n=await t.encrypt.append(n);const i=t.encrypt.flush();e=i.signature;const a=new Uint8Array(n.length+i.data.length);a.set(n,0),a.set(i.data,n.length),n=a;}return t.encrypted&&!t.zipCrypto||!t.signed||(e=t.crc32.get()),{data:n,signature:e}}}const j={init(t){t.scripts&&t.scripts.length&&importScripts.apply(void 0,t.scripts);const e=t.options;let n;self.initCodec&&self.initCodec(),e.codecType.startsWith("deflate")?n=self.Deflate:e.codecType.startsWith("inflate")&&(n=self.Inflate),O=function(t,e,n){return e.codecType.startsWith("deflate")?new D(t,e,n):e.codecType.startsWith("inflate")?new V(t,e,n):void 0}(n,e,t.config);},append:async t=>({data:await O.append(t.data)}),flush:()=>O.flush()};let O;addEventListener("message",(async t=>{const e=t.data,n=e.type,i=j[n];if(i)try{e.data&&(e.data=new Uint8Array(e.data));const t=await i(e)||{};if(t.type=n,t.data)try{t.data=t.data.buffer,postMessage(t,[t.data]);}catch(e){postMessage(t);}else postMessage(t);}catch(t){postMessage({type:n,error:{message:t.message,stack:t.stack}});}}));function P(t){return K(t.map((([t,e])=>new Array(t).fill(e,0,t))))}function K(t){return t.reduce(((t,e)=>t.concat(Array.isArray(e)?K(e):e)),[])}const G=[0,1,2,3].concat(...P([[2,4],[2,5],[4,6],[4,7],[8,8],[8,9],[16,10],[16,11],[32,12],[32,13],[64,14],[64,15],[2,0],[1,16],[1,17],[2,18],[2,19],[4,20],[4,21],[8,22],[8,23],[16,24],[16,25],[32,26],[32,27],[64,28],[64,29]]));function W(){const t=this;function e(t,e){let n=0;do{n|=1&t,t>>>=1,n<<=1;}while(--e>0);return n>>>1}t.build_tree=function(n){const i=t.dyn_tree,a=t.stat_desc.static_tree,r=t.stat_desc.elems;let s,o,l,_=-1;for(n.heap_len=0,n.heap_max=573,s=0;s<r;s++)0!==i[2*s]?(n.heap[++n.heap_len]=_=s,n.depth[s]=0):i[2*s+1]=0;for(;n.heap_len<2;)l=n.heap[++n.heap_len]=_<2?++_:0,i[2*l]=1,n.depth[l]=0,n.opt_len--,a&&(n.static_len-=a[2*l+1]);for(t.max_code=_,s=Math.floor(n.heap_len/2);s>=1;s--)n.pqdownheap(i,s);l=r;do{s=n.heap[1],n.heap[1]=n.heap[n.heap_len--],n.pqdownheap(i,1),o=n.heap[1],n.heap[--n.heap_max]=s,n.heap[--n.heap_max]=o,i[2*l]=i[2*s]+i[2*o],n.depth[l]=Math.max(n.depth[s],n.depth[o])+1,i[2*s+1]=i[2*o+1]=l,n.heap[1]=l++,n.pqdownheap(i,1);}while(n.heap_len>=2);n.heap[--n.heap_max]=n.heap[1],function(e){const n=t.dyn_tree,i=t.stat_desc.static_tree,a=t.stat_desc.extra_bits,r=t.stat_desc.extra_base,s=t.stat_desc.max_length;let o,l,_,d,c,f,u=0;for(d=0;d<=15;d++)e.bl_count[d]=0;for(n[2*e.heap[e.heap_max]+1]=0,o=e.heap_max+1;o<573;o++)l=e.heap[o],d=n[2*n[2*l+1]+1]+1,d>s&&(d=s,u++),n[2*l+1]=d,l>t.max_code||(e.bl_count[d]++,c=0,l>=r&&(c=a[l-r]),f=n[2*l],e.opt_len+=f*(d+c),i&&(e.static_len+=f*(i[2*l+1]+c)));if(0!==u){do{for(d=s-1;0===e.bl_count[d];)d--;e.bl_count[d]--,e.bl_count[d+1]+=2,e.bl_count[s]--,u-=2;}while(u>0);for(d=s;0!==d;d--)for(l=e.bl_count[d];0!==l;)_=e.heap[--o],_>t.max_code||(n[2*_+1]!=d&&(e.opt_len+=(d-n[2*_+1])*n[2*_],n[2*_+1]=d),l--);}}(n),function(t,n,i){const a=[];let r,s,o,l=0;for(r=1;r<=15;r++)a[r]=l=l+i[r-1]<<1;for(s=0;s<=n;s++)o=t[2*s+1],0!==o&&(t[2*s]=e(a[o]++,o));}(i,t.max_code,n.bl_count);};}function L(t,e,n,i,a){const r=this;r.static_tree=t,r.extra_bits=e,r.extra_base=n,r.elems=i,r.max_length=a;}W._length_code=[0,1,2,3,4,5,6,7].concat(...P([[2,8],[2,9],[2,10],[2,11],[4,12],[4,13],[4,14],[4,15],[8,16],[8,17],[8,18],[8,19],[16,20],[16,21],[16,22],[16,23],[32,24],[32,25],[32,26],[31,27],[1,28]])),W.base_length=[0,1,2,3,4,5,6,7,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,0],W.base_dist=[0,1,2,3,4,6,8,12,16,24,32,48,64,96,128,192,256,384,512,768,1024,1536,2048,3072,4096,6144,8192,12288,16384,24576],W.d_code=function(t){return t<256?G[t]:G[256+(t>>>7)]},W.extra_lbits=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0],W.extra_dbits=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13],W.extra_blbits=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7],W.bl_order=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],L.static_ltree=[12,8,140,8,76,8,204,8,44,8,172,8,108,8,236,8,28,8,156,8,92,8,220,8,60,8,188,8,124,8,252,8,2,8,130,8,66,8,194,8,34,8,162,8,98,8,226,8,18,8,146,8,82,8,210,8,50,8,178,8,114,8,242,8,10,8,138,8,74,8,202,8,42,8,170,8,106,8,234,8,26,8,154,8,90,8,218,8,58,8,186,8,122,8,250,8,6,8,134,8,70,8,198,8,38,8,166,8,102,8,230,8,22,8,150,8,86,8,214,8,54,8,182,8,118,8,246,8,14,8,142,8,78,8,206,8,46,8,174,8,110,8,238,8,30,8,158,8,94,8,222,8,62,8,190,8,126,8,254,8,1,8,129,8,65,8,193,8,33,8,161,8,97,8,225,8,17,8,145,8,81,8,209,8,49,8,177,8,113,8,241,8,9,8,137,8,73,8,201,8,41,8,169,8,105,8,233,8,25,8,153,8,89,8,217,8,57,8,185,8,121,8,249,8,5,8,133,8,69,8,197,8,37,8,165,8,101,8,229,8,21,8,149,8,85,8,213,8,53,8,181,8,117,8,245,8,13,8,141,8,77,8,205,8,45,8,173,8,109,8,237,8,29,8,157,8,93,8,221,8,61,8,189,8,125,8,253,8,19,9,275,9,147,9,403,9,83,9,339,9,211,9,467,9,51,9,307,9,179,9,435,9,115,9,371,9,243,9,499,9,11,9,267,9,139,9,395,9,75,9,331,9,203,9,459,9,43,9,299,9,171,9,427,9,107,9,363,9,235,9,491,9,27,9,283,9,155,9,411,9,91,9,347,9,219,9,475,9,59,9,315,9,187,9,443,9,123,9,379,9,251,9,507,9,7,9,263,9,135,9,391,9,71,9,327,9,199,9,455,9,39,9,295,9,167,9,423,9,103,9,359,9,231,9,487,9,23,9,279,9,151,9,407,9,87,9,343,9,215,9,471,9,55,9,311,9,183,9,439,9,119,9,375,9,247,9,503,9,15,9,271,9,143,9,399,9,79,9,335,9,207,9,463,9,47,9,303,9,175,9,431,9,111,9,367,9,239,9,495,9,31,9,287,9,159,9,415,9,95,9,351,9,223,9,479,9,63,9,319,9,191,9,447,9,127,9,383,9,255,9,511,9,0,7,64,7,32,7,96,7,16,7,80,7,48,7,112,7,8,7,72,7,40,7,104,7,24,7,88,7,56,7,120,7,4,7,68,7,36,7,100,7,20,7,84,7,52,7,116,7,3,8,131,8,67,8,195,8,35,8,163,8,99,8,227,8],L.static_dtree=[0,5,16,5,8,5,24,5,4,5,20,5,12,5,28,5,2,5,18,5,10,5,26,5,6,5,22,5,14,5,30,5,1,5,17,5,9,5,25,5,5,5,21,5,13,5,29,5,3,5,19,5,11,5,27,5,7,5,23,5],L.static_l_desc=new L(L.static_ltree,W.extra_lbits,257,286,15),L.static_d_desc=new L(L.static_dtree,W.extra_dbits,0,30,15),L.static_bl_desc=new L(null,W.extra_blbits,0,19,7);function T(t,e,n,i,a){const r=this;r.good_length=t,r.max_lazy=e,r.nice_length=n,r.max_chain=i,r.func=a;}const q=[new T(0,0,0,0,0),new T(4,4,8,4,1),new T(4,5,16,8,1),new T(4,6,32,32,1),new T(4,4,16,16,2),new T(8,16,32,32,2),new T(8,16,128,128,2),new T(8,32,128,256,2),new T(32,128,258,1024,2),new T(32,258,258,4096,2)],R=["need dictionary","stream end","","","stream error","data error","","buffer error","",""];function F(t,e,n,i){const a=t[2*e],r=t[2*n];return a<r||a==r&&i[e]<=i[n]}function J(){const t=this;let e,n,i,a,r,s,o,l,_,d,c,f,u,h,b,w,p,x,g,y,m,k,v,A,U,S,z,I,E,C,M,B,H;const V=new W,D=new W,j=new W;let O,P,K,G,T,J,N,Q;function X(){let e;for(e=0;e<286;e++)M[2*e]=0;for(e=0;e<30;e++)B[2*e]=0;for(e=0;e<19;e++)H[2*e]=0;M[512]=1,t.opt_len=t.static_len=0,K=T=0;}function Y(t,e){let n,i=-1,a=t[1],r=0,s=7,o=4;0===a&&(s=138,o=3),t[2*(e+1)+1]=65535;for(let l=0;l<=e;l++)n=a,a=t[2*(l+1)+1],++r<s&&n==a||(r<o?H[2*n]+=r:0!==n?(n!=i&&H[2*n]++,H[32]++):r<=10?H[34]++:H[36]++,r=0,i=n,0===a?(s=138,o=3):n==a?(s=6,o=3):(s=7,o=4));}function Z(e){t.pending_buf[t.pending++]=e;}function $(t){Z(255&t),Z(t>>>8&255);}function tt(t,e){let n;const i=e;Q>16-i?(n=t,N|=n<<Q&65535,$(N),N=n>>>16-Q,Q+=i-16):(N|=t<<Q&65535,Q+=i);}function et(t,e){const n=2*t;tt(65535&e[n],65535&e[n+1]);}function nt(t,e){let n,i,a=-1,r=t[1],s=0,o=7,l=4;for(0===r&&(o=138,l=3),n=0;n<=e;n++)if(i=r,r=t[2*(n+1)+1],!(++s<o&&i==r)){if(s<l)do{et(i,H);}while(0!=--s);else 0!==i?(i!=a&&(et(i,H),s--),et(16,H),tt(s-3,2)):s<=10?(et(17,H),tt(s-3,3)):(et(18,H),tt(s-11,7));s=0,a=i,0===r?(o=138,l=3):i==r?(o=6,l=3):(o=7,l=4);}}function it(){16==Q?($(N),N=0,Q=0):Q>=8&&(Z(255&N),N>>>=8,Q-=8);}function at(e,n){let i,a,r;if(t.pending_buf[G+2*K]=e>>>8&255,t.pending_buf[G+2*K+1]=255&e,t.pending_buf[O+K]=255&n,K++,0===e?M[2*n]++:(T++,e--,M[2*(W._length_code[n]+256+1)]++,B[2*W.d_code(e)]++),0==(8191&K)&&z>2){for(i=8*K,a=m-p,r=0;r<30;r++)i+=B[2*r]*(5+W.extra_dbits[r]);if(i>>>=3,T<Math.floor(K/2)&&i<Math.floor(a/2))return !0}return K==P-1}function rt(e,n){let i,a,r,s,o=0;if(0!==K)do{i=t.pending_buf[G+2*o]<<8&65280|255&t.pending_buf[G+2*o+1],a=255&t.pending_buf[O+o],o++,0===i?et(a,e):(r=W._length_code[a],et(r+256+1,e),s=W.extra_lbits[r],0!==s&&(a-=W.base_length[r],tt(a,s)),i--,r=W.d_code(i),et(r,n),s=W.extra_dbits[r],0!==s&&(i-=W.base_dist[r],tt(i,s)));}while(o<K);et(256,e),J=e[513];}function st(){Q>8?$(N):Q>0&&Z(255&N),N=0,Q=0;}function ot(e,n,i){tt(0+(i?1:0),3),function(e,n,i){st(),J=8,i&&($(n),$(~n)),t.pending_buf.set(l.subarray(e,e+n),t.pending),t.pending+=n;}(e,n,!0);}function lt(e,n,i){let a,r,s=0;z>0?(V.build_tree(t),D.build_tree(t),s=function(){let e;for(Y(M,V.max_code),Y(B,D.max_code),j.build_tree(t),e=18;e>=3&&0===H[2*W.bl_order[e]+1];e--);return t.opt_len+=3*(e+1)+5+5+4,e}(),a=t.opt_len+3+7>>>3,r=t.static_len+3+7>>>3,r<=a&&(a=r)):a=r=n+5,n+4<=a&&-1!=e?ot(e,n,i):r==a?(tt(2+(i?1:0),3),rt(L.static_ltree,L.static_dtree)):(tt(4+(i?1:0),3),function(t,e,n){let i;for(tt(t-257,5),tt(e-1,5),tt(n-4,4),i=0;i<n;i++)tt(H[2*W.bl_order[i]+1],3);nt(M,t-1),nt(B,e-1);}(V.max_code+1,D.max_code+1,s+1),rt(M,B)),X(),i&&st();}function _t(t){lt(p>=0?p:-1,m-p,t),p=m,e.flush_pending();}function dt(){let t,n,i,a;do{if(a=_-v-m,0===a&&0===m&&0===v)a=r;else if(-1==a)a--;else if(m>=r+r-262){l.set(l.subarray(r,r+r),0),k-=r,m-=r,p-=r,t=u,i=t;do{n=65535&c[--i],c[i]=n>=r?n-r:0;}while(0!=--t);t=r,i=t;do{n=65535&d[--i],d[i]=n>=r?n-r:0;}while(0!=--t);a+=r;}if(0===e.avail_in)return;t=e.read_buf(l,m+v,a),v+=t,v>=3&&(f=255&l[m],f=(f<<w^255&l[m+1])&b);}while(v<262&&0!==e.avail_in)}function ct(t){let e,n,i=U,a=m,s=A;const _=m>r-262?m-(r-262):0;let c=C;const f=o,u=m+258;let h=l[a+s-1],b=l[a+s];A>=E&&(i>>=2),c>v&&(c=v);do{if(e=t,l[e+s]==b&&l[e+s-1]==h&&l[e]==l[a]&&l[++e]==l[a+1]){a+=2,e++;do{}while(l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&l[++a]==l[++e]&&a<u);if(n=258-(u-a),a=u-258,n>s){if(k=t,s=n,n>=c)break;h=l[a+s-1],b=l[a+s];}}}while((t=65535&d[t&f])>_&&0!=--i);return s<=v?s:v}function ft(e){return e.total_in=e.total_out=0,e.msg=null,t.pending=0,t.pending_out=0,n=113,a=0,V.dyn_tree=M,V.stat_desc=L.static_l_desc,D.dyn_tree=B,D.stat_desc=L.static_d_desc,j.dyn_tree=H,j.stat_desc=L.static_bl_desc,N=0,Q=0,J=8,X(),function(){_=2*r,c[u-1]=0;for(let t=0;t<u-1;t++)c[t]=0;S=q[z].max_lazy,E=q[z].good_length,C=q[z].nice_length,U=q[z].max_chain,m=0,p=0,v=0,x=A=2,y=0,f=0;}(),0}t.depth=[],t.bl_count=[],t.heap=[],M=[],B=[],H=[],t.pqdownheap=function(e,n){const i=t.heap,a=i[n];let r=n<<1;for(;r<=t.heap_len&&(r<t.heap_len&&F(e,i[r+1],i[r],t.depth)&&r++,!F(e,a,i[r],t.depth));)i[n]=i[r],n=r,r<<=1;i[n]=a;},t.deflateInit=function(e,n,a,_,f,p){return _||(_=8),f||(f=8),p||(p=0),e.msg=null,-1==n&&(n=6),f<1||f>9||8!=_||a<9||a>15||n<0||n>9||p<0||p>2?-2:(e.dstate=t,s=a,r=1<<s,o=r-1,h=f+7,u=1<<h,b=u-1,w=Math.floor((h+3-1)/3),l=new Uint8Array(2*r),d=[],c=[],P=1<<f+6,t.pending_buf=new Uint8Array(4*P),i=4*P,G=Math.floor(P/2),O=3*P,z=n,I=p,ft(e))},t.deflateEnd=function(){return 42!=n&&113!=n&&666!=n?-2:(t.pending_buf=null,c=null,d=null,l=null,t.dstate=null,113==n?-3:0)},t.deflateParams=function(t,e,n){let i=0;return -1==e&&(e=6),e<0||e>9||n<0||n>2?-2:(q[z].func!=q[e].func&&0!==t.total_in&&(i=t.deflate(1)),z!=e&&(z=e,S=q[z].max_lazy,E=q[z].good_length,C=q[z].nice_length,U=q[z].max_chain),I=n,i)},t.deflateSetDictionary=function(t,e,i){let a,s=i,_=0;if(!e||42!=n)return -2;if(s<3)return 0;for(s>r-262&&(s=r-262,_=i-s),l.set(e.subarray(_,_+s),0),m=s,p=s,f=255&l[0],f=(f<<w^255&l[1])&b,a=0;a<=s-3;a++)f=(f<<w^255&l[a+2])&b,d[a&o]=c[f],c[f]=a;return 0},t.deflate=function(_,h){let U,E,C,M,B;if(h>4||h<0)return -2;if(!_.next_out||!_.next_in&&0!==_.avail_in||666==n&&4!=h)return _.msg=R[4],-2;if(0===_.avail_out)return _.msg=R[7],-5;var H;if(e=_,M=a,a=h,42==n&&(E=8+(s-8<<4)<<8,C=(z-1&255)>>1,C>3&&(C=3),E|=C<<6,0!==m&&(E|=32),E+=31-E%31,n=113,Z((H=E)>>8&255),Z(255&H)),0!==t.pending){if(e.flush_pending(),0===e.avail_out)return a=-1,0}else if(0===e.avail_in&&h<=M&&4!=h)return e.msg=R[7],-5;if(666==n&&0!==e.avail_in)return _.msg=R[7],-5;if(0!==e.avail_in||0!==v||0!=h&&666!=n){switch(B=-1,q[z].func){case 0:B=function(t){let n,a=65535;for(a>i-5&&(a=i-5);;){if(v<=1){if(dt(),0===v&&0==t)return 0;if(0===v)break}if(m+=v,v=0,n=p+a,(0===m||m>=n)&&(v=m-n,m=n,_t(!1),0===e.avail_out))return 0;if(m-p>=r-262&&(_t(!1),0===e.avail_out))return 0}return _t(4==t),0===e.avail_out?4==t?2:0:4==t?3:1}(h);break;case 1:B=function(t){let n,i=0;for(;;){if(v<262){if(dt(),v<262&&0==t)return 0;if(0===v)break}if(v>=3&&(f=(f<<w^255&l[m+2])&b,i=65535&c[f],d[m&o]=c[f],c[f]=m),0!==i&&(m-i&65535)<=r-262&&2!=I&&(x=ct(i)),x>=3)if(n=at(m-k,x-3),v-=x,x<=S&&v>=3){x--;do{m++,f=(f<<w^255&l[m+2])&b,i=65535&c[f],d[m&o]=c[f],c[f]=m;}while(0!=--x);m++;}else m+=x,x=0,f=255&l[m],f=(f<<w^255&l[m+1])&b;else n=at(0,255&l[m]),v--,m++;if(n&&(_t(!1),0===e.avail_out))return 0}return _t(4==t),0===e.avail_out?4==t?2:0:4==t?3:1}(h);break;case 2:B=function(t){let n,i,a=0;for(;;){if(v<262){if(dt(),v<262&&0==t)return 0;if(0===v)break}if(v>=3&&(f=(f<<w^255&l[m+2])&b,a=65535&c[f],d[m&o]=c[f],c[f]=m),A=x,g=k,x=2,0!==a&&A<S&&(m-a&65535)<=r-262&&(2!=I&&(x=ct(a)),x<=5&&(1==I||3==x&&m-k>4096)&&(x=2)),A>=3&&x<=A){i=m+v-3,n=at(m-1-g,A-3),v-=A-1,A-=2;do{++m<=i&&(f=(f<<w^255&l[m+2])&b,a=65535&c[f],d[m&o]=c[f],c[f]=m);}while(0!=--A);if(y=0,x=2,m++,n&&(_t(!1),0===e.avail_out))return 0}else if(0!==y){if(n=at(0,255&l[m-1]),n&&_t(!1),m++,v--,0===e.avail_out)return 0}else y=1,m++,v--;}return 0!==y&&(n=at(0,255&l[m-1]),y=0),_t(4==t),0===e.avail_out?4==t?2:0:4==t?3:1}(h);}if(2!=B&&3!=B||(n=666),0==B||2==B)return 0===e.avail_out&&(a=-1),0;if(1==B){if(1==h)tt(2,3),et(256,L.static_ltree),it(),1+J+10-Q<9&&(tt(2,3),et(256,L.static_ltree),it()),J=7;else if(ot(0,0,!1),3==h)for(U=0;U<u;U++)c[U]=0;if(e.flush_pending(),0===e.avail_out)return a=-1,0}}return 4!=h?0:1};}function N(){const t=this;t.next_in_index=0,t.next_out_index=0,t.avail_in=0,t.total_in=0,t.avail_out=0,t.total_out=0;}function Q(t){const e=new N,n=(i=t&&t.chunkSize?t.chunkSize:65536)+5*(Math.floor(i/16383)+1);var i;const a=new Uint8Array(n);let r=t?t.level:-1;void 0===r&&(r=-1),e.deflateInit(r),e.next_out=a,this.append=function(t,i){let r,s,o=0,l=0,_=0;const d=[];if(t.length){e.next_in_index=0,e.next_in=t,e.avail_in=t.length;do{if(e.next_out_index=0,e.avail_out=n,r=e.deflate(0),0!=r)throw new Error("deflating: "+e.msg);e.next_out_index&&(e.next_out_index==n?d.push(new Uint8Array(a)):d.push(a.slice(0,e.next_out_index))),_+=e.next_out_index,i&&e.next_in_index>0&&e.next_in_index!=o&&(i(e.next_in_index),o=e.next_in_index);}while(e.avail_in>0||0===e.avail_out);return d.length>1?(s=new Uint8Array(_),d.forEach((function(t){s.set(t,l),l+=t.length;}))):s=d[0]||new Uint8Array(0),s}},this.flush=function(){let t,i,r=0,s=0;const o=[];do{if(e.next_out_index=0,e.avail_out=n,t=e.deflate(4),1!=t&&0!=t)throw new Error("deflating: "+e.msg);n-e.avail_out>0&&o.push(a.slice(0,e.next_out_index)),s+=e.next_out_index;}while(e.avail_in>0||0===e.avail_out);return e.deflateEnd(),i=new Uint8Array(s),o.forEach((function(t){i.set(t,r),r+=t.length;})),i};}N.prototype={deflateInit:function(t,e){const n=this;return n.dstate=new J,e||(e=15),n.dstate.deflateInit(n,t,e)},deflate:function(t){const e=this;return e.dstate?e.dstate.deflate(e,t):-2},deflateEnd:function(){const t=this;if(!t.dstate)return -2;const e=t.dstate.deflateEnd();return t.dstate=null,e},deflateParams:function(t,e){const n=this;return n.dstate?n.dstate.deflateParams(n,t,e):-2},deflateSetDictionary:function(t,e){const n=this;return n.dstate?n.dstate.deflateSetDictionary(n,t,e):-2},read_buf:function(t,e,n){const i=this;let a=i.avail_in;return a>n&&(a=n),0===a?0:(i.avail_in-=a,t.set(i.next_in.subarray(i.next_in_index,i.next_in_index+a),e),i.next_in_index+=a,i.total_in+=a,a)},flush_pending:function(){const t=this;let e=t.dstate.pending;e>t.avail_out&&(e=t.avail_out),0!==e&&(t.next_out.set(t.dstate.pending_buf.subarray(t.dstate.pending_out,t.dstate.pending_out+e),t.next_out_index),t.next_out_index+=e,t.dstate.pending_out+=e,t.total_out+=e,t.avail_out-=e,t.dstate.pending-=e,0===t.dstate.pending&&(t.dstate.pending_out=0));}};const X=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535],Y=[96,7,256,0,8,80,0,8,16,84,8,115,82,7,31,0,8,112,0,8,48,0,9,192,80,7,10,0,8,96,0,8,32,0,9,160,0,8,0,0,8,128,0,8,64,0,9,224,80,7,6,0,8,88,0,8,24,0,9,144,83,7,59,0,8,120,0,8,56,0,9,208,81,7,17,0,8,104,0,8,40,0,9,176,0,8,8,0,8,136,0,8,72,0,9,240,80,7,4,0,8,84,0,8,20,85,8,227,83,7,43,0,8,116,0,8,52,0,9,200,81,7,13,0,8,100,0,8,36,0,9,168,0,8,4,0,8,132,0,8,68,0,9,232,80,7,8,0,8,92,0,8,28,0,9,152,84,7,83,0,8,124,0,8,60,0,9,216,82,7,23,0,8,108,0,8,44,0,9,184,0,8,12,0,8,140,0,8,76,0,9,248,80,7,3,0,8,82,0,8,18,85,8,163,83,7,35,0,8,114,0,8,50,0,9,196,81,7,11,0,8,98,0,8,34,0,9,164,0,8,2,0,8,130,0,8,66,0,9,228,80,7,7,0,8,90,0,8,26,0,9,148,84,7,67,0,8,122,0,8,58,0,9,212,82,7,19,0,8,106,0,8,42,0,9,180,0,8,10,0,8,138,0,8,74,0,9,244,80,7,5,0,8,86,0,8,22,192,8,0,83,7,51,0,8,118,0,8,54,0,9,204,81,7,15,0,8,102,0,8,38,0,9,172,0,8,6,0,8,134,0,8,70,0,9,236,80,7,9,0,8,94,0,8,30,0,9,156,84,7,99,0,8,126,0,8,62,0,9,220,82,7,27,0,8,110,0,8,46,0,9,188,0,8,14,0,8,142,0,8,78,0,9,252,96,7,256,0,8,81,0,8,17,85,8,131,82,7,31,0,8,113,0,8,49,0,9,194,80,7,10,0,8,97,0,8,33,0,9,162,0,8,1,0,8,129,0,8,65,0,9,226,80,7,6,0,8,89,0,8,25,0,9,146,83,7,59,0,8,121,0,8,57,0,9,210,81,7,17,0,8,105,0,8,41,0,9,178,0,8,9,0,8,137,0,8,73,0,9,242,80,7,4,0,8,85,0,8,21,80,8,258,83,7,43,0,8,117,0,8,53,0,9,202,81,7,13,0,8,101,0,8,37,0,9,170,0,8,5,0,8,133,0,8,69,0,9,234,80,7,8,0,8,93,0,8,29,0,9,154,84,7,83,0,8,125,0,8,61,0,9,218,82,7,23,0,8,109,0,8,45,0,9,186,0,8,13,0,8,141,0,8,77,0,9,250,80,7,3,0,8,83,0,8,19,85,8,195,83,7,35,0,8,115,0,8,51,0,9,198,81,7,11,0,8,99,0,8,35,0,9,166,0,8,3,0,8,131,0,8,67,0,9,230,80,7,7,0,8,91,0,8,27,0,9,150,84,7,67,0,8,123,0,8,59,0,9,214,82,7,19,0,8,107,0,8,43,0,9,182,0,8,11,0,8,139,0,8,75,0,9,246,80,7,5,0,8,87,0,8,23,192,8,0,83,7,51,0,8,119,0,8,55,0,9,206,81,7,15,0,8,103,0,8,39,0,9,174,0,8,7,0,8,135,0,8,71,0,9,238,80,7,9,0,8,95,0,8,31,0,9,158,84,7,99,0,8,127,0,8,63,0,9,222,82,7,27,0,8,111,0,8,47,0,9,190,0,8,15,0,8,143,0,8,79,0,9,254,96,7,256,0,8,80,0,8,16,84,8,115,82,7,31,0,8,112,0,8,48,0,9,193,80,7,10,0,8,96,0,8,32,0,9,161,0,8,0,0,8,128,0,8,64,0,9,225,80,7,6,0,8,88,0,8,24,0,9,145,83,7,59,0,8,120,0,8,56,0,9,209,81,7,17,0,8,104,0,8,40,0,9,177,0,8,8,0,8,136,0,8,72,0,9,241,80,7,4,0,8,84,0,8,20,85,8,227,83,7,43,0,8,116,0,8,52,0,9,201,81,7,13,0,8,100,0,8,36,0,9,169,0,8,4,0,8,132,0,8,68,0,9,233,80,7,8,0,8,92,0,8,28,0,9,153,84,7,83,0,8,124,0,8,60,0,9,217,82,7,23,0,8,108,0,8,44,0,9,185,0,8,12,0,8,140,0,8,76,0,9,249,80,7,3,0,8,82,0,8,18,85,8,163,83,7,35,0,8,114,0,8,50,0,9,197,81,7,11,0,8,98,0,8,34,0,9,165,0,8,2,0,8,130,0,8,66,0,9,229,80,7,7,0,8,90,0,8,26,0,9,149,84,7,67,0,8,122,0,8,58,0,9,213,82,7,19,0,8,106,0,8,42,0,9,181,0,8,10,0,8,138,0,8,74,0,9,245,80,7,5,0,8,86,0,8,22,192,8,0,83,7,51,0,8,118,0,8,54,0,9,205,81,7,15,0,8,102,0,8,38,0,9,173,0,8,6,0,8,134,0,8,70,0,9,237,80,7,9,0,8,94,0,8,30,0,9,157,84,7,99,0,8,126,0,8,62,0,9,221,82,7,27,0,8,110,0,8,46,0,9,189,0,8,14,0,8,142,0,8,78,0,9,253,96,7,256,0,8,81,0,8,17,85,8,131,82,7,31,0,8,113,0,8,49,0,9,195,80,7,10,0,8,97,0,8,33,0,9,163,0,8,1,0,8,129,0,8,65,0,9,227,80,7,6,0,8,89,0,8,25,0,9,147,83,7,59,0,8,121,0,8,57,0,9,211,81,7,17,0,8,105,0,8,41,0,9,179,0,8,9,0,8,137,0,8,73,0,9,243,80,7,4,0,8,85,0,8,21,80,8,258,83,7,43,0,8,117,0,8,53,0,9,203,81,7,13,0,8,101,0,8,37,0,9,171,0,8,5,0,8,133,0,8,69,0,9,235,80,7,8,0,8,93,0,8,29,0,9,155,84,7,83,0,8,125,0,8,61,0,9,219,82,7,23,0,8,109,0,8,45,0,9,187,0,8,13,0,8,141,0,8,77,0,9,251,80,7,3,0,8,83,0,8,19,85,8,195,83,7,35,0,8,115,0,8,51,0,9,199,81,7,11,0,8,99,0,8,35,0,9,167,0,8,3,0,8,131,0,8,67,0,9,231,80,7,7,0,8,91,0,8,27,0,9,151,84,7,67,0,8,123,0,8,59,0,9,215,82,7,19,0,8,107,0,8,43,0,9,183,0,8,11,0,8,139,0,8,75,0,9,247,80,7,5,0,8,87,0,8,23,192,8,0,83,7,51,0,8,119,0,8,55,0,9,207,81,7,15,0,8,103,0,8,39,0,9,175,0,8,7,0,8,135,0,8,71,0,9,239,80,7,9,0,8,95,0,8,31,0,9,159,84,7,99,0,8,127,0,8,63,0,9,223,82,7,27,0,8,111,0,8,47,0,9,191,0,8,15,0,8,143,0,8,79,0,9,255],Z=[80,5,1,87,5,257,83,5,17,91,5,4097,81,5,5,89,5,1025,85,5,65,93,5,16385,80,5,3,88,5,513,84,5,33,92,5,8193,82,5,9,90,5,2049,86,5,129,192,5,24577,80,5,2,87,5,385,83,5,25,91,5,6145,81,5,7,89,5,1537,85,5,97,93,5,24577,80,5,4,88,5,769,84,5,49,92,5,12289,82,5,13,90,5,3073,86,5,193,192,5,24577],$=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,0,0],tt=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,112,112],et=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],nt=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];function it(){let t,e,n,i,a,r;function s(t,e,s,o,l,_,d,c,f,u,h){let b,w,p,x,g,y,m,k,v,A,U,S,z,I,E;A=0,g=s;do{n[t[e+A]]++,A++,g--;}while(0!==g);if(n[0]==s)return d[0]=-1,c[0]=0,0;for(k=c[0],y=1;y<=15&&0===n[y];y++);for(m=y,k<y&&(k=y),g=15;0!==g&&0===n[g];g--);for(p=g,k>g&&(k=g),c[0]=k,I=1<<y;y<g;y++,I<<=1)if((I-=n[y])<0)return -3;if((I-=n[g])<0)return -3;for(n[g]+=I,r[1]=y=0,A=1,z=2;0!=--g;)r[z]=y+=n[A],z++,A++;g=0,A=0;do{0!==(y=t[e+A])&&(h[r[y]++]=g),A++;}while(++g<s);for(s=r[p],r[0]=g=0,A=0,x=-1,S=-k,a[0]=0,U=0,E=0;m<=p;m++)for(b=n[m];0!=b--;){for(;m>S+k;){if(x++,S+=k,E=p-S,E=E>k?k:E,(w=1<<(y=m-S))>b+1&&(w-=b+1,z=m,y<E))for(;++y<E&&!((w<<=1)<=n[++z]);)w-=n[z];if(E=1<<y,u[0]+E>1440)return -3;a[x]=U=u[0],u[0]+=E,0!==x?(r[x]=g,i[0]=y,i[1]=k,y=g>>>S-k,i[2]=U-a[x-1]-y,f.set(i,3*(a[x-1]+y))):d[0]=U;}for(i[1]=m-S,A>=s?i[0]=192:h[A]<o?(i[0]=h[A]<256?0:96,i[2]=h[A++]):(i[0]=_[h[A]-o]+16+64,i[2]=l[h[A++]-o]),w=1<<m-S,y=g>>>S;y<E;y+=w)f.set(i,3*(U+y));for(y=1<<m-1;0!=(g&y);y>>>=1)g^=y;for(g^=y,v=(1<<S)-1;(g&v)!=r[x];)x--,S-=k,v=(1<<S)-1;}return 0!==I&&1!=p?-5:0}function o(s){let o;for(t||(t=[],e=[],n=new Int32Array(16),i=[],a=new Int32Array(15),r=new Int32Array(16)),e.length<s&&(e=[]),o=0;o<s;o++)e[o]=0;for(o=0;o<16;o++)n[o]=0;for(o=0;o<3;o++)i[o]=0;a.set(n.subarray(0,15),0),r.set(n.subarray(0,16),0);}this.inflate_trees_bits=function(n,i,a,r,l){let _;return o(19),t[0]=0,_=s(n,0,19,19,null,null,a,i,r,t,e),-3==_?l.msg="oversubscribed dynamic bit lengths tree":-5!=_&&0!==i[0]||(l.msg="incomplete dynamic bit lengths tree",_=-3),_},this.inflate_trees_dynamic=function(n,i,a,r,l,_,d,c,f){let u;return o(288),t[0]=0,u=s(a,0,n,257,$,tt,_,r,c,t,e),0!=u||0===r[0]?(-3==u?f.msg="oversubscribed literal/length tree":-4!=u&&(f.msg="incomplete literal/length tree",u=-3),u):(o(288),u=s(a,n,i,0,et,nt,d,l,c,t,e),0!=u||0===l[0]&&n>257?(-3==u?f.msg="oversubscribed distance tree":-5==u?(f.msg="incomplete distance tree",u=-3):-4!=u&&(f.msg="empty distance tree with lengths",u=-3),u):0)};}it.inflate_trees_fixed=function(t,e,n,i){return t[0]=9,e[0]=5,n[0]=Y,i[0]=Z,0};function at(){const t=this;let e,n,i,a,r=0,s=0,o=0,l=0,_=0,d=0,c=0,f=0,u=0,h=0;function b(t,e,n,i,a,r,s,o){let l,_,d,c,f,u,h,b,w,p,x,g,y,m,k,v;h=o.next_in_index,b=o.avail_in,f=s.bitb,u=s.bitk,w=s.write,p=w<s.read?s.read-w-1:s.end-w,x=X[t],g=X[e];do{for(;u<20;)b--,f|=(255&o.read_byte(h++))<<u,u+=8;if(l=f&x,_=n,d=i,v=3*(d+l),0!==(c=_[v]))for(;;){if(f>>=_[v+1],u-=_[v+1],0!=(16&c)){for(c&=15,y=_[v+2]+(f&X[c]),f>>=c,u-=c;u<15;)b--,f|=(255&o.read_byte(h++))<<u,u+=8;for(l=f&g,_=a,d=r,v=3*(d+l),c=_[v];;){if(f>>=_[v+1],u-=_[v+1],0!=(16&c)){for(c&=15;u<c;)b--,f|=(255&o.read_byte(h++))<<u,u+=8;if(m=_[v+2]+(f&X[c]),f>>=c,u-=c,p-=y,w>=m)k=w-m,w-k>0&&2>w-k?(s.window[w++]=s.window[k++],s.window[w++]=s.window[k++],y-=2):(s.window.set(s.window.subarray(k,k+2),w),w+=2,k+=2,y-=2);else {k=w-m;do{k+=s.end;}while(k<0);if(c=s.end-k,y>c){if(y-=c,w-k>0&&c>w-k)do{s.window[w++]=s.window[k++];}while(0!=--c);else s.window.set(s.window.subarray(k,k+c),w),w+=c,k+=c,c=0;k=0;}}if(w-k>0&&y>w-k)do{s.window[w++]=s.window[k++];}while(0!=--y);else s.window.set(s.window.subarray(k,k+y),w),w+=y,k+=y,y=0;break}if(0!=(64&c))return o.msg="invalid distance code",y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,-3;l+=_[v+2],l+=f&X[c],v=3*(d+l),c=_[v];}break}if(0!=(64&c))return 0!=(32&c)?(y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,1):(o.msg="invalid literal/length code",y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,-3);if(l+=_[v+2],l+=f&X[c],v=3*(d+l),0===(c=_[v])){f>>=_[v+1],u-=_[v+1],s.window[w++]=_[v+2],p--;break}}else f>>=_[v+1],u-=_[v+1],s.window[w++]=_[v+2],p--;}while(p>=258&&b>=10);return y=o.avail_in-b,y=u>>3<y?u>>3:y,b+=y,h-=y,u-=y<<3,s.bitb=f,s.bitk=u,o.avail_in=b,o.total_in+=h-o.next_in_index,o.next_in_index=h,s.write=w,0}t.init=function(t,r,s,o,l,_){e=0,c=t,f=r,i=s,u=o,a=l,h=_,n=null;},t.proc=function(t,w,p){let x,g,y,m,k,v,A,U=0,S=0,z=0;for(z=w.next_in_index,m=w.avail_in,U=t.bitb,S=t.bitk,k=t.write,v=k<t.read?t.read-k-1:t.end-k;;)switch(e){case 0:if(v>=258&&m>=10&&(t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,p=b(c,f,i,u,a,h,t,w),z=w.next_in_index,m=w.avail_in,U=t.bitb,S=t.bitk,k=t.write,v=k<t.read?t.read-k-1:t.end-k,0!=p)){e=1==p?7:9;break}o=c,n=i,s=u,e=1;case 1:for(x=o;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}if(g=3*(s+(U&X[x])),U>>>=n[g+1],S-=n[g+1],y=n[g],0===y){l=n[g+2],e=6;break}if(0!=(16&y)){_=15&y,r=n[g+2],e=2;break}if(0==(64&y)){o=y,s=g/3+n[g+2];break}if(0!=(32&y)){e=7;break}return e=9,w.msg="invalid literal/length code",p=-3,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);case 2:for(x=_;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}r+=U&X[x],U>>=x,S-=x,o=f,n=a,s=h,e=3;case 3:for(x=o;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}if(g=3*(s+(U&X[x])),U>>=n[g+1],S-=n[g+1],y=n[g],0!=(16&y)){_=15&y,d=n[g+2],e=4;break}if(0==(64&y)){o=y,s=g/3+n[g+2];break}return e=9,w.msg="invalid distance code",p=-3,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);case 4:for(x=_;S<x;){if(0===m)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,m--,U|=(255&w.read_byte(z++))<<S,S+=8;}d+=U&X[x],U>>=x,S-=x,e=5;case 5:for(A=k-d;A<0;)A+=t.end;for(;0!==r;){if(0===v&&(k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v&&(t.write=k,p=t.inflate_flush(w,p),k=t.write,v=k<t.read?t.read-k-1:t.end-k,k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v)))return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);t.window[k++]=t.window[A++],v--,A==t.end&&(A=0),r--;}e=0;break;case 6:if(0===v&&(k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v&&(t.write=k,p=t.inflate_flush(w,p),k=t.write,v=k<t.read?t.read-k-1:t.end-k,k==t.end&&0!==t.read&&(k=0,v=k<t.read?t.read-k-1:t.end-k),0===v)))return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);p=0,t.window[k++]=l,v--,e=0;break;case 7:if(S>7&&(S-=8,m++,z--),t.write=k,p=t.inflate_flush(w,p),k=t.write,v=k<t.read?t.read-k-1:t.end-k,t.read!=t.write)return t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);e=8;case 8:return p=1,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);case 9:return p=-3,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p);default:return p=-2,t.bitb=U,t.bitk=S,w.avail_in=m,w.total_in+=z-w.next_in_index,w.next_in_index=z,t.write=k,t.inflate_flush(w,p)}},t.free=function(){};}const rt=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];function st(t,e){const n=this;let i,a=0,r=0,s=0,o=0;const l=[0],_=[0],d=new at;let c=0,f=new Int32Array(4320);const u=new it;n.bitk=0,n.bitb=0,n.window=new Uint8Array(e),n.end=e,n.read=0,n.write=0,n.reset=function(t,e){e&&(e[0]=0),6==a&&d.free(t),a=0,n.bitk=0,n.bitb=0,n.read=n.write=0;},n.reset(t,null),n.inflate_flush=function(t,e){let i,a,r;return a=t.next_out_index,r=n.read,i=(r<=n.write?n.write:n.end)-r,i>t.avail_out&&(i=t.avail_out),0!==i&&-5==e&&(e=0),t.avail_out-=i,t.total_out+=i,t.next_out.set(n.window.subarray(r,r+i),a),a+=i,r+=i,r==n.end&&(r=0,n.write==n.end&&(n.write=0),i=n.write-r,i>t.avail_out&&(i=t.avail_out),0!==i&&-5==e&&(e=0),t.avail_out-=i,t.total_out+=i,t.next_out.set(n.window.subarray(r,r+i),a),a+=i,r+=i),t.next_out_index=a,n.read=r,e},n.proc=function(t,e){let h,b,w,p,x,g,y,m;for(p=t.next_in_index,x=t.avail_in,b=n.bitb,w=n.bitk,g=n.write,y=g<n.read?n.read-g-1:n.end-g;;){let k,v,A,U,S,z,I,E;switch(a){case 0:for(;w<3;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}switch(h=7&b,c=1&h,h>>>1){case 0:b>>>=3,w-=3,h=7&w,b>>>=h,w-=h,a=1;break;case 1:k=[],v=[],A=[[]],U=[[]],it.inflate_trees_fixed(k,v,A,U),d.init(k[0],v[0],A[0],0,U[0],0),b>>>=3,w-=3,a=6;break;case 2:b>>>=3,w-=3,a=3;break;case 3:return b>>>=3,w-=3,a=9,t.msg="invalid block type",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e)}break;case 1:for(;w<32;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if((~b>>>16&65535)!=(65535&b))return a=9,t.msg="invalid stored block lengths",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);r=65535&b,b=w=0,a=0!==r?2:0!==c?7:0;break;case 2:if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);if(0===y&&(g==n.end&&0!==n.read&&(g=0,y=g<n.read?n.read-g-1:n.end-g),0===y&&(n.write=g,e=n.inflate_flush(t,e),g=n.write,y=g<n.read?n.read-g-1:n.end-g,g==n.end&&0!==n.read&&(g=0,y=g<n.read?n.read-g-1:n.end-g),0===y)))return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);if(e=0,h=r,h>x&&(h=x),h>y&&(h=y),n.window.set(t.read_buf(p,h),g),p+=h,x-=h,g+=h,y-=h,0!=(r-=h))break;a=0!==c?7:0;break;case 3:for(;w<14;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if(s=h=16383&b,(31&h)>29||(h>>5&31)>29)return a=9,t.msg="too many length or distance symbols",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);if(h=258+(31&h)+(h>>5&31),!i||i.length<h)i=[];else for(m=0;m<h;m++)i[m]=0;b>>>=14,w-=14,o=0,a=4;case 4:for(;o<4+(s>>>10);){for(;w<3;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}i[rt[o++]]=7&b,b>>>=3,w-=3;}for(;o<19;)i[rt[o++]]=0;if(l[0]=7,h=u.inflate_trees_bits(i,l,_,f,t),0!=h)return -3==(e=h)&&(i=null,a=9),n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);o=0,a=5;case 5:for(;h=s,!(o>=258+(31&h)+(h>>5&31));){let r,d;for(h=l[0];w<h;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if(h=f[3*(_[0]+(b&X[h]))+1],d=f[3*(_[0]+(b&X[h]))+2],d<16)b>>>=h,w-=h,i[o++]=d;else {for(m=18==d?7:d-14,r=18==d?11:3;w<h+m;){if(0===x)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);e=0,x--,b|=(255&t.read_byte(p++))<<w,w+=8;}if(b>>>=h,w-=h,r+=b&X[m],b>>>=m,w-=m,m=o,h=s,m+r>258+(31&h)+(h>>5&31)||16==d&&m<1)return i=null,a=9,t.msg="invalid bit length repeat",e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);d=16==d?i[m-1]:0;do{i[m++]=d;}while(0!=--r);o=m;}}if(_[0]=-1,S=[],z=[],I=[],E=[],S[0]=9,z[0]=6,h=s,h=u.inflate_trees_dynamic(257+(31&h),1+(h>>5&31),i,S,z,I,E,f,t),0!=h)return -3==h&&(i=null,a=9),e=h,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);d.init(S[0],z[0],f,I[0],f,E[0]),a=6;case 6:if(n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,1!=(e=d.proc(n,t,e)))return n.inflate_flush(t,e);if(e=0,d.free(t),p=t.next_in_index,x=t.avail_in,b=n.bitb,w=n.bitk,g=n.write,y=g<n.read?n.read-g-1:n.end-g,0===c){a=0;break}a=7;case 7:if(n.write=g,e=n.inflate_flush(t,e),g=n.write,y=g<n.read?n.read-g-1:n.end-g,n.read!=n.write)return n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);a=8;case 8:return e=1,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);case 9:return e=-3,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e);default:return e=-2,n.bitb=b,n.bitk=w,t.avail_in=x,t.total_in+=p-t.next_in_index,t.next_in_index=p,n.write=g,n.inflate_flush(t,e)}}},n.free=function(t){n.reset(t,null),n.window=null,f=null;},n.set_dictionary=function(t,e,i){n.window.set(t.subarray(e,e+i),0),n.read=n.write=i;},n.sync_point=function(){return 1==a?1:0};}const ot=[0,0,255,255];function lt(){const t=this;function e(t){return t&&t.istate?(t.total_in=t.total_out=0,t.msg=null,t.istate.mode=7,t.istate.blocks.reset(t,null),0):-2}t.mode=0,t.method=0,t.was=[0],t.need=0,t.marker=0,t.wbits=0,t.inflateEnd=function(e){return t.blocks&&t.blocks.free(e),t.blocks=null,0},t.inflateInit=function(n,i){return n.msg=null,t.blocks=null,i<8||i>15?(t.inflateEnd(n),-2):(t.wbits=i,n.istate.blocks=new st(n,1<<i),e(n),0)},t.inflate=function(t,e){let n,i;if(!t||!t.istate||!t.next_in)return -2;const a=t.istate;for(e=4==e?-5:0,n=-5;;)switch(a.mode){case 0:if(0===t.avail_in)return n;if(n=e,t.avail_in--,t.total_in++,8!=(15&(a.method=t.read_byte(t.next_in_index++)))){a.mode=13,t.msg="unknown compression method",a.marker=5;break}if(8+(a.method>>4)>a.wbits){a.mode=13,t.msg="invalid window size",a.marker=5;break}a.mode=1;case 1:if(0===t.avail_in)return n;if(n=e,t.avail_in--,t.total_in++,i=255&t.read_byte(t.next_in_index++),((a.method<<8)+i)%31!=0){a.mode=13,t.msg="incorrect header check",a.marker=5;break}if(0==(32&i)){a.mode=7;break}a.mode=2;case 2:if(0===t.avail_in)return n;n=e,t.avail_in--,t.total_in++,a.need=(255&t.read_byte(t.next_in_index++))<<24&4278190080,a.mode=3;case 3:if(0===t.avail_in)return n;n=e,t.avail_in--,t.total_in++,a.need+=(255&t.read_byte(t.next_in_index++))<<16&16711680,a.mode=4;case 4:if(0===t.avail_in)return n;n=e,t.avail_in--,t.total_in++,a.need+=(255&t.read_byte(t.next_in_index++))<<8&65280,a.mode=5;case 5:return 0===t.avail_in?n:(n=e,t.avail_in--,t.total_in++,a.need+=255&t.read_byte(t.next_in_index++),a.mode=6,2);case 6:return a.mode=13,t.msg="need dictionary",a.marker=0,-2;case 7:if(n=a.blocks.proc(t,n),-3==n){a.mode=13,a.marker=0;break}if(0==n&&(n=e),1!=n)return n;n=e,a.blocks.reset(t,a.was),a.mode=12;case 12:return 1;case 13:return -3;default:return -2}},t.inflateSetDictionary=function(t,e,n){let i=0,a=n;if(!t||!t.istate||6!=t.istate.mode)return -2;const r=t.istate;return a>=1<<r.wbits&&(a=(1<<r.wbits)-1,i=n-a),r.blocks.set_dictionary(e,i,a),r.mode=7,0},t.inflateSync=function(t){let n,i,a,r,s;if(!t||!t.istate)return -2;const o=t.istate;if(13!=o.mode&&(o.mode=13,o.marker=0),0===(n=t.avail_in))return -5;for(i=t.next_in_index,a=o.marker;0!==n&&a<4;)t.read_byte(i)==ot[a]?a++:a=0!==t.read_byte(i)?0:4-a,i++,n--;return t.total_in+=i-t.next_in_index,t.next_in_index=i,t.avail_in=n,o.marker=a,4!=a?-3:(r=t.total_in,s=t.total_out,e(t),t.total_in=r,t.total_out=s,o.mode=7,0)},t.inflateSyncPoint=function(t){return t&&t.istate&&t.istate.blocks?t.istate.blocks.sync_point():-2};}function _t(){}function dt(t){const e=new _t,n=t&&t.chunkSize?Math.floor(2*t.chunkSize):131072,i=new Uint8Array(n);let a=!1;e.inflateInit(),e.next_out=i,this.append=function(t,r){const s=[];let o,l,_=0,d=0,c=0;if(0!==t.length){e.next_in_index=0,e.next_in=t,e.avail_in=t.length;do{if(e.next_out_index=0,e.avail_out=n,0!==e.avail_in||a||(e.next_in_index=0,a=!0),o=e.inflate(0),a&&-5===o){if(0!==e.avail_in)throw new Error("inflating: bad input")}else if(0!==o&&1!==o)throw new Error("inflating: "+e.msg);if((a||1===o)&&e.avail_in===t.length)throw new Error("inflating: bad input");e.next_out_index&&(e.next_out_index===n?s.push(new Uint8Array(i)):s.push(i.slice(0,e.next_out_index))),c+=e.next_out_index,r&&e.next_in_index>0&&e.next_in_index!=_&&(r(e.next_in_index),_=e.next_in_index);}while(e.avail_in>0||0===e.avail_out);return s.length>1?(l=new Uint8Array(c),s.forEach((function(t){l.set(t,d),d+=t.length;}))):l=s[0]||new Uint8Array(0),l}},this.flush=function(){e.inflateEnd();};}_t.prototype={inflateInit:function(t){const e=this;return e.istate=new lt,t||(t=15),e.istate.inflateInit(e,t)},inflate:function(t){const e=this;return e.istate?e.istate.inflate(e,t):-2},inflateEnd:function(){const t=this;if(!t.istate)return -2;const e=t.istate.inflateEnd(t);return t.istate=null,e},inflateSync:function(){const t=this;return t.istate?t.istate.inflateSync(t):-2},inflateSetDictionary:function(t,e){const n=this;return n.istate?n.istate.inflateSetDictionary(n,t,e):-2},read_byte:function(t){return this.next_in[t]},read_buf:function(t,e){return this.next_in.subarray(t,t+e)}},self.initCodec=()=>{self.Deflate=Q,self.Inflate=dt;};\n\n\t\t', n49 = URL.createObjectURL(new Blob([
             e
         ], {
             type: "text/javascript"
@@ -22633,10 +22503,10 @@ const __default7 = ()=>{
         configure({
             workerScripts: {
                 inflate: [
-                    n
+                    n49
                 ],
                 deflate: [
-                    n
+                    n49
                 ]
             }
         });
@@ -22706,8 +22576,8 @@ class TextWriter extends Writer {
     }
     getData() {
         const reader = new FileReader();
-        return new Promise((resolve, reject)=>{
-            reader.onload = (event)=>resolve(event.target.result)
+        return new Promise((resolve11, reject)=>{
+            reader.onload = (event)=>resolve11(event.target.result)
             ;
             reader.onerror = ()=>reject(reader.error)
             ;
@@ -22773,8 +22643,8 @@ class BlobReader extends Reader {
     }
     async readUint8Array(offset, length) {
         const reader = new FileReader();
-        return new Promise((resolve, reject)=>{
-            reader.onload = (event)=>resolve(new Uint8Array(event.target.result))
+        return new Promise((resolve12, reject)=>{
+            reader.onload = (event)=>resolve12(new Uint8Array(event.target.result))
             ;
             reader.onerror = ()=>reject(reader.error)
             ;
@@ -22808,8 +22678,7 @@ class FetchReader extends Reader {
         this.preventHeadRequest = options.preventHeadRequest;
         this.useRangeHeader = options.useRangeHeader;
         this.forceRangeRequests = options.forceRangeRequests;
-        this.options = Object.assign({
-        }, options);
+        this.options = Object.assign({}, options);
         delete this.options.preventHeadRequest;
         delete this.options.useRangeHeader;
         delete this.options.forceRangeRequests;
@@ -22831,8 +22700,7 @@ class FetchReader extends Reader {
     }
     async readUint8Array(index, length) {
         if (this.useRangeHeader) {
-            const response = await sendFetchRequest(HTTP_METHOD_GET, this.url, this.options, Object.assign({
-            }, this.options.headers, {
+            const response = await sendFetchRequest(HTTP_METHOD_GET, this.url, this.options, Object.assign({}, this.options.headers, {
                 [HTTP_HEADER_RANGE]: HTTP_RANGE_UNIT + "=" + index + "-" + (index + length - 1)
             }));
             if (response.status != 206) {
@@ -22855,10 +22723,8 @@ async function getFetchData(httpReader, options) {
     }
 }
 async function sendFetchRequest(method, url, options, headers) {
-    headers = Object.assign({
-    }, options.headers, headers);
-    const response = await fetch(url, Object.assign({
-    }, options, {
+    headers = Object.assign({}, options.headers, headers);
+    const response = await fetch(url, Object.assign({}, options, {
         method,
         headers
     }));
@@ -22879,19 +22745,19 @@ class XHRReader extends Reader {
     async init() {
         super.init();
         if (isHttpFamily(this.url) && !this.preventHeadRequest) {
-            return new Promise((resolve, reject)=>sendXHR(HTTP_METHOD_HEAD, this.url, (request)=>{
+            return new Promise((resolve13, reject)=>sendXHR(HTTP_METHOD_HEAD, this.url, (request)=>{
                     this.size = Number(request.getResponseHeader(HTTP_HEADER_CONTENT_LENGTH));
                     if (this.useRangeHeader) {
                         if (this.forceRangeRequests || request.getResponseHeader(HTTP_HEADER_ACCEPT_RANGES) == HTTP_RANGE_UNIT) {
-                            resolve();
+                            resolve13();
                         } else {
                             reject(new Error(ERR_HTTP_RANGE));
                         }
                     } else if (this.size === undefined) {
-                        getXHRData(this, this.url).then(()=>resolve()
+                        getXHRData(this, this.url).then(()=>resolve13()
                         ).catch(reject);
                     } else {
-                        resolve();
+                        resolve13();
                     }
                 }, reject)
             );
@@ -22901,7 +22767,7 @@ class XHRReader extends Reader {
     }
     async readUint8Array(index, length) {
         if (this.useRangeHeader) {
-            const request = await new Promise((resolve, reject)=>sendXHR(HTTP_METHOD_GET, this.url, (request)=>resolve(request)
+            const request1 = await new Promise((resolve14, reject)=>sendXHR(HTTP_METHOD_GET, this.url, (request)=>resolve14(request)
                 , reject, [
                     [
                         HTTP_HEADER_RANGE,
@@ -22909,10 +22775,10 @@ class XHRReader extends Reader {
                     ]
                 ])
             );
-            if (request.status != 206) {
+            if (request1.status != 206) {
                 throw new Error(ERR_HTTP_RANGE);
             }
-            return new Uint8Array(request.response);
+            return new Uint8Array(request1.response);
         } else {
             if (!this.data) {
                 await getXHRData(this, this.url);
@@ -22922,12 +22788,12 @@ class XHRReader extends Reader {
     }
 }
 function getXHRData(httpReader, url) {
-    return new Promise((resolve, reject)=>sendXHR(HTTP_METHOD_GET, url, (request)=>{
+    return new Promise((resolve15, reject)=>sendXHR(HTTP_METHOD_GET, url, (request)=>{
             httpReader.data = new Uint8Array(request.response);
             if (!httpReader.size) {
                 httpReader.size = httpReader.data.length;
             }
-            resolve();
+            resolve15();
         }, reject)
     );
 }
@@ -22949,8 +22815,7 @@ function sendXHR(method, url, onload, onerror, headers = []) {
     return request;
 }
 class HttpReader extends Reader {
-    constructor(url, options = {
-    }){
+    constructor(url, options = {}){
         super();
         this.url = url;
         if (options.useXHR) {
@@ -22959,8 +22824,7 @@ class HttpReader extends Reader {
             this.reader = new FetchReader(url, options);
         }
     }
-    set size(value) {
-    }
+    set size(value) {}
     get size() {
         return this.reader.size;
     }
@@ -23032,28 +22896,27 @@ const __default8 = (stringValue)=>{
 };
 "use strict";
 const ERR_ABORT = "Abort error";
-async function processData(codec, reader, writer, offset, inputLength, config, options) {
-    const chunkSize = Math.max(config.chunkSize, 64);
+async function processData(codec5, reader, writer, offset, inputLength, config12, options) {
+    const chunkSize = Math.max(config12.chunkSize, 64);
     return processChunk();
     async function processChunk(chunkOffset = 0, outputLength = 0) {
         const signal = options.signal;
         if (chunkOffset < inputLength) {
-            testAborted(signal, codec);
+            testAborted(signal, codec5);
             const inputData = await reader.readUint8Array(chunkOffset + offset, Math.min(chunkSize, inputLength - chunkOffset));
             const chunkLength = inputData.length;
-            testAborted(signal, codec);
-            const data = await codec.append(inputData);
-            testAborted(signal, codec);
+            testAborted(signal, codec5);
+            const data = await codec5.append(inputData);
+            testAborted(signal, codec5);
             outputLength += await writeData(writer, data);
             if (options.onprogress) {
                 try {
                     options.onprogress(chunkOffset + chunkLength, inputLength);
-                } catch (error) {
-                }
+                } catch (error) {}
             }
             return processChunk(chunkOffset + chunkSize, outputLength);
         } else {
-            const result = await codec.flush();
+            const result = await codec5.flush();
             outputLength += await writeData(writer, result.data);
             return {
                 signature: result.signature,
@@ -23062,9 +22925,9 @@ async function processData(codec, reader, writer, offset, inputLength, config, o
         }
     }
 }
-function testAborted(signal, codec) {
+function testAborted(signal, codec6) {
     if (signal && signal.aborted) {
-        codec.flush();
+        codec6.flush();
         throw new Error(ERR_ABORT);
     }
 }
@@ -23133,16 +22996,14 @@ const ZIP64_PROPERTIES = [
     "offset"
 ];
 class ZipReader {
-    constructor(reader, options = {
-    }){
+    constructor(reader, options = {}){
         Object.assign(this, {
             reader,
             options,
             config: getConfiguration()
         });
     }
-    async getEntries(options = {
-    }) {
+    async getEntries(options1 = {}) {
         const zipReader = this;
         const reader = zipReader.reader;
         if (!reader.initialized) {
@@ -23231,8 +23092,8 @@ class ZipReader {
             });
             const endOffset = commentOffset + fileEntry.commentLength;
             fileEntry.rawComment = directoryArray.subarray(commentOffset, endOffset);
-            fileEntry.filename = decodeString(fileEntry.rawFilename, fileEntry.filenameUTF8 ? CHARSET_UTF8 : getOptionValue(zipReader, options, "filenameEncoding"));
-            fileEntry.comment = decodeString(fileEntry.rawComment, fileEntry.commentUTF8 ? CHARSET_UTF8 : getOptionValue(zipReader, options, "commentEncoding"));
+            fileEntry.filename = decodeString(fileEntry.rawFilename, fileEntry.filenameUTF8 ? CHARSET_UTF8 : getOptionValue(zipReader, options1, "filenameEncoding"));
+            fileEntry.comment = decodeString(fileEntry.rawComment, fileEntry.commentUTF8 ? CHARSET_UTF8 : getOptionValue(zipReader, options1, "commentEncoding"));
             if (!fileEntry.directory && fileEntry.filename.endsWith(DIRECTORY_SIGNATURE)) {
                 fileEntry.directory = true;
             }
@@ -23242,32 +23103,28 @@ class ZipReader {
             ;
             entries.push(entry);
             offset = endOffset;
-            if (options.onprogress) {
+            if (options1.onprogress) {
                 try {
-                    options.onprogress(indexFile + 1, filesLength, new Entry(fileEntry));
-                } catch (error) {
-                }
+                    options1.onprogress(indexFile + 1, filesLength, new Entry(fileEntry));
+                } catch (error) {}
             }
         }
         return entries;
     }
-    async close() {
-    }
+    async close() {}
 }
 class ZipEntry {
-    constructor(reader, config, options){
+    constructor(reader, config13, options){
         Object.assign(this, {
             reader,
-            config,
+            config: config13,
             options
         });
     }
-    async getData(writer, fileEntry, options = {
-    }) {
+    async getData(writer, fileEntry, options = {}) {
         const zipEntry = this;
-        const { reader , offset , extraFieldAES , compressionMethod , config , bitFlag , signature , rawLastModDate , compressedSize  } = zipEntry;
-        const localDirectory = zipEntry.localDirectory = {
-        };
+        const { reader , offset , extraFieldAES , compressionMethod , config: config14 , bitFlag , signature , rawLastModDate , compressedSize  } = zipEntry;
+        const localDirectory = zipEntry.localDirectory = {};
         if (!reader.initialized) {
             await reader.init();
         }
@@ -23301,7 +23158,7 @@ class ZipEntry {
                 throw new Error(ERR_ENCRYPTED);
             }
         }
-        const codec = await createCodec1(config.Inflate, {
+        const codec7 = await createCodec1(config14.Inflate, {
             codecType: CODEC_INFLATE,
             password,
             zipCrypto,
@@ -23312,13 +23169,13 @@ class ZipEntry {
             compressed: compressionMethod != 0,
             encrypted,
             useWebWorkers: getOptionValue(zipEntry, options, "useWebWorkers")
-        }, config);
+        }, config14);
         if (!writer.initialized) {
             await writer.init();
         }
         const signal = getOptionValue(zipEntry, options, "signal");
         const dataOffset = offset + 30 + localDirectory.filenameLength + localDirectory.extraFieldLength;
-        await processData(codec, reader, writer, dataOffset, compressedSize, config, {
+        await processData(codec7, reader, writer, dataOffset, compressedSize, config14, {
             onprogress: options.onprogress,
             signal
         });
@@ -23358,8 +23215,7 @@ function readCommonFooter(fileEntry, directory, dataView, offset) {
             });
             offsetExtraField += 4 + size;
         }
-    } catch (error) {
-    }
+    } catch (error) {}
     const compressionMethod = getUint16(dataView, offset + 4);
     directory.signature = getUint32(dataView, offset + 10);
     directory.uncompressedSize = getUint32(dataView, offset + 18);
@@ -23456,8 +23312,7 @@ function readExtraFieldNTFS(extraFieldNTFS, directory) {
             }
             offsetExtraField += 4 + attributeSize;
         }
-    } catch (error) {
-    }
+    } catch (error) {}
     try {
         if (tag1Data && tag1Data.length == 24) {
             const tag1View = getDataView(tag1Data);
@@ -23480,8 +23335,7 @@ function readExtraFieldNTFS(extraFieldNTFS, directory) {
             Object.assign(extraFieldNTFS, extraFieldData);
             Object.assign(directory, extraFieldData);
         }
-    } catch (error1) {
-    }
+    } catch (error1) {}
 }
 function readExtraFieldExtendedTimestamp(extraFieldExtendedTimestamp, directory) {
     const extraFieldView = getDataView(extraFieldExtendedTimestamp.data);
@@ -23533,19 +23387,18 @@ async function seekSignature(reader, signature, startOffset, minimumBytes, maxim
 function getOptionValue(zipReader, options, name) {
     return options[name] === undefined ? zipReader.options[name] : options[name];
 }
-function decodeString(value, encoding) {
+function decodeString(value35, encoding) {
     if (!encoding || encoding.trim().toLowerCase() == "cp437") {
-        return __default8(value);
+        return __default8(value35);
     } else {
-        return new TextDecoder(encoding).decode(value);
+        return new TextDecoder(encoding).decode(value35);
     }
 }
 function getDate(timeRaw) {
     const date = (timeRaw & 4294901760) >> 16, time = timeRaw & 65535;
     try {
         return new Date(1980 + ((date & 65024) >> 9), ((date & 480) >> 5) - 1, date & 31, (time & 63488) >> 11, (time & 2016) >> 5, (time & 31) * 2, 0);
-    } catch (error) {
-    }
+    } catch (error) {}
 }
 function getDateNTFS(timeRaw) {
     return new Date(Number(timeRaw / BigInt(10000) - BigInt(11644473600000)));
@@ -23562,8 +23415,8 @@ function getUint32(view, offset) {
 function getBigUint64(view, offset) {
     return Number(view.getBigUint64(offset, true));
 }
-function setUint32(view, offset, value) {
-    view.setUint32(offset, value, true);
+function setUint32(view, offset, value36) {
+    view.setUint32(offset, value36, true);
 }
 function getDataView(array) {
     return new DataView(array.buffer);
@@ -23594,8 +23447,7 @@ const EXTRAFIELD_DATA_AES = new Uint8Array([
 ]);
 let workers = 0;
 class ZipWriter {
-    constructor(writer, options = {
-    }){
+    constructor(writer, options = {}){
         Object.assign(this, {
             writer,
             options,
@@ -23606,8 +23458,7 @@ class ZipWriter {
             pendingEntries: []
         });
     }
-    async add(name = "", reader, options = {
-    }) {
+    async add(name = "", reader, options = {}) {
         const zipWriter = this;
         if (workers < zipWriter.config.maxWorkers) {
             workers++;
@@ -23621,18 +23472,17 @@ class ZipWriter {
                 }
             }
         } else {
-            return new Promise((resolve, reject)=>zipWriter.pendingEntries.push({
+            return new Promise((resolve16, reject)=>zipWriter.pendingEntries.push({
                     name,
                     reader,
                     options,
-                    resolve,
+                    resolve: resolve16,
                     reject
                 })
             );
         }
     }
-    async close(comment = new Uint8Array(0), options = {
-    }) {
+    async close(comment = new Uint8Array(0), options = {}) {
         await closeFile(this, comment, options);
         return this.writer.getData();
     }
@@ -23743,8 +23593,7 @@ async function addFile(zipWriter, name, reader, options) {
     if (dataDescriptor && dataDescriptorSignature === undefined) {
         dataDescriptorSignature = true;
     }
-    const fileEntry = await getFileEntry(zipWriter, name, reader, Object.assign({
-    }, options, {
+    const fileEntry = await getFileEntry(zipWriter, name, reader, Object.assign({}, options, {
         rawFilename,
         rawComment,
         version,
@@ -23783,12 +23632,11 @@ async function getFileEntry(zipWriter, name, reader, options) {
     const files = zipWriter.files;
     const writer = zipWriter.writer;
     const previousFileEntry = Array.from(files.values()).pop();
-    let fileEntry = {
-    };
+    let fileEntry1 = {};
     let bufferedWrite;
     let resolveLockUnbufferedWrite;
     let resolveLockCurrentFileEntry;
-    files.set(name, fileEntry);
+    files.set(name, fileEntry1);
     try {
         let lockPreviousFileEntry;
         let fileWriter;
@@ -23796,24 +23644,24 @@ async function getFileEntry(zipWriter, name, reader, options) {
         if (options.keepOrder) {
             lockPreviousFileEntry = previousFileEntry && previousFileEntry.lock;
         }
-        fileEntry.lock = lockCurrentFileEntry = new Promise((resolve)=>resolveLockCurrentFileEntry = resolve
+        fileEntry1.lock = lockCurrentFileEntry = new Promise((resolve17)=>resolveLockCurrentFileEntry = resolve17
         );
         if (options.bufferedWrite || zipWriter.lockWrite || !options.dataDescriptor) {
             fileWriter = new BlobWriter();
             fileWriter.init();
             bufferedWrite = true;
         } else {
-            zipWriter.lockWrite = new Promise((resolve)=>resolveLockUnbufferedWrite = resolve
+            zipWriter.lockWrite = new Promise((resolve18)=>resolveLockUnbufferedWrite = resolve18
             );
             if (!writer.initialized) {
                 await writer.init();
             }
             fileWriter = writer;
         }
-        fileEntry = await createFileEntry(reader, fileWriter, zipWriter.config, options);
-        fileEntry.lock = lockCurrentFileEntry;
-        files.set(name, fileEntry);
-        fileEntry.filename = name;
+        fileEntry1 = await createFileEntry(reader, fileWriter, zipWriter.config, options);
+        fileEntry1.lock = lockCurrentFileEntry;
+        files.set(name, fileEntry1);
+        fileEntry1.filename = name;
         if (bufferedWrite) {
             let indexWrittenData = 0;
             const blob = fileWriter.getData();
@@ -23829,41 +23677,41 @@ async function getFileEntry(zipWriter, name, reader, options) {
                     await pendingFileEntry.lock;
                 }
             }while (pendingFileEntry && pendingFileEntry.lock)
-            fileEntry.writingBufferedData = true;
+            fileEntry1.writingBufferedData = true;
             if (!options.dataDescriptor) {
                 const headerLength = 26;
                 const arrayBuffer = await sliceAsArrayBuffer(blob, 0, 26);
                 const arrayBufferView = new DataView(arrayBuffer);
-                if (!fileEntry.encrypted || options.zipCrypto) {
-                    setUint321(arrayBufferView, 14, fileEntry.signature);
+                if (!fileEntry1.encrypted || options.zipCrypto) {
+                    setUint321(arrayBufferView, 14, fileEntry1.signature);
                 }
-                if (fileEntry.zip64) {
+                if (fileEntry1.zip64) {
                     setUint321(arrayBufferView, 18, 4294967295);
                     setUint321(arrayBufferView, 22, 4294967295);
                 } else {
-                    setUint321(arrayBufferView, 18, fileEntry.compressedSize);
-                    setUint321(arrayBufferView, 22, fileEntry.uncompressedSize);
+                    setUint321(arrayBufferView, 18, fileEntry1.compressedSize);
+                    setUint321(arrayBufferView, 22, fileEntry1.uncompressedSize);
                 }
                 await writer.writeUint8Array(new Uint8Array(arrayBuffer));
                 indexWrittenData = headerLength;
             }
             await writeBlob(writer, blob, indexWrittenData);
-            delete fileEntry.writingBufferedData;
+            delete fileEntry1.writingBufferedData;
         }
-        fileEntry.offset = zipWriter.offset;
-        if (fileEntry.zip64) {
-            const rawExtraFieldZip64View = getDataView1(fileEntry.rawExtraFieldZip64);
-            setBigUint64(rawExtraFieldZip64View, 20, BigInt(fileEntry.offset));
-        } else if (fileEntry.offset >= 4294967295) {
+        fileEntry1.offset = zipWriter.offset;
+        if (fileEntry1.zip64) {
+            const rawExtraFieldZip64View = getDataView1(fileEntry1.rawExtraFieldZip64);
+            setBigUint64(rawExtraFieldZip64View, 20, BigInt(fileEntry1.offset));
+        } else if (fileEntry1.offset >= 4294967295) {
             throw new Error(ERR_UNSUPPORTED_FORMAT);
         }
-        zipWriter.offset += fileEntry.length;
-        return fileEntry;
+        zipWriter.offset += fileEntry1.length;
+        return fileEntry1;
     } catch (error) {
-        if (bufferedWrite && fileEntry.writingBufferedData || !bufferedWrite && fileEntry.dataWritten) {
+        if (bufferedWrite && fileEntry1.writingBufferedData || !bufferedWrite && fileEntry1.dataWritten) {
             error.corruptedEntry = zipWriter.hasCorruptedEntries = true;
-            if (fileEntry.uncompressedSize) {
-                zipWriter.offset += fileEntry.uncompressedSize;
+            if (fileEntry1.uncompressedSize) {
+                zipWriter.offset += fileEntry1.uncompressedSize;
             }
         }
         files.delete(name);
@@ -23875,7 +23723,7 @@ async function getFileEntry(zipWriter, name, reader, options) {
         }
     }
 }
-async function createFileEntry(reader, writer, config, options) {
+async function createFileEntry(reader, writer, config15, options) {
     const { rawFilename , lastAccessDate , creationDate , password , level , zip64 , zipCrypto , dataDescriptor , dataDescriptorSignature , directory , version , versionMadeBy , rawComment , rawExtraField , useWebWorkers , onprogress , signal , encryptionStrength , extendedTimestamp , msDosCompatible , internalFileAttribute , externalFileAttribute  } = options;
     const encrypted = Boolean(password && password.length);
     const compressed = level !== 0 && !directory;
@@ -23999,7 +23847,7 @@ async function createFileEntry(reader, writer, config, options) {
     let compressedSize = 0;
     if (reader) {
         uncompressedSize = fileEntry.uncompressedSize = reader.size;
-        const codec = await createCodec1(config.Deflate, {
+        const codec8 = await createCodec1(config15.Deflate, {
             codecType: CODEC_DEFLATE,
             level,
             password,
@@ -24010,10 +23858,10 @@ async function createFileEntry(reader, writer, config, options) {
             compressed,
             encrypted,
             useWebWorkers
-        }, config);
+        }, config15);
         await writer.writeUint8Array(localHeaderArray);
         fileEntry.dataWritten = true;
-        result = await processData(codec, reader, writer, 0, uncompressedSize, config, {
+        result = await processData(codec8, reader, writer, 0, uncompressedSize, config15, {
             onprogress,
             signal
         });
@@ -24104,18 +23952,18 @@ async function closeFile(zipWriter, comment, options) {
             throw new Error(ERR_INVALID_COMMENT);
         }
     }
-    for (const [indexFileEntry, fileEntry1] of Array.from(files.values()).entries()){
-        const { rawFilename , rawExtraFieldZip64 , rawExtraFieldAES , rawExtraField , rawComment , versionMadeBy , headerArray , directory , zip64 , msDosCompatible , internalFileAttribute , externalFileAttribute  } = fileEntry1;
+    for (const [indexFileEntry, fileEntry2] of Array.from(files.values()).entries()){
+        const { rawFilename , rawExtraFieldZip64 , rawExtraFieldAES , rawExtraField , rawComment , versionMadeBy , headerArray , directory , zip64 , msDosCompatible , internalFileAttribute , externalFileAttribute  } = fileEntry2;
         let rawExtraFieldExtendedTimestamp;
         let rawExtraFieldNTFS;
-        if (fileEntry1.extendedTimestamp) {
-            rawExtraFieldNTFS = fileEntry1.rawExtraFieldNTFS;
+        if (fileEntry2.extendedTimestamp) {
+            rawExtraFieldNTFS = fileEntry2.rawExtraFieldNTFS;
             rawExtraFieldExtendedTimestamp = new Uint8Array(9);
             const extraFieldExtendedTimestampView = getDataView1(rawExtraFieldExtendedTimestamp);
             setUint16(extraFieldExtendedTimestampView, 0, 21589);
             setUint16(extraFieldExtendedTimestampView, 2, rawExtraFieldExtendedTimestamp.length - 4);
             setUint8(extraFieldExtendedTimestampView, 4, 1);
-            setUint321(extraFieldExtendedTimestampView, 5, Math.floor(fileEntry1.lastModDate.getTime() / 1000));
+            setUint321(extraFieldExtendedTimestampView, 5, Math.floor(fileEntry2.lastModDate.getTime() / 1000));
         } else {
             rawExtraFieldNTFS = rawExtraFieldExtendedTimestamp = new Uint8Array(0);
         }
@@ -24134,7 +23982,7 @@ async function closeFile(zipWriter, comment, options) {
         if (zip64) {
             setUint321(directoryView, offset + 42, 4294967295);
         } else {
-            setUint321(directoryView, offset + 42, fileEntry1.offset);
+            setUint321(directoryView, offset + 42, fileEntry2.offset);
         }
         arraySet(directoryArray, rawFilename, offset + 46);
         arraySet(directoryArray, rawExtraFieldZip64, offset + 46 + rawFilename.length);
@@ -24146,9 +23994,8 @@ async function closeFile(zipWriter, comment, options) {
         offset += 46 + rawFilename.length + extraFieldLength + rawComment.length;
         if (options.onprogress) {
             try {
-                options.onprogress(indexFileEntry + 1, files.size, new Entry(fileEntry1));
-            } catch (error) {
-            }
+                options.onprogress(indexFileEntry + 1, files.size, new Entry(fileEntry2));
+            } catch (error) {}
         }
     }
     if (zip64) {
@@ -24180,8 +24027,8 @@ async function closeFile(zipWriter, comment, options) {
 }
 function sliceAsArrayBuffer(blob, start, end) {
     const fileReader = new FileReader();
-    return new Promise((resolve, reject)=>{
-        fileReader.onload = (event)=>resolve(event.target.result)
+    return new Promise((resolve19, reject)=>{
+        fileReader.onload = (event)=>resolve19(event.target.result)
         ;
         fileReader.onerror = ()=>reject(fileReader.error)
         ;
@@ -24211,17 +24058,17 @@ function getOptionValue1(zipWriter, options, name) {
 function getMaximumCompressedSize1(uncompressedSize) {
     return uncompressedSize + 5 * (Math.floor(uncompressedSize / 16383) + 1);
 }
-function setUint8(view, offset, value) {
-    view.setUint8(offset, value);
+function setUint8(view, offset, value37) {
+    view.setUint8(offset, value37);
 }
-function setUint16(view, offset, value) {
-    view.setUint16(offset, value, true);
+function setUint16(view, offset, value38) {
+    view.setUint16(offset, value38, true);
 }
-function setUint321(view, offset, value) {
-    view.setUint32(offset, value, true);
+function setUint321(view, offset, value39) {
+    view.setUint32(offset, value39, true);
 }
-function setBigUint64(view, offset, value) {
-    view.setBigUint64(offset, value, true);
+function setBigUint64(view, offset, value40) {
+    view.setBigUint64(offset, value40, true);
 }
 function arraySet(array, typedArray, offset) {
     array.set(typedArray, offset);
@@ -24232,25 +24079,24 @@ function getDataView1(array) {
 "use strict";
 const CHUNK_SIZE = 512 * 1024;
 class ZipEntry1 {
-    constructor(fs, name, params, parent){
+    constructor(fs1, name, params, parent){
         const zipEntry = this;
-        if (fs.root && parent && parent.getChildByName(name)) {
+        if (fs1.root && parent && parent.getChildByName(name)) {
             throw new Error("Entry filename already exists");
         }
         if (!params) {
-            params = {
-            };
+            params = {};
         }
         Object.assign(zipEntry, {
-            fs,
+            fs: fs1,
             name,
             data: params.data,
-            id: fs.entries.length,
+            id: fs1.entries.length,
             parent,
             children: [],
             uncompressedSize: 0
         });
-        fs.entries.push(zipEntry);
+        fs1.entries.push(zipEntry);
         if (parent) {
             zipEntry.parent.children.push(zipEntry);
         }
@@ -24281,8 +24127,8 @@ class ZipEntry1 {
     }
 }
 class ZipFileEntry extends ZipEntry1 {
-    constructor(fs, name, params, parent){
-        super(fs, name, params, parent);
+    constructor(fs2, name, params, parent){
+        super(fs2, name, params, parent);
         const zipEntry = this;
         zipEntry.Reader = params.Reader;
         zipEntry.Writer = params.Writer;
@@ -24290,8 +24136,7 @@ class ZipFileEntry extends ZipEntry1 {
             zipEntry.getData = params.getData;
         }
     }
-    async getData(writer, options = {
-    }) {
+    async getData(writer, options = {}) {
         const zipEntry = this;
         if (!writer || writer.constructor == zipEntry.Writer && zipEntry.data) {
             return zipEntry.data;
@@ -24302,7 +24147,7 @@ class ZipFileEntry extends ZipEntry1 {
                 await writer.init();
             }
             zipEntry.uncompressedSize = zipEntry.reader.size;
-            return pipe2(zipEntry.reader, writer);
+            return pipe(zipEntry.reader, writer);
         }
     }
     getText(encoding, options) {
@@ -24351,8 +24196,8 @@ class ZipFileEntry extends ZipEntry1 {
     }
 }
 class ZipDirectoryEntry extends ZipEntry1 {
-    constructor(fs, name, params, parent){
-        super(fs, name, params, parent);
+    constructor(fs3, name, params, parent){
+        super(fs3, name, params, parent);
         this.directory = true;
     }
     addDirectory(name) {
@@ -24386,10 +24231,9 @@ class ZipDirectoryEntry extends ZipEntry1 {
             Writer: Uint8ArrayWriter
         });
     }
-    addHttpContent(name, url, options = {
-    }) {
+    addHttpContent(name, url1, options = {}) {
         return addChild(this, name, {
-            data: url,
+            data: url1,
             Reader: class extends HttpReader {
                 constructor(url){
                     super(url, options);
@@ -24403,32 +24247,25 @@ class ZipDirectoryEntry extends ZipEntry1 {
     async addData(name, params) {
         return addChild(this, name, params);
     }
-    async importBlob(blob, options = {
-    }) {
+    async importBlob(blob, options = {}) {
         await this.importZip(new BlobReader(blob), options);
     }
-    async importData64URI(dataURI, options = {
-    }) {
+    async importData64URI(dataURI, options = {}) {
         await this.importZip(new Data64URIReader(dataURI), options);
     }
-    async importUint8Array(array, options = {
-    }) {
+    async importUint8Array(array, options = {}) {
         await this.importZip(new Uint8ArrayReader(array), options);
     }
-    async importHttpContent(url, options = {
-    }) {
+    async importHttpContent(url, options = {}) {
         await this.importZip(new HttpReader(url, options), options);
     }
-    async exportBlob(options = {
-    }) {
+    async exportBlob(options = {}) {
         return this.exportZip(new BlobWriter("application/zip"), options);
     }
-    async exportData64URI(options = {
-    }) {
+    async exportData64URI(options = {}) {
         return this.exportZip(new Data64URIWriter("application/zip"), options);
     }
-    async exportUint8Array(options = {
-    }) {
+    async exportUint8Array(options = {}) {
         return this.exportZip(new Uint8ArrayWriter(), options);
     }
     async importZip(reader, options) {
@@ -24439,15 +24276,14 @@ class ZipDirectoryEntry extends ZipEntry1 {
         const entries = await zipReader.getEntries();
         entries.forEach((entry)=>{
             let parent = this;
-            const path = entry.filename.split("/");
-            const name = path.pop();
-            path.forEach((pathPart)=>parent = parent.getChildByName(pathPart) || new ZipDirectoryEntry(this.fs, pathPart, null, parent)
+            const path62 = entry.filename.split("/");
+            const name = path62.pop();
+            path62.forEach((pathPart)=>parent = parent.getChildByName(pathPart) || new ZipDirectoryEntry(this.fs, pathPart, null, parent)
             );
             if (!entry.directory) {
                 addChild(parent, name, {
                     data: entry,
-                    Reader: getZipBlobReader(Object.assign({
-                    }, options))
+                    Reader: getZipBlobReader(Object.assign({}, options))
                 });
             }
         });
@@ -24484,10 +24320,9 @@ function getTotalSize(entries, propertyName) {
         }
     }
 }
-function getZipBlobReader(options) {
+function getZipBlobReader(options1) {
     return class extends Reader {
-        constructor(entry, options = {
-        }){
+        constructor(entry, options = {}){
             super();
             this.entry = entry;
             this.options = options;
@@ -24495,8 +24330,7 @@ function getZipBlobReader(options) {
         async init() {
             const zipBlobReader = this;
             zipBlobReader.size = zipBlobReader.entry.uncompressedSize;
-            const data = await zipBlobReader.entry.getData(new BlobWriter(), Object.assign({
-            }, zipBlobReader.options, options));
+            const data = await zipBlobReader.entry.getData(new BlobWriter(), Object.assign({}, zipBlobReader.options, options1));
             zipBlobReader.data = data;
             zipBlobReader.blobReader = new BlobReader(data);
         }
@@ -24518,10 +24352,10 @@ async function initReaders(entry) {
         }
     }
 }
-async function exportZip(zipWriter, entry, totalSize, options) {
-    const selectedEntry = entry;
+async function exportZip(zipWriter1, entry1, totalSize, options) {
+    const selectedEntry = entry1;
     const entryOffsets = new Map();
-    await process(zipWriter, entry);
+    await process(zipWriter1, entry1);
     async function process(zipWriter, entry) {
         await exportChild();
         async function exportChild() {
@@ -24537,16 +24371,14 @@ async function exportZip(zipWriter, entry, totalSize, options) {
             const name = options.relativePath ? child.getRelativeName(selectedEntry) : child.getFullname();
             await zipWriter.add(name, child.reader, Object.assign({
                 directory: child.directory
-            }, Object.assign({
-            }, options, {
+            }, Object.assign({}, options, {
                 onprogress: (indexProgress)=>{
                     if (options.onprogress) {
                         entryOffsets.set(name, indexProgress);
                         try {
                             options.onprogress(Array.from(entryOffsets.values()).reduce((previousValue, currentValue)=>previousValue + currentValue
                             ), totalSize);
-                        } catch (error) {
-                        }
+                        } catch (error) {}
                     }
                 }
             })));
@@ -24554,13 +24386,13 @@ async function exportZip(zipWriter, entry, totalSize, options) {
         }
     }
 }
-async function addFileSystemEntry(zipEntry, fileSystemEntry) {
+async function addFileSystemEntry(zipEntry1, fileSystemEntry) {
     if (fileSystemEntry.isDirectory) {
-        const entry = zipEntry.addDirectory(fileSystemEntry.name);
+        const entry = zipEntry1.addDirectory(fileSystemEntry.name);
         await addDirectory(entry, fileSystemEntry);
         return entry;
     } else {
-        return new Promise((resolve, reject)=>fileSystemEntry.file((file)=>resolve(zipEntry.addBlob(fileSystemEntry.name, file))
+        return new Promise((resolve20, reject)=>fileSystemEntry.file((file)=>resolve20(zipEntry1.addBlob(fileSystemEntry.name, file))
             , reject)
         );
     }
@@ -24570,29 +24402,29 @@ async function addFileSystemEntry(zipEntry, fileSystemEntry) {
             if (child.isDirectory) {
                 await addDirectory(zipEntry.addDirectory(child.name), child);
             } else {
-                await new Promise((resolve, reject)=>{
+                await new Promise((resolve21, reject)=>{
                     child.file((file)=>{
                         const childZipEntry = zipEntry.addBlob(child.name, file);
                         childZipEntry.uncompressedSize = file.size;
-                        resolve(childZipEntry);
+                        resolve21(childZipEntry);
                     }, reject);
                 });
             }
         }
     }
     function getChildren(fileEntry) {
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve22, reject)=>{
             let entries = [];
             if (fileEntry.isDirectory) {
                 readEntries(fileEntry.createReader());
             }
             if (fileEntry.isFile) {
-                resolve(entries);
+                resolve22(entries);
             }
             function readEntries(directoryReader) {
                 directoryReader.readEntries((temporaryEntries)=>{
                     if (!temporaryEntries.length) {
-                        resolve(entries);
+                        resolve22(entries);
                     } else {
                         entries = entries.concat(temporaryEntries);
                         readEntries(directoryReader);
@@ -24602,7 +24434,7 @@ async function addFileSystemEntry(zipEntry, fileSystemEntry) {
         });
     }
 }
-async function pipe2(reader, writer) {
+async function pipe(reader, writer) {
     return copyChunk();
     async function copyChunk(chunkIndex = 0) {
         const index = chunkIndex * CHUNK_SIZE;
@@ -24629,44 +24461,43 @@ configure({
     Deflate: ZipDeflate,
     Inflate: ZipInflate
 });
-async function _createWalkEntry(path) {
-    path = normalize3(path);
-    const name = basename2(path);
-    const info = await Deno.stat(path);
+async function _createWalkEntry(path63) {
+    path63 = normalize3(path63);
+    const name = basename2(path63);
+    const info = await Deno.stat(path63);
     return {
-        path,
+        path: path63,
         name,
         isFile: info.isFile,
         isDirectory: info.isDirectory,
         isSymlink: info.isSymlink
     };
 }
-function include(path, exts, match, skip) {
-    if (exts && !exts.some((ext)=>path.endsWith(ext)
+function include(path64, exts, match, skip) {
+    if (exts && !exts.some((ext)=>path64.endsWith(ext)
     )) {
         return false;
     }
-    if (match && !match.some((pattern)=>!!path.match(pattern)
+    if (match && !match.some((pattern)=>!!path64.match(pattern)
     )) {
         return false;
     }
-    if (skip && skip.some((pattern)=>!!path.match(pattern)
+    if (skip && skip.some((pattern)=>!!path64.match(pattern)
     )) {
         return false;
     }
     return true;
 }
-function wrapErrorWithRootPath(err, root) {
-    if (err instanceof Error && "root" in err) return err;
+function wrapErrorWithRootPath(err17, root) {
+    if (err17 instanceof Error && "root" in err17) return err17;
     const e = new Error();
     e.root = root;
-    e.message = err instanceof Error ? `${err.message} for path "${root}"` : `[non-error thrown] for path "${root}"`;
-    e.stack = err instanceof Error ? err.stack : undefined;
-    e.cause = err instanceof Error ? err.cause : undefined;
+    e.message = err17 instanceof Error ? `${err17.message} for path "${root}"` : `[non-error thrown] for path "${root}"`;
+    e.stack = err17 instanceof Error ? err17.stack : undefined;
+    e.cause = err17 instanceof Error ? err17.cause : undefined;
     return e;
 }
-async function* walk(root, { maxDepth =Infinity , includeFiles =true , includeDirs =true , followSymlinks =false , exts =undefined , match =undefined , skip =undefined  } = {
-}) {
+async function* walk(root, { maxDepth =Infinity , includeFiles =true , includeDirs =true , followSymlinks =false , exts =undefined , match =undefined , skip =undefined  } = {}) {
     if (maxDepth < 0) {
         return;
     }
@@ -24679,23 +24510,23 @@ async function* walk(root, { maxDepth =Infinity , includeFiles =true , includeDi
     try {
         for await (const entry of Deno.readDir(root)){
             assert(entry.name != null);
-            let path = join3(root, entry.name);
+            let path65 = join3(root, entry.name);
             if (entry.isSymlink) {
                 if (followSymlinks) {
-                    path = await Deno.realPath(path);
+                    path65 = await Deno.realPath(path65);
                 } else {
                     continue;
                 }
             }
             if (entry.isFile) {
-                if (includeFiles && include(path, exts, match, skip)) {
+                if (includeFiles && include(path65, exts, match, skip)) {
                     yield {
-                        path,
+                        path: path65,
                         ...entry
                     };
                 }
             } else {
-                yield* walk(path, {
+                yield* walk(path65, {
                     maxDepth: maxDepth - 1,
                     includeFiles,
                     includeDirs,
@@ -24706,11 +24537,11 @@ async function* walk(root, { maxDepth =Infinity , includeFiles =true , includeDi
                 });
             }
         }
-    } catch (err) {
-        throw wrapErrorWithRootPath(err, normalize3(root));
+    } catch (err18) {
+        throw wrapErrorWithRootPath(err18, normalize3(root));
     }
 }
-const toFile1 = (outputPath)=>async (stream)=>{
+const toFile = (outputPath)=>async (stream)=>{
         const closeRes = await stream.close();
         await Deno.writeTextFile(outputPath, closeRes.out.join("\n"));
         return closeRes;
@@ -24724,7 +24555,7 @@ const pipe1 = (...operators)=>(shellStream)=>{
         return current;
     }
 ;
-const toIterable1 = ()=>(stream)=>{
+const toIterable = ()=>(stream)=>{
         return (async function*() {
             for await (const line of stream.generator){
                 yield line;
@@ -24754,8 +24585,7 @@ const run2 = (cmdOrStr, opt)=>(stream)=>{
                 for await (const line of readLines(opt?.streamStdErr ? stream.process.stderr : stream.process.stdout)){
                     yield line;
                 }
-            } catch (_e) {
-            }
+            } catch (_e) {}
             if (opt?.throwIfRunFail && !stream.processStatus.success) {
                 throw new Error(`The process ${stream.processCmd[0]} exit error ${stream.processStatus.code}`);
             }
@@ -24777,8 +24607,7 @@ async function redirectGeneratorToStdin(stream) {
     }
     try {
         stream.process.stdin.close();
-    } catch (_e) {
-    }
+    } catch (_e) {}
 }
 function parseCmdString(cmdOrStr) {
     return cmdOrStr instanceof Array ? cmdOrStr : cmdOrStr.trim().match(/"(\\"|[^"])*"|'(\\'|[^'])*'|[^ "']+/g).map((p)=>p.match(/^"((\\"|[^"])*)"$/) ? p.replace(/^"((\\"|[^"])*)"$/, "$1") : p.match(/^'((\\'|[^'])*)'$/) ? p.replace(/^'((\\'|[^'])*)'$/, "$1") : p
@@ -24787,22 +24616,18 @@ function parseCmdString(cmdOrStr) {
 function closeProcess(process) {
     try {
         process.stdin.close();
-    } catch (_e) {
-    }
+    } catch (_e) {}
     try {
         process.stdout.close();
-    } catch (_e1) {
-    }
+    } catch (_e1) {}
     try {
         process.stderr.close();
-    } catch (_e2) {
-    }
+    } catch (_e2) {}
     try {
         process.close();
-    } catch (_e3) {
-    }
+    } catch (_e3) {}
 }
-const close1 = (opt = {
+const close = (opt = {
     processes: "AWAIT"
 })=>async (shellStream)=>{
         const out = [];
@@ -24814,20 +24639,16 @@ const close1 = (opt = {
                 if (stream.process && !stream.processStatus) {
                     try {
                         stream.process.stdin.close();
-                    } catch (_e) {
-                    }
+                    } catch (_e) {}
                     try {
                         stream.process.stdout.close();
-                    } catch (_e1) {
-                    }
+                    } catch (_e1) {}
                     try {
                         stream.processStatus = await stream.process.status();
-                    } catch (_) {
-                    }
+                    } catch (_) {}
                     try {
                         stream.process.close();
-                    } catch (_1) {
-                    }
+                    } catch (_1) {}
                 }
             }
         } else if (opt.processes === "KILL") {
@@ -24836,21 +24657,18 @@ const close1 = (opt = {
                     try {
                         stream.process.kill("SIGINT");
                         stream.process.kill("SIGKILL");
-                    } catch (_e) {
-                    }
+                    } catch (_e) {}
                     stream.processStatus = await stream.process.status();
                     closeProcess(stream.process);
                 }
             }
         }
-        for (const stream of shellStream.parents){
-            for await (const _line of stream.generator){
-            }
-            if (stream.file) {
+        for (const stream1 of shellStream.parents){
+            for await (const _line of stream1.generator){}
+            if (stream1.file) {
                 try {
-                    stream.file.close();
-                } catch (_e) {
-                }
+                    stream1.file.close();
+                } catch (_e) {}
             }
         }
         const statuses = shellStream.parents.map((stream)=>{
@@ -24859,16 +24677,16 @@ const close1 = (opt = {
                 cmd: stream.processCmd
             };
         });
-        const success = !statuses.some((s)=>s && !s.success
+        const success1 = !statuses.some((s)=>s && !s.success
         );
-        return new CloseRes(success, statuses, out);
+        return new CloseRes(success1, statuses, out);
     }
 ;
-const toString1 = ()=>async (shellStream)=>(await close1()(shellStream)).out.join("\n")
+const toString = ()=>async (shellStream)=>(await close()(shellStream)).out.join("\n")
 ;
-const toArray1 = ()=>async (shellStream)=>(await close1()(shellStream)).out
+const toArray = ()=>async (shellStream)=>(await close()(shellStream)).out
 ;
-const success1 = ()=>async (shellStream)=>(await close1()(shellStream)).success
+const success = ()=>async (shellStream)=>(await close()(shellStream)).success
 ;
 class ShellStream {
     parents;
@@ -24883,51 +24701,51 @@ class ShellStream {
     }
     run = (cmd, opt)=>run2(cmd, opt)(this)
     ;
-    toFile = (outputPath)=>toFile1(outputPath)(this)
+    toFile = (outputPath)=>toFile(outputPath)(this)
     ;
-    tee = (outputPath)=>tee1(outputPath)(this)
+    tee = (outputPath)=>tee(outputPath)(this)
     ;
-    log = (transform)=>log1(transform)(this)
+    log = (transform)=>log(transform)(this)
     ;
-    logWithTimestamp = ()=>logWithTimestamp1()(this)
+    logWithTimestamp = ()=>logWithTimestamp()(this)
     ;
-    grep = (regex)=>grep1(regex)(this)
+    grep = (regex)=>grep(regex)(this)
     ;
-    timestamp = ()=>timestamp1()(this)
+    timestamp = ()=>timestamp()(this)
     ;
-    tap = (tapFunction)=>tap1(tapFunction)(this)
+    tap = (tapFunction)=>tap(tapFunction)(this)
     ;
-    replace = (v, r)=>replace1(v, r)(this)
+    replace = (v, r)=>replace(v, r)(this)
     ;
-    map = (mapFunction)=>map1(mapFunction)(this)
+    map = (mapFunction)=>map(mapFunction)(this)
     ;
-    filter = (filterFunction)=>filter1(filterFunction)(this)
+    filter = (filterFunction)=>filter(filterFunction)(this)
     ;
-    cut = (delim, i, sep = " ")=>cut1(delim, i, sep)(this)
+    cut = (delim, i85, sep10 = " ")=>cut(delim, i85, sep10)(this)
     ;
-    head = (count = 1)=>head1(count)(this)
+    head = (count = 1)=>head(count)(this)
     ;
-    tail = (count = 1)=>tail1(count)(this)
+    tail = (count = 1)=>tail(count)(this)
     ;
-    sponge = ()=>sponge1()(this)
+    sponge = ()=>sponge()(this)
     ;
-    sort = ()=>sort1()(this)
+    sort = ()=>sort()(this)
     ;
-    uniq = ()=>uniq1()(this)
+    uniq = ()=>uniq()(this)
     ;
     pipe = (...operators)=>pipe1(...operators)(this)
     ;
     close = async (opt = {
         processes: "AWAIT"
-    })=>await close1(opt)(this)
+    })=>await close(opt)(this)
     ;
-    toString = async ()=>await toString1()(this)
+    toString = async ()=>await toString()(this)
     ;
-    toArray = async ()=>await toArray1()(this)
+    toArray = async ()=>await toArray()(this)
     ;
-    toIterable = ()=>toIterable1()(this)
+    toIterable = ()=>toIterable()(this)
     ;
-    success = async ()=>await success1()(this)
+    success = async ()=>await success()(this)
     ;
     static builder(generator, inputStream) {
         return new ShellStream(inputStream ? [
@@ -24936,23 +24754,22 @@ class ShellStream {
         ] : [], generator);
     }
     static empty() {
-        const emptyGenerator = async function*() {
-        }();
+        const emptyGenerator = async function*() {}();
         return new ShellStream([], emptyGenerator);
     }
-    static from = (iterable)=>from1(iterable)()
+    static from = (iterable)=>from(iterable)()
     ;
-    static fromFile = (path, opt)=>fromFile1(path, opt)()
+    static fromFile = (path66, opt)=>fromFile(path66, opt)()
     ;
-    static fromDir = (path)=>fromDir1(path)()
+    static fromDir = (path67)=>fromDir(path67)()
     ;
-    static fromWalk = (path, opt)=>fromWalk1(path, opt)()
+    static fromWalk = (path68, opt)=>fromWalk(path68, opt)()
     ;
-    static fromArray = (lines)=>fromArray1(lines)()
+    static fromArray = (lines)=>fromArray(lines)()
     ;
-    static fromString = (line)=>fromString1(line)()
+    static fromString = (line)=>fromString(line)()
     ;
-    static fromRun = (cmd, opt)=>fromRun1(cmd, opt)()
+    static fromRun = (cmd, opt)=>fromRun(cmd, opt)()
     ;
     static pipe = (...op)=>pipe1(...op)(ShellStream.empty())
     ;
@@ -24982,18 +24799,7 @@ class ShellStream {
         ShellStream.sendProcessEvent();
     }
 }
-const fromArray1 = (lines)=>()=>{
-        const generator = async function*() {
-            for await (const line of lines){
-                yield line;
-            }
-        }();
-        return ShellStream.builder(generator);
-    }
-;
-const fromString1 = (line)=>fromArray1(line.split("\n"))
-;
-const tap1 = (tapFunction)=>(shellStream)=>{
+const tap = (tapFunction)=>(shellStream)=>{
         const generator = async function*() {
             for await (const line of shellStream.generator){
                 tapFunction(line);
@@ -25003,10 +24809,10 @@ const tap1 = (tapFunction)=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const log1 = (transform)=>(shellStream)=>tap1((line)=>transform ? console.log(transform(line)) : console.log(line)
+const log = (transform)=>(shellStream)=>tap((line)=>transform ? console.log(transform(line)) : console.log(line)
         )(shellStream)
 ;
-const filter1 = (filterFunction)=>(shellStream)=>{
+const filter = (filterFunction)=>(shellStream)=>{
         const generator = async function*() {
             for await (const line of shellStream.generator){
                 if (filterFunction(line)) {
@@ -25017,10 +24823,10 @@ const filter1 = (filterFunction)=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const grep1 = (regex)=>(shellStream)=>filter1((line)=>regex.test(line)
+const grep = (regex)=>(shellStream)=>filter((line)=>regex.test(line)
         )(shellStream)
 ;
-const timestamp1 = ()=>(shellStream)=>{
+const timestamp = ()=>(shellStream)=>{
         const inputGenerator = async function*() {
             for await (const line of shellStream.generator){
                 const ts = new Date().toISOString();
@@ -25030,7 +24836,7 @@ const timestamp1 = ()=>(shellStream)=>{
         return ShellStream.builder(inputGenerator, shellStream);
     }
 ;
-const map1 = (mapFunction)=>(shellStream)=>{
+const map = (mapFunction)=>(shellStream)=>{
         const generator = async function*() {
             for await (const line of shellStream.generator){
                 yield mapFunction(line);
@@ -25039,8 +24845,8 @@ const map1 = (mapFunction)=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const replace1 = (searchValue, replacer)=>(shellStream)=>{
-        return map1((line)=>{
+const replace = (searchValue, replacer)=>(shellStream)=>{
+        return map((line)=>{
             if (typeof replacer === "string") {
                 return line.replace(searchValue, replacer);
             } else {
@@ -25049,7 +24855,13 @@ const replace1 = (searchValue, replacer)=>(shellStream)=>{
         })(shellStream);
     }
 ;
-const tee1 = (outputPath)=>(stream)=>{
+const cut = (delim, indexes, sep11 = " ")=>(shellStream)=>map((line)=>{
+            const parts = line.split(delim);
+            return indexes.map((i86)=>parts[i86]
+            ).join(sep11);
+        })(shellStream)
+;
+const tee = (outputPath)=>(stream)=>{
         const generator = async function*() {
             stream.file = await Deno.open(outputPath, {
                 write: true,
@@ -25071,7 +24883,7 @@ const tee1 = (outputPath)=>(stream)=>{
         return ShellStream.builder(generator, stream);
     }
 ;
-const from1 = (iterable)=>()=>{
+const from = (iterable)=>()=>{
         const generator = async function*() {
             for await (const str of iterable){
                 yield str;
@@ -25080,15 +24892,15 @@ const from1 = (iterable)=>()=>{
         return ShellStream.builder(generator);
     }
 ;
-const fromFile1 = (path, opt)=>()=>{
+const fromFile = (path69, opt)=>()=>{
         const generator = async function*() {
             if (opt?.closeBeforeStreaming) {
-                const fileContent = await Deno.readTextFile(path);
+                const fileContent = await Deno.readTextFile(path69);
                 for await (const line of fileContent.split("\n")){
                     yield line;
                 }
             } else {
-                const file = await Deno.open(path);
+                const file = await Deno.open(path69);
                 for await (const line of readLines(file)){
                     yield line;
                 }
@@ -25098,9 +24910,20 @@ const fromFile1 = (path, opt)=>()=>{
         return ShellStream.builder(generator);
     }
 ;
-const fromRun1 = (cmd, opt)=>()=>run2(cmd, opt)(ShellStream.empty())
+const fromArray = (lines)=>()=>{
+        const generator = async function*() {
+            for await (const line of lines){
+                yield line;
+            }
+        }();
+        return ShellStream.builder(generator);
+    }
 ;
-const tail1 = (count = 1)=>(shellStream)=>{
+const fromRun = (cmd, opt)=>()=>run2(cmd, opt)(ShellStream.empty())
+;
+const fromString = (line)=>fromArray(line.split("\n"))
+;
+const tail = (count = 1)=>(shellStream)=>{
         const generator = async function*() {
             const buffer = [];
             for await (const line of shellStream.generator){
@@ -25116,13 +24939,13 @@ const tail1 = (count = 1)=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const head1 = (count = 1)=>(shellStream)=>{
+const head = (count = 1)=>(shellStream)=>{
         const generator = async function*() {
-            let i = 0;
+            let i87 = 0;
             for await (const line of shellStream.generator){
                 yield line;
-                i++;
-                if (i >= count) {
+                i87++;
+                if (i87 >= count) {
                     break;
                 }
             }
@@ -25130,7 +24953,11 @@ const head1 = (count = 1)=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const sponge1 = ()=>(shellStream)=>{
+const logWithTimestamp = ()=>(shellStream)=>tap((line)=>{
+            console.log(`${new Date().toISOString()} ${line}`);
+        })(shellStream)
+;
+const sponge = ()=>(shellStream)=>{
         const generator = async function*() {
             const out = [];
             for await (const line of shellStream.generator){
@@ -25143,25 +24970,25 @@ const sponge1 = ()=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const fromDir1 = (path)=>()=>{
+const fromDir = (path70)=>()=>{
         const generator = async function*() {
-            for await (const dirEntry of Deno.readDir(path)){
+            for await (const dirEntry of Deno.readDir(path70)){
                 yield dirEntry.name;
             }
         }();
         return ShellStream.builder(generator);
     }
 ;
-const fromWalk1 = (path, opt)=>()=>{
+const fromWalk = (path71, opt)=>()=>{
         const generator = async function*() {
-            for await (const dirEntry of walk(path, opt)){
+            for await (const dirEntry of walk(path71, opt)){
                 yield dirEntry.path;
             }
         }();
         return ShellStream.builder(generator);
     }
 ;
-const sort1 = ()=>(shellStream)=>{
+const sort = ()=>(shellStream)=>{
         const generator = async function*() {
             const out = [];
             for await (const line of shellStream.generator){
@@ -25174,7 +25001,7 @@ const sort1 = ()=>(shellStream)=>{
         return ShellStream.builder(generator, shellStream);
     }
 ;
-const uniq1 = ()=>(shellStream)=>{
+const uniq = ()=>(shellStream)=>{
         const generator = async function*() {
             let lastEmit;
             for await (const line of shellStream.generator){
@@ -25186,16 +25013,6 @@ const uniq1 = ()=>(shellStream)=>{
         }();
         return ShellStream.builder(generator, shellStream);
     }
-;
-const cut1 = (delim, indexes, sep = " ")=>(shellStream)=>map1((line)=>{
-            const parts = line.split(delim);
-            return indexes.map((i)=>parts[i]
-            ).join(sep);
-        })(shellStream)
-;
-const logWithTimestamp1 = ()=>(shellStream)=>tap1((line)=>{
-            console.log(`${new Date().toISOString()} ${line}`);
-        })(shellStream)
 ;
 ShellStream.pipe;
 ShellStream.from;
@@ -25209,8 +25026,8 @@ class CloseRes {
     success;
     statuses;
     out;
-    constructor(success, statuses, out){
-        this.success = success;
+    constructor(success2, statuses, out){
+        this.success = success2;
         this.statuses = statuses;
         this.out = out;
     }
@@ -25221,12 +25038,14 @@ class CloseRes {
 const en = {
     partQuestion: "Choose your part",
     partTitle: "Part",
-    storyQuestion: "Choose your story"
+    storyQuestion: "Choose your story",
+    NightModeTransition: "Want to listen to a new story?"
 };
 const fr = {
     partQuestion: "Choisis ta partie",
     partTitle: "Partie",
-    storyQuestion: "Choisis ton histoire"
+    storyQuestion: "Choisis ton histoire",
+    NightModeTransition: "Tu veux écouter une nouvelle histoire ?"
 };
 async function initI18n(lng) {
     await __default2.init({
@@ -25266,20 +25085,20 @@ async function getLang() {
     }
     return lang || "en-US";
 }
-async function ls(path) {
+async function ls(path72) {
     const entries = [];
-    for await (const entry of Deno.readDir(path)){
+    for await (const entry of Deno.readDir(path72)){
         entries.push(entry);
     }
     return entries.sort((e1, e2)=>e1.name.localeCompare(e2.name)
     );
 }
-async function fsToFolder(path, genSha1 = true) {
+async function fsToFolder(path73, genSha1 = true) {
     const folder = {
-        name: basename2(path),
+        name: basename2(path73),
         files: []
     };
-    const entries = await ls(path);
+    const entries = await ls(path73);
     const lang = (await getLang()).substring(0, 2);
     entries.sort((a, b)=>a.name.localeCompare(b.name, lang, {
             numeric: true
@@ -25287,19 +25106,19 @@ async function fsToFolder(path, genSha1 = true) {
     );
     for (const entry of entries){
         if (entry.isDirectory) {
-            folder.files.push(await fsToFolder(join3(path, entry.name), genSha1));
+            folder.files.push(await fsToFolder(join3(path73, entry.name), genSha1));
         } else {
             folder.files.push({
                 name: entry.name,
-                sha1: genSha1 ? await getSha1(join3(path, entry.name)) : ""
+                sha1: genSha1 ? await getSha1(join3(path73, entry.name)) : ""
             });
         }
     }
     return folder;
 }
-async function getSha1(path) {
+async function getSha1(path74) {
     const sha1Hash = createHash("sha1");
-    const data = await Deno.readFile(path);
+    const data = await Deno.readFile(path74);
     sha1Hash.update(data);
     return sha1Hash.toString();
 }
@@ -25322,11 +25141,11 @@ async function checkCommand(cmd, exitCodeExpected) {
 }
 function getInstallDir() {
     if (basename2(Deno.execPath()).match(/^deno/i)) {
-        const fromFileUrl = Deno.build.os === "windows" ? mod.fromFileUrl : mod1.fromFileUrl;
+        const fromFileUrl6 = Deno.build.os === "windows" ? mod.fromFileUrl : mod1.fromFileUrl;
         if (Deno.mainModule.match(/^http/)) {
             return ".";
         } else {
-            return dirname2(fromFileUrl(Deno.mainModule));
+            return dirname2(fromFileUrl6(Deno.mainModule));
         }
     } else {
         return dirname2(Deno.execPath());
@@ -25456,6 +25275,7 @@ or install ImageMagick : sudo apt install -y imagemagick
 }
 const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
+const nightModeAudioItemRegEx = /^0-night-mode\.(ogg|opus|wav|mp3)$/i;
 const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
 const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3)$/i;
 const fileImageItemRegEx = /\.item\.(png|jpg|jpeg|bmp)$/i;
@@ -25480,6 +25300,15 @@ function getExtension(name) {
 }
 function getFolderAudioItem(folder) {
     const file = folder.files.find((f)=>folderAudioItemRegEx.test(f.name)
+    );
+    if (file) {
+        return `${file.sha1}.${getExtension(file.name)}`;
+    } else {
+        return null;
+    }
+}
+function getNightModeAudioItem(folder) {
+    const file = folder.files.find((f)=>nightModeAudioItemRegEx.test(f.name)
     );
     if (file) {
         return `${file.sha1}.${getExtension(file.name)}`;
@@ -25534,14 +25363,14 @@ function firstStoryFile(folder) {
         )
     );
 }
-function convertPath(path) {
-    return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
+function convertPath(path75) {
+    return Deno.build.os === "windows" ? convWindowsWslPath(path75) : path75;
 }
-function convWindowsWslPath(path, cwd) {
-    const groups = /^[a-z]:/i.test(path) ? /(^.)(.*)$/.exec(path) : /(^.)(.*)$/.exec((cwd || Deno.cwd()) + "/" + path);
+function convWindowsWslPath(path76, cwd5) {
+    const groups = /^[a-z]:/i.test(path76) ? /(^.)(.*)$/.exec(path76) : /(^.)(.*)$/.exec((cwd5 || Deno.cwd()) + "/" + path76);
     return "/mnt/" + groups?.[1].toLowerCase() + groups?.[2].replace(/\\/g, "/").replace(/:/g, "");
 }
-function uniq2(items) {
+function uniq1(items) {
     return [
         ...new Set(items)
     ];
@@ -25700,6 +25529,9 @@ async function genMissingItems(rootpath, folder, genImage, genAudio, lang) {
         if (genAudio && !getFolderAudioItem(folder)) {
             await generateAudio(getTitle(folder.name), `${rootpath}/0-item.wav`, lang);
         }
+        if (genAudio && !getNightModeAudioItem(folder)) {
+            await generateAudio(__default2.t("NightModeTransition"), `${rootpath}/0-night-mode.wav`, lang);
+        }
         for (const file of folder.files){
             if (isFolder(file)) {
                 await genMissingItems(join3(rootpath, file.name), file, genImage, genAudio, lang);
@@ -25714,11 +25546,11 @@ async function genMissingItems(rootpath, folder, genImage, genAudio, lang) {
         }
     }
 }
-async function convertAudioOfFolder(rootpath, folder) {
+async function convertAudioOfFolder(rootpath, folder, addDelay) {
     await checkRunPermission();
     for (const file of folder.files){
         if (isFolder(file)) {
-            await convertAudioOfFolder(join3(rootpath, file.name), file);
+            await convertAudioOfFolder(join3(rootpath, file.name), file, addDelay);
         } else {
             if (isStory(file) || isAudioItem(file)) {
                 const inputPath = join3(rootpath, file.name);
@@ -25726,7 +25558,7 @@ async function convertAudioOfFolder(rootpath, folder) {
                 const skipPath = `${outPath}__skip-convert`;
                 if (!await exists(skipPath)) {
                     const maxDb = await getMaxVolumeOfFile(inputPath);
-                    if (maxDb >= 1 || !await checkAudioFormat(inputPath)) {
+                    if (addDelay || maxDb >= 1 || !await checkAudioFormat(inputPath)) {
                         await Deno.copyFile(inputPath, `${inputPath}.bak`);
                         const tmpPath = await Deno.makeTempFile({
                             dir: rootpath,
@@ -25734,7 +25566,7 @@ async function convertAudioOfFolder(rootpath, folder) {
                         });
                         await Deno.copyFile(inputPath, tmpPath);
                         await Deno.remove(inputPath);
-                        await convertAudioFile(tmpPath, maxDb, outPath);
+                        await convertAudioFile(tmpPath, maxDb, outPath, addDelay);
                         await Deno.remove(tmpPath);
                     } else {
                         console.log(bgGreen("→ skip db<1"));
@@ -25745,7 +25577,7 @@ async function convertAudioOfFolder(rootpath, folder) {
         }
     }
 }
-async function convertAudioFile(inputPath, maxDb, outputPath) {
+async function convertAudioFile(inputPath, maxDb, outputPath, addDelay) {
     console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
     const process = await Deno.run({
         cmd: [
@@ -25753,7 +25585,7 @@ async function convertAudioFile(inputPath, maxDb, outputPath) {
             "-i",
             inputPath,
             "-af",
-            `volume=${maxDb}dB,dynaudnorm`,
+            `volume=${maxDb}dB,dynaudnorm${addDelay ? ",adelay=1s,apad=pad_dur=1s" : ""}`,
             "-ac",
             "1",
             "-ar",
@@ -25844,7 +25676,7 @@ async function getFfmpegInfo(filePath) {
     console.log(bgGreen("info=" + info));
     return info;
 }
-function folderToPack(folder) {
+function folderToPack(folder, nightMode = false) {
     const firstSubFolder = folder.files.find((f)=>isFolder(f)
     );
     return {
@@ -25852,7 +25684,7 @@ function folderToPack(folder) {
         description: "",
         format: "v1",
         version: 1,
-        nightModeAvailable: false,
+        nightModeAvailable: nightMode,
         entrypoint: {
             class: "StageNode-Entrypoint",
             name: "Cover node",
@@ -25868,7 +25700,7 @@ function folderToPack(folder) {
         }
     };
 }
-function folderToMenu(folder, path) {
+function folderToMenu(folder, path77) {
     return {
         class: "StageNode-Menu",
         image: getFolderImageItem(folder),
@@ -25877,16 +25709,16 @@ function folderToMenu(folder, path) {
         okTransition: {
             class: "ActionNode",
             name: folder.name + " ActionNode",
-            options: folder.files.map((f)=>isFolder(f) ? folderToMenu(f, path + "/" + f.name) : isStory(f) ? fileToStoryItem(f, folder) : isZipFile(f) ? fileToZipMenu(`${path}/${folder.name}/${f.name}`) : null
+            options: folder.files.map((f)=>isFolder(f) ? folderToMenu(f, path77 + "/" + f.name) : isStory(f) ? fileToStoryItem(f, folder) : isZipFile(f) ? fileToZipMenu(`${path77}/${folder.name}/${f.name}`) : null
             ).filter((f)=>f
             )
         }
     };
 }
-function fileToZipMenu(path) {
+function fileToZipMenu(path78) {
     return {
         class: "ZipMenu",
-        path: path
+        path: path78
     };
 }
 function fileToStoryItem(file, parent) {
@@ -25929,17 +25761,62 @@ async function serializePack(pack, storyPath, opt) {
         actionNodes: [],
         stageNodes: []
     };
-    const groups = {
-    };
-    await exploreStageNode(pack.entrypoint, serialized, undefined, [], [], groups, storyPath);
+    const nightActionId = pack.nightModeAvailable ? crypto.randomUUID() : "";
+    const groups = {};
+    await exploreStageNode(pack.entrypoint, serialized, undefined, [], [], groups, storyPath, nightActionId);
+    const firstActionId = serialized.stageNodes.find((s)=>s.squareOne
+    )?.okTransition?.actionNode || "";
     serialized.actionNodes = serialized.actionNodes.reverse();
     serialized.stageNodes = serialized.stageNodes.reverse();
+    if (nightActionId) {
+        const nightStageNodeId = crypto.randomUUID();
+        const nightAction = {
+            id: nightActionId,
+            name: "nightAction",
+            options: [
+                nightStageNodeId
+            ],
+            position: {
+                x: 0,
+                y: 0
+            }
+        };
+        serialized.actionNodes.push(nightAction);
+        const nightStage = {
+            image: null,
+            audio: opt?.nightModeAudioItemName || null,
+            controlSettings: {
+                autoplay: true,
+                home: true,
+                ok: true,
+                pause: false,
+                wheel: false
+            },
+            name: "nightStage",
+            type: "stage",
+            uuid: nightStageNodeId,
+            homeTransition: {
+                actionNode: firstActionId,
+                optionIndex: 0
+            },
+            okTransition: {
+                actionNode: firstActionId,
+                optionIndex: 0
+            },
+            position: {
+                x: 0,
+                y: 0
+            },
+            squareOne: false
+        };
+        serialized.stageNodes.push(nightStage);
+    }
     if (opt?.autoNextStoryTransition) {
         for (const menuId of Object.keys(groups)){
             const group = groups[menuId];
-            for(let i = 1; i < group.length; i++){
-                const stageId = group[i - 1].stage;
-                const actionId = group[i].action;
+            for(let i88 = 1; i88 < group.length; i88++){
+                const stageId = group[i88 - 1].stage;
+                const actionId = group[i88].action;
                 const stage = serialized.stageNodes.find((e)=>e.uuid === stageId
                 );
                 if (stage) {
@@ -25989,7 +25866,7 @@ function getControlSettings(stageNode, parent) {
             };
     }
 }
-async function exploreStageNode(stageNode, serialized, parent, actionHistory, parentIDs, groups, storyPath) {
+async function exploreStageNode(stageNode, serialized, parent, actionHistory, parentIDs, groups, storyPath, nightActionId) {
     const uuid = crypto.randomUUID();
     if (stageNode.class === "StageNode-Story") {
         const menu = parentIDs[parentIDs.length - 3];
@@ -26014,7 +25891,7 @@ async function exploreStageNode(stageNode, serialized, parent, actionHistory, pa
             actionNode: await exploreActionNode(stageNode.okTransition, serialized, actionHistory, [
                 ...parentIDs,
                 uuid
-            ], groups, storyPath),
+            ], groups, storyPath, nightActionId),
             optionIndex: 0
         } : null,
         position: {
@@ -26026,10 +25903,17 @@ async function exploreStageNode(stageNode, serialized, parent, actionHistory, pa
         uuid
     };
     if (serializedStageNode.okTransition === null && stageNode.class === "StageNode-Story" && actionHistory.length > 1) {
-        serializedStageNode.okTransition = {
-            actionNode: actionHistory[actionHistory.length - 2].id,
-            optionIndex: actionHistory[actionHistory.length - 2].optionIndex
-        };
+        if (nightActionId) {
+            serializedStageNode.okTransition = {
+                actionNode: nightActionId,
+                optionIndex: 0
+            };
+        } else {
+            serializedStageNode.okTransition = {
+                actionNode: actionHistory[actionHistory.length - 2].id,
+                optionIndex: actionHistory[actionHistory.length - 2].optionIndex
+            };
+        }
         serializedStageNode.controlSettings.autoplay = true;
     }
     serialized.stageNodes.push(serializedStageNode);
@@ -26066,8 +25950,7 @@ async function exploreZipMenu(zipMenu, serialized, actionHistory, storyPath) {
         optionIndex: actionHistory[actionHistory.length - 2].optionIndex
     } : null;
     if (!entrypoint.controlSettings) {
-        entrypoint.controlSettings = {
-        };
+        entrypoint.controlSettings = {};
     }
     entrypoint.controlSettings.home = true;
     const entrypointActionNodeUuid = entrypoint.okTransition.actionNode;
@@ -26077,10 +25960,8 @@ async function exploreZipMenu(zipMenu, serialized, actionHistory, storyPath) {
         for (const option of entrypointActionNode.options){
             const stage = story.stageNodes.find((s)=>s.uuid === option
             );
-            console.log(stage);
             if (!stage.controlSettings) {
-                stage.controlSettings = {
-                };
+                stage.controlSettings = {};
             }
             stage.controlSettings.homeTransition = true;
             stage.homeTransition = {
@@ -26093,7 +25974,7 @@ async function exploreZipMenu(zipMenu, serialized, actionHistory, storyPath) {
     serialized.stageNodes.push(...story.stageNodes);
     return entrypoint.uuid;
 }
-async function exploreActionNode(actionNode, serialized, actionHistory, parentIDs, groups, storyPath) {
+async function exploreActionNode(actionNode, serialized, actionHistory, parentIDs, groups, storyPath, nightActionId) {
     const id = crypto.randomUUID();
     const options = [];
     for (const stageNode of actionNode.options){
@@ -26111,7 +25992,7 @@ async function exploreActionNode(actionNode, serialized, actionHistory, parentID
                 options.push(await exploreStageNode(stageNode, serialized, actionNode, histo, [
                     ...parentIDs,
                     id
-                ], groups, storyPath));
+                ], groups, storyPath, nightActionId));
             }
         }
     }
@@ -26137,23 +26018,22 @@ function getAssetsSha1s(serializedPack) {
     ).map((sha)=>sha
     ).map(getNameWithoutExt).sort();
 }
-function getSha1sMap(folder, path = "", map = {
-}) {
+function getSha1sMap(folder, path79 = "", map1 = {}) {
     folder.files.forEach((f)=>{
         if (isFile(f)) {
-            map[f.sha1] = join3(path, f.name);
+            map1[f.sha1] = join3(path79, f.name);
         } else {
-            getSha1sMap(f, join3(path, f.name), map);
+            getSha1sMap(f, join3(path79, f.name), map1);
         }
     });
-    return map;
+    return map1;
 }
 function getAssetsPaths(serializedPack, folder) {
-    const sha1s = uniq2(getAssetsSha1s(serializedPack));
-    const map = getSha1sMap(folder);
+    const sha1s = uniq1(getAssetsSha1s(serializedPack));
+    const map2 = getSha1sMap(folder);
     return sha1s.map((sha1)=>({
             sha1,
-            path: map[sha1]
+            path: map2[sha1]
         })
     );
 }
@@ -26179,14 +26059,14 @@ async function createPackZip(zipPath, storyPath, serializedPack, assets) {
                 useWebWorkers: false
             });
             const entries = await zipReader.getEntries();
-            for (const entry of entries.filter((entry)=>entry.filename.startsWith("assets/")
+            for (const entry1 of entries.filter((entry)=>entry.filename.startsWith("assets/")
             )){
-                if (!fileInZip.find((f)=>f === entry.filename
+                if (!fileInZip.find((f)=>f === entry1.filename
                 )) {
-                    const blob = await entry.getData(new BlobWriter());
-                    console.log(`add to zip : ${entry.filename}`);
-                    fileInZip.push(entry.filename);
-                    await zipWriter.add(entry.filename, new BlobReader(blob));
+                    const blob = await entry1.getData(new BlobWriter());
+                    console.log(`add to zip : ${entry1.filename}`);
+                    fileInZip.push(entry1.filename);
+                    await zipWriter.add(entry1.filename, new BlobReader(blob));
                 }
             }
             await zipReader.close();
@@ -26196,13 +26076,13 @@ async function createPackZip(zipPath, storyPath, serializedPack, assets) {
     await zipWriter.add("story.json", new BlobReader(new Blob([
         JSON.stringify(serializedPack, null, "  ")
     ])));
-    for (const asset of assets.filter((asset)=>asset.path
+    for (const asset1 of assets.filter((asset)=>asset.path
     )){
-        console.log(`add asset ${asset.path}`);
-        if (!fileInZip.find((f)=>f === `assets/${asset.sha1}.${getExtension(asset.path)}`
+        console.log(`add asset ${asset1.path}`);
+        if (!fileInZip.find((f)=>f === `assets/${asset1.sha1}.${getExtension(asset1.path)}`
         )) {
-            await zipWriter.add(`assets/${asset.sha1}.${getExtension(asset.path)}`, new BlobReader(new Blob([
-                await Deno.readFile(`${storyPath}/${asset.path}`)
+            await zipWriter.add(`assets/${asset1.sha1}.${getExtension(asset1.path)}`, new BlobReader(new Blob([
+                await Deno.readFile(`${storyPath}/${asset1.path}`)
             ])));
         }
     }
@@ -26255,8 +26135,8 @@ function getFolderOfStories(items) {
 function getFolderParts(items) {
     const partCount = Math.ceil(items.length / 10);
     const parts = [];
-    for(let i = 0; i < partCount; i++){
-        const partSize = Math.floor(items.length / (partCount - i));
+    for(let i89 = 0; i89 < partCount; i89++){
+        const partSize = Math.floor(items.length / (partCount - i89));
         const part = [];
         part.push(...items.splice(0, partSize));
         parts.push(part);
@@ -26273,12 +26153,12 @@ function getFolderParts(items) {
     };
 }
 async function writeFolderWithUrl(folder, parentPath) {
-    const path = join3(parentPath, folder.name);
-    await Deno.mkdir(path, {
+    const path80 = join3(parentPath, folder.name);
+    await Deno.mkdir(path80, {
         recursive: true
     });
     for (const file of folder.files){
-        isFolder(file) ? await writeFolderWithUrl(file, path) : await writeFileWithUrl(file, path);
+        isFolder(file) ? await writeFolderWithUrl(file, path80) : await writeFileWithUrl(file, path80);
     }
 }
 async function writeFileWithUrl(fileWithUrl, parentPath) {
@@ -26346,16 +26226,18 @@ async function generatePack(opt) {
             folder = await fsToFolder(opt.storyPath, false);
         }
         if (!opt.skipAudioConvert) {
-            await convertAudioOfFolder(opt.storyPath, folder);
+            await convertAudioOfFolder(opt.storyPath, folder, !!opt.addDelay);
         }
         if (!opt.skipImageItemGen) {
             await genThumbnail(folder, opt.storyPath);
         }
         if (!opt.skipZipGeneration) {
             folder = await fsToFolder(opt.storyPath, true);
-            const pack = folderToPack(folder);
+            const pack = folderToPack(folder, !!opt.nightMode);
+            const nightModeAudioItemName = getNightModeAudioItem(folder);
             const serializedPack = await serializePack(pack, opt.storyPath, {
-                autoNextStoryTransition: opt.autoNextStoryTransition
+                autoNextStoryTransition: opt.autoNextStoryTransition,
+                nightModeAudioItemName
             });
             const assets = getAssetsPaths(serializedPack, folder);
             const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
@@ -26420,6 +26302,18 @@ async function parseArgs(args) {
         boolean: true,
         default: false,
         describe: "go to next story of group at end of stories"
+    }).option("add-delay", {
+        alias: "d",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "add 1 second at the beginning and the end of audio files"
+    }).option("night-mode", {
+        alias: "t",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "enable night mode : add transitions to an uniq endpoint"
     }).version(false).demandCommand(1).parse();
 }
 const importMeta2 = {
