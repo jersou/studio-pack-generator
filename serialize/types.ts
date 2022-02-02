@@ -12,7 +12,7 @@ export type Pack = {
   description: "";
   format: "v1";
   version: 1;
-  nightModeAvailable: false;
+  nightModeAvailable: boolean;
   entrypoint: Entrypoint;
 };
 
@@ -84,7 +84,7 @@ export type SerializedPack = {
   description: "";
   format: "v1";
   version: 1;
-  nightModeAvailable: false;
+  nightModeAvailable: boolean;
   actionNodes: ActionNode[];
   stageNodes: StageNode[];
   zipPaths?: string[];

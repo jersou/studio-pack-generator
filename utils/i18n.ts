@@ -4,11 +4,13 @@ const en = {
   partQuestion: "Choose your part",
   partTitle: "Part",
   storyQuestion: "Choose your story",
+  NightModeTransition: "Want to listen to a new story?",
 };
 const fr = {
   partQuestion: "Choisis ta partie",
   partTitle: "Partie",
   storyQuestion: "Choisis ton histoire",
+  NightModeTransition: "Tu veux écouter une nouvelle histoire ?",
 };
 
 export async function initI18n(lng: string) {

@@ -20,14 +20,14 @@ import {
   isZipFile,
 } from "../utils/utils.ts";
 
-export function folderToPack(folder: Folder): Pack {
+export function folderToPack(folder: Folder, nightMode = false): Pack {
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
   return {
     title: folder!.name,
     description: "",
     format: "v1",
     version: 1,
-    nightModeAvailable: false,
+    nightModeAvailable: nightMode,
     entrypoint: {
       class: "StageNode-Entrypoint",
       name: "Cover node",

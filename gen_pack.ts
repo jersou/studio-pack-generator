@@ -13,6 +13,7 @@ import {
   checkRunPermission,
   convertToImageItem,
   folderImageItemRegEx,
+  getNightModeAudioItem,
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 
@@ -27,6 +28,7 @@ export type ModOptions = {
   skipNotRss?: boolean;
   autoNextStoryTransition?: boolean;
   addDelay?: boolean;
+  nightMode?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -76,9 +78,11 @@ export async function generatePack(opt: ModOptions) {
     }
     if (!opt.skipZipGeneration) {
       folder = await fsToFolder(opt.storyPath, true);
-      const pack = folderToPack(folder);
+      const pack = folderToPack(folder, !!opt.nightMode);
+      const nightModeAudioItemName = getNightModeAudioItem(folder);
       const serializedPack = await serializePack(pack, opt.storyPath, {
         autoNextStoryTransition: opt.autoNextStoryTransition,
+        nightModeAudioItemName,
       });
       const assets = getAssetsPaths(serializedPack, folder);
       const zipPath = `${opt.storyPath}-${Date.now()}.zip`;

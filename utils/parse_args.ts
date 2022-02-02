@@ -90,6 +90,13 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "add 1 second at the beginning and the end of audio files",
     })
+    .option("night-mode", {
+      alias: "t",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "enable night mode : add transitions to an uniq endpoint",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

@@ -4,6 +4,7 @@ import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
+export const nightModeAudioItemRegEx = /^0-night-mode\.(ogg|opus|wav|mp3)$/i;
 export const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
 export const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3)$/i;
 export const fileImageItemRegEx = /\.item\.(png|jpg|jpeg|bmp)$/i;
@@ -34,6 +35,17 @@ export function getExtension(name: string): string {
 export function getFolderAudioItem(folder: Folder) {
   const file = folder.files.find((f) =>
     folderAudioItemRegEx.test(f.name)
+  ) as File;
+  if (file) {
+    return `${file.sha1}.${getExtension(file.name)}`;
+  } else {
+    return null;
+  }
+}
+
+export function getNightModeAudioItem(folder: Folder) {
+  const file = folder.files.find((f) =>
+    nightModeAudioItemRegEx.test(f.name)
   ) as File;
   if (file) {
     return `${file.sha1}.${getExtension(file.name)}`;

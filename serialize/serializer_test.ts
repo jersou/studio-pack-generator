@@ -1,6 +1,7 @@
 import { assertEquals } from "../test_deps.ts";
 import {
   expectedFullPack,
+  expectedFullPackNightSerialized,
   expectedFullPackSerialized,
   expectedMinPack,
   expectedMinPackSerialized,
@@ -75,5 +76,15 @@ Deno.test("serializePack-full", async () => {
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedFullPackSerialized)),
+  );
+});
+
+Deno.test("serializePack-full-night-mode", async () => {
+  const expectedFullPackNight = expectedFullPack;
+  expectedFullPackNight.nightModeAvailable = true;
+  const pack = await serializePack(expectedFullPackNight, "");
+  assertEquals(
+    clearIds(clone(pack)),
+    clearIds(clone(expectedFullPackNightSerialized)),
   );
 });

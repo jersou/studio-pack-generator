@@ -6,12 +6,13 @@ import {
   getFolderAudioItem,
   getFolderImageItem,
   getNameWithoutExt,
+  getNightModeAudioItem,
   isFolder,
   isStory,
 } from "../utils/utils.ts";
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
-import { join } from "../deps.ts";
+import { i18next, join } from "../deps.ts";
 
 function getTitle(name: string): string {
   if (/^[0-9]* *-? *$/.test(name)) {
@@ -37,6 +38,13 @@ export async function genMissingItems(
       await generateAudio(
         getTitle(folder.name),
         `${rootpath}/0-item.wav`,
+        lang,
+      );
+    }
+    if (genAudio && !getNightModeAudioItem(folder)) {
+      await generateAudio(
+        i18next.t("NightModeTransition"),
+        `${rootpath}/0-night-mode.wav`,
         lang,
       );
     }

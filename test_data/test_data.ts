@@ -1370,6 +1370,525 @@ export const expectedFullPackSerialized: SerializedPack = {
   ],
 };
 
+export const expectedFullPackNightSerialized = {
+  title: "2-full",
+  version: 1,
+  description: "",
+  format: "v1",
+  nightModeAvailable: true,
+  actionNodes: [
+    {
+      id: "41bb0e8b-5cda-45c7-883a-193e3570e7db",
+      name: "Action node",
+      options: ["3dedf0da-184f-47ff-9d1a-08c33b510d04"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "f13a6d12-f14c-417c-a1b9-0d472a81f71f",
+      name: "Choose a character ActionNode",
+      options: [
+        "d30ffb97-937c-40e4-87cb-52bb165a6f2c",
+        "f45fedec-1bd0-4079-b30f-9ba4dcb53251",
+      ],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "ee081709-807e-411f-b849-3564deeec2c1",
+      name: "Bob ActionNode",
+      options: ["43675af0-4a46-43fd-b499-7b0f50d245ae"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "2ce22c3f-ddc9-4e6f-93d8-09aa7f1c6bda",
+      name: "Choose a place ActionNode",
+      options: [
+        "f8833e95-2723-472c-ae09-37ae39ddfc40",
+        "cfd5a4a4-096c-435b-9d76-f8df327448d2",
+      ],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "ea493af6-e355-4c9b-ad47-f2e905740495",
+      name: "jungle.ogg ActionNode",
+      options: ["66a9993c-5b76-47e6-9145-1b41bf1b3a92"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "7db64f23-1f42-4e03-baa9-9a5beee60c0d",
+      name: "bob-city.ogg ActionNode",
+      options: ["a16263c0-df61-4dd1-a5a0-af39252ccfa2"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "a9a456f5-3087-4506-adc3-8fdbd1120273",
+      name: "Alice ActionNode",
+      options: ["8c446610-4c51-45da-b58b-7a6d0de7f807"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "ed4794d1-59ea-4024-a25a-c20fae794bb3",
+      name: "Choose a place ActionNode",
+      options: [
+        "92c20747-0778-4db3-8623-b316c429ce19",
+        "3688c876-dd4c-4ec0-bea2-d3dc78149183",
+      ],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "faa61366-848e-4606-ba2a-2b34bb2111ff",
+      name: "alice-jungle.ogg ActionNode",
+      options: ["0d9b1524-1929-4c49-925c-462ed3284e70"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "11e10b4b-c9b7-4f9c-8bc9-bd857466267d",
+      name: "city.ogg ActionNode",
+      options: ["925387b3-e971-4218-bf4e-cb6dd3c493eb"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+    {
+      id: "ID",
+      name: "nightAction",
+      options: ["ID"],
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+  ],
+  stageNodes: [
+    {
+      audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: false,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: null,
+      image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
+      name: "Cover node",
+      okTransition: {
+        actionNode: "41bb0e8b-5cda-45c7-883a-193e3570e7db",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: true,
+      type: "cover",
+      uuid: "86e05883-99a3-4031-8399-1b8a6f1c252a",
+    },
+    {
+      audio: "53018173b8245b5d03d729da410daed6d3fd3570.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: false,
+      },
+      homeTransition: null,
+      image: null,
+      name: "Choose a character",
+      okTransition: {
+        actionNode: "f13a6d12-f14c-417c-a1b9-0d472a81f71f",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "3dedf0da-184f-47ff-9d1a-08c33b510d04",
+    },
+    {
+      audio: "f8932ae73324764b45bb7a3e1e92f4fabde3c2f8.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      image: "4977589ba6e6d131a500309d3f8ee84c66b615f1.png",
+      name: "Bob",
+      okTransition: {
+        actionNode: "ee081709-807e-411f-b849-3564deeec2c1",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "f45fedec-1bd0-4079-b30f-9ba4dcb53251",
+    },
+    {
+      audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "f13a6d12-f14c-417c-a1b9-0d472a81f71f",
+        optionIndex: 1,
+      },
+      image: null,
+      name: "Choose a place",
+      okTransition: {
+        actionNode: "2ce22c3f-ddc9-4e6f-93d8-09aa7f1c6bda",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "43675af0-4a46-43fd-b499-7b0f50d245ae",
+    },
+    {
+      audio: "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: {
+        actionNode: "ee081709-807e-411f-b849-3564deeec2c1",
+        optionIndex: 0,
+      },
+      image: "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+      name: "jungle.ogg item",
+      okTransition: {
+        actionNode: "ea493af6-e355-4c9b-ad47-f2e905740495",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "cfd5a4a4-096c-435b-9d76-f8df327448d2",
+    },
+    {
+      audio: "084c25abd45f62e50aed566e74ae3317bf844d6c.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: false,
+        pause: true,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "2ce22c3f-ddc9-4e6f-93d8-09aa7f1c6bda",
+        optionIndex: 1,
+      },
+      image: null,
+      name: "jungle.ogg Stage node",
+      okTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "66a9993c-5b76-47e6-9145-1b41bf1b3a92",
+    },
+    {
+      audio: "e260fd4baef8d32d1cb598355ca691e5fe401bc8.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: {
+        actionNode: "ee081709-807e-411f-b849-3564deeec2c1",
+        optionIndex: 0,
+      },
+      image: "95daa0dc90c3f15300edb39c807e9c9d6acff3f6.png",
+      name: "bob-city.ogg item",
+      okTransition: {
+        actionNode: "7db64f23-1f42-4e03-baa9-9a5beee60c0d",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "f8833e95-2723-472c-ae09-37ae39ddfc40",
+    },
+    {
+      audio: "90304af3b9d81fb1590ad367df796e791ea78750.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: false,
+        pause: true,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "2ce22c3f-ddc9-4e6f-93d8-09aa7f1c6bda",
+        optionIndex: 0,
+      },
+      image: null,
+      name: "bob-city.ogg Stage node",
+      okTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "a16263c0-df61-4dd1-a5a0-af39252ccfa2",
+    },
+    {
+      audio: "6ef0a88a7b823fc81a85d448c971821d3570e606.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      image: "c68e4b1028b3c93e434506e6a0203e5edbaed43b.png",
+      name: "Alice",
+      okTransition: {
+        actionNode: "a9a456f5-3087-4506-adc3-8fdbd1120273",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "d30ffb97-937c-40e4-87cb-52bb165a6f2c",
+    },
+    {
+      audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "f13a6d12-f14c-417c-a1b9-0d472a81f71f",
+        optionIndex: 0,
+      },
+      image: null,
+      name: "Choose a place",
+      okTransition: {
+        actionNode: "ed4794d1-59ea-4024-a25a-c20fae794bb3",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "8c446610-4c51-45da-b58b-7a6d0de7f807",
+    },
+    {
+      audio: "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: {
+        actionNode: "a9a456f5-3087-4506-adc3-8fdbd1120273",
+        optionIndex: 0,
+      },
+      image: "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+      name: "alice-jungle.ogg item",
+      okTransition: {
+        actionNode: "faa61366-848e-4606-ba2a-2b34bb2111ff",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "3688c876-dd4c-4ec0-bea2-d3dc78149183",
+    },
+    {
+      audio: "f493d4e986a1278ca7db3f7c65bf8ee32535b2e4.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: false,
+        pause: true,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "ed4794d1-59ea-4024-a25a-c20fae794bb3",
+        optionIndex: 1,
+      },
+      image: null,
+      name: "alice-jungle.ogg Stage node",
+      okTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "0d9b1524-1929-4c49-925c-462ed3284e70",
+    },
+    {
+      audio: "5e6cb53d9acef28a6f57edf317c31bda673d64ed.ogg",
+      controlSettings: {
+        autoplay: false,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: true,
+      },
+      homeTransition: {
+        actionNode: "a9a456f5-3087-4506-adc3-8fdbd1120273",
+        optionIndex: 0,
+      },
+      image: "5e36825dd492cd428ec8408f55f8dddfe6a1248a.png",
+      name: "city.ogg item",
+      okTransition: {
+        actionNode: "11e10b4b-c9b7-4f9c-8bc9-bd857466267d",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "92c20747-0778-4db3-8623-b316c429ce19",
+    },
+    {
+      audio: "46fe70d98b9763ab70b7e7cea4627e4f8b7c585a.ogg",
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: false,
+        pause: true,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "ed4794d1-59ea-4024-a25a-c20fae794bb3",
+        optionIndex: 0,
+      },
+      image: null,
+      name: "city.ogg Stage node",
+      okTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "925387b3-e971-4218-bf4e-cb6dd3c493eb",
+    },
+    {
+      audio: null,
+      controlSettings: {
+        autoplay: true,
+        home: true,
+        ok: true,
+        pause: false,
+        wheel: false,
+      },
+      homeTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      image: null,
+      name: "nightStage",
+      okTransition: {
+        actionNode: "ID",
+        optionIndex: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+      squareOne: false,
+      type: "stage",
+      uuid: "ID",
+    },
+  ],
+};
+
 export const expectedFullFolder = {
   files: [
     {
