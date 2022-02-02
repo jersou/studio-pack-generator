@@ -83,6 +83,13 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "go to next story of group at end of stories",
     })
+    .option("add-delay", {
+      alias: "d",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "add 1 second at the beginning and the end of audio files",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

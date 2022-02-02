@@ -10,11 +10,19 @@ import { bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
 import { File, Folder } from "../serialize/types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
-export async function convertAudioOfFolder(rootpath: string, folder: Folder) {
+export async function convertAudioOfFolder(
+  rootpath: string,
+  folder: Folder,
+  addDelay: boolean,
+) {
   await checkRunPermission();
   for (const file of folder.files) {
     if (isFolder(file)) {
-      await convertAudioOfFolder(join(rootpath, file.name), file as Folder);
+      await convertAudioOfFolder(
+        join(rootpath, file.name),
+        file as Folder,
+        addDelay,
+      );
     } else {
       if (isStory(file as File) || isAudioItem(file as File)) {
         const inputPath = join(rootpath, file.name);
@@ -23,7 +31,7 @@ export async function convertAudioOfFolder(rootpath: string, folder: Folder) {
         if (!(await exists(skipPath))) {
           const maxDb = await getMaxVolumeOfFile(inputPath);
 
-          if (maxDb >= 1 || !(await checkAudioFormat(inputPath))) {
+          if (addDelay || maxDb >= 1 || !(await checkAudioFormat(inputPath))) {
             await Deno.copyFile(inputPath, `${inputPath}.bak`);
             const tmpPath = await Deno.makeTempFile({
               dir: rootpath,
@@ -31,7 +39,7 @@ export async function convertAudioOfFolder(rootpath: string, folder: Folder) {
             });
             await Deno.copyFile(inputPath, tmpPath);
             await Deno.remove(inputPath);
-            await convertAudioFile(tmpPath, maxDb, outPath);
+            await convertAudioFile(tmpPath, maxDb, outPath, addDelay);
             await Deno.remove(tmpPath);
           } else {
             console.log(bgGreen("→ skip db<1"));
@@ -47,15 +55,19 @@ async function convertAudioFile(
   inputPath: string,
   maxDb: number,
   outputPath: string,
+  addDelay: boolean,
 ) {
   console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
+
   const process = await Deno.run({
     cmd: [
       ...(await getFfmpegCommand()),
       "-i",
       inputPath,
       "-af",
-      `volume=${maxDb}dB,dynaudnorm`,
+      `volume=${maxDb}dB,dynaudnorm${
+        addDelay ? ",adelay=1s,apad=pad_dur=1s" : ""
+      }`,
       "-ac",
       "1",
       "-ar",

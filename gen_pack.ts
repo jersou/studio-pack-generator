@@ -26,6 +26,7 @@ export type ModOptions = {
   skipZipGeneration?: boolean;
   skipNotRss?: boolean;
   autoNextStoryTransition?: boolean;
+  addDelay?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -68,7 +69,7 @@ export async function generatePack(opt: ModOptions) {
       folder = await fsToFolder(opt.storyPath, false);
     }
     if (!opt.skipAudioConvert) {
-      await convertAudioOfFolder(opt.storyPath, folder);
+      await convertAudioOfFolder(opt.storyPath, folder, !!opt.addDelay);
     }
     if (!opt.skipImageItemGen) {
       await genThumbnail(folder, opt.storyPath);
