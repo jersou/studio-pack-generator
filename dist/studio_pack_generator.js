@@ -25284,7 +25284,8 @@ const itemsRegEx = [
     folderAudioItemRegEx,
     folderImageItemRegEx,
     fileAudioItemRegEx,
-    fileImageItemRegEx, 
+    fileImageItemRegEx,
+    nightModeAudioItemRegEx, 
 ];
 function isFolder(f) {
     return !!f.files;
@@ -25520,7 +25521,7 @@ function getTitle(name) {
         return /^[0-9]* *-? *(.*)$/.exec(name)?.[1].replace(/_/g, " ").trim();
     }
 }
-async function genMissingItems(rootpath, folder, genImage, genAudio, lang) {
+async function genMissingItems(rootpath, folder, genImage, genAudio, lang, isRoot) {
     if (genImage || genAudio) {
         await checkRunPermission();
         if (genImage && !getFolderImageItem(folder)) {
@@ -25529,12 +25530,12 @@ async function genMissingItems(rootpath, folder, genImage, genAudio, lang) {
         if (genAudio && !getFolderAudioItem(folder)) {
             await generateAudio(getTitle(folder.name), `${rootpath}/0-item.wav`, lang);
         }
-        if (genAudio && !getNightModeAudioItem(folder)) {
+        if (genAudio && isRoot && !getNightModeAudioItem(folder)) {
             await generateAudio(__default2.t("NightModeTransition"), `${rootpath}/0-night-mode.wav`, lang);
         }
         for (const file of folder.files){
             if (isFolder(file)) {
-                await genMissingItems(join3(rootpath, file.name), file, genImage, genAudio, lang);
+                await genMissingItems(join3(rootpath, file.name), file, genImage, genAudio, lang, false);
             } else if (isStory(file)) {
                 if (genImage && !getFileImageItem(file, folder)) {
                     await generateImage(getTitle(getNameWithoutExt(file.name)), `${rootpath}/${getNameWithoutExt(file.name)}.item.png`);
@@ -26222,7 +26223,7 @@ async function generatePack(opt) {
             folder = await fsToFolder(opt.storyPath, false);
         }
         if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
-            await genMissingItems(opt.storyPath, folder, !opt.skipImageItemGen, !opt.skipAudioItemGen, lang);
+            await genMissingItems(opt.storyPath, folder, !opt.skipImageItemGen, !opt.skipAudioItemGen, lang, true);
             folder = await fsToFolder(opt.storyPath, false);
         }
         if (!opt.skipAudioConvert) {
