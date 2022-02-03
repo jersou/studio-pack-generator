@@ -112,6 +112,7 @@ files :
 📂 Story folder
 ├── 🎵 0-item.mp3                     ← ⏩ story audio title, generated if missing
 ├── 🔳 0-item.png                     ← ⏩ story image title, generated if missing
+├── 🔳 0-night-mode.mp3               ← ⏩ story audio night mode transition, generated if missing and if the mode is enable
 └── 📂 Choose a character             ← 📂 first menu
     ├── 🎵 0-item.mp3                   ← ⏩ audio menu, generated if missing
     ├── 📂 Alice                        ← 📂 first choice of the first menu
@@ -212,6 +213,8 @@ Options:
   -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
   -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
+  -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
+  -t, --night-mode                   enable night mode : add transitions to an uniq endpoint  [boolean] [default: false]
 ```
 
 ## Features
@@ -225,6 +228,8 @@ Options:
 - Convert mp3 files to right format.
 - Generate story thumbnail.
 - Option to chaining the stories.
+- Option enable the night mode.
+- Option to add 1 sec of silence at the beginning and end of sound files.
 
 ## Development
 
