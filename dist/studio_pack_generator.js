@@ -25586,7 +25586,7 @@ async function convertAudioFile(inputPath, maxDb, outputPath, addDelay) {
             "-i",
             inputPath,
             "-af",
-            `volume=${maxDb}dB,dynaudnorm${addDelay ? ",adelay=1s,apad=pad_dur=1s" : ""}`,
+            `volume=${maxDb}dB,dynaudnorm${addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""}`,
             "-ac",
             "1",
             "-ar",
