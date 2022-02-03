@@ -28,6 +28,7 @@ export async function genMissingItems(
   genImage: boolean,
   genAudio: boolean,
   lang: string,
+  isRoot: boolean,
 ) {
   if (genImage || genAudio) {
     await checkRunPermission();
@@ -41,7 +42,7 @@ export async function genMissingItems(
         lang,
       );
     }
-    if (genAudio && !getNightModeAudioItem(folder)) {
+    if (genAudio && isRoot && !getNightModeAudioItem(folder)) {
       await generateAudio(
         i18next.t("NightModeTransition"),
         `${rootpath}/0-night-mode.wav`,
@@ -57,6 +58,7 @@ export async function genMissingItems(
           genImage,
           genAudio,
           lang,
+          false,
         );
       } else if (isStory(file as File)) {
         if (genImage && !getFileImageItem(file as File, folder)) {

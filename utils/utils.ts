@@ -14,6 +14,7 @@ export const itemsRegEx = [
   folderImageItemRegEx,
   fileAudioItemRegEx,
   fileImageItemRegEx,
+  nightModeAudioItemRegEx,
 ];
 
 export function isFolder(f: Folder | File): boolean {

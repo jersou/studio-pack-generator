@@ -67,6 +67,7 @@ export async function generatePack(opt: ModOptions) {
         !opt.skipImageItemGen,
         !opt.skipAudioItemGen,
         lang,
+        true,
       );
       folder = await fsToFolder(opt.storyPath, false);
     }
