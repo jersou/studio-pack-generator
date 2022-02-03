@@ -65,8 +65,9 @@ async function convertAudioFile(
       "-i",
       inputPath,
       "-af",
+      // FIXME adelay=all doesn't work
       `volume=${maxDb}dB,dynaudnorm${
-        addDelay ? ",adelay=1s,apad=pad_dur=1s" : ""
+        addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""
       }`,
       "-ac",
       "1",
