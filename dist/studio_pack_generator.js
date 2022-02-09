@@ -25547,11 +25547,11 @@ async function genMissingItems(rootpath, folder, genImage, genAudio, lang, isRoo
         }
     }
 }
-async function convertAudioOfFolder(rootpath, folder, addDelay) {
+async function convertAudioOfFolder(rootpath, folder, addDelay, seekStory) {
     await checkRunPermission();
     for (const file of folder.files){
         if (isFolder(file)) {
-            await convertAudioOfFolder(join3(rootpath, file.name), file, addDelay);
+            await convertAudioOfFolder(join3(rootpath, file.name), file, addDelay, seekStory);
         } else {
             if (isStory(file) || isAudioItem(file)) {
                 const inputPath = join3(rootpath, file.name);
@@ -25559,7 +25559,9 @@ async function convertAudioOfFolder(rootpath, folder, addDelay) {
                 const skipPath = `${outPath}__skip-convert`;
                 if (!await exists(skipPath)) {
                     const maxDb = await getMaxVolumeOfFile(inputPath);
-                    if (addDelay || maxDb >= 1 || !await checkAudioFormat(inputPath)) {
+                    const seek = isStory(file) ? seekStory : undefined;
+                    const forceToConvert = addDelay || seek || maxDb >= 1;
+                    if (forceToConvert || !await checkAudioFormat(inputPath)) {
                         await Deno.copyFile(inputPath, `${inputPath}.bak`);
                         const tmpPath = await Deno.makeTempFile({
                             dir: rootpath,
@@ -25567,7 +25569,7 @@ async function convertAudioOfFolder(rootpath, folder, addDelay) {
                         });
                         await Deno.copyFile(inputPath, tmpPath);
                         await Deno.remove(inputPath);
-                        await convertAudioFile(tmpPath, maxDb, outPath, addDelay);
+                        await convertAudioFile(tmpPath, maxDb, outPath, addDelay, seek);
                         await Deno.remove(tmpPath);
                     } else {
                         console.log(bgGreen("→ skip db<1"));
@@ -25578,24 +25580,30 @@ async function convertAudioOfFolder(rootpath, folder, addDelay) {
         }
     }
 }
-async function convertAudioFile(inputPath, maxDb, outputPath, addDelay) {
+async function convertAudioFile(inputPath, maxDb, outputPath, addDelay, seek) {
     console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
+    const cmd = [
+        ...await getFfmpegCommand(),
+        "-i",
+        inputPath,
+        "-af",
+        `volume=${maxDb}dB,dynaudnorm${addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""}`,
+        "-ac",
+        "1",
+        "-ar",
+        "44100",
+        "-map_metadata",
+        "-1",
+        ...seek ? [
+            "-ss",
+            seek
+        ] : [],
+        "-y",
+        outputPath, 
+    ];
+    console.log(bgBlue('"' + cmd.join('" "') + '"'));
     const process = await Deno.run({
-        cmd: [
-            ...await getFfmpegCommand(),
-            "-i",
-            inputPath,
-            "-af",
-            `volume=${maxDb}dB,dynaudnorm${addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""}`,
-            "-ac",
-            "1",
-            "-ar",
-            "44100",
-            "-map_metadata",
-            "-1",
-            "-y",
-            outputPath, 
-        ],
+        cmd,
         stdout: "null",
         stdin: "null",
         stderr: "null"
@@ -26227,7 +26235,7 @@ async function generatePack(opt) {
             folder = await fsToFolder(opt.storyPath, false);
         }
         if (!opt.skipAudioConvert) {
-            await convertAudioOfFolder(opt.storyPath, folder, !!opt.addDelay);
+            await convertAudioOfFolder(opt.storyPath, folder, !!opt.addDelay, opt.seekStory);
         }
         if (!opt.skipImageItemGen) {
             await genThumbnail(folder, opt.storyPath);
@@ -26315,6 +26323,13 @@ async function parseArgs(args) {
         boolean: true,
         default: false,
         describe: "enable night mode : add transitions to an uniq endpoint"
+    }).option("seek-story", {
+        alias: "c",
+        demandOption: false,
+        boolean: false,
+        type: "string",
+        default: undefined,
+        describe: "cut the beginning of stories: 'HH:mm:ss' format or 'N' sec"
     }).version(false).demandCommand(1).parse();
 }
 const importMeta2 = {
