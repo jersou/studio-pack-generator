@@ -14,7 +14,7 @@ export async function convertAudioOfFolder(
   rootpath: string,
   folder: Folder,
   addDelay: boolean,
-  seekStory : number,
+  seekStory: number,
 ) {
   await checkRunPermission();
   for (const file of folder.files) {
@@ -23,7 +23,7 @@ export async function convertAudioOfFolder(
         join(rootpath, file.name),
         file as Folder,
         addDelay,
-        seekStory
+        seekStory,
       );
     } else {
       if (isStory(file as File) || isAudioItem(file as File)) {
@@ -41,11 +41,11 @@ export async function convertAudioOfFolder(
             });
             await Deno.copyFile(inputPath, tmpPath);
             await Deno.remove(inputPath);
-            var seek : number;
-            if(isStory(file as File)){
-              seek = seekStory
+            var seek: number;
+            if (isStory(file as File)) {
+              seek = seekStory;
             } else {
-              seek = 0
+              seek = 0;
             }
             await convertAudioFile(tmpPath, maxDb, outPath, addDelay, seek);
             await Deno.remove(tmpPath);
@@ -64,7 +64,7 @@ async function convertAudioFile(
   maxDb: number,
   outputPath: string,
   addDelay: boolean,
-  seek: number = 0
+  seek: number = 0,
 ) {
   console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
 
@@ -84,7 +84,8 @@ async function convertAudioFile(
       "44100",
       "-map_metadata",
       "-1",
-      "-ss", `${seek}`,
+      "-ss",
+      `${seek}`,
       "-y",
       outputPath,
     ],
