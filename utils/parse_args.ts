@@ -97,6 +97,14 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "enable night mode : add transitions to an uniq endpoint",
     })
+    .option("seek-story", {
+      alias: "c",
+      demandOption: false,
+      boolean: false,
+      type: "string",
+      default: undefined,
+      describe: "cut the beginning of stories: 'HH:mm:ss' format or 'N' sec",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

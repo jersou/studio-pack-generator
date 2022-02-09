@@ -14,6 +14,7 @@ export async function convertAudioOfFolder(
   rootpath: string,
   folder: Folder,
   addDelay: boolean,
+  seekStory: string | undefined,
 ) {
   await checkRunPermission();
   for (const file of folder.files) {
@@ -22,6 +23,7 @@ export async function convertAudioOfFolder(
         join(rootpath, file.name),
         file as Folder,
         addDelay,
+        seekStory,
       );
     } else {
       if (isStory(file as File) || isAudioItem(file as File)) {
@@ -31,7 +33,9 @@ export async function convertAudioOfFolder(
         if (!(await exists(skipPath))) {
           const maxDb = await getMaxVolumeOfFile(inputPath);
 
-          if (addDelay || maxDb >= 1 || !(await checkAudioFormat(inputPath))) {
+          const seek = isStory(file as File) ? seekStory : undefined;
+          const forceToConvert = addDelay || seek || maxDb >= 1;
+          if (forceToConvert || !(await checkAudioFormat(inputPath))) {
             await Deno.copyFile(inputPath, `${inputPath}.bak`);
             const tmpPath = await Deno.makeTempFile({
               dir: rootpath,
@@ -39,7 +43,7 @@ export async function convertAudioOfFolder(
             });
             await Deno.copyFile(inputPath, tmpPath);
             await Deno.remove(inputPath);
-            await convertAudioFile(tmpPath, maxDb, outPath, addDelay);
+            await convertAudioFile(tmpPath, maxDb, outPath, addDelay, seek);
             await Deno.remove(tmpPath);
           } else {
             console.log(bgGreen("→ skip db<1"));
@@ -56,28 +60,31 @@ async function convertAudioFile(
   maxDb: number,
   outputPath: string,
   addDelay: boolean,
+  seek: string | undefined,
 ) {
   console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
-
+  const cmd = [
+    ...(await getFfmpegCommand()),
+    "-i",
+    inputPath,
+    "-af",
+    // FIXME adelay=all doesn't work
+    `volume=${maxDb}dB,dynaudnorm${
+      addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""
+    }`,
+    "-ac",
+    "1",
+    "-ar",
+    "44100",
+    "-map_metadata",
+    "-1",
+    ...(seek ? ["-ss", seek] : []),
+    "-y",
+    outputPath,
+  ];
+  console.log(bgBlue('"' + cmd.join('" "') + '"'));
   const process = await Deno.run({
-    cmd: [
-      ...(await getFfmpegCommand()),
-      "-i",
-      inputPath,
-      "-af",
-      // FIXME adelay=all doesn't work
-      `volume=${maxDb}dB,dynaudnorm${
-        addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""
-      }`,
-      "-ac",
-      "1",
-      "-ar",
-      "44100",
-      "-map_metadata",
-      "-1",
-      "-y",
-      outputPath,
-    ],
+    cmd,
     stdout: "null",
     stdin: "null",
     stderr: "null",

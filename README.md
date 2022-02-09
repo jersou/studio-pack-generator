@@ -205,7 +205,7 @@ deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert
 
 Options:
       --help                         Show help                                                                 [boolean]
-  -l, --lang                         the lang used to generate menu and items (not used by Windows TTS). Auto detected by default         [string]
+  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
   -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
   -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
@@ -215,6 +215,7 @@ Options:
   -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
   -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
   -t, --night-mode                   enable night mode : add transitions to an uniq endpoint  [boolean] [default: false]
+  -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
 ```
 
 ## Features
@@ -230,6 +231,7 @@ Options:
 - Option to chaining the stories.
 - Option enable the night mode.
 - Option to add 1 sec of silence at the beginning and end of sound files.
+- Option to skip the beginning of stories.
 
 ## Development
 
