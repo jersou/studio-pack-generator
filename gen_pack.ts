@@ -29,7 +29,7 @@ export type ModOptions = {
   autoNextStoryTransition?: boolean;
   addDelay?: boolean;
   nightMode?: boolean;
-  seekStory: number;
+  seekStory?: string;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
