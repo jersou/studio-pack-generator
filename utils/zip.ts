@@ -21,6 +21,7 @@ export async function createPackZip(
   const fileInZip: string[] = [];
   const zipWriter = new ZipWriter(blobWriter, {
     useWebWorkers: false,
+    dataDescriptor: false,
   });
   const thumbnailPath = `${storyPath}/thumbnail.png`;
   if (await exists(thumbnailPath)) {
