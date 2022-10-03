@@ -1,4 +1,4 @@
-import { FromRun, i18next, yellow } from "../deps.ts";
+import { i18next, run, yellow } from "../deps.ts";
 
 const en = {
   partQuestion: "Choose your part",
@@ -30,7 +30,7 @@ export async function initI18n(lng: string) {
 export async function getLang() {
   let LANG;
   if (Deno.build.os === "windows") {
-    LANG = await FromRun([
+    LANG = await run([
       "powershell",
       "-NoProfile",
       "Get-UICulture|select -ExpandProperty Name",

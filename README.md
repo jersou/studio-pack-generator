@@ -197,6 +197,7 @@ The "super pack" will look like :
   petits cochons.mp3".
 - Image formats : png, jpg, bmp.
 - Audio formats : mp3, ogg, opus, wav.
+- if the file `thumbnail.png` is present a root
 
 ## Usage
 
@@ -235,9 +236,6 @@ Options:
 
 ## Development
 
-The folder `.DENO_DIR` and `.lock.json` are **not** necessary for the project to
-work, it just allows to save its dependencies.
-
 Some dev command are listed in the scripts.yaml file, this file can be use with
 [Velociraptor](https://velociraptor.run/docs/installation/) :
 
@@ -248,6 +246,6 @@ Some dev command are listed in the scripts.yaml file, this file can be use with
 - fmt: format the code
 - bundle: bundle the project and its dependencies to
   dist/studio_pack_generator.js
-- bak-dep: backup the dependencies to `.DENO_DIR` and update `.lock.json`
+- bak-dep: backup the dependencies to `vendor`
 - gen-bin: generate the binaries
 - gen-cov: generate the test coverage

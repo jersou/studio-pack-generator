@@ -1,9 +1,10 @@
 /**/.idea/workspace.xml
 /tmp
-/test_data/tmp-*.zip
 /test_data/tmp*
-/.DENO_DIR/gen/
 /.cov_profile
 /dist/*.zip
 /tmp.ts
 /.idea/vcs.xml
+/.idea/active-tab-highlighter.xml
+/.idea/jpa-buddy.xml
+/.idea/google-java-format.xml

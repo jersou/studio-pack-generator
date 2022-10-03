@@ -10,13 +10,12 @@
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/test-data" />
       <excludeFolder url="file://$MODULE_DIR$/cov_profile" />
-      <excludeFolder url="file://$MODULE_DIR$/DENO_DIR" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/tools" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor" />
       <excludePattern pattern=".*" />
       <excludePattern pattern="lock.json" />
-      <excludePattern pattern="mod.js" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

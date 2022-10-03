@@ -25,13 +25,13 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.18.2
+          deno-version: v1.26.0
 
       - name: Verify formatting
-        run: deno fmt --check --ignore=".DENO_DIR,dist,.lock.json"
+        run: deno fmt --check --ignore="vendor,dist"
 
       - name: Run linter
-        run: deno lint --ignore=".DENO_DIR,dist"
+        run: deno lint --ignore="vendor,dist"
 
       - name: Run tests
         run: deno test --allow-read --allow-write --allow-run
