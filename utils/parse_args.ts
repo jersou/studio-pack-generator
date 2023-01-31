@@ -112,7 +112,7 @@ export async function parseArgs(args: string[]) {
       demandOption: false,
       boolean: true,
       default: false,
-      describe: "extract a zip pack (reverse mode)",
+      describe: "[Alpha] extract a zip pack (reverse mode)",
     })
     .version(false)
     .demandCommand(1)

@@ -2,10 +2,11 @@
 
 import { ModOptions } from "./gen_pack.ts";
 import { BlobReader, BlobWriter, ZipReader } from "./deps.ts";
+import { getExtension } from "./utils/utils.ts";
 
 export async function extractPack(opt: ModOptions) {
   const packPath = opt.storyPath;
-  console.log({ packPath });
+  // console.log({ packPath });
 
   const zipReader = new ZipReader(
     new BlobReader(
@@ -21,7 +22,7 @@ export async function extractPack(opt: ModOptions) {
   const story = JSON.parse(await blob.text());
 
   const entrypoint = story.stageNodes.find((s: any) => s.squareOne);
-  await extractStage(story, entrypoint.uuid, []);
+  await extractStage(story, entrypoint.uuid, [], "", []);
 
   // for (
   //   const entry of entries
@@ -32,27 +33,64 @@ export async function extractPack(opt: ModOptions) {
   // }
 }
 
+// TODO : suppression des cycle pour reafaire un parcourt derriere et avoir les bon chemins
+
 export async function extractStage(
   story: any,
   stageId: string,
   stageDone: string[],
+  basePath: string,
+  stageToProcess: { stageId: string; basePath: string }[],
 ) {
+  const stageIndex = stageDone.length;
   if (!stageDone.includes(stageId)) {
+    // console.log(basePath);
     stageDone.push(stageId);
     const stage = story.stageNodes.find((s: any) => s.uuid === stageId);
-    console.log({
-      name: stage.name,
-      audio: stage.audio,
-      image: stage.image,
-    });
+    stage.audio &&
+      console.log(
+        `→ ${basePath}/${stage.name}.${getExtension(stage.audio)}`,
+      );
+    // stage.audio &&
+    //   console.log(
+    //     `assets/${stage.audio}\n  → ${basePath}/${stage.name}.${
+    //       getExtension(stage.audio)
+    //     }`,
+    //   );
+    // stage.image && console.log(
+    //   `assets/${stage.image}\n  → ${basePath}/${stage.name}.${
+    //     getExtension(stage.image)
+    //   }`,
+    // );
 
     const actionId = stage.okTransition.actionNode;
     const action = story.actionNodes.find((a: any) => a.id === actionId);
-    console.log({ actionName: action.name });
-    action.options.forEach((o: string) => extractStage(story, o, stageDone));
+    stageToProcess.push(
+      ...action.options.map((o: string) => ({
+        stageId: o,
+        basePath: stageIndex === 0 ? "" : `${basePath}/${action.name}`,
+      })),
+    );
+
+    if (stageIndex === 0) {
+      for (let i = 0; i < stageToProcess.length; i++) {
+        await extractStage(
+          story,
+          stageToProcess[i].stageId,
+          stageDone,
+          stageToProcess[i].basePath,
+          stageToProcess,
+        );
+      }
+    }
   }
 }
 
 if (import.meta.main) {
-  await extractPack({ storyPath: "test_data/zip/2-full.zip" } as ModOptions);
+  // await extractPack({ storyPath: "test_data/zip/2-full.zip" } as ModOptions);
+  await extractPack(
+    {
+      storyPath: "test_data/zip/2-full.zip",
+    } as ModOptions,
+  );
 }
