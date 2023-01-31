@@ -1,6 +1,7 @@
 import {
   convertToImageItem,
   getExtension,
+  getNameWithoutExt,
   isFile,
   isFolder,
 } from "../utils/utils.ts";
@@ -36,6 +37,9 @@ export type RssItem = {
   enclosure: {
     "@url": string;
   };
+  "itunes:image"?: {
+    "@href": string;
+  };
 };
 export type FolderWithUrl = {
   name: string;
@@ -45,7 +49,10 @@ export type FileWithUrl = File & {
   url: string;
 };
 
-async function getFolderWithUrlFromRssUrl(url: string): Promise<FolderWithUrl> {
+async function getFolderWithUrlFromRssUrl(
+  url: string,
+  skipRssImageDl: boolean,
+): Promise<FolderWithUrl> {
   console.log(bgGreen(`→ url = ${url}`));
 
   const resp = await fetch(url);
@@ -70,9 +77,9 @@ async function getFolderWithUrlFromRssUrl(url: string): Promise<FolderWithUrl> {
   );
   console.log(bgBlue(`→ ${items.length} items`));
   if (rss.item.length <= 10) {
-    fs.files.push(getFolderOfStories(items));
+    fs.files.push(getFolderOfStories(items, skipRssImageDl));
   } else {
-    fs.files.push(getFolderParts(items));
+    fs.files.push(getFolderParts(items, skipRssImageDl));
   }
   return fs;
 }
@@ -85,18 +92,38 @@ export function getItemFileName(item: RssItem) {
   );
 }
 
-function getFolderOfStories(items: RssItem[]): FolderWithUrl {
+function getFolderOfStories(
+  items: RssItem[],
+  skipRssImageDl: boolean,
+): FolderWithUrl {
   return {
     name: i18next.t("storyQuestion"),
-    files: items.map((item) => ({
-      name: getItemFileName(item),
-      url: item.enclosure["@url"],
-      sha1: "",
-    })),
+    files: items.flatMap((item) => {
+      const itemFiles = [{
+        name: getItemFileName(item),
+        url: item.enclosure["@url"],
+        sha1: "",
+      }];
+      const imageUrl = item["itunes:image"]?.["@href"];
+      if (!skipRssImageDl && imageUrl) {
+        itemFiles.push({
+          name: `${getNameWithoutExt(getItemFileName(item))}.item.${
+            getExtension(imageUrl)
+          }`,
+          url: imageUrl,
+          sha1: "",
+        });
+      }
+
+      return itemFiles;
+    }),
   };
 }
 
-function getFolderParts(items: RssItem[]): FolderWithUrl {
+function getFolderParts(
+  items: RssItem[],
+  skipRssImageDl: boolean,
+): FolderWithUrl {
   const partCount = Math.ceil(items.length / 10);
   const parts: RssItem[][] = [];
   for (let i = 0; i < partCount; i++) {
@@ -110,7 +137,7 @@ function getFolderParts(items: RssItem[]): FolderWithUrl {
     name: i18next.t("partQuestion"),
     files: parts.map((part, index) => ({
       name: `${i18next.t("partTitle")} ${index + 1}`,
-      files: [getFolderOfStories(part)],
+      files: [getFolderOfStories(part, skipRssImageDl)],
     })),
   };
 }
@@ -143,8 +170,12 @@ async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
   }
 }
 
-export async function downloadRss(url: string, parentPath: string) {
-  const fs = await getFolderWithUrlFromRssUrl(url);
+export async function downloadRss(
+  url: string,
+  parentPath: string,
+  skipRssImageDl: boolean,
+) {
+  const fs = await getFolderWithUrlFromRssUrl(url, skipRssImageDl);
   await writeFolderWithUrl(fs, parentPath);
   const storyPath = join(parentPath, fs.name);
 

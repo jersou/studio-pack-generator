@@ -112,6 +112,12 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "disable WSL usage",
     })
+    .option("skip-rss-image-dl", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "skip RSS image download of items",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

@@ -31,6 +31,7 @@ export type ModOptions = {
   nightMode?: boolean;
   seekStory?: string;
   skipWsl?: boolean;
+  skipRssImageDl?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -53,7 +54,7 @@ export async function generatePack(opt: ModOptions) {
   await initI18n(lang);
 
   if (opt.storyPath.startsWith("http")) {
-    opt.storyPath = await downloadRss(opt.storyPath, ".");
+    opt.storyPath = await downloadRss(opt.storyPath, ".", !!opt.skipRssImageDl);
     console.log(`downloaded in ${opt.storyPath}`);
   }
   if (!opt.skipNotRss) {
