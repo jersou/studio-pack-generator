@@ -30,6 +30,7 @@ export type ModOptions = {
   addDelay?: boolean;
   nightMode?: boolean;
   seekStory?: string;
+  skipWsl?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -69,6 +70,7 @@ export async function generatePack(opt: ModOptions) {
         !opt.skipAudioItemGen,
         lang,
         true,
+        !!opt.skipWsl,
       );
       folder = await fsToFolder(opt.storyPath, false);
     }

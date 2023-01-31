@@ -217,6 +217,7 @@ Options:
   -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
   -t, --night-mode                   enable night mode : add transitions to an uniq endpoint  [boolean] [default: false]
   -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
+  -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
 ```
 
 ## Features

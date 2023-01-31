@@ -105,6 +105,13 @@ export async function parseArgs(args: string[]) {
       default: undefined,
       describe: "cut the beginning of stories: 'HH:mm:ss' format or 'N' sec",
     })
+    .option("skip-wsl", {
+      alias: "w",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "disable WSL usage",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

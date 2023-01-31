@@ -26,14 +26,16 @@ export async function hasPico2wave() {
   return hasPico2waveCache;
 }
 
+// FIXME : use object args
 export async function generateAudio(
   title: string,
   outputPath: string,
   lang: string,
+  skipWsl: boolean,
 ) {
   console.log(bgBlue(`Generate audio to ${outputPath}`));
 
-  if (Deno.build.os === "windows" && !(await hasPico2waveWsl())) {
+  if (Deno.build.os === "windows" && (skipWsl || !(await hasPico2waveWsl()))) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";

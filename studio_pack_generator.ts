@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-run --allow-read --allow-write
+#!/usr/bin/env -S deno run -A
 
 import { parseArgs } from "./utils/parse_args.ts";
 

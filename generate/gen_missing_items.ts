@@ -22,6 +22,7 @@ function getTitle(name: string): string {
   }
 }
 
+// FIXME : use object args
 export async function genMissingItems(
   rootpath: string,
   folder: Folder,
@@ -29,6 +30,7 @@ export async function genMissingItems(
   genAudio: boolean,
   lang: string,
   isRoot: boolean,
+  skipWsl: boolean,
 ) {
   if (genImage || genAudio) {
     await checkRunPermission();
@@ -40,6 +42,7 @@ export async function genMissingItems(
         getTitle(folder.name),
         `${rootpath}/0-item.wav`,
         lang,
+        skipWsl,
       );
     }
     if (genAudio && isRoot && !getNightModeAudioItem(folder)) {
@@ -47,6 +50,7 @@ export async function genMissingItems(
         i18next.t("NightModeTransition"),
         `${rootpath}/0-night-mode.wav`,
         lang,
+        skipWsl,
       );
     }
 
@@ -59,6 +63,7 @@ export async function genMissingItems(
           genAudio,
           lang,
           false,
+          skipWsl,
         );
       } else if (isStory(file as File)) {
         if (genImage && !getFileImageItem(file as File, folder)) {
@@ -72,6 +77,7 @@ export async function genMissingItems(
             getTitle(getNameWithoutExt(file.name)),
             `${rootpath}/${getNameWithoutExt(file.name)}.item.wav`,
             lang,
+            skipWsl,
           );
         }
       }
