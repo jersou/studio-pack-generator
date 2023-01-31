@@ -30,6 +30,7 @@ export type ModOptions = {
   addDelay?: boolean;
   nightMode?: boolean;
   seekStory?: string;
+  extract?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {

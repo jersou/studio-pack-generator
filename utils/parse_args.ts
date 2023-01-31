@@ -2,6 +2,7 @@
 
 import { yargs } from "../deps.ts";
 import { generatePack, ModOptions } from "../gen_pack.ts";
+import { extractPack } from "../extract_pack.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -21,7 +22,8 @@ export async function parseArgs(args: string[]) {
         }
         return y.wrap(width);
       },
-      async (opts: ModOptions) => await generatePack(opts),
+      async (opts: ModOptions) =>
+        opts.extract ? await extractPack(opts) : await generatePack(opts),
     )
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",
@@ -104,6 +106,13 @@ export async function parseArgs(args: string[]) {
       type: "string",
       default: undefined,
       describe: "cut the beginning of stories: 'HH:mm:ss' format or 'N' sec",
+    })
+    .option("extract", {
+      alias: "e",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "extract a zip pack (reverse mode)",
     })
     .version(false)
     .demandCommand(1)

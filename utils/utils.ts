@@ -69,7 +69,9 @@ export function getFolderImageItem(folder: Folder) {
 export function getFileAudioItem(file: File, parent: Folder) {
   const nameWithoutExt = getNameWithoutExt(file.name);
   const audioItem = parent.files.find(
-    (f) => f.name.startsWith(nameWithoutExt) && fileAudioItemRegEx.test(f.name),
+    (f) =>
+      getNameWithoutExt(rmDiacritic(f.name)) === rmDiacritic(nameWithoutExt) &&
+      fileAudioItemRegEx.test(f.name),
   ) as File;
   if (audioItem) {
     return `${audioItem.sha1}.${getExtension(audioItem.name)}`;
@@ -208,4 +210,8 @@ export function checkOps() {
 export function sanitize() {
   checkResources();
   checkOps();
+}
+
+export function rmDiacritic(s: string) {
+  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
