@@ -211,20 +211,20 @@ deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert
 
 Options:
       --help                         Show help                                                                 [boolean]
-  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
-  -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
-  -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
-  -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
-  -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
-  -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
-  -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
-  -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
   -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
+  -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
+  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
   -t, --night-mode                   enable night mode : add transitions to an uniq endpoint  [boolean] [default: false]
-  -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
-  -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
-      --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
   -o, --output-folder                zip output folder                                                          [string]
+  -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
+  -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
+  -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
+  -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
+  -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
+  -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
+      --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
+  -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
+  -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
 ```
 
 ## Features
