@@ -24995,7 +24995,7 @@ function getFolderImageItem(folder) {
 }
 function getFileAudioItem(file, parent) {
     const nameWithoutExt = getNameWithoutExt(file.name);
-    const audioItem = parent.files.find((f)=>f.name.startsWith(nameWithoutExt) && fileAudioItemRegEx.test(f.name));
+    const audioItem = parent.files.find((f)=>getNameWithoutExt(rmDiacritic(f.name)).replace(/.item$/, "") === rmDiacritic(nameWithoutExt) && fileAudioItemRegEx.test(f.name));
     if (audioItem) {
         return `${audioItem.sha1}.${getExtension(audioItem.name)}`;
     } else {
@@ -25004,7 +25004,7 @@ function getFileAudioItem(file, parent) {
 }
 function getFileImageItem(file, parent) {
     const nameWithoutExt = getNameWithoutExt(file.name);
-    const ImageItem = parent.files.find((f)=>f.name.startsWith(nameWithoutExt) && fileImageItemRegEx.test(f.name));
+    const ImageItem = parent.files.find((f)=>getNameWithoutExt(rmDiacritic(f.name)).replace(/.item$/, "") === rmDiacritic(nameWithoutExt) && fileImageItemRegEx.test(f.name));
     if (ImageItem) {
         return `${ImageItem.sha1}.${getExtension(ImageItem.name)}`;
     } else {
@@ -25072,6 +25072,9 @@ async function checkRunPermission() {
         }
         runPermissionOk = true;
     }
+}
+function rmDiacritic(s) {
+    return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
 async function extractImagesFromAudio(rootpath, folder) {
     await checkRunPermission();

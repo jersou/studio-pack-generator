@@ -4,7 +4,7 @@
     "bundle": "deno bundle studio_pack_generator.ts dist/studio_pack_generator.js",
     "fmt": "deno fmt --ignore=vendor,dist",
     "gen-bin": "./gen-bin.sh",
-    "gen-cov": "rm -rf .cov_profile && deno test --coverage=.cov_profile -A && deno coverage .cov_profile --lcov > .cov_profile/cov_profile.lcov && genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov",
+    "gen-cov": "rm -rf .cov_profile && deno test --coverage=.cov_profile -A && deno coverage .cov_profile --lcov --exclude=vendor > .cov_profile/cov_profile.lcov && genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov",
     "lint": "deno lint --ignore=vendor,dist",
     "pre-commit": "deno fmt --ignore=vendor,dist --check && deno lint --ignore=vendor,dist && deno test -A --ignore=vendor,dist --no-check",
     "pre-commit-fast": "deno run -A pre-commit-fast.ts",

@@ -6,6 +6,10 @@ file structure below.
 
 Supported OS: Windows / Linux / macOS
 
+**[⭐ Une grosse communauté "Lunii Creations" est présente sur Discord pour créer et partager des pack Lunii ! ⭐](https://discord.com/channels/911349645752541244/911369446881390592)**
+
+**[⭐ A big french community "Lunii Creations" is present on Discord to create and share Lunii packs ⭐](https://discord.com/channels/911349645752541244/911369446881390592)**
+
 ## Quick start
 
 ```shell
@@ -35,8 +39,9 @@ Examples:
 Install optional dependencies :
 `sudo apt update && sudo apt install -y ffmpeg libttspico-utils imagemagick`
 
-Windows release of studio-pack-generator embeds these tools in zip file, and use
-Windows TTS instead of picoTTS.
+[Windows release](https://github.com/jersou/studio-pack-generator/releases) of
+studio-pack-generator embeds these tools in zip file, and use Windows TTS
+instead of picoTTS.
 
 Use "-miva" option to skip all generations that use these tools.
 
