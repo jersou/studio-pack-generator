@@ -6,9 +6,9 @@ file structure below.
 
 Supported OS: Windows / Linux / macOS
 
-**[⭐ Une grosse communauté "Lunii Creations" est présente sur Discord pour créer et partager des pack Lunii ! ⭐](https://discord.com/channels/911349645752541244/911369446881390592)**
+**[⭐ Une grosse communauté "Lunii Creations" est présente sur Discord pour créer et partager des pack Lunii ! ⭐](https://discord.com/invite/jg9MjHBWQC)**
 
-**[⭐ A big french community "Lunii Creations" is present on Discord to create and share Lunii packs ⭐](https://discord.com/channels/911349645752541244/911369446881390592)**
+**[⭐ A big french community "Lunii Creations" is present on Discord to create and share Lunii packs ⭐](https://discord.com/invite/jg9MjHBWQC)**
 
 ## Quick start
 
