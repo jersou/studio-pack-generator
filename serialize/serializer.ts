@@ -166,15 +166,36 @@ async function exploreStageNode(
     groups[menu].push({ stage: uuid, action: parentIDs[parentIDs.length - 1] });
   }
 
+  let homeTransitionRelativeIndex = -1;
+
+  switch (stageNode.class) {
+    case "StageNode-StoryItem":
+      homeTransitionRelativeIndex = actionHistory.length >= 4
+        ? 4
+        : actionHistory.length >= 2
+        ? 2
+        : -1;
+      break;
+
+    case "StageNode-Menu":
+      homeTransitionRelativeIndex = actionHistory.length >= 3 ? 3 : -1;
+      break;
+
+    default:
+      homeTransitionRelativeIndex = actionHistory.length >= 2 ? 2 : -1;
+  }
+  const homeTransition = homeTransitionRelativeIndex === -1 ? null : {
+    actionNode:
+      actionHistory[actionHistory.length - homeTransitionRelativeIndex].id,
+    optionIndex:
+      actionHistory[actionHistory.length - homeTransitionRelativeIndex]
+        .optionIndex,
+  };
+
   const serializedStageNode: StageNode = {
     audio: stageNode.audio,
     controlSettings: getControlSettings(stageNode, parent),
-    homeTransition: actionHistory.length > 1
-      ? {
-        actionNode: actionHistory[actionHistory.length - 2].id,
-        optionIndex: actionHistory[actionHistory.length - 2].optionIndex,
-      }
-      : null,
+    homeTransition,
     image: stageNode.image,
     name: stageNode.name,
     okTransition: stageNode.okTransition

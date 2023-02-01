@@ -1052,10 +1052,7 @@ export const expectedFullPackSerialized: SerializedPack = {
         pause: false,
         wheel: true,
       },
-      homeTransition: {
-        actionNode: "ID",
-        optionIndex: 0,
-      },
+      homeTransition: null,
       image: "4977589ba6e6d131a500309d3f8ee84c66b615f1.png",
       name: "Bob",
       okTransition: {
@@ -1081,7 +1078,7 @@ export const expectedFullPackSerialized: SerializedPack = {
       },
       homeTransition: {
         actionNode: "f13a6d12-f14c-417c-a1b9-0d472a81f71f",
-        optionIndex: 1,
+        optionIndex: 0,
       },
       image: null,
       name: "Choose a place",
@@ -1214,10 +1211,7 @@ export const expectedFullPackSerialized: SerializedPack = {
         pause: false,
         wheel: true,
       },
-      homeTransition: {
-        actionNode: "ID",
-        optionIndex: 0,
-      },
+      homeTransition: null,
       image: "c68e4b1028b3c93e434506e6a0203e5edbaed43b.png",
       name: "Alice",
       okTransition: {
@@ -1544,10 +1538,7 @@ export const expectedFullPackNightSerialized = {
         pause: false,
         wheel: true,
       },
-      homeTransition: {
-        actionNode: "ID",
-        optionIndex: 0,
-      },
+      homeTransition: null,
       image: "4977589ba6e6d131a500309d3f8ee84c66b615f1.png",
       name: "Bob",
       okTransition: {
@@ -1573,7 +1564,7 @@ export const expectedFullPackNightSerialized = {
       },
       homeTransition: {
         actionNode: "f13a6d12-f14c-417c-a1b9-0d472a81f71f",
-        optionIndex: 1,
+        optionIndex: 0,
       },
       image: null,
       name: "Choose a place",
@@ -1706,10 +1697,7 @@ export const expectedFullPackNightSerialized = {
         pause: false,
         wheel: true,
       },
-      homeTransition: {
-        actionNode: "ID",
-        optionIndex: 0,
-      },
+      homeTransition: null,
       image: "c68e4b1028b3c93e434506e6a0203e5edbaed43b.png",
       name: "Alice",
       okTransition: {
