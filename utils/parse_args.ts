@@ -118,6 +118,14 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "skip RSS image download of items",
     })
+    .option("output-folder", {
+      alias: "o",
+      demandOption: false,
+      boolean: false,
+      type: "string",
+      default: undefined,
+      describe: "zip output folder",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

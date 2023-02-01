@@ -224,6 +224,7 @@ Options:
   -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
   -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
       --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
+  -o, --output-folder                zip output folder                                                          [string]
 ```
 
 ## Features

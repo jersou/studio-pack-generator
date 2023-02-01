@@ -8,7 +8,7 @@ import { serializePack } from "./serialize/serializer.ts";
 import { getAssetsPaths } from "./serialize/assets.ts";
 import { createPackZip } from "./utils/zip.ts";
 import { downloadRss } from "./generate/rss_parser.ts";
-import { exists, join } from "./deps.ts";
+import { basename, exists, join } from "./deps.ts";
 import {
   checkRunPermission,
   convertToImageItem,
@@ -32,6 +32,7 @@ export type ModOptions = {
   seekStory?: string;
   skipWsl?: boolean;
   skipRssImageDl?: boolean;
+  outputFolder?: string;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -95,7 +96,9 @@ export async function generatePack(opt: ModOptions) {
         nightModeAudioItemName,
       });
       const assets = getAssetsPaths(serializedPack, folder);
-      const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
+      const zipPath = opt.outputFolder
+        ? join(opt.outputFolder, `${basename(opt.storyPath)}-${Date.now()}.zip`)
+        : `${opt.storyPath}-${Date.now()}.zip`;
       await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
       console.log(
         `Done (${
