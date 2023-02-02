@@ -24751,7 +24751,7 @@ async function getLang() {
         }
     }
     let lang;
-    const langRegex = /^([a-zA-Z_-]+)\.?/;
+    const langRegex = /^([a-zA-Z_-]{2,})\.?/;
     if (LANG && langRegex.test(LANG)) {
         lang = langRegex.exec(LANG)[1].replace(/_/g, "-");
     }
@@ -25546,13 +25546,25 @@ async function exploreStageNode(stageNode, serialized, parent, actionHistory, pa
             action: parentIDs[parentIDs.length - 1]
         });
     }
+    let homeTransitionRelativeIndex = -1;
+    switch(stageNode.class){
+        case "StageNode-StoryItem":
+            homeTransitionRelativeIndex = actionHistory.length >= 4 ? 4 : actionHistory.length >= 2 ? 2 : -1;
+            break;
+        case "StageNode-Menu":
+            homeTransitionRelativeIndex = actionHistory.length >= 3 ? 3 : -1;
+            break;
+        default:
+            homeTransitionRelativeIndex = actionHistory.length >= 2 ? 2 : -1;
+    }
+    const homeTransition = homeTransitionRelativeIndex === -1 ? null : {
+        actionNode: actionHistory[actionHistory.length - homeTransitionRelativeIndex].id,
+        optionIndex: actionHistory[actionHistory.length - homeTransitionRelativeIndex].optionIndex
+    };
     const serializedStageNode = {
         audio: stageNode.audio,
         controlSettings: getControlSettings(stageNode, parent),
-        homeTransition: actionHistory.length > 1 ? {
-            actionNode: actionHistory[actionHistory.length - 2].id,
-            optionIndex: actionHistory[actionHistory.length - 2].optionIndex
-        } : null,
+        homeTransition,
         image: stageNode.image,
         name: stageNode.name,
         okTransition: stageNode.okTransition ? {
@@ -25904,7 +25916,7 @@ async function generatePack(opt) {
                 nightModeAudioItemName
             });
             const assets = getAssetsPaths(serializedPack, folder);
-            const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
+            const zipPath = opt.outputFolder ? join3(opt.outputFolder, `${basename2(opt.storyPath)}-${Date.now()}.zip`) : `${opt.storyPath}-${Date.now()}.zip`;
             await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
             console.log(`Done (${(Date.now() - start) / 1000} sec) :  ${opt.storyPath} → ${zipPath}`);
         }
@@ -25917,66 +25929,37 @@ async function parseArgs(args) {
             width = Math.min(120, Deno.consoleSize(Deno.stdout.rid).columns);
         }
         return y.wrap(width);
-    }, async (opts)=>await generatePack(opts)).usage("deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack").option("lang", {
-        alias: "l",
-        demandOption: false,
-        boolean: false,
-        type: "string",
-        describe: "the lang used to generate menu and items. Auto detected by default"
-    }).option("skip-image-item-gen", {
-        alias: "i",
+    }, async (opts)=>await generatePack(opts)).usage("deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack").option("add-delay", {
+        alias: "d",
         demandOption: false,
         boolean: true,
         default: false,
-        describe: "skip image item generation"
-    }).option("skip-audio-item-gen", {
-        alias: "a",
-        demandOption: false,
-        boolean: true,
-        default: false,
-        describe: "skip audio item generation"
-    }).option("skip-audio-convert", {
-        alias: "v",
-        demandOption: false,
-        boolean: true,
-        default: false,
-        describe: "skip convert audio (and skip increase volume)"
-    }).option("skip-extract-image-from-mp3", {
-        alias: "m",
-        demandOption: false,
-        boolean: true,
-        default: false,
-        describe: "skip extract item image from story mp3"
-    }).option("skip-zip-generation", {
-        alias: "z",
-        demandOption: false,
-        boolean: true,
-        default: false,
-        describe: "only process item generation, don't create zip"
-    }).option("skip-not-rss", {
-        alias: "s",
-        demandOption: false,
-        boolean: true,
-        default: false,
-        describe: "skip all except download RSS files"
+        describe: "add 1 second at the beginning and the end of audio files"
     }).option("auto-next-story-transition", {
         alias: "n",
         demandOption: false,
         boolean: true,
         default: false,
         describe: "go to next story of group at end of stories"
-    }).option("add-delay", {
-        alias: "d",
+    }).option("lang", {
+        alias: "l",
         demandOption: false,
-        boolean: true,
-        default: false,
-        describe: "add 1 second at the beginning and the end of audio files"
+        boolean: false,
+        type: "string",
+        describe: "the lang used to generate menu and items. Auto detected by default"
     }).option("night-mode", {
         alias: "t",
         demandOption: false,
         boolean: true,
         default: false,
         describe: "enable night mode : add transitions to an uniq endpoint"
+    }).option("output-folder", {
+        alias: "o",
+        demandOption: false,
+        boolean: false,
+        type: "string",
+        default: undefined,
+        describe: "zip output folder"
     }).option("seek-story", {
         alias: "c",
         demandOption: false,
@@ -25984,17 +25967,53 @@ async function parseArgs(args) {
         type: "string",
         default: undefined,
         describe: "cut the beginning of stories: 'HH:mm:ss' format or 'N' sec"
+    }).option("skip-audio-convert", {
+        alias: "v",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "skip convert audio (and skip increase volume)"
+    }).option("skip-audio-item-gen", {
+        alias: "a",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "skip audio item generation"
+    }).option("skip-extract-image-from-mp3", {
+        alias: "m",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "skip extract item image from story mp3"
+    }).option("skip-image-item-gen", {
+        alias: "i",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "skip image item generation"
+    }).option("skip-not-rss", {
+        alias: "s",
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "skip all except download RSS files"
+    }).option("skip-rss-image-dl", {
+        demandOption: false,
+        boolean: true,
+        default: false,
+        describe: "skip RSS image download of items"
     }).option("skip-wsl", {
         alias: "w",
         demandOption: false,
         boolean: true,
         default: false,
         describe: "disable WSL usage"
-    }).option("skip-rss-image-dl", {
+    }).option("skip-zip-generation", {
+        alias: "z",
         demandOption: false,
         boolean: true,
         default: false,
-        describe: "skip RSS image download of items"
+        describe: "only process item generation, don't create zip"
     }).version(false).demandCommand(1).parse();
 }
 const importMeta2 = {
