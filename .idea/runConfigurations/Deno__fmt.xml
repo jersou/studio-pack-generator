@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Deno: fmt" type="DenoConfigurationType" inputPath="." programParameters="fmt --ignore=&quot;.DENO_DIR,dist,.lock.json&quot;">
+  <configuration default="false" name="Deno: fmt" type="DenoConfigurationType" inputPath="." programParameters="task fmt">
     <method v="2" />
   </configuration>
 </component>

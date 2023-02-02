@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Deno: test" type="DenoConfigurationType" inputPath="." programParameters="test --allow-read --allow-write --allow-run --no-check">
+  <configuration default="false" name="Deno: test" type="DenoConfigurationType" inputPath="." programParameters="task test">
     <method v="2" />
   </configuration>
 </component>

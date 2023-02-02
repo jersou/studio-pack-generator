@@ -41,7 +41,7 @@ Install optional dependencies :
 
 [Windows release](https://github.com/jersou/studio-pack-generator/releases) of
 studio-pack-generator embeds these tools in zip file, and use Windows TTS
-instead of picoTTS.
+instead of picoTTS (unless you have WSL and picoTTS installed).
 
 Use "-miva" option to skip all generations that use these tools.
 
@@ -202,7 +202,6 @@ The "super pack" will look like :
   petits cochons.mp3".
 - Image formats : png, jpg, bmp.
 - Audio formats : mp3, ogg, opus, wav.
-- if the file `thumbnail.png` is present a root
 
 ## Usage
 
@@ -244,16 +243,19 @@ Options:
 
 ## Development
 
-Some dev command are listed in the scripts.yaml file, this file can be use with
-[Velociraptor](https://velociraptor.run/docs/installation/) :
+Some dev command are listed in the deno.json file :
 
+- bundle: bundle the project and its dependencies to
+  `dist/studio_pack_generator.js`
+- fmt: format the code
+- gen-bin: generate the binaries
+- gen-cov: generate the test coverage
+- lint: lint the code
+- pre-commit: fmt && lint && test
+- pre-commit-fast: parallel pre-commit task
 - start: run studio_pack_generator.ts
 - test: launch tests
 - test-watch: launch tests on file change
-- lint: lint the code
-- fmt: format the code
-- bundle: bundle the project and its dependencies to
-  dist/studio_pack_generator.js
-- bak-dep: backup the dependencies to `vendor`
-- gen-bin: generate the binaries
-- gen-cov: generate the test coverage
+- vendor: vendor the dependencies to `vendor`
+
+Usage : `deno task <command>`, ex : `deno task fmt`

@@ -28,10 +28,10 @@ jobs:
           deno-version: v1.30.0
 
       - name: Verify formatting
-        run: deno fmt --check --ignore="vendor,dist"
+        run: deno task fmt
 
       - name: Run linter
-        run: deno lint --ignore="vendor,dist"
+        run: deno task lint
 
       - name: Run tests
-        run: deno test --allow-read --allow-write --allow-run
+        run: deno task test

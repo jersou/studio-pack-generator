@@ -19,10 +19,4 @@ const runs = [
   { cwd, cmd: `deno test -A --ignore=vendor,dist --no-check` },
 ];
 
-await runPreCommit(runs, {
-  checkGitDiff: Deno.env.get("CHECK_GIT_DIFF") !== "false",
-  diffRef: Deno.env.get("CHECK_GIT_DIFF_REF"),
-  maxParallel: Deno.env.get("CHECK_MAX_PARALLEL")
-    ? parseInt(Deno.env.get("CHECK_MAX_PARALLEL") || "-1")
-    : undefined,
-});
+await runPreCommit(runs);
