@@ -2,6 +2,7 @@
 
 rm -f dist/*.zip || true
 mkdir -p dist/
+version=$(./version.ts)
 
 for i in \
          x86_64-unknown-linux-gnu,x86_64-linux \
@@ -15,11 +16,11 @@ for i in \
     rm -rf dist/Studio-Pack-Generator
     mkdir dist/Studio-Pack-Generator
     cp -a tools/ dist/studio-pack-generator-x86_64-windows.exe dist/Studio-Pack-Generator/
-    (cd dist && zip -r studio-pack-generator-x86_64-windows.zip Studio-Pack-Generator/)
+    (cd dist && zip -r studio-pack-generator-$version-x86_64-windows.zip Studio-Pack-Generator/)
     rm dist/studio-pack-generator-x86_64-windows.exe
     rm -rf dist/Studio-Pack-Generator
   else
-    (cd dist && zip -r studio-pack-generator-$2.zip studio-pack-generator-$2)
+    (cd dist && zip -r studio-pack-generator-$version-$2.zip studio-pack-generator-$2)
     rm dist/studio-pack-generator-$2
   fi
 done

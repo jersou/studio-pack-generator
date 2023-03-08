@@ -1,3 +1,7 @@
+### v0.2.4 / xxxx.xx.xx
+
+- feat: add SPG version in help and zip releases
+
 ### v0.2.3 / 2023.03.08
 
 - feat(serializer): use item image #20

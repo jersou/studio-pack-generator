@@ -30,6 +30,10 @@ jobs:
       - name: Run tests
         run: deno task test
 
+      - name: check version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: test $(./version.ts) = ${GITHUB_REF##*/}
+
       - name: Generate binaries
         if: startsWith(github.ref, 'refs/tags/')
         run: ./gen-bin.sh
@@ -45,8 +49,4 @@ jobs:
           draft: true
           fail_on_unmatched_files: true
           body_path: RELEASE_BODY.txt
-          files: |
-            dist/studio-pack-generator-aarch64-apple.zip
-            dist/studio-pack-generator-x86_64-apple.zip
-            dist/studio-pack-generator-x86_64-linux.zip
-            dist/studio-pack-generator-x86_64-windows.zip
+          files: dist/*.zip
