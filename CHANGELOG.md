@@ -1,4 +1,4 @@
-### v0.2.4 / xxxx.xx.xx
+### v0.2.4 / 2023.03.08
 
 - feat: add SPG version in help and zip releases
 
