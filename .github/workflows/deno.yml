@@ -1,16 +1,10 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will install Deno then run Deno lint and test.
-# For more information see: https://github.com/denoland/setup-deno
-
 name: Deno
 
 on:
   push:
     branches: [main]
+    tags:
+      - v*
   pull_request:
     branches: [main]
 
@@ -20,12 +14,12 @@ jobs:
 
     steps:
       - name: Setup repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.30.0
+          deno-version: v1.31.1
 
       - name: Verify formatting
         run: deno task fmt
@@ -35,3 +29,24 @@ jobs:
 
       - name: Run tests
         run: deno task test
+
+      - name: Generate binaries
+        if: startsWith(github.ref, 'refs/tags/')
+        run: ./gen-bin.sh
+
+      - name: Generate release body
+        if: startsWith(github.ref, 'refs/tags/')
+        run: grep -Pzo '^###(.|\n)*?(?=###)' CHANGELOG.md | sed 's|\x00|\n|g' > RELEASE_BODY.txt
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          body_path: RELEASE_BODY.txt
+          files: |
+            dist/studio-pack-generator-aarch64-apple.zip
+            dist/studio-pack-generator-x86_64-apple.zip
+            dist/studio-pack-generator-x86_64-linux.zip
+            dist/studio-pack-generator-x86_64-windows.zip
