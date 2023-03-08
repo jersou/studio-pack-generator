@@ -95,7 +95,7 @@ export const expectedMinPackSerialized = {
         y: 0,
       },
       squareOne: true,
-      type: "cover",
+      type: "stage",
       uuid: "09e8e5fb-5a8c-4686-819a-cd993f5fd597",
     },
     {
@@ -341,7 +341,7 @@ export const expectedMoyPackSerialized = {
         y: 0,
       },
       squareOne: true,
-      type: "cover",
+      type: "stage",
       uuid: "1b280bb1-858e-499f-b093-02259d939881",
     },
     {
@@ -1016,7 +1016,7 @@ export const expectedFullPackSerialized: SerializedPack = {
         y: 0,
       },
       squareOne: true,
-      type: "cover",
+      type: "stage",
       uuid: "86e05883-99a3-4031-8399-1b8a6f1c252a",
     },
     {
@@ -1502,7 +1502,7 @@ export const expectedFullPackNightSerialized = {
         y: 0,
       },
       squareOne: true,
-      type: "cover",
+      type: "stage",
       uuid: "86e05883-99a3-4031-8399-1b8a6f1c252a",
     },
     {

@@ -1,3 +1,7 @@
+### v0.2.3 / 2023.03.08
+
+- feat(serializer): use item image #20
+
 ### v0.2.2 / 2023.02.02
 
 - fix: fix home transition #19

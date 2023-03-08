@@ -214,7 +214,7 @@ async function exploreStageNode(
       : null,
     position: { x: 0, y: 0 },
     squareOne: stageNode.class === "StageNode-Entrypoint",
-    type: stageNode.class === "StageNode-Entrypoint" ? "cover" : "stage",
+    type: "stage",
     uuid,
   };
 
