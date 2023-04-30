@@ -1,4 +1,5 @@
 import {
+  convertToValidFilename,
   convWindowsWslPath,
   firstStoryFile,
   getExtension,
@@ -114,4 +115,12 @@ Deno.test("rmDiacritic", () => {
   // @ts-ignore Diacritic
   assertEquals("fière" === "fière", false);
   assertEquals(rmDiacritic("fière"), "fiere");
+});
+
+Deno.test("convertToValidFilename", () => {
+  assertEquals(convertToValidFilename("aze:rty?uiop"), "aze rty uiop");
+  assertEquals(
+    convertToValidFilename("aéz&'(rtyèeâî@%:a"),
+    "aéz   rtyèeâî   a",
+  );
 });

@@ -219,3 +219,7 @@ export function sanitize() {
 export function rmDiacritic(s: string) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
+
+export function convertToValidFilename(name: string): string {
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ_\-. ]/g, " ").trim();
+}

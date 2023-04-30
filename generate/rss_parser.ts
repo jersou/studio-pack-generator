@@ -1,5 +1,6 @@
 import {
   convertToImageItem,
+  convertToValidFilename,
   getExtension,
   getNameWithoutExt,
   isFile,
@@ -62,7 +63,7 @@ async function getFolderWithUrlFromRssUrl(
   const rss: Rss = (parse(xml).rss as any).channel;
   const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
   const fs: FolderWithUrl = {
-    name: rss.title,
+    name: convertToValidFilename(rss.title),
     files: [],
   };
   if (imgUrl) {
@@ -85,11 +86,17 @@ async function getFolderWithUrlFromRssUrl(
 }
 
 export function getItemFileName(item: RssItem) {
-  const title = item.title!.replace(/[\\\/:*?"<>|]/g, " ");
+  const title = convertToValidFilename(item.title!);
   return (
     new Date(item.pubDate).getTime() +
     ` - ${title}.${getExtension(item.enclosure["@url"])}`
   );
+}
+
+export function fixUrl(url: string): string {
+  return url
+    .replace(/^.*https:\/\//g, "https://")
+    .replace(/^.*http:\/\//g, "http://");
 }
 
 function getFolderOfStories(
@@ -101,16 +108,16 @@ function getFolderOfStories(
     files: items.flatMap((item) => {
       const itemFiles = [{
         name: getItemFileName(item),
-        url: item.enclosure["@url"],
+        url: fixUrl(item.enclosure["@url"]),
         sha1: "",
       }];
       const imageUrl = item["itunes:image"]?.["@href"];
       if (!skipRssImageDl && imageUrl) {
         itemFiles.push({
           name: `${getNameWithoutExt(getItemFileName(item))}.item.${
-            getExtension(imageUrl)
+            getExtension(imageUrl!)
           }`,
-          url: imageUrl,
+          url: imageUrl!,
           sha1: "",
         });
       }

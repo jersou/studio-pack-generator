@@ -1,3 +1,7 @@
+### v0.2.5 / 2023.04.30
+
+- fix(rss): fix (Windows) filenames
+
 ### v0.2.4 / 2023.03.08
 
 - feat: add SPG version in help and zip releases

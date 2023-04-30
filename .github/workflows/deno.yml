@@ -2,7 +2,7 @@ name: Deno
 
 on:
   push:
-    branches: [main]
+    branches: [main,dev]
     tags:
       - v*
   pull_request:
