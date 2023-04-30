@@ -221,5 +221,5 @@ export function rmDiacritic(s: string) {
 }
 
 export function convertToValidFilename(name: string): string {
-  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ_\-. ]/g, " ").trim();
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()! ]/g, " ").trim();
 }

@@ -120,7 +120,7 @@ Deno.test("rmDiacritic", () => {
 Deno.test("convertToValidFilename", () => {
   assertEquals(convertToValidFilename("aze:rty?uiop"), "aze rty uiop");
   assertEquals(
-    convertToValidFilename("aéz&'(rtyèeâî@%:a"),
-    "aéz   rtyèeâî   a",
+    convertToValidFilename("aéz&'(rtyèeâî@%:a123"),
+    "aéz  (rtyèeâî   a123",
   );
 });
