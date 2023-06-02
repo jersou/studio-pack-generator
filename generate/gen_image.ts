@@ -3,9 +3,11 @@ import { getConvertCommand } from "../utils/external_commands.ts";
 
 export async function generateImage(title: string, outputPath: string) {
   console.log(bgGreen(`Generate image to ${outputPath}`));
-  const process = await Deno.run({
-    cmd: [
-      ...(await getConvertCommand()),
+
+  const convertCommand = await getConvertCommand();
+  const process = new Deno.Command(convertCommand[0], {
+    args: [
+      ...(convertCommand.splice(1)),
       "-background",
       "black",
       "-fill",
@@ -19,7 +21,6 @@ export async function generateImage(title: string, outputPath: string) {
       `caption:${title}`,
       outputPath,
     ],
-  });
-  await process.status();
-  process.close();
+  }).spawn();
+  await process.status;
 }

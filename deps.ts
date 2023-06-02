@@ -6,11 +6,7 @@ export {
 } from "https://deno.land/std@0.158.0/fmt/colors.ts";
 export { exists } from "https://deno.land/std@0.158.0/fs/exists.ts";
 export { createHash } from "https://deno.land/std@0.158.0/hash/mod.ts";
-export {
-  Buffer,
-  copy,
-  readerFromStreamReader,
-} from "https://deno.land/std@0.158.0/io/mod.ts";
+export { Buffer, copy } from "https://deno.land/std@0.158.0/io/mod.ts";
 export {
   basename,
   dirname,
@@ -18,6 +14,10 @@ export {
   posix,
   win32,
 } from "https://deno.land/std@0.158.0/path/mod.ts";
+export {
+  readAll,
+  readerFromStreamReader,
+} from "https://deno.land/std@0.190.0/streams/mod.ts";
 
 export { default as i18next } from "https://deno.land/x/i18next@v21.2.4/index.js";
 

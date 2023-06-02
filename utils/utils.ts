@@ -1,5 +1,11 @@
 import { File, Folder } from "../serialize/types.ts";
-import { bgBlue, bgGreen, bgRed } from "../deps.ts";
+import {
+  bgBlue,
+  bgGreen,
+  bgRed,
+  readAll,
+  readerFromStreamReader,
+} from "../deps.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
@@ -149,9 +155,12 @@ export async function convertToImageItem(
   outputPath: string,
 ) {
   console.log(bgBlue(`Try convert ${inputPath} → ${outputPath}`));
-  const process = await Deno.run({
-    cmd: [
-      ...(await getFfmpegCommand()),
+
+  const ffmpegCommand = await getFfmpegCommand();
+
+  const process = new Deno.Command(ffmpegCommand[0], {
+    args: [
+      ...(ffmpegCommand.splice(1)),
       "-i",
       inputPath,
       "-vf",
@@ -161,15 +170,18 @@ export async function convertToImageItem(
     stdout: "null",
     stdin: "null",
     stderr: "piped",
-  });
-  const output = new TextDecoder().decode(await process.stderrOutput());
-  const status = await process.status();
+  }).spawn();
+
+  const stderrArr = await readAll(
+    readerFromStreamReader(process.stderr.getReader()),
+  );
+  const output = new TextDecoder().decode(stderrArr);
+  const status = await process.status;
   if (status.success) {
     console.log(bgGreen("→ OK"));
   } else {
     console.log(bgRed("→ KO : \n" + output));
   }
-  process.close();
 }
 
 let runPermissionOk = false;

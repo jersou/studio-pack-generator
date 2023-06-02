@@ -39,46 +39,53 @@ export async function generateAudio(
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
-    const process = Deno.run({
-      cmd: [
-        "PowerShell",
-        "-Command",
-        `Add-Type -AssemblyName System.Speech; ` +
-        `$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` +
-        `$speak.SetOutputToWaveFile("${outputPath}",${audioFormat}); ` +
-        `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` +
-        `$speak.Dispose();`,
-      ],
-    });
-    await process.status();
-    process.close();
+
+    const cmd = new Deno.Command(
+      "PowerShell",
+      {
+        args: [
+          "-Command",
+          `Add-Type -AssemblyName System.Speech; ` +
+          `$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` +
+          `$speak.SetOutputToWaveFile("${outputPath}",${audioFormat}); ` +
+          `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` +
+          `$speak.Dispose();`,
+        ],
+      },
+    );
+    const process = cmd.spawn();
+    await process.status;
   } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
-    const process = Deno.run({
-      cmd: [
-        "say",
-        "-o",
-        convertPath(outputPath),
-        "--file-format",
-        "WAVE",
-        "--data-format",
-        "LEF32@22050",
-        ` . ${title} . `,
-      ],
-    });
-    await process.status();
-    process.close();
+    const cmd = new Deno.Command(
+      "say",
+      {
+        args: [
+          "-o",
+          convertPath(outputPath),
+          "--file-format",
+          "WAVE",
+          "--data-format",
+          "LEF32@22050",
+          ` . ${title} . `,
+        ],
+      },
+    );
+    const process = cmd.spawn();
+
+    await process.status;
   } else {
-    const process = Deno.run({
-      cmd: [
-        ...(await getPico2waveCommand()),
+    const pico2waveCommand = await getPico2waveCommand();
+
+    const process = new Deno.Command(pico2waveCommand[0], {
+      args: [
+        ...(pico2waveCommand.splice(1)),
         "-l",
         lang,
         "-w",
         convertPath(outputPath),
         ` . ${title} . `,
       ],
-    });
-    await process.status();
-    process.close();
+    }).spawn();
+    await process.status;
   }
 }

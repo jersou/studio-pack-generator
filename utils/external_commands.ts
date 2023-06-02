@@ -8,14 +8,13 @@ export async function checkCommand(
 ): Promise<boolean> {
   console.log("checkCommand", cmd);
   try {
-    const process = Deno.run({
-      cmd,
+    const process = new Deno.Command(cmd[0], {
+      args: cmd.slice(1),
       stdin: "null",
       stdout: "null",
       stderr: "null",
-    });
-    const status = await process.status();
-    process.close();
+    }).spawn();
+    const status = await process.status;
     return status.code === exitCodeExpected;
   } catch (_e) {
     return false;

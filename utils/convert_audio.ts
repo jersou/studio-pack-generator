@@ -6,7 +6,15 @@ import {
   isFolder,
   isStory,
 } from "./utils.ts";
-import { bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
+import {
+  bgBlue,
+  bgGreen,
+  bgRed,
+  exists,
+  join,
+  readAll,
+  readerFromStreamReader,
+} from "../deps.ts";
 import { File, Folder } from "../serialize/types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
@@ -83,14 +91,13 @@ async function convertAudioFile(
     outputPath,
   ];
   console.log(bgBlue('"' + cmd.join('" "') + '"'));
-  const process = await Deno.run({
-    cmd,
+  const process = new Deno.Command(cmd[0], {
+    args: cmd.slice(1),
     stdout: "null",
     stdin: "null",
     stderr: "null",
-  });
-  const status = await process.status();
-  process.close();
+  }).spawn();
+  const status = await process.status;
   if (status.success) {
     console.log(bgGreen("→ OK"));
   } else {
@@ -102,27 +109,32 @@ async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
   const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
   let maxDb = 0;
   console.log(bgBlue(`get max volume of file ${inputPath}`));
-  const process = await Deno.run({
-    cmd: [
-      ...(await getFfmpegCommand()),
-      "-i",
-      inputPath,
-      "-af",
-      "volumedetect",
-      "-vn",
-      "-sn",
-      "-dn",
-      "-f",
-      "null",
-      "/dev/null",
-    ],
+  const cmd = [
+    ...(await getFfmpegCommand()),
+    "-i",
+    inputPath,
+    "-af",
+    "volumedetect",
+    "-vn",
+    "-sn",
+    "-dn",
+    "-f",
+    "null",
+    "/dev/null",
+  ];
+
+  const process = new Deno.Command(cmd[0], {
+    args: cmd.splice(1),
     stdout: "null",
     stdin: "null",
     stderr: "piped",
-  });
-  const output = new TextDecoder().decode(await process.stderrOutput());
-  const status = await process.status();
-  process.close();
+  }).spawn();
+
+  const stderrArr = await readAll(
+    readerFromStreamReader(process.stderr.getReader()),
+  );
+  const output = new TextDecoder().decode(stderrArr);
+  const status = await process.status;
   if (status.success) {
     const maxVolLine = output
       .split("\\n")
@@ -148,23 +160,26 @@ async function checkAudioFormat(filePath: string) {
 
 async function getFfmpegInfo(filePath: string): Promise<string> {
   console.log(bgBlue(`get info of file ${filePath}`));
-  const process = await Deno.run({
-    cmd: [
-      ...(await getFfmpegCommand()),
-      "-i",
-      filePath,
-      "-hide_banner",
-      "-f",
-      "null",
-      "-",
-    ],
+  const cmd = [
+    ...(await getFfmpegCommand()),
+    "-i",
+    filePath,
+    "-hide_banner",
+    "-f",
+    "null",
+    "-",
+  ];
+  const process = new Deno.Command(cmd[0], {
+    args: cmd.splice(1),
     stdout: "null",
     stdin: "null",
     stderr: "piped",
-  });
-  const output = new TextDecoder().decode(await process.stderrOutput());
-  const status = await process.status();
-  process.close();
+  }).spawn();
+  const stderrArr = await readAll(
+    readerFromStreamReader(process.stderr.getReader()),
+  );
+  const output = new TextDecoder().decode(stderrArr);
+  const status = await process.status;
   let info = "";
   if (status.success) {
     info = output;
