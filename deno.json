@@ -1,5 +1,4 @@
 {
-  "importMap": "vendor/import_map.json",
   "tasks": {
     "bundle": "deno bundle studio_pack_generator.ts dist/studio_pack_generator.js",
     "fmt": "deno fmt --ignore=vendor,dist,.cov_profile",
