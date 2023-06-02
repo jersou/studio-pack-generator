@@ -1,3 +1,7 @@
+### v0.2.6 / 2023.06.02
+
+- feat: add "select the next story in the menu at end" option
+
 ### v0.2.5 / 2023.04.30
 
 - fix(rss): fix (Windows) filenames
