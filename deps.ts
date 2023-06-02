@@ -32,5 +32,3 @@ export {
   ZipReader,
   ZipWriter,
 } from "https://deno.land/x/zipjs@v2.3.17/index.js";
-
-export { run } from "https://deno.land/x/shell_stream@v1.1.0/mod.ts";
