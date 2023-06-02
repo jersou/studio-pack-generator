@@ -12,8 +12,9 @@ import {
   ZipMenu,
 } from "./types.ts";
 import { BlobReader, BlobWriter, ZipReader } from "../deps.ts";
+import { ModOptions } from "../gen_pack.ts";
 
-type serializePackOption = {
+type SerializePackOption = {
   autoNextStoryTransition?: boolean;
   nightModeAudioItemName?: string | null;
 };
@@ -21,8 +22,8 @@ type Groups = { [key: string]: { stage: string; action: string }[] };
 
 export async function serializePack(
   pack: Pack,
-  storyPath: string,
-  opt?: serializePackOption,
+  opt: ModOptions,
+  serializePackOption?: SerializePackOption,
 ): Promise<SerializedPack> {
   const serialized: SerializedPack = {
     title: pack.title,
@@ -43,8 +44,9 @@ export async function serializePack(
     [],
     [],
     groups,
-    storyPath,
+    opt.storyPath,
     nightActionId,
+    opt,
   );
   const firstActionId =
     serialized.stageNodes.find((s) => s.squareOne)?.okTransition?.actionNode ||
@@ -64,7 +66,7 @@ export async function serializePack(
     serialized.actionNodes.push(nightAction);
     const nightStage: StageNode = {
       image: null,
-      audio: opt?.nightModeAudioItemName || null, // TODO
+      audio: serializePackOption?.nightModeAudioItemName || null, // TODO
       controlSettings: {
         autoplay: true,
         home: true,
@@ -83,7 +85,7 @@ export async function serializePack(
     serialized.stageNodes.push(nightStage);
   }
 
-  if (opt?.autoNextStoryTransition) {
+  if (serializePackOption?.autoNextStoryTransition) {
     for (const menuId of Object.keys(groups)) {
       const group = groups[menuId];
       for (let i = 1; i < group.length; i++) {
@@ -105,6 +107,7 @@ export async function serializePack(
 type ActionHistory = {
   id: string;
   optionIndex: number;
+  size: number;
 };
 
 function getControlSettings(
@@ -156,6 +159,7 @@ async function exploreStageNode(
   groups: Groups,
   storyPath: string,
   nightActionId: string,
+  opt: ModOptions,
 ) {
   const uuid = crypto.randomUUID();
   if (stageNode.class === "StageNode-Story") {
@@ -166,7 +170,7 @@ async function exploreStageNode(
     groups[menu].push({ stage: uuid, action: parentIDs[parentIDs.length - 1] });
   }
 
-  let homeTransitionRelativeIndex = -1;
+  let homeTransitionRelativeIndex: number;
 
   switch (stageNode.class) {
     case "StageNode-StoryItem":
@@ -208,6 +212,7 @@ async function exploreStageNode(
           groups,
           storyPath,
           nightActionId,
+          opt,
         ),
         optionIndex: 0,
       }
@@ -229,9 +234,12 @@ async function exploreStageNode(
         optionIndex: 0,
       };
     } else {
+      const parentAction = actionHistory[actionHistory.length - 2];
       serializedStageNode.okTransition = {
-        actionNode: actionHistory[actionHistory.length - 2].id,
-        optionIndex: actionHistory[actionHistory.length - 2].optionIndex,
+        actionNode: parentAction.id,
+        optionIndex: opt.selectNextStoryAtEnd
+          ? (parentAction.optionIndex + 1) % parentAction.size
+          : parentAction.optionIndex,
       };
     }
     serializedStageNode.controlSettings.autoplay = true;
@@ -274,7 +282,7 @@ async function exploreZipMenu(
   }
 
   const blobWriter = new BlobWriter("application/json");
-  const blob = await storyEntry.getData(blobWriter);
+  const blob = storyEntry.getData(blobWriter);
   const storyTxt: string = await blob.text();
 
   await zipReader.close();
@@ -333,6 +341,7 @@ async function exploreActionNode(
   groups: Groups,
   storyPath: string,
   nightActionId: string,
+  opt: ModOptions,
 ) {
   const id = crypto.randomUUID();
 
@@ -340,7 +349,11 @@ async function exploreActionNode(
 
   for (const stageNode of actionNode.options) {
     {
-      const histo = [...actionHistory, { id, optionIndex: options.length }];
+      const histo = [...actionHistory, {
+        id,
+        optionIndex: options.length,
+        size: actionNode.options.length,
+      }];
       if (stageNode.class == "ZipMenu") {
         options.push(
           await exploreZipMenu(stageNode, serialized, histo, storyPath),
@@ -356,6 +369,7 @@ async function exploreActionNode(
             groups,
             storyPath,
             nightActionId,
+            opt,
           ),
         );
       }

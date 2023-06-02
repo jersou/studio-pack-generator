@@ -27,6 +27,7 @@ export type ModOptions = {
   skipZipGeneration?: boolean;
   skipNotRss?: boolean;
   autoNextStoryTransition?: boolean;
+  selectNextStoryAtEnd?: boolean;
   addDelay?: boolean;
   nightMode?: boolean;
   seekStory?: string;
@@ -91,7 +92,7 @@ export async function generatePack(opt: ModOptions) {
       folder = await fsToFolder(opt.storyPath, true);
       const pack = folderToPack(folder, !!opt.nightMode);
       const nightModeAudioItemName = getNightModeAudioItem(folder);
-      const serializedPack = await serializePack(pack, opt.storyPath, {
+      const serializedPack = await serializePack(pack, opt, {
         autoNextStoryTransition: opt.autoNextStoryTransition,
         nightModeAudioItemName,
       });

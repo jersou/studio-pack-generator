@@ -40,6 +40,13 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "go to next story of group at end of stories",
     })
+    .option("select-next-story-at-end", {
+      alias: "b",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "select the next story in the menu at end",
+    })
     .option("lang", {
       alias: "l",
       demandOption: false,

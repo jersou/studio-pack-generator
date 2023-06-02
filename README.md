@@ -212,6 +212,7 @@ Options:
       --help                         Show help                                                                 [boolean]
   -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
   -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
+  -b, --select-next-story-at-end     select the next story in the menu at end                 [boolean] [default: false]
   -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
   -t, --night-mode                   enable night mode : add transitions to an uniq endpoint  [boolean] [default: false]
   -o, --output-folder                zip output folder                                                          [string]

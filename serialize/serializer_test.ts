@@ -6,9 +6,11 @@ import {
   expectedMinPack,
   expectedMinPackSerialized,
   expectedMoyPack,
+  expectedMoyPackNextMenuSerialized,
   expectedMoyPackSerialized,
 } from "../test_data/test_data.ts";
 import { serializePack } from "./serializer.ts";
+import { ModOptions } from "../gen_pack.ts";
 
 type Obj = {
   id?: string;
@@ -55,8 +57,13 @@ function clone(object: any) {
   return cloneObj;
 }
 
+const emptyOpt: ModOptions = {
+  lang: "fr",
+  storyPath: "",
+};
+
 Deno.test("serializePack-min", async () => {
-  const pack = await serializePack(expectedMinPack, "");
+  const pack = await serializePack(expectedMinPack, emptyOpt);
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedMinPackSerialized)),
@@ -64,7 +71,7 @@ Deno.test("serializePack-min", async () => {
 });
 
 Deno.test("serializePack-moy", async () => {
-  const pack = await serializePack(expectedMoyPack, "");
+  const pack = await serializePack(expectedMoyPack, emptyOpt);
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedMoyPackSerialized)),
@@ -72,7 +79,7 @@ Deno.test("serializePack-moy", async () => {
 });
 
 Deno.test("serializePack-full", async () => {
-  const pack = await serializePack(expectedFullPack, "");
+  const pack = await serializePack(expectedFullPack, emptyOpt);
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedFullPackSerialized)),
@@ -82,9 +89,21 @@ Deno.test("serializePack-full", async () => {
 Deno.test("serializePack-full-night-mode", async () => {
   const expectedFullPackNight = expectedFullPack;
   expectedFullPackNight.nightModeAvailable = true;
-  const pack = await serializePack(expectedFullPackNight, "");
+  const pack = await serializePack(expectedFullPackNight, emptyOpt);
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedFullPackNightSerialized)),
+  );
+});
+
+Deno.test("serializePack-next-menu", async () => {
+  const pack = await serializePack(expectedMoyPack, {
+    lang: "fr",
+    storyPath: "",
+    selectNextStoryAtEnd: true,
+  });
+  assertEquals(
+    clearIds(clone(pack)),
+    clearIds(clone(expectedMoyPackNextMenuSerialized)),
   );
 });
