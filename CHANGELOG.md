@@ -1,3 +1,8 @@
+### v0.2.7 / 2023.06.02
+
+- feat: add "-fflags +bitexact -flags:v +bitexact -flags:a +bitexact" to ffmpeg
+  command
+
 ### v0.2.6 / 2023.06.02
 
 - feat: add "select the next story in the menu at end" option
