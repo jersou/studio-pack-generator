@@ -31,6 +31,7 @@ jobs:
         run: deno task test
 
   build:
+    if: startsWith(github.ref, 'refs/tags/')
     needs:
       - test
     runs-on: ubuntu-latest
@@ -45,20 +46,16 @@ jobs:
           deno-version: v1.34.1
 
       - name: check version
-        if: startsWith(github.ref, 'refs/tags/')
         run: test $(./version.ts) = ${GITHUB_REF##*/}
 
       - name: Generate binaries
-        if: startsWith(github.ref, 'refs/tags/')
         run: ./gen-bin.sh
 
       - name: Generate release body
-        if: startsWith(github.ref, 'refs/tags/')
         run: grep -Pzo '^###(.|\n)*?(?=###)' CHANGELOG.md | sed 's|\x00|\n|g' > RELEASE_BODY.txt
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
           fail_on_unmatched_files: true
