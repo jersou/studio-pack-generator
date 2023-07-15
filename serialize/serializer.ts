@@ -19,6 +19,10 @@ type SerializePackOption = {
   nightModeAudioItemName?: string | null;
 };
 type Groups = { [key: string]: { stage: string; action: string }[] };
+type Entry = {
+  // deno-lint-ignore no-explicit-any
+  getData: (writer: BlobWriter) => Promise<any>;
+};
 
 export async function serializePack(
   pack: Pack,
@@ -267,9 +271,8 @@ async function exploreZipMenu(
     { useWebWorkers: false },
   );
 
-  const entries = await zipReader.getEntries();
-  // deno-lint-ignore no-explicit-any
-  const storyEntry: any = entries.find(
+  const entries = await zipReader.getEntries() as Entry[];
+  const storyEntry = entries.find(
     // deno-lint-ignore no-explicit-any
     (entry: any) => entry.filename === "story.json",
   );
@@ -282,7 +285,7 @@ async function exploreZipMenu(
   }
 
   const blobWriter = new BlobWriter("application/json");
-  const blob = storyEntry.getData(blobWriter);
+  const blob = await storyEntry.getData(blobWriter);
   const storyTxt: string = await blob.text();
 
   await zipReader.close();

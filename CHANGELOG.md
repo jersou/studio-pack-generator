@@ -1,3 +1,7 @@
+### v0.2.8 / 2023.07.15
+
+- fix(serializer): fix pack aggregation
+
 ### v0.2.7 / 2023.06.03
 
 - feat: add "-fflags +bitexact -flags:v +bitexact -flags:a +bitexact" to ffmpeg
