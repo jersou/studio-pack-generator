@@ -123,6 +123,12 @@ export function isAudioItem(file: File) {
   );
 }
 
+export function isImageItem(file: File) {
+  return (
+    fileImageItemRegEx.test(file.name) || folderImageItemRegEx.test(file.name)
+  );
+}
+
 export function firstStoryFile(folder: Folder) {
   return folder.files.find(
     (f) =>

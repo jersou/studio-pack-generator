@@ -1,3 +1,7 @@
+### v0.2.9 / 2023.07.28
+
+- feat: add images convertion #21
+
 ### v0.2.8 / 2023.07.15
 
 - fix(serializer): fix pack aggregation

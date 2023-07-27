@@ -85,6 +85,13 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "skip convert audio (and skip increase volume)",
     })
+    .option("skip-image-convert", {
+      alias: "j",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "skip convert image",
+    })
     .option("skip-audio-item-gen", {
       alias: "a",
       demandOption: false,

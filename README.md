@@ -218,6 +218,7 @@ Options:
   -o, --output-folder                zip output folder                                                          [string]
   -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
   -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
+  -j, --skip-image-convert           skip convert image                                       [boolean] [default: false]
   -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
@@ -235,12 +236,14 @@ Options:
 - Increase audio volume of stories if needed.
 - Download podcast from a RSS url and generate the story tree, cut by parts of
   10 stories.
-- Convert mp3 files to right format.
+- Convert mp3 files to right format (mp3, 44100 Hz, mono).
+- Convert image files to right format (320x240).
 - Generate story thumbnail.
 - Option to chaining the stories.
 - Option enable the night mode.
 - Option to add 1 sec of silence at the beginning and end of sound files.
 - Option to skip the beginning of stories.
+- Zip Pack aggregation
 
 ## Development
 

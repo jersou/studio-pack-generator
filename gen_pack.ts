@@ -16,6 +16,7 @@ import {
   getNightModeAudioItem,
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
+import { convertImageOfFolder } from "./utils/convert_image.ts";
 
 export type ModOptions = {
   storyPath: string;
@@ -23,6 +24,7 @@ export type ModOptions = {
   skipImageItemGen?: boolean;
   skipAudioItemGen?: boolean;
   skipAudioConvert?: boolean;
+  skipImageConvert?: boolean;
   skipExtractImageFromMp3?: boolean;
   skipZipGeneration?: boolean;
   skipNotRss?: boolean;
@@ -84,6 +86,9 @@ export async function generatePack(opt: ModOptions) {
         !!opt.addDelay,
         opt.seekStory,
       );
+    }
+    if (!opt.skipImageConvert) {
+      await convertImageOfFolder(opt.storyPath, folder);
     }
     if (!opt.skipImageItemGen) {
       await genThumbnail(folder, opt.storyPath);
