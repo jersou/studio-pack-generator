@@ -1,3 +1,8 @@
+### v0.2.10 / 2023.12.27
+
+- use deno 1.39.1
+- add metadata.json to overwrite story.json metadata
+
 ### v0.2.9 / 2023.07.28
 
 - feat: add images convertion #21

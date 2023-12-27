@@ -245,6 +245,23 @@ Options:
 - Option to skip the beginning of stories.
 - Zip Pack aggregation
 
+### Overwrite metadata
+
+If the file `metadata.json` exists in the story folder, it will be used to
+overwrite the `story.json` metadata.
+
+All key/value are optional, ex:
+
+```json
+{
+  "title": "title - overwrite",
+  "description": "description - overwrite",
+  "format": "v1",
+  "version": 1,
+  "nightModeAvailable": false
+}
+```
+
 ## Development
 
 Some dev command are listed in the deno.json file :

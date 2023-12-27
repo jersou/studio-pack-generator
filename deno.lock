@@ -1,5 +1,10 @@
 {
-  "version": "2",
+  "version": "3",
+  "redirects": {
+    "https://deno.land/std/fmt/printf.ts": "https://deno.land/std@0.86.0/fmt/printf.ts",
+    "https://deno.land/std/path/mod.ts": "https://deno.land/std@0.178.0/path/mod.ts",
+    "https://deno.land/std/testing/asserts.ts": "https://deno.land/std@0.86.0/testing/asserts.ts"
+  },
   "remote": {
     "https://deno.land/std@0.141.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.141.0/bytes/bytes_list.ts": "67eb118e0b7891d2f389dad4add35856f4ad5faab46318ff99653456c23b025d",

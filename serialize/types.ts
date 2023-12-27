@@ -9,9 +9,9 @@ export type File = {
 
 export type Pack = {
   title: string;
-  description: "";
-  format: "v1";
-  version: 1;
+  description: string;
+  format: string;
+  version: number;
   nightModeAvailable: boolean;
   entrypoint: Entrypoint;
 };
@@ -81,9 +81,9 @@ export type ActionNode = {
 
 export type SerializedPack = {
   title: string;
-  description: "";
-  format: "v1";
-  version: 1;
+  description: string;
+  format: string;
+  version: number;
   nightModeAvailable: boolean;
   actionNodes: ActionNode[];
   stageNodes: StageNode[];
@@ -93,4 +93,12 @@ export type SerializedPack = {
 export type ZipMenu = {
   class: "ZipMenu";
   path: string;
+};
+
+export type Metadata = {
+  title?: string;
+  description?: string;
+  format?: string;
+  version?: number;
+  nightMode?: boolean;
 };

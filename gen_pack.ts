@@ -1,4 +1,4 @@
-import { File, Folder } from "./serialize/types.ts";
+import { File, Folder, Metadata } from "./serialize/types.ts";
 import { fsToFolder } from "./serialize/fs.ts";
 import { extractImagesFromAudio } from "./generate/extract_images_from_audio.ts";
 import { genMissingItems } from "./generate/gen_missing_items.ts";
@@ -95,7 +95,9 @@ export async function generatePack(opt: ModOptions) {
     }
     if (!opt.skipZipGeneration) {
       folder = await fsToFolder(opt.storyPath, true);
-      const pack = folderToPack(folder, !!opt.nightMode);
+
+      const metadata: Metadata = await getMetadata(opt);
+      const pack = folderToPack(folder, metadata);
       const nightModeAudioItemName = getNightModeAudioItem(folder);
       const serializedPack = await serializePack(pack, opt, {
         autoNextStoryTransition: opt.autoNextStoryTransition,
@@ -113,5 +115,17 @@ export async function generatePack(opt: ModOptions) {
       );
       // sanitize();
     }
+  }
+}
+
+async function getMetadata(opt: ModOptions): Promise<Metadata> {
+  const metadataPath = `${opt.storyPath}/metadata.json`;
+  if (await exists(metadataPath)) {
+    const metadataJson = await Deno.readTextFile(metadataPath);
+    return JSON.parse(metadataJson);
+  } else {
+    return {
+      nightMode: !!opt.nightMode,
+    };
   }
 }
