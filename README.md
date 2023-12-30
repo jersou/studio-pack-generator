@@ -228,6 +228,13 @@ Options:
   -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
 ```
 
+Separate options by spaces, ex :
+
+- short version : `studio_pack_generator -v -j -a "the story"` or
+  `studio_pack_generator -vja "the story"`
+- long version :
+  `studio_pack_generator --skip-audio-convert --skip-image-convert --skip-audio-item-gen "the story"`
+
 ## Features
 
 - Generate studio pack from file tree.
