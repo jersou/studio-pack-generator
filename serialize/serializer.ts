@@ -12,17 +12,22 @@ import {
   ZipMenu,
 } from "./types.ts";
 import { BlobReader, BlobWriter, ZipReader } from "../deps.ts";
+import { ModOptions } from "../gen_pack.ts";
 
-type serializePackOption = {
+type SerializePackOption = {
   autoNextStoryTransition?: boolean;
   nightModeAudioItemName?: string | null;
 };
 type Groups = { [key: string]: { stage: string; action: string }[] };
+type Entry = {
+  // deno-lint-ignore no-explicit-any
+  getData: (writer: BlobWriter) => Promise<any>;
+};
 
 export async function serializePack(
   pack: Pack,
-  storyPath: string,
-  opt?: serializePackOption,
+  opt: ModOptions,
+  serializePackOption?: SerializePackOption,
 ): Promise<SerializedPack> {
   const serialized: SerializedPack = {
     title: pack.title,
@@ -43,8 +48,9 @@ export async function serializePack(
     [],
     [],
     groups,
-    storyPath,
+    opt.storyPath,
     nightActionId,
+    opt,
   );
   const firstActionId =
     serialized.stageNodes.find((s) => s.squareOne)?.okTransition?.actionNode ||
@@ -64,7 +70,7 @@ export async function serializePack(
     serialized.actionNodes.push(nightAction);
     const nightStage: StageNode = {
       image: null,
-      audio: opt?.nightModeAudioItemName || null, // TODO
+      audio: serializePackOption?.nightModeAudioItemName || null, // TODO
       controlSettings: {
         autoplay: true,
         home: true,
@@ -83,7 +89,7 @@ export async function serializePack(
     serialized.stageNodes.push(nightStage);
   }
 
-  if (opt?.autoNextStoryTransition) {
+  if (serializePackOption?.autoNextStoryTransition) {
     for (const menuId of Object.keys(groups)) {
       const group = groups[menuId];
       for (let i = 1; i < group.length; i++) {
@@ -105,6 +111,7 @@ export async function serializePack(
 type ActionHistory = {
   id: string;
   optionIndex: number;
+  size: number;
 };
 
 function getControlSettings(
@@ -156,6 +163,7 @@ async function exploreStageNode(
   groups: Groups,
   storyPath: string,
   nightActionId: string,
+  opt: ModOptions,
 ) {
   const uuid = crypto.randomUUID();
   if (stageNode.class === "StageNode-Story") {
@@ -166,15 +174,36 @@ async function exploreStageNode(
     groups[menu].push({ stage: uuid, action: parentIDs[parentIDs.length - 1] });
   }
 
+  let homeTransitionRelativeIndex: number;
+
+  switch (stageNode.class) {
+    case "StageNode-StoryItem":
+      homeTransitionRelativeIndex = actionHistory.length >= 4
+        ? 4
+        : actionHistory.length >= 2
+        ? 2
+        : -1;
+      break;
+
+    case "StageNode-Menu":
+      homeTransitionRelativeIndex = actionHistory.length >= 3 ? 3 : -1;
+      break;
+
+    default:
+      homeTransitionRelativeIndex = actionHistory.length >= 2 ? 2 : -1;
+  }
+  const homeTransition = homeTransitionRelativeIndex === -1 ? null : {
+    actionNode:
+      actionHistory[actionHistory.length - homeTransitionRelativeIndex].id,
+    optionIndex:
+      actionHistory[actionHistory.length - homeTransitionRelativeIndex]
+        .optionIndex,
+  };
+
   const serializedStageNode: StageNode = {
     audio: stageNode.audio,
     controlSettings: getControlSettings(stageNode, parent),
-    homeTransition: actionHistory.length > 1
-      ? {
-        actionNode: actionHistory[actionHistory.length - 2].id,
-        optionIndex: actionHistory[actionHistory.length - 2].optionIndex,
-      }
-      : null,
+    homeTransition,
     image: stageNode.image,
     name: stageNode.name,
     okTransition: stageNode.okTransition
@@ -187,13 +216,14 @@ async function exploreStageNode(
           groups,
           storyPath,
           nightActionId,
+          opt,
         ),
         optionIndex: 0,
       }
       : null,
     position: { x: 0, y: 0 },
     squareOne: stageNode.class === "StageNode-Entrypoint",
-    type: stageNode.class === "StageNode-Entrypoint" ? "cover" : "stage",
+    type: "stage",
     uuid,
   };
 
@@ -208,9 +238,12 @@ async function exploreStageNode(
         optionIndex: 0,
       };
     } else {
+      const parentAction = actionHistory[actionHistory.length - 2];
       serializedStageNode.okTransition = {
-        actionNode: actionHistory[actionHistory.length - 2].id,
-        optionIndex: actionHistory[actionHistory.length - 2].optionIndex,
+        actionNode: parentAction.id,
+        optionIndex: opt.selectNextStoryAtEnd
+          ? (parentAction.optionIndex + 1) % parentAction.size
+          : parentAction.optionIndex,
       };
     }
     serializedStageNode.controlSettings.autoplay = true;
@@ -238,9 +271,8 @@ async function exploreZipMenu(
     { useWebWorkers: false },
   );
 
-  const entries = await zipReader.getEntries();
-  // deno-lint-ignore no-explicit-any
-  const storyEntry: any = entries.find(
+  const entries = await zipReader.getEntries() as Entry[];
+  const storyEntry = entries.find(
     // deno-lint-ignore no-explicit-any
     (entry: any) => entry.filename === "story.json",
   );
@@ -312,6 +344,7 @@ async function exploreActionNode(
   groups: Groups,
   storyPath: string,
   nightActionId: string,
+  opt: ModOptions,
 ) {
   const id = crypto.randomUUID();
 
@@ -319,7 +352,11 @@ async function exploreActionNode(
 
   for (const stageNode of actionNode.options) {
     {
-      const histo = [...actionHistory, { id, optionIndex: options.length }];
+      const histo = [...actionHistory, {
+        id,
+        optionIndex: options.length,
+        size: actionNode.options.length,
+      }];
       if (stageNode.class == "ZipMenu") {
         options.push(
           await exploreZipMenu(stageNode, serialized, histo, storyPath),
@@ -335,6 +372,7 @@ async function exploreActionNode(
             groups,
             storyPath,
             nightActionId,
+            opt,
           ),
         );
       }

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Deno: lint" type="DenoConfigurationType" inputPath="." programParameters="lint --ignore=&quot;.DENO_DIR,dist,vendor&quot;">
+  <configuration default="false" name="Deno: lint" type="DenoConfigurationType" inputPath="." programParameters="task lint">
     <method v="2" />
   </configuration>
 </component>

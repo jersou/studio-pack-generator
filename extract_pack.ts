@@ -3,11 +3,10 @@
 import { ModOptions } from "./gen_pack.ts";
 import { BlobReader, BlobWriter, ZipReader } from "./deps.ts";
 import { getExtension } from "./utils/utils.ts";
+import { SerializedPack } from "./serialize/types.ts";
 
 export async function extractPack(opt: ModOptions) {
   const packPath = opt.storyPath;
-  // console.log({ packPath });
-
   const zipReader = new ZipReader(
     new BlobReader(
       new Blob([await Deno.readFile(packPath)]),
@@ -16,12 +15,12 @@ export async function extractPack(opt: ModOptions) {
   );
   // deno-lint-ignore no-explicit-any
   const entries: any[] = await zipReader.getEntries();
-  const storyEntry = entries.find((e) => e.filename === "story.json");
+  const storyEntry = entries.find((e) => e.filename === "story.json")!;
 
-  const blob = await storyEntry!.getData(new BlobWriter());
-  const story = JSON.parse(await blob.text());
+  const blob = await storyEntry.getData(new BlobWriter());
+  const story = JSON.parse(await blob.text()) as SerializedPack;
 
-  const entrypoint = story.stageNodes.find((s: any) => s.squareOne);
+  const entrypoint = story.stageNodes.find((s) => s.squareOne)!;
   await extractStage(story, entrypoint.uuid, [], "", []);
 
   // for (
@@ -33,10 +32,10 @@ export async function extractPack(opt: ModOptions) {
   // }
 }
 
-// TODO : suppression des cycle pour reafaire un parcourt derriere et avoir les bon chemins
+// TODO : suppression des cycle pour refaire un parcourt derriere et avoir les bon chemins
 
 export async function extractStage(
-  story: any,
+  story: SerializedPack,
   stageId: string,
   stageDone: string[],
   basePath: string,
@@ -46,7 +45,7 @@ export async function extractStage(
   if (!stageDone.includes(stageId)) {
     // console.log(basePath);
     stageDone.push(stageId);
-    const stage = story.stageNodes.find((s: any) => s.uuid === stageId);
+    const stage = story.stageNodes.find((s) => s.uuid === stageId)!;
     stage.audio &&
       console.log(
         `→ ${basePath}/${stage.name}.${getExtension(stage.audio)}`,
@@ -63,8 +62,8 @@ export async function extractStage(
     //   }`,
     // );
 
-    const actionId = stage.okTransition.actionNode;
-    const action = story.actionNodes.find((a: any) => a.id === actionId);
+    const actionId = stage.okTransition?.actionNode;
+    const action = story.actionNodes.find((a) => a.id === actionId)!;
     stageToProcess.push(
       ...action.options.map((o: string) => ({
         stageId: o,
@@ -73,12 +72,12 @@ export async function extractStage(
     );
 
     if (stageIndex === 0) {
-      for (let i = 0; i < stageToProcess.length; i++) {
+      for (const element of stageToProcess) {
         await extractStage(
           story,
-          stageToProcess[i].stageId,
+          element.stageId,
           stageDone,
-          stageToProcess[i].basePath,
+          element.basePath,
           stageToProcess,
         );
       }

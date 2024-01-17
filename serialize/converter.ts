@@ -2,6 +2,7 @@ import {
   File,
   Folder,
   Menu,
+  Metadata,
   Pack,
   Story,
   StoryItem,
@@ -20,14 +21,14 @@ import {
   isZipFile,
 } from "../utils/utils.ts";
 
-export function folderToPack(folder: Folder, nightMode = false): Pack {
+export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
   return {
-    title: folder!.name,
-    description: "",
-    format: "v1",
-    version: 1,
-    nightModeAvailable: nightMode,
+    title: metadata?.title ?? folder!.name,
+    description: metadata?.description ?? "",
+    format: metadata?.format ?? "v1",
+    version: metadata?.version ?? 1,
+    nightModeAvailable: !!(metadata?.nightMode),
     entrypoint: {
       class: "StageNode-Entrypoint",
       name: "Cover node",

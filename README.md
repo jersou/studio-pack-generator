@@ -6,6 +6,10 @@ file structure below.
 
 Supported OS: Windows / Linux / macOS
 
+**[⭐ Une grosse communauté est présente sur Discord pour créer et partager des pack Lunii ! ⭐](https://discord.com/invite/jg9MjHBWQC)**
+
+**[⭐ A big french community is present on Discord to create and share Lunii packs ⭐](https://discord.com/invite/jg9MjHBWQC)**
+
 ## Quick start
 
 ```shell
@@ -35,8 +39,9 @@ Examples:
 Install optional dependencies :
 `sudo apt update && sudo apt install -y ffmpeg libttspico-utils imagemagick`
 
-Windows release of studio-pack-generator embeds these tools in zip file, and use
-Windows TTS instead of picoTTS.
+[Windows release](https://github.com/jersou/studio-pack-generator/releases) of
+studio-pack-generator embeds these tools in zip file, and use Windows TTS
+instead of picoTTS (unless you have WSL and picoTTS installed).
 
 Use "-miva" option to skip all generations that use these tools.
 
@@ -197,7 +202,6 @@ The "super pack" will look like :
   petits cochons.mp3".
 - Image formats : png, jpg, bmp.
 - Audio formats : mp3, ogg, opus, wav.
-- if the file `thumbnail.png` is present a root
 
 ## Usage
 
@@ -206,18 +210,30 @@ deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert
 
 Options:
       --help                         Show help                                                                 [boolean]
-  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
-  -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
-  -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
-  -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
-  -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
-  -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
-  -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
-  -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
   -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
+  -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
+  -b, --select-next-story-at-end     select the next story in the menu at end                 [boolean] [default: false]
+  -l, --lang                         the lang used to generate menu and items. Auto detected by default         [string]
   -t, --night-mode                   enable night mode : add transitions to an uniq endpoint  [boolean] [default: false]
+  -o, --output-folder                zip output folder                                                          [string]
   -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
+  -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
+  -j, --skip-image-convert           skip convert image                                       [boolean] [default: false]
+  -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
+  -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
+  -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
+  -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
+      --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
+  -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
+  -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
 ```
+
+Separate options by spaces, ex :
+
+- short version : `studio_pack_generator -v -j -a "the story"` or
+  `studio_pack_generator -vja "the story"`
+- long version :
+  `studio_pack_generator --skip-audio-convert --skip-image-convert --skip-audio-item-gen "the story"`
 
 ## Features
 
@@ -227,25 +243,53 @@ Options:
 - Increase audio volume of stories if needed.
 - Download podcast from a RSS url and generate the story tree, cut by parts of
   10 stories.
-- Convert mp3 files to right format.
+- Convert mp3 files to right format (mp3, 44100 Hz, mono).
+- Convert image files to right format (320x240).
 - Generate story thumbnail.
 - Option to chaining the stories.
 - Option enable the night mode.
 - Option to add 1 sec of silence at the beginning and end of sound files.
 - Option to skip the beginning of stories.
+- Zip Pack aggregation
+
+### Overwrite metadata
+
+If the file `metadata.json` exists in the story folder, it will be used to
+overwrite the `story.json` metadata.
+
+All key/value are optional, ex:
+
+```json
+{
+  "title": "title - overwrite",
+  "description": "description - overwrite",
+  "format": "v1",
+  "version": 1,
+  "nightModeAvailable": false
+}
+```
 
 ## Development
 
-Some dev command are listed in the scripts.yaml file, this file can be use with
-[Velociraptor](https://velociraptor.run/docs/installation/) :
+Some dev command are listed in the deno.json file :
 
+- bundle: bundle the project and its dependencies to
+  `dist/studio_pack_generator.js`
+- fmt: format the code
+- gen-bin: generate the binaries
+- gen-cov: generate the test coverage
+- lint: lint the code
+- pre-commit: fmt && lint && test
+- pre-commit-fast: parallel pre-commit task
 - start: run studio_pack_generator.ts
 - test: launch tests
 - test-watch: launch tests on file change
-- lint: lint the code
-- fmt: format the code
-- bundle: bundle the project and its dependencies to
-  dist/studio_pack_generator.js
-- bak-dep: backup the dependencies to `vendor`
-- gen-bin: generate the binaries
-- gen-cov: generate the test coverage
+- vendor: vendor the dependencies to `vendor`
+
+Usage : `deno task <command>`, ex : `deno task fmt`
+
+## Possible improvements
+
+- https://github.com/jersou/studio-pack-generator/issues/19 : end node
+- clean file download option unless -z
+- ...

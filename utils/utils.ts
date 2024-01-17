@@ -1,5 +1,11 @@
 import { File, Folder } from "../serialize/types.ts";
-import { bgBlue, bgGreen, bgRed } from "../deps.ts";
+import {
+  bgBlue,
+  bgGreen,
+  bgRed,
+  readAll,
+  readerFromStreamReader,
+} from "../deps.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
@@ -70,7 +76,8 @@ export function getFileAudioItem(file: File, parent: Folder) {
   const nameWithoutExt = getNameWithoutExt(file.name);
   const audioItem = parent.files.find(
     (f) =>
-      getNameWithoutExt(rmDiacritic(f.name)) === rmDiacritic(nameWithoutExt) &&
+      getNameWithoutExt(rmDiacritic(f.name)).replace(/.item$/, "") ===
+        rmDiacritic(nameWithoutExt) &&
       fileAudioItemRegEx.test(f.name),
   ) as File;
   if (audioItem) {
@@ -83,7 +90,10 @@ export function getFileAudioItem(file: File, parent: Folder) {
 export function getFileImageItem(file: File, parent: Folder) {
   const nameWithoutExt = getNameWithoutExt(file.name);
   const ImageItem = parent.files.find(
-    (f) => f.name.startsWith(nameWithoutExt) && fileImageItemRegEx.test(f.name),
+    (f) =>
+      getNameWithoutExt(rmDiacritic(f.name)).replace(/.item$/, "") ===
+        rmDiacritic(nameWithoutExt) &&
+      fileImageItemRegEx.test(f.name),
   ) as File;
   if (ImageItem) {
     return `${ImageItem.sha1}.${getExtension(ImageItem.name)}`;
@@ -110,6 +120,12 @@ export function isZipFile(file: File): boolean {
 export function isAudioItem(file: File) {
   return (
     fileAudioItemRegEx.test(file.name) || folderAudioItemRegEx.test(file.name)
+  );
+}
+
+export function isImageItem(file: File) {
+  return (
+    fileImageItemRegEx.test(file.name) || folderImageItemRegEx.test(file.name)
   );
 }
 
@@ -145,9 +161,12 @@ export async function convertToImageItem(
   outputPath: string,
 ) {
   console.log(bgBlue(`Try convert ${inputPath} → ${outputPath}`));
-  const process = await Deno.run({
-    cmd: [
-      ...(await getFfmpegCommand()),
+
+  const ffmpegCommand = await getFfmpegCommand();
+
+  const process = new Deno.Command(ffmpegCommand[0], {
+    args: [
+      ...(ffmpegCommand.splice(1)),
       "-i",
       inputPath,
       "-vf",
@@ -157,15 +176,18 @@ export async function convertToImageItem(
     stdout: "null",
     stdin: "null",
     stderr: "piped",
-  });
-  const output = new TextDecoder().decode(await process.stderrOutput());
-  const status = await process.status();
+  }).spawn();
+
+  const stderrArr = await readAll(
+    readerFromStreamReader(process.stderr.getReader()),
+  );
+  const output = new TextDecoder().decode(stderrArr);
+  const status = await process.status;
   if (status.success) {
     console.log(bgGreen("→ OK"));
   } else {
     console.log(bgRed("→ KO : \n" + output));
   }
-  process.close();
 }
 
 let runPermissionOk = false;
@@ -214,4 +236,8 @@ export function sanitize() {
 
 export function rmDiacritic(s: string) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+}
+
+export function convertToValidFilename(name: string): string {
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()! ]/g, " ").trim();
 }

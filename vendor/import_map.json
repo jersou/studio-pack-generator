@@ -1,8 +1,0 @@
-{
-  "imports": {
-    "https://deno.land/std/path/mod.ts": "./deno.land/std@0.122.0/path/mod.ts",
-    "https://deno.land/std/fmt/printf.ts": "./deno.land/std@0.86.0/fmt/printf.ts",
-    "https://deno.land/std/testing/asserts.ts": "./deno.land/std@0.86.0/testing/asserts.ts",
-    "https://deno.land/": "./deno.land/"
-  }
-}

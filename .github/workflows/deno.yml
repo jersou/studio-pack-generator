@@ -1,16 +1,10 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will install Deno then run Deno lint and test.
-# For more information see: https://github.com/denoland/setup-deno
-
 name: Deno
 
 on:
   push:
-    branches: [main]
+    branches: [main,dev]
+    tags:
+      - v*
   pull_request:
     branches: [main]
 
@@ -20,18 +14,50 @@ jobs:
 
     steps:
       - name: Setup repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.26.0
+          deno-version: v1.39.1
 
       - name: Verify formatting
-        run: deno fmt --check --ignore="vendor,dist"
+        run: deno task fmt
 
       - name: Run linter
-        run: deno lint --ignore="vendor,dist"
+        run: deno task lint
 
       - name: Run tests
-        run: deno test --allow-read --allow-write --allow-run
+        run: deno task test
+
+  build:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.39.1
+
+      - name: check version
+        run: test $(./version.ts) = ${GITHUB_REF##*/}
+
+      - name: Generate binaries
+        run: ./gen-bin.sh
+
+      - name: Generate release body
+        run: grep -Pzo '^###(.|\n)*?(?=###)' CHANGELOG.md | sed 's|\x00|\n|g' > RELEASE_BODY.txt
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          body_path: RELEASE_BODY.txt
+          files: dist/*.zip

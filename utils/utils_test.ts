@@ -1,4 +1,5 @@
 import {
+  convertToValidFilename,
   convWindowsWslPath,
   firstStoryFile,
   getExtension,
@@ -10,6 +11,7 @@ import {
   getNameWithoutExt,
   isFile,
   isFolder,
+  rmDiacritic,
 } from "./utils.ts";
 import {
   aliceCityStory,
@@ -105,4 +107,20 @@ Deno.test("fileExist", async () => {
     false,
   );
   assertEquals(await exists("utils/utils_test.ts"), true);
+});
+
+Deno.test("rmDiacritic", () => {
+  assertEquals("fière" === "fière", true);
+  assertEquals(rmDiacritic("fière"), "fiere");
+  // @ts-ignore Diacritic
+  assertEquals("fière" === "fière", false);
+  assertEquals(rmDiacritic("fière"), "fiere");
+});
+
+Deno.test("convertToValidFilename", () => {
+  assertEquals(convertToValidFilename("aze:rty?uiop"), "aze rty uiop");
+  assertEquals(
+    convertToValidFilename("aéz&'(rtyèeâî@%:a123"),
+    "aéz  (rtyèeâî   a123",
+  );
 });

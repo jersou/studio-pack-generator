@@ -1,4 +1,4 @@
-import { File, Folder } from "./serialize/types.ts";
+import { File, Folder, Metadata } from "./serialize/types.ts";
 import { fsToFolder } from "./serialize/fs.ts";
 import { extractImagesFromAudio } from "./generate/extract_images_from_audio.ts";
 import { genMissingItems } from "./generate/gen_missing_items.ts";
@@ -8,7 +8,7 @@ import { serializePack } from "./serialize/serializer.ts";
 import { getAssetsPaths } from "./serialize/assets.ts";
 import { createPackZip } from "./utils/zip.ts";
 import { downloadRss } from "./generate/rss_parser.ts";
-import { exists, join } from "./deps.ts";
+import { basename, exists, join } from "./deps.ts";
 import {
   checkRunPermission,
   convertToImageItem,
@@ -16,6 +16,7 @@ import {
   getNightModeAudioItem,
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
+import { convertImageOfFolder } from "./utils/convert_image.ts";
 
 export type ModOptions = {
   storyPath: string;
@@ -23,13 +24,18 @@ export type ModOptions = {
   skipImageItemGen?: boolean;
   skipAudioItemGen?: boolean;
   skipAudioConvert?: boolean;
+  skipImageConvert?: boolean;
   skipExtractImageFromMp3?: boolean;
   skipZipGeneration?: boolean;
   skipNotRss?: boolean;
   autoNextStoryTransition?: boolean;
+  selectNextStoryAtEnd?: boolean;
   addDelay?: boolean;
   nightMode?: boolean;
   seekStory?: string;
+  skipWsl?: boolean;
+  skipRssImageDl?: boolean;
+  outputFolder?: string;
   extract?: boolean;
 };
 
@@ -53,7 +59,7 @@ export async function generatePack(opt: ModOptions) {
   await initI18n(lang);
 
   if (opt.storyPath.startsWith("http")) {
-    opt.storyPath = await downloadRss(opt.storyPath, ".");
+    opt.storyPath = await downloadRss(opt.storyPath, ".", !!opt.skipRssImageDl);
     console.log(`downloaded in ${opt.storyPath}`);
   }
   if (!opt.skipNotRss) {
@@ -70,6 +76,7 @@ export async function generatePack(opt: ModOptions) {
         !opt.skipAudioItemGen,
         lang,
         true,
+        !!opt.skipWsl,
       );
       folder = await fsToFolder(opt.storyPath, false);
     }
@@ -81,19 +88,26 @@ export async function generatePack(opt: ModOptions) {
         opt.seekStory,
       );
     }
+    if (!opt.skipImageConvert) {
+      await convertImageOfFolder(opt.storyPath, folder);
+    }
     if (!opt.skipImageItemGen) {
       await genThumbnail(folder, opt.storyPath);
     }
     if (!opt.skipZipGeneration) {
       folder = await fsToFolder(opt.storyPath, true);
-      const pack = folderToPack(folder, !!opt.nightMode);
+
+      const metadata: Metadata = await getMetadata(opt);
+      const pack = folderToPack(folder, metadata);
       const nightModeAudioItemName = getNightModeAudioItem(folder);
-      const serializedPack = await serializePack(pack, opt.storyPath, {
+      const serializedPack = await serializePack(pack, opt, {
         autoNextStoryTransition: opt.autoNextStoryTransition,
         nightModeAudioItemName,
       });
       const assets = getAssetsPaths(serializedPack, folder);
-      const zipPath = `${opt.storyPath}-${Date.now()}.zip`;
+      const zipPath = opt.outputFolder
+        ? join(opt.outputFolder, `${basename(opt.storyPath)}-${Date.now()}.zip`)
+        : `${opt.storyPath}-${Date.now()}.zip`;
       await createPackZip(zipPath, opt.storyPath, serializedPack, assets);
       console.log(
         `Done (${
@@ -102,5 +116,17 @@ export async function generatePack(opt: ModOptions) {
       );
       // sanitize();
     }
+  }
+}
+
+async function getMetadata(opt: ModOptions): Promise<Metadata> {
+  const metadataPath = `${opt.storyPath}/metadata.json`;
+  if (await exists(metadataPath)) {
+    const metadataJson = await Deno.readTextFile(metadataPath);
+    return JSON.parse(metadataJson);
+  } else {
+    return {
+      nightMode: !!opt.nightMode,
+    };
   }
 }
