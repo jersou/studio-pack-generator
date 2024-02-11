@@ -1,11 +1,5 @@
 import { File, Folder } from "../serialize/types.ts";
-import {
-  bgBlue,
-  bgGreen,
-  bgRed,
-  readAll,
-  readerFromStreamReader,
-} from "../deps.ts";
+import { $, bgBlue, bgGreen, bgRed } from "../deps.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
@@ -23,7 +17,7 @@ export const itemsRegEx = [
   nightModeAudioItemRegEx,
 ];
 
-export function isFolder(f: Folder | File): boolean {
+export function isFolder(f: Folder | File): f is Folder {
   return !!(f as Folder).files;
 }
 
@@ -164,29 +158,20 @@ export async function convertToImageItem(
 
   const ffmpegCommand = await getFfmpegCommand();
 
-  const process = new Deno.Command(ffmpegCommand[0], {
-    args: [
-      ...(ffmpegCommand.splice(1)),
-      "-i",
-      inputPath,
-      "-vf",
-      "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
-      outputPath,
-    ],
-    stdout: "null",
-    stdin: "null",
-    stderr: "piped",
-  }).spawn();
-
-  const stderrArr = await readAll(
-    readerFromStreamReader(process.stderr.getReader()),
-  );
-  const output = new TextDecoder().decode(stderrArr);
-  const status = await process.status;
-  if (status.success) {
+  const cmd = [
+    ffmpegCommand,
+    ...(ffmpegCommand.splice(1)),
+    "-i",
+    inputPath,
+    "-vf",
+    "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
+    outputPath,
+  ];
+  const result = await $`${cmd}`.noThrow().stdout("null").stderr("piped");
+  if (result.code === 0) {
     console.log(bgGreen("→ OK"));
   } else {
-    console.log(bgRed("→ KO : \n" + output));
+    console.log(bgRed("→ KO : \n" + result.stderr));
   }
 }
 

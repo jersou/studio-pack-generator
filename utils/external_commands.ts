@@ -1,4 +1,4 @@
-import { basename, dirname, posix, win32 } from "../deps.ts";
+import { $, basename, dirname, posix, win32 } from "../deps.ts";
 
 let ffmpegCommand: string[] = [];
 
@@ -8,14 +8,8 @@ export async function checkCommand(
 ): Promise<boolean> {
   console.log("checkCommand", cmd);
   try {
-    const process = new Deno.Command(cmd[0], {
-      args: cmd.slice(1),
-      stdin: "null",
-      stdout: "null",
-      stderr: "null",
-    }).spawn();
-    const status = await process.status;
-    return status.code === exitCodeExpected;
+    const result = await $`${cmd}`.noThrow().stderr("null").stdout("null");
+    return result.code === exitCodeExpected;
   } catch (_e) {
     return false;
   }

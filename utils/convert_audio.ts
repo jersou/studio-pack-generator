@@ -159,6 +159,6 @@ async function getFfmpegInfo(filePath: string): Promise<string> {
   if (result.code === 0) {
     info = result.stderr;
   }
-  console.log(bgGreen("info=" + info));
+  // console.log(bgGreen("info=" + info));
   return info;
 }

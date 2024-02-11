@@ -21,5 +21,5 @@ export async function generateImage(title: string, outputPath: string) {
     `caption:${title}`,
     outputPath,
   ];
-  await $`${cmd}`;
+  await $`${cmd}`.noThrow();
 }
