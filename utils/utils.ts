@@ -201,39 +201,6 @@ export async function checkRunPermission() {
   }
 }
 
-const stdRes = ["stdin", "stderr", "stdout"];
-
-export function checkResources() {
-  const res = Deno.resources();
-  if (
-    Object.keys(res).length !== 3 &&
-    Object.values(res).filter((v) => !stdRes.includes(v)).length > 0
-  ) {
-    console.log(
-      bgRed("Some resources are not closed except stdin/stderr/stdout :"),
-    );
-    console.log(res);
-  }
-}
-
-export function checkOps() {
-  const metrics = Deno.metrics();
-  if (
-    metrics.opsDispatched !== metrics.opsCompleted ||
-    metrics.opsDispatchedSync !== metrics.opsCompletedSync ||
-    metrics.opsDispatchedAsync !== metrics.opsCompletedAsync ||
-    metrics.opsDispatchedAsyncUnref !== metrics.opsCompletedAsyncUnref
-  ) {
-    console.log(bgRed("Some ops are not completed :"));
-    console.log({ metrics });
-  }
-}
-
-export function sanitize() {
-  checkResources();
-  checkOps();
-}
-
 export function rmDiacritic(s: string) {
   return s.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }

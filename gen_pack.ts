@@ -113,7 +113,6 @@ export async function generatePack(opt: ModOptions) {
           (Date.now() - start) / 1000
         } sec) :  ${opt.storyPath} → ${zipPath}`,
       );
-      // sanitize();
     }
   }
 }

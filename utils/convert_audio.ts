@@ -6,15 +6,7 @@ import {
   isFolder,
   isStory,
 } from "./utils.ts";
-import {
-  bgBlue,
-  bgGreen,
-  bgRed,
-  exists,
-  join,
-  readAll,
-  readerFromStreamReader,
-} from "../deps.ts";
+import { $, bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
 import { File, Folder } from "../serialize/types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
@@ -33,31 +25,29 @@ export async function convertAudioOfFolder(
         addDelay,
         seekStory,
       );
-    } else {
-      if (isStory(file as File) || isAudioItem(file as File)) {
-        const inputPath = join(rootpath, file.name);
-        const outPath = join(rootpath, `${getNameWithoutExt(file.name)}.mp3`);
-        const skipPath = `${outPath}__skip-convert`;
-        if (!(await exists(skipPath))) {
-          const maxDb = await getMaxVolumeOfFile(inputPath);
+    } else if (isStory(file as File) || isAudioItem(file as File)) {
+      const inputPath = join(rootpath, file.name);
+      const outPath = join(rootpath, `${getNameWithoutExt(file.name)}.mp3`);
+      const skipPath = `${outPath}__skip-convert`;
+      if (!(await exists(skipPath))) {
+        const maxDb = await getMaxVolumeOfFile(inputPath);
 
-          const seek = isStory(file as File) ? seekStory : undefined;
-          const forceToConvert = addDelay || seek || maxDb >= 1;
-          if (forceToConvert || !(await checkAudioFormat(inputPath))) {
-            await Deno.copyFile(inputPath, `${inputPath}.bak`);
-            const tmpPath = await Deno.makeTempFile({
-              dir: rootpath,
-              suffix: `.${getExtension(file.name)}`,
-            });
-            await Deno.copyFile(inputPath, tmpPath);
-            await Deno.remove(inputPath);
-            await convertAudioFile(tmpPath, maxDb, outPath, addDelay, seek);
-            await Deno.remove(tmpPath);
-          } else {
-            console.log(bgGreen("→ skip db<1"));
-          }
-          await Deno.writeTextFile(skipPath, "");
+        const seek = isStory(file as File) ? seekStory : undefined;
+        const forceToConvert = addDelay || seek || maxDb >= 1;
+        if (forceToConvert || !(await checkAudioFormat(inputPath))) {
+          await Deno.copyFile(inputPath, `${inputPath}.bak`);
+          const tmpPath = await Deno.makeTempFile({
+            dir: rootpath,
+            suffix: `.${getExtension(file.name)}`,
+          });
+          await Deno.copyFile(inputPath, tmpPath);
+          await Deno.remove(inputPath);
+          await convertAudioFile(tmpPath, maxDb, outPath, addDelay, seek);
+          await Deno.remove(tmpPath);
+        } else {
+          console.log(bgGreen("→ skip db<1"));
         }
+        await Deno.writeTextFile(skipPath, "");
       }
     }
   }
@@ -97,14 +87,13 @@ async function convertAudioFile(
     outputPath,
   ];
   console.log(bgBlue('"' + cmd.join('" "') + '"'));
-  const process = new Deno.Command(cmd[0], {
-    args: cmd.slice(1),
-    stdout: "null",
-    stdin: "null",
-    stderr: "null",
-  }).spawn();
-  const status = await process.status;
-  if (status.success) {
+
+  const result = await $`${cmd}`
+    .noThrow()
+    .stdout("null")
+    .stderr("null");
+
+  if (result.code === 0) {
     console.log(bgGreen("→ OK"));
   } else {
     console.log(bgRed("→ KO"));
@@ -129,20 +118,9 @@ async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
     "/dev/null",
   ];
 
-  const process = new Deno.Command(cmd[0], {
-    args: cmd.splice(1),
-    stdout: "null",
-    stdin: "null",
-    stderr: "piped",
-  }).spawn();
-
-  const stderrArr = await readAll(
-    readerFromStreamReader(process.stderr.getReader()),
-  );
-  const output = new TextDecoder().decode(stderrArr);
-  const status = await process.status;
-  if (status.success) {
-    const maxVolLine = output
+  const result = await $`${cmd}`.noThrow().stdout("null").stderr("piped");
+  if (result.code === 0) {
+    const maxVolLine = result.stderr
       .split("\\n")
       .find((line) => maxVolumeRegex.test(line));
     if (maxVolLine) {
@@ -175,20 +153,11 @@ async function getFfmpegInfo(filePath: string): Promise<string> {
     "null",
     "-",
   ];
-  const process = new Deno.Command(cmd[0], {
-    args: cmd.splice(1),
-    stdout: "null",
-    stdin: "null",
-    stderr: "piped",
-  }).spawn();
-  const stderrArr = await readAll(
-    readerFromStreamReader(process.stderr.getReader()),
-  );
-  const output = new TextDecoder().decode(stderrArr);
-  const status = await process.status;
+
+  const result = await $`${cmd}`.noThrow().stdout("null").stderr("piped");
   let info = "";
-  if (status.success) {
-    info = output;
+  if (result.code === 0) {
+    info = result.stderr;
   }
   console.log(bgGreen("info=" + info));
   return info;

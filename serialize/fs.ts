@@ -1,5 +1,5 @@
 import { File, Folder } from "./types.ts";
-import { basename, createHash, join } from "../deps.ts";
+import { basename, join } from "../deps.ts";
 import { getLang } from "../utils/i18n.ts";
 
 async function ls(path: string): Promise<Deno.DirEntry[]> {
@@ -19,7 +19,7 @@ export async function fsToFolder(
     files: [],
   };
   const entries = await ls(path);
-  // natural sort to to
+  // natural sort
   const lang = (await getLang()).substring(0, 2);
   entries.sort((a, b) => a.name.localeCompare(b.name, lang, { numeric: true }));
   for (const entry of entries) {
@@ -36,8 +36,11 @@ export async function fsToFolder(
 }
 
 export async function getSha1(path: string): Promise<string> {
-  const sha1Hash = createHash("sha1");
   const data = await Deno.readFile(path);
-  sha1Hash.update(data);
-  return sha1Hash.toString();
+  return Array.from(
+    new Uint8Array(
+      await crypto.subtle.digest("SHA-1", data),
+    ),
+    (byte) => byte.toString(16).padStart(2, "0"),
+  ).join("");
 }

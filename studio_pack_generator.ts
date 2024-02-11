@@ -2,8 +2,10 @@
 
 import { parseArgs } from "./utils/parse_args.ts";
 import { version } from "./version.ts";
+import { $ } from "./deps.ts";
 
 if (import.meta.main) {
+  $.setPrintCommand(true);
   console.log({ version, ...Deno.version });
   await parseArgs(Deno.args);
 }
