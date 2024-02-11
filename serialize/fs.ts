@@ -1,5 +1,5 @@
 import { File, Folder } from "./types.ts";
-import { basename, join } from "../deps.ts";
+import { basename, encodeHex, join } from "../deps.ts";
 import { getLang } from "../utils/i18n.ts";
 
 async function ls(path: string): Promise<Deno.DirEntry[]> {
@@ -37,10 +37,5 @@ export async function fsToFolder(
 
 export async function getSha1(path: string): Promise<string> {
   const data = await Deno.readFile(path);
-  return Array.from(
-    new Uint8Array(
-      await crypto.subtle.digest("SHA-1", data),
-    ),
-    (byte) => byte.toString(16).padStart(2, "0"),
-  ).join("");
+  return encodeHex(await crypto.subtle.digest("SHA-1", data));
 }

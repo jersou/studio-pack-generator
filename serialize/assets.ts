@@ -10,7 +10,7 @@ export function getAssetsSha1s(serializedPack: SerializedPack): string[] {
     .filter((sha) => sha)
     .map((sha) => sha as string)
     .map(getNameWithoutExt)
-    .sort();
+    .sort((a, b) => a.localeCompare(b));
 }
 
 export type Sha1Map = { [sha1: string]: string };

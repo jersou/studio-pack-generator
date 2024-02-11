@@ -106,9 +106,9 @@ function getFolderOfStories(
       if (!skipRssImageDl && imageUrl) {
         itemFiles.push({
           name: `${getNameWithoutExt(getItemFileName(item))}.item.${
-            getExtension(imageUrl!)
+            getExtension(imageUrl)
           }`,
-          url: imageUrl!,
+          url: imageUrl,
           sha1: "",
         });
       }
@@ -145,8 +145,8 @@ async function writeFolderWithUrl(folder: FolderWithUrl, parentPath: string) {
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
     isFolder(file)
-      ? await writeFolderWithUrl(file as FolderWithUrl, path)
-      : await writeFileWithUrl(file as FileWithUrl, path);
+      ? await writeFolderWithUrl(file, path)
+      : await writeFileWithUrl(file, path);
   }
 }
 

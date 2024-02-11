@@ -184,6 +184,8 @@
     "https://deno.land/std@0.216.0/assert/assertion_error.ts": "9f689a101ee586c4ce92f52fa7ddd362e86434ffdf1f848e45987dc7689976b8",
     "https://deno.land/std@0.216.0/bytes/concat.ts": "9cac3b4376afbef98ff03588eb3cf948e0d1eb6c27cfe81a7651ab6dd3adc54a",
     "https://deno.land/std@0.216.0/bytes/copy.ts": "f29c03168853720dfe82eaa57793d0b9e3543ebfe5306684182f0f1e3bfd422a",
+    "https://deno.land/std@0.216.0/encoding/_util.ts": "beacef316c1255da9bc8e95afb1fa56ed69baef919c88dc06ae6cb7a6103d376",
+    "https://deno.land/std@0.216.0/encoding/hex.ts": "4d47d3b25103cf81a2ed38f54b394d39a77b63338e1eaa04b70c614cb45ec2e6",
     "https://deno.land/std@0.216.0/fmt/colors.ts": "d239d84620b921ea520125d778947881f62c50e78deef2657073840b8af9559a",
     "https://deno.land/std@0.216.0/fs/exists.ts": "d2757ef764eaf5c6c5af7228e8447db2de42ab084a2dae540097f905723d83f5",
     "https://deno.land/std@0.216.0/io/_common.ts": "36705cdb4dfcd338d6131bca1b16e48a4d5bf0d1dada6ce397268e88c17a5835",

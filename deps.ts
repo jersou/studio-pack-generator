@@ -14,6 +14,9 @@ export {
 export * as posix from "https://deno.land/std@0.216.0/path/posix/mod.ts";
 export * as win32 from "https://deno.land/std@0.216.0/path/windows/mod.ts";
 export { readAll } from "https://deno.land/std@0.216.0/io/read_all.ts";
+
+export { encodeHex } from "https://deno.land/std@0.216.0/encoding/hex.ts";
+
 export { default as i18next } from "https://deno.land/x/i18next@v23.8.2/index.js";
 
 export { parse } from "https://deno.land/x/xml@2.1.3/mod.ts";

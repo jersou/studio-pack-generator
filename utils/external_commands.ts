@@ -46,19 +46,17 @@ or check your install, ffmpeg should be present in studio-pack-generator/tools/f
         );
         Deno.exit(3);
       }
+    } else if (await checkCommand(["ffmpeg", "-version"], 0)) {
+      ffmpegCommand = ["ffmpeg"];
     } else {
-      if (await checkCommand(["ffmpeg", "-version"], 0)) {
-        ffmpegCommand = ["ffmpeg"];
-      } else {
-        console.error(
-          `
+      console.error(
+        `
 Command ffmpeg (from ffmpeg) not found,
 use --skip-image-item-gen to skip image item generation
 or install ffmpeg : sudo apt install -y ffmpeg
 `,
-        );
-        Deno.exit(3);
-      }
+      );
+      Deno.exit(3);
     }
   }
   return ffmpegCommand;
@@ -83,19 +81,17 @@ or install pico2wave :
         );
         Deno.exit(3);
       }
+    } else if (await checkCommand(["pico2wave", "--version"], 1)) {
+      pico2waveCommand = ["pico2wave"];
     } else {
-      if (await checkCommand(["pico2wave", "--version"], 1)) {
-        pico2waveCommand = ["pico2wave"];
-      } else {
-        console.error(
-          `
+      console.error(
+        `
 Command pico2wave (from libttspico-utils) not found,
 use --skip-audio-item-gen to skip audio item generation
 or install pico2wave : sudo apt install -y libttspico-utils
 `,
-        );
-        Deno.exit(3);
-      }
+      );
+      Deno.exit(3);
     }
   }
   return pico2waveCommand;
@@ -119,19 +115,17 @@ or check your install, ImageMagick should be present in studio-pack-generator/to
         );
         Deno.exit(3);
       }
+    } else if (await checkCommand(["convert", "--version"], 0)) {
+      convertCommand = ["convert"];
     } else {
-      if (await checkCommand(["convert", "--version"], 0)) {
-        convertCommand = ["convert"];
-      } else {
-        console.error(
-          `
+      console.error(
+        `
 Command convert (from ImageMagick) not found,
 use --skip-image-item-gen to skip image item generation
 or install ImageMagick : sudo apt install -y imagemagick
 `,
-        );
-        Deno.exit(3);
-      }
+      );
+      Deno.exit(3);
     }
   }
   return convertCommand;
