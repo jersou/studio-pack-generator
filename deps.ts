@@ -29,7 +29,7 @@ export {
   BlobWriter,
   ZipReader,
   ZipWriter,
-} from "https://deno.land/x/zipjs@v2.7.34/index.js";
+} from "https://deno.land/x/zipjs@v2.3.17/index.js";
 
 export { default as $ } from "https://deno.land/x/dax@0.39.1/mod.ts";
 
