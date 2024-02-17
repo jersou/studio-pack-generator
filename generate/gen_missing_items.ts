@@ -23,7 +23,6 @@ function getTitle(name: string): string {
   }
 }
 
-// FIXME : use object args
 export async function genMissingItems(
   folder: Folder,
   lang: string,
@@ -41,7 +40,7 @@ export async function genMissingItems(
         getTitle(folder.name),
         `${rootpath}/0-item.wav`,
         lang,
-        !!opt.skipWsl,
+        opt,
       );
     }
     if (!opt.skipAudioItemGen && isRoot && !getNightModeAudioItem(folder)) {
@@ -49,7 +48,7 @@ export async function genMissingItems(
         i18next.t("NightModeTransition"),
         `${rootpath}/0-night-mode.wav`,
         lang,
-        !!opt.skipWsl,
+        opt,
       );
     }
 
@@ -74,7 +73,7 @@ export async function genMissingItems(
             getTitle(getNameWithoutExt(file.name)),
             `${rootpath}/${getNameWithoutExt(file.name)}.item.wav`,
             lang,
-            !!opt.skipWsl,
+            opt,
           );
         }
       }
