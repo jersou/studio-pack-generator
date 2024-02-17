@@ -17,6 +17,7 @@ import {
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 import { convertImageOfFolder } from "./utils/convert_image.ts";
+import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "./generate/openai_tts.ts";
 
 export type ModOptions = {
   storyPath: string;
@@ -36,6 +37,10 @@ export type ModOptions = {
   skipWsl?: boolean;
   skipRssImageDl?: boolean;
   outputFolder?: string;
+  useOpenAiTts?: boolean;
+  openAiApiKey?: string;
+  openAiModel?: typeof OPEN_AI_MODELS[number];
+  openAiVoice?: typeof OPEN_AI_VOICES[number];
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -69,13 +74,11 @@ export async function generatePack(opt: ModOptions) {
     }
     if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
       await genMissingItems(
-        opt.storyPath,
         folder,
-        !opt.skipImageItemGen,
-        !opt.skipAudioItemGen,
         lang,
         true,
-        !!opt.skipWsl,
+        opt.storyPath,
+        opt,
       );
       folder = await fsToFolder(opt.storyPath, false);
     }

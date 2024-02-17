@@ -160,7 +160,6 @@ async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
     const resp = await fetch(fileWithUrl.url);
     const file = await Deno.open(filePath, { create: true, write: true });
     await resp.body?.pipeTo(file.writable);
-    file.close();
   }
 }
 

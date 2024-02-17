@@ -2,6 +2,7 @@
 
 import { yargs } from "../deps.ts";
 import { generatePack, ModOptions } from "../gen_pack.ts";
+import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -121,6 +122,7 @@ export async function parseArgs(args: string[]) {
       describe: "skip all except download RSS files",
     })
     .option("skip-rss-image-dl", {
+      alias: "r",
       demandOption: false,
       boolean: true,
       default: false,
@@ -139,6 +141,37 @@ export async function parseArgs(args: string[]) {
       boolean: true,
       default: false,
       describe: "only process item generation, don't create zip",
+    })
+    .option("use-open-ai-tts", {
+      alias: "e",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "generate missing audio item with Open AI TTS",
+    })
+    .option("open-ai-api-key", {
+      alias: "f",
+      demandOption: false,
+      boolean: false,
+      type: "string",
+      default: undefined,
+      describe: "the OpenAI API key",
+    })
+    .option("open-ai-model", {
+      alias: "g",
+      demandOption: false,
+      boolean: false,
+      default: "tts-1",
+      type: "string",
+      describe: "OpenAi model : " + OPEN_AI_MODELS.join(", "),
+    })
+    .option("open-ai-voice", {
+      alias: "h",
+      demandOption: false,
+      boolean: false,
+      default: "onyx",
+      type: "string",
+      describe: "OpenAi voice : " + OPEN_AI_VOICES.join(", "),
     })
     .version(false)
     .demandCommand(1)

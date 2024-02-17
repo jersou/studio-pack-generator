@@ -1,4 +1,4 @@
-import { File, Folder } from "../serialize/types.ts";
+import { Folder } from "../serialize/types.ts";
 import {
   checkRunPermission,
   getFileAudioItem,
@@ -13,6 +13,7 @@ import {
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
 import { i18next, join } from "../deps.ts";
+import { ModOptions } from "../gen_pack.ts";
 
 function getTitle(name: string): string {
   if (/^[0-9]* *-? *$/.test(name)) {
@@ -22,62 +23,57 @@ function getTitle(name: string): string {
   }
 }
 
-// FIXME : use object args
 export async function genMissingItems(
-  rootpath: string,
   folder: Folder,
-  genImage: boolean,
-  genAudio: boolean,
   lang: string,
   isRoot: boolean,
-  skipWsl: boolean,
+  rootpath: string,
+  opt: ModOptions,
 ) {
-  if (genImage || genAudio) {
+  if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
     await checkRunPermission();
-    if (genImage && !getFolderImageItem(folder)) {
+    if (!opt.skipImageItemGen && !getFolderImageItem(folder)) {
       await generateImage(getTitle(folder.name), `${rootpath}/0-item.png`);
     }
-    if (genAudio && !getFolderAudioItem(folder)) {
+    if (!opt.skipAudioItemGen && !getFolderAudioItem(folder)) {
       await generateAudio(
         getTitle(folder.name),
         `${rootpath}/0-item.wav`,
         lang,
-        skipWsl,
+        opt,
       );
     }
-    if (genAudio && isRoot && !getNightModeAudioItem(folder)) {
+    if (!opt.skipAudioItemGen && isRoot && !getNightModeAudioItem(folder)) {
       await generateAudio(
         i18next.t("NightModeTransition"),
         `${rootpath}/0-night-mode.wav`,
         lang,
-        skipWsl,
+        opt,
       );
     }
 
     for (const file of folder.files) {
       if (isFolder(file)) {
         await genMissingItems(
-          join(rootpath, file.name),
-          file as Folder,
-          genImage,
-          genAudio,
+          file,
           lang,
           false,
-          skipWsl,
+          join(rootpath, file.name),
+          opt,
         );
-      } else if (isStory(file as File)) {
-        if (genImage && !getFileImageItem(file as File, folder)) {
+      } else if (isStory(file)) {
+        if (!opt.skipImageItemGen && !getFileImageItem(file, folder)) {
           await generateImage(
             getTitle(getNameWithoutExt(file.name)),
             `${rootpath}/${getNameWithoutExt(file.name)}.item.png`,
           );
         }
-        if (genAudio && !getFileAudioItem(file as File, folder)) {
+        if (!opt.skipAudioItemGen && !getFileAudioItem(file, folder)) {
           await generateAudio(
             getTitle(getNameWithoutExt(file.name)),
             `${rootpath}/${getNameWithoutExt(file.name)}.item.wav`,
             lang,
-            skipWsl,
+            opt,
           );
         }
       }
