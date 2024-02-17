@@ -32,3 +32,5 @@ export {
 } from "https://deno.land/x/zipjs@v2.7.34/index.js";
 
 export { default as $ } from "https://deno.land/x/dax@0.39.1/mod.ts";
+
+export { default as OpenAI } from "https://deno.land/x/openai@v4.28.0/mod.ts";
