@@ -1,4 +1,4 @@
-### v0.3.0 / 2024.02.27
+### v0.3.1 / 2024.02.27
 
 - feat: add openAI TTS
 - refactor: use Dax, update dependencies and to deno 1.40.5, clean
