@@ -1,11 +1,5 @@
 import { File, Folder } from "../serialize/types.ts";
-import {
-  bgBlue,
-  bgGreen,
-  bgRed,
-  readAll,
-  readerFromStreamReader,
-} from "../deps.ts";
+import { $, bgBlue, bgGreen, bgRed } from "../deps.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
@@ -23,7 +17,7 @@ export const itemsRegEx = [
   nightModeAudioItemRegEx,
 ];
 
-export function isFolder(f: Folder | File): boolean {
+export function isFolder(f: Folder | File): f is Folder {
   return !!(f as Folder).files;
 }
 
@@ -164,29 +158,20 @@ export async function convertToImageItem(
 
   const ffmpegCommand = await getFfmpegCommand();
 
-  const process = new Deno.Command(ffmpegCommand[0], {
-    args: [
-      ...(ffmpegCommand.splice(1)),
-      "-i",
-      inputPath,
-      "-vf",
-      "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
-      outputPath,
-    ],
-    stdout: "null",
-    stdin: "null",
-    stderr: "piped",
-  }).spawn();
-
-  const stderrArr = await readAll(
-    readerFromStreamReader(process.stderr.getReader()),
-  );
-  const output = new TextDecoder().decode(stderrArr);
-  const status = await process.status;
-  if (status.success) {
+  const cmd = [
+    ffmpegCommand,
+    ...(ffmpegCommand.splice(1)),
+    "-i",
+    inputPath,
+    "-vf",
+    "scale=320:240:force_original_aspect_ratio=decrease,pad='320:240:(ow-iw)/2:(oh-ih)/2'",
+    outputPath,
+  ];
+  const result = await $`${cmd}`.noThrow().stdout("null").stderr("piped");
+  if (result.code === 0) {
     console.log(bgGreen("→ OK"));
   } else {
-    console.log(bgRed("→ KO : \n" + output));
+    console.log(bgRed("→ KO : \n" + result.stderr));
   }
 }
 
@@ -199,39 +184,6 @@ export async function checkRunPermission() {
     }
     runPermissionOk = true;
   }
-}
-
-const stdRes = ["stdin", "stderr", "stdout"];
-
-export function checkResources() {
-  const res = Deno.resources();
-  if (
-    Object.keys(res).length !== 3 &&
-    Object.values(res).filter((v) => !stdRes.includes(v)).length > 0
-  ) {
-    console.log(
-      bgRed("Some resources are not closed except stdin/stderr/stdout :"),
-    );
-    console.log(res);
-  }
-}
-
-export function checkOps() {
-  const metrics = Deno.metrics();
-  if (
-    metrics.opsDispatched !== metrics.opsCompleted ||
-    metrics.opsDispatchedSync !== metrics.opsCompletedSync ||
-    metrics.opsDispatchedAsync !== metrics.opsCompletedAsync ||
-    metrics.opsDispatchedAsyncUnref !== metrics.opsCompletedAsyncUnref
-  ) {
-    console.log(bgRed("Some ops are not completed :"));
-    console.log({ metrics });
-  }
-}
-
-export function sanitize() {
-  checkResources();
-  checkOps();
 }
 
 export function rmDiacritic(s: string) {

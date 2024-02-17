@@ -223,9 +223,13 @@ Options:
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
-      --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
+  -r, --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
   -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
   -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
+  -e, --use-open-ai-tts              generate missing audio item with Open AI TTS             [boolean] [default: false]
+  -f, --open-ai-api-key              the OpenAI API key                                                         [string]
+  -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                          [string] [default: "tts-1"]
+  -h, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
 ```
 
 Separate options by spaces, ex :
@@ -268,6 +272,14 @@ All key/value are optional, ex:
   "nightModeAvailable": false
 }
 ```
+
+## OpenAI TTS
+
+To use OpenAI TTS, use `--use-open-ai-tts` option, and you must set the API key:
+
+- set OPENAI_API_KEY in the environnement variables
+- or use --open-ai-api-key parameter
+- or enter the key when the program prompt
 
 ## Development
 

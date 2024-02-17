@@ -4,16 +4,8 @@ import {
   isFolder,
   isImageItem,
 } from "./utils.ts";
-import {
-  bgBlue,
-  bgGreen,
-  bgRed,
-  exists,
-  join,
-  readAll,
-  readerFromStreamReader,
-} from "../deps.ts";
-import { File, Folder } from "../serialize/types.ts";
+import { $, bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
+import { Folder } from "../serialize/types.ts";
 import { getConvertCommand } from "./external_commands.ts";
 
 export async function convertImageOfFolder(
@@ -23,26 +15,24 @@ export async function convertImageOfFolder(
   await checkRunPermission();
   for (const file of folder.files) {
     if (isFolder(file)) {
-      await convertImageOfFolder(join(rootpath, file.name), file as Folder);
-    } else {
-      if (isImageItem(file as File)) {
-        const inputPath = join(rootpath, file.name);
-        const outPath = join(rootpath, file.name);
-        const skipPath = `${outPath}__skip-convert`;
-        if (!(await exists(skipPath))) {
-          if (!(await checkImageFormat(inputPath))) {
-            await Deno.copyFile(inputPath, `${inputPath}.bak`);
-            const tmpPath = await Deno.makeTempFile({
-              dir: rootpath,
-              suffix: `.${getExtension(file.name)}`,
-            });
-            await Deno.copyFile(inputPath, tmpPath);
-            await Deno.remove(inputPath);
-            await convertImageFile(tmpPath, outPath);
-            await Deno.remove(tmpPath);
-          }
-          await Deno.writeTextFile(skipPath, "");
+      await convertImageOfFolder(join(rootpath, file.name), file);
+    } else if (isImageItem(file)) {
+      const inputPath = join(rootpath, file.name);
+      const outPath = join(rootpath, file.name);
+      const skipPath = `${outPath}__skip-convert`;
+      if (!(await exists(skipPath))) {
+        if (!(await checkImageFormat(inputPath))) {
+          await Deno.copyFile(inputPath, `${inputPath}.bak`);
+          const tmpPath = await Deno.makeTempFile({
+            dir: rootpath,
+            suffix: `.${getExtension(file.name)}`,
+          });
+          await Deno.copyFile(inputPath, tmpPath);
+          await Deno.remove(inputPath);
+          await convertImageFile(tmpPath, outPath);
+          await Deno.remove(tmpPath);
         }
+        await Deno.writeTextFile(skipPath, "");
       }
     }
   }
@@ -65,14 +55,8 @@ async function convertImageFile(inputPath: string, outputPath: string) {
     outputPath,
   ];
   console.log(bgBlue('"' + cmd.join('" "') + '"'));
-  const process = new Deno.Command(cmd[0], {
-    args: cmd.slice(1),
-    stdout: "null",
-    stdin: "null",
-    stderr: "null",
-  }).spawn();
-  const status = await process.status;
-  if (status.success) {
+  const result = $`${cmd}`.noThrow().stdout("null").stderr("null");
+  if ((await result).code === 0) {
     console.log(bgGreen("→ OK"));
   } else {
     console.log(bgRed("→ KO"));
@@ -99,22 +83,12 @@ async function getImageInfo(filePath: string): Promise<string> {
     "-identify",
     tmpPath,
   ];
-  const process = new Deno.Command(cmd[0], {
-    args: cmd.splice(1),
-    stdout: "piped",
-    stdin: "null",
-    stderr: "null",
-  }).spawn();
-  const stderrArr = await readAll(
-    readerFromStreamReader(process.stdout.getReader()),
-  );
-  const output = new TextDecoder().decode(stderrArr);
-  const status = await process.status;
+  const result = await $`${cmd}`.noThrow().stdout("piped");
   await Deno.remove(tmpPath);
   let info = "";
-  if (status.success) {
-    info = output;
+  if (result.code === 0) {
+    info = result.stdout;
   }
-  console.log(bgGreen("info=" + info));
+  // console.log(bgGreen("info=" + info));
   return info;
 }

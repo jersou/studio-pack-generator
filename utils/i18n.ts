@@ -1,4 +1,4 @@
-import { i18next, yellow } from "../deps.ts";
+import { $, i18next, yellow } from "../deps.ts";
 
 const en = {
   partQuestion: "Choose your part",
@@ -27,20 +27,16 @@ export async function initI18n(lng: string) {
   );
 }
 
+let LANG: string | undefined;
 export async function getLang() {
-  let LANG;
-  if (Deno.build.os === "windows") {
-    LANG = new TextDecoder().decode(
-      (await (new Deno.Command("powershell", {
-        args: [
-          "-NoProfile",
-          "Get-UICulture|select -ExpandProperty Name",
-        ],
-        stdout: "piped",
-      }).output())).stdout,
-    );
-  } else {
-    if ((await Deno.permissions.query({ name: "env" })).state === "granted") {
+  if (!LANG) {
+    if (Deno.build.os === "windows") {
+      LANG =
+        await $`powershell -NoProfile "Get-UICulture|select -ExpandProperty Name"`
+          .noThrow().text();
+    } else if (
+      (await Deno.permissions.query({ name: "env" })).state === "granted"
+    ) {
       LANG = Deno.env.get("LANG");
     } else {
       console.error(
@@ -49,12 +45,14 @@ export async function getLang() {
         ),
       );
     }
+
+    let lang;
+    const langRegex = /^([a-zA-Z_-]{2,})\.?/;
+    if (LANG && langRegex.test(LANG)) {
+      lang = langRegex.exec(LANG)![1].replace(/_/g, "-");
+    }
+    LANG = lang || "en-US";
   }
 
-  let lang;
-  const langRegex = /^([a-zA-Z_-]{2,})\.?/;
-  if (LANG && langRegex.test(LANG)) {
-    lang = langRegex.exec(LANG)![1].replace(/_/g, "-");
-  }
-  return lang || "en-US";
+  return LANG;
 }
