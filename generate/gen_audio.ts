@@ -1,5 +1,6 @@
 import { ModOptions } from "../gen_pack.ts";
 import { generate_audio_basic_tts } from "./basic_tts.ts";
+import { generate_audio_with_openAI } from "./openai_tts.ts";
 
 export async function generateAudio(
   title: string,
@@ -7,5 +8,13 @@ export async function generateAudio(
   lang: string,
   opt: ModOptions,
 ) {
-  await generate_audio_basic_tts(title, outputPath, lang, opt);
+  if (opt.useOpenAiTts) {
+    await generate_audio_with_openAI(
+      title,
+      outputPath.replace(/\.wav/i, ".mp3"),
+      opt,
+    );
+  } else {
+    await generate_audio_basic_tts(title, outputPath, lang, opt);
+  }
 }

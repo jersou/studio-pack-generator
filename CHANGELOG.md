@@ -1,3 +1,8 @@
+### v0.3.0 / 2024.02.27
+
+- feat: add openAI TTS
+- refactor: use Dax, update dependencies and to deno 1.40.5, clean
+
 ### v0.2.10 / 2023.12.27
 
 - use deno 1.39.1
