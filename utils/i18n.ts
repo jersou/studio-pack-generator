@@ -27,28 +27,32 @@ export async function initI18n(lng: string) {
   );
 }
 
+let LANG: string | undefined;
 export async function getLang() {
-  let LANG;
-  if (Deno.build.os === "windows") {
-    LANG =
-      await $`powershell -NoProfile "Get-UICulture|select -ExpandProperty Name"`
-        .noThrow().text();
-  } else if (
-    (await Deno.permissions.query({ name: "env" })).state === "granted"
-  ) {
-    LANG = Deno.env.get("LANG");
-  } else {
-    console.error(
-      yellow(
-        `Missing Deno env permission ! add "--allow-env" to permit lang detection`,
-      ),
-    );
+  if (!LANG) {
+    if (Deno.build.os === "windows") {
+      LANG =
+        await $`powershell -NoProfile "Get-UICulture|select -ExpandProperty Name"`
+          .noThrow().text();
+    } else if (
+      (await Deno.permissions.query({ name: "env" })).state === "granted"
+    ) {
+      LANG = Deno.env.get("LANG");
+    } else {
+      console.error(
+        yellow(
+          `Missing Deno env permission ! add "--allow-env" to permit lang detection`,
+        ),
+      );
+    }
+
+    let lang;
+    const langRegex = /^([a-zA-Z_-]{2,})\.?/;
+    if (LANG && langRegex.test(LANG)) {
+      lang = langRegex.exec(LANG)![1].replace(/_/g, "-");
+    }
+    LANG = lang || "en-US";
   }
 
-  let lang;
-  const langRegex = /^([a-zA-Z_-]{2,})\.?/;
-  if (LANG && langRegex.test(LANG)) {
-    lang = langRegex.exec(LANG)![1].replace(/_/g, "-");
-  }
-  return lang || "en-US";
+  return LANG;
 }

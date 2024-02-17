@@ -1,3 +1,7 @@
+### v0.3.2 / 2024.02.27
+
+- feat: use LANG cache (speeds up generation on Windows)
+
 ### v0.3.1 / 2024.02.27
 
 - feat: add openAI TTS
