@@ -6,16 +6,7 @@ import {
   isFile,
   isFolder,
 } from "../utils/utils.ts";
-import {
-  bgBlue,
-  bgGreen,
-  copy,
-  exists,
-  i18next,
-  join,
-  parse,
-  readerFromStreamReader,
-} from "../deps.ts";
+import { bgBlue, bgGreen, exists, i18next, join, parse } from "../deps.ts";
 import { File } from "../serialize/types.ts";
 
 export type Rss = {
@@ -115,9 +106,9 @@ function getFolderOfStories(
       if (!skipRssImageDl && imageUrl) {
         itemFiles.push({
           name: `${getNameWithoutExt(getItemFileName(item))}.item.${
-            getExtension(imageUrl!)
+            getExtension(imageUrl)
           }`,
-          url: imageUrl!,
+          url: imageUrl,
           sha1: "",
         });
       }
@@ -154,8 +145,8 @@ async function writeFolderWithUrl(folder: FolderWithUrl, parentPath: string) {
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
     isFolder(file)
-      ? await writeFolderWithUrl(file as FolderWithUrl, path)
-      : await writeFileWithUrl(file as FileWithUrl, path);
+      ? await writeFolderWithUrl(file, path)
+      : await writeFileWithUrl(file, path);
   }
 }
 
@@ -167,13 +158,9 @@ async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
     console.log(bgGreen(`   → skip`));
   } else {
     const resp = await fetch(fileWithUrl.url);
-    const streamReader = resp.body?.getReader();
-    if (streamReader) {
-      const reader = readerFromStreamReader(streamReader);
-      const file = await Deno.open(filePath, { create: true, write: true });
-      await copy(reader, file);
-      file.close();
-    }
+    const file = await Deno.open(filePath, { create: true, write: true });
+    await resp.body?.pipeTo(file.writable);
+    file.close();
   }
 }
 

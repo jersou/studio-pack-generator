@@ -18,7 +18,7 @@ function getTitle(name: string): string {
   if (/^[0-9]* *-? *$/.test(name)) {
     return name;
   } else {
-    return /^[0-9]* *-? *(.*)$/.exec(name)?.[1]!.replace(/_/g, " ").trim()!;
+    return /^[0-9]* *-? *(.*)$/.exec(name)?.[1].replace(/_/g, " ").trim()!;
   }
 }
 

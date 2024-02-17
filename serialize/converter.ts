@@ -24,7 +24,7 @@ import {
 export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
   return {
-    title: metadata?.title ?? folder!.name,
+    title: metadata?.title ?? folder.name,
     description: metadata?.description ?? "",
     format: metadata?.format ?? "v1",
     version: metadata?.version ?? 1,
@@ -40,7 +40,7 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
         options: [
           firstSubFolder
             ? folderToMenu(firstSubFolder, "")
-            : fileToStory(firstStoryFile(folder)! as File),
+            : fileToStory(firstStoryFile(folder)!),
         ],
       },
     },

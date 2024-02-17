@@ -20,7 +20,6 @@ export async function createPackZip(
   const blobWriter = new BlobWriter("application/zip");
   const fileInZip: string[] = [];
   const zipWriter = new ZipWriter(blobWriter, {
-    useWebWorkers: false,
     dataDescriptor: false,
   });
   const thumbnailPath = `${storyPath}/thumbnail.png`;

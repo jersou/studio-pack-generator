@@ -1,4 +1,4 @@
-import { bgBlue } from "../deps.ts";
+import { $, bgBlue } from "../deps.ts";
 import { convertPath } from "../utils/utils.ts";
 import {
   checkCommand,
@@ -40,52 +40,36 @@ export async function generateAudio(
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
 
-    const cmd = new Deno.Command(
-      "PowerShell",
-      {
-        args: [
-          "-Command",
-          `Add-Type -AssemblyName System.Speech; ` +
-          `$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` +
-          `$speak.SetOutputToWaveFile("${outputPath}",${audioFormat}); ` +
-          `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` +
-          `$speak.Dispose();`,
-        ],
-      },
-    );
-    const process = cmd.spawn();
-    await process.status;
+    const args = [
+      "-Command",
+      `Add-Type -AssemblyName System.Speech; ` +
+      `$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer; ` +
+      `$speak.SetOutputToWaveFile("${outputPath}",${audioFormat}); ` +
+      `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` +
+      `$speak.Dispose();`,
+    ];
+    await $`PowerShell ${args}`.noThrow();
   } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
-    const cmd = new Deno.Command(
-      "say",
-      {
-        args: [
-          "-o",
-          convertPath(outputPath),
-          "--file-format",
-          "WAVE",
-          "--data-format",
-          "LEF32@22050",
-          ` . ${title} . `,
-        ],
-      },
-    );
-    const process = cmd.spawn();
-
-    await process.status;
+    const args = [
+      "-o",
+      convertPath(outputPath),
+      "--file-format",
+      "WAVE",
+      "--data-format",
+      "LEF32@22050",
+    ];
+    await $`say ${args}`.noThrow();
   } else {
     const pico2waveCommand = await getPico2waveCommand();
-
-    const process = new Deno.Command(pico2waveCommand[0], {
-      args: [
-        ...(pico2waveCommand.splice(1)),
-        "-l",
-        lang,
-        "-w",
-        convertPath(outputPath),
-        ` . ${title} . `,
-      ],
-    }).spawn();
-    await process.status;
+    const cmd = [
+      pico2waveCommand[0],
+      ...(pico2waveCommand.splice(1)),
+      "-l",
+      lang,
+      "-w",
+      convertPath(outputPath),
+      ` . ${title} . `,
+    ];
+    await $`${cmd}`.noThrow();
   }
 }
