@@ -69,13 +69,11 @@ export async function generatePack(opt: ModOptions) {
     }
     if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
       await genMissingItems(
-        opt.storyPath,
         folder,
-        !opt.skipImageItemGen,
-        !opt.skipAudioItemGen,
         lang,
         true,
-        !!opt.skipWsl,
+        opt.storyPath,
+        opt,
       );
       folder = await fsToFolder(opt.storyPath, false);
     }
