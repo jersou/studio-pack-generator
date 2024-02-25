@@ -1,8 +1,12 @@
-### v0.3.2 / 2024.02.27
+### v0.3.3 / 2024.02.25
+
+- upgrade deno to 1.41.0 (smaller deno compile binaries)
+
+### v0.3.2 / 2024.02.17
 
 - feat: use LANG cache (speeds up generation on Windows)
 
-### v0.3.1 / 2024.02.27
+### v0.3.1 / 2024.02.17
 
 - feat: add openAI TTS
 - refactor: use Dax, update dependencies and to deno 1.40.5, clean
