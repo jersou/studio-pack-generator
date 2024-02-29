@@ -3,6 +3,7 @@
 import { yargs } from "../deps.ts";
 import { generatePack, ModOptions } from "../gen_pack.ts";
 import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
+import { PackExtractor } from "../extract_pack.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -22,11 +23,15 @@ export async function parseArgs(args: string[]) {
         }
         return y.wrap(width);
       },
-      async (opts: ModOptions) => await generatePack(opts),
+      async (opts: ModOptions) =>
+        opts.extract
+          ? await new PackExtractor(opts).extractPack()
+          : await generatePack(opts),
     )
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",
     )
+    .alias("help", "h")
     .option("add-delay", {
       alias: "d",
       demandOption: false,
@@ -150,7 +155,7 @@ export async function parseArgs(args: string[]) {
       describe: "generate missing audio item with Open AI TTS",
     })
     .option("open-ai-api-key", {
-      alias: "f",
+      alias: "k",
       demandOption: false,
       boolean: false,
       type: "string",
@@ -166,12 +171,19 @@ export async function parseArgs(args: string[]) {
       describe: "OpenAi model : " + OPEN_AI_MODELS.join(", "),
     })
     .option("open-ai-voice", {
-      alias: "h",
+      alias: "p",
       demandOption: false,
       boolean: false,
       default: "onyx",
       type: "string",
       describe: "OpenAi voice : " + OPEN_AI_VOICES.join(", "),
+    })
+    .option("extract", {
+      alias: "x",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "extract a zip pack (reverse mode)",
     })
     .version(false)
     .demandCommand(1)

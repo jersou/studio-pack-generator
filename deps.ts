@@ -34,3 +34,5 @@ export {
 export { default as $ } from "https://deno.land/x/dax@0.39.1/mod.ts";
 
 export { default as OpenAI } from "https://deno.land/x/openai@v4.28.0/mod.ts";
+
+export { Queue } from "https://deno.land/x/yocto_queue@v0.1.4/mod.ts";

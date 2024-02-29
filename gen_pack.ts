@@ -41,6 +41,7 @@ export type ModOptions = {
   openAiApiKey?: string;
   openAiModel?: typeof OPEN_AI_MODELS[number];
   openAiVoice?: typeof OPEN_AI_VOICES[number];
+  extract?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
