@@ -230,7 +230,7 @@ Options:
   -k, --open-ai-api-key              the OpenAI API key                                                         [string]
   -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                          [string] [default: "tts-1"]
   -p, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
-  -x, --extract                      [Alpha] extract a zip pack (reverse mode)                [boolean] [default: false]
+  -x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
 ```
 
 Separate options by spaces, ex :
@@ -281,6 +281,29 @@ To use OpenAI TTS, use `--use-open-ai-tts` option, and you must set the API key:
 - set OPENAI_API_KEY in the environnement variables
 - or use --open-ai-api-key parameter
 - or enter the key when the program prompt
+
+## reverse process : extract pack from zip
+
+Extract a file stucture from zip pack :
+
+```shell
+-x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
+```
+
+Example :
+
+```shell
+studio-pack-generator -x 2-full.zip
+```
+
+or
+
+```shell
+studio-pack-generator -x -o output/dir  2-full.zip
+```
+
+Note: it doesn't work well with "menu" nodes and with pack without "question"
+stage.
 
 ## Development
 
