@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run -A
 
-export const version = "v0.3.3";
+export const version = "v0.4.0";
 
 if (import.meta.main) {
   console.log(version);
