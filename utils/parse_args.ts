@@ -3,7 +3,7 @@
 import { yargs } from "../deps.ts";
 import { generatePack, ModOptions } from "../gen_pack.ts";
 import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
-import { extractPack } from "../extract_pack.ts";
+import { PackExtractor } from "../extract_pack.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -24,7 +24,9 @@ export async function parseArgs(args: string[]) {
         return y.wrap(width);
       },
       async (opts: ModOptions) =>
-        opts.extract ? await extractPack(opts) : await generatePack(opts),
+        opts.extract
+          ? await new PackExtractor(opts).extractPack()
+          : await generatePack(opts),
     )
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",

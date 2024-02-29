@@ -1,95 +1,228 @@
 #!/usr/bin/env -S deno run -A
 
 import { ModOptions } from "./gen_pack.ts";
-import { BlobReader, BlobWriter, ZipReader } from "./deps.ts";
-import { getExtension } from "./utils/utils.ts";
-import { SerializedPack } from "./serialize/types.ts";
+import { BlobReader, BlobWriter, dirname, Queue, ZipReader } from "./deps.ts";
+import { ActionNode, SerializedPack, StageNode } from "./serialize/types.ts";
 
-export async function extractPack(opt: ModOptions) {
-  const packPath = opt.storyPath;
-  const zipReader = new ZipReader(
-    new BlobReader(
-      new Blob([await Deno.readFile(packPath)]),
-    ),
-    { useWebWorkers: false },
-  );
+type StageType = "STORY" | "FOLDER" | "ITEM";
+export class PackExtractor {
+  packPath: string;
+  outputPath: string;
+  zipReader?: ZipReader;
   // deno-lint-ignore no-explicit-any
-  const entries: any[] = await zipReader.getEntries();
-  const storyEntry = entries.find((e) => e.filename === "story.json")!;
-
-  const blob = await storyEntry.getData(new BlobWriter());
-  const story = JSON.parse(await blob.text()) as SerializedPack;
-
-  const entrypoint = story.stageNodes.find((s) => s.squareOne)!;
-  await extractStage(story, entrypoint.uuid, [], "", []);
-
-  // for (
-  //   const entry of entries
-  // ) {
-  //   //  console.log({ entry });
-  //   const blob = await entry.getData(new BlobWriter());
-  //   console.log(`filename : ${entry.filename}`);
-  // }
-}
-
-// TODO : suppression des cycle pour refaire un parcourt derriere et avoir les bon chemins
-
-export async function extractStage(
-  story: SerializedPack,
-  stageId: string,
-  stageDone: string[],
-  basePath: string,
-  stageToProcess: { stageId: string; basePath: string }[],
-) {
-  const stageIndex = stageDone.length;
-  if (!stageDone.includes(stageId)) {
-    // console.log(basePath);
-    stageDone.push(stageId);
-    const stage = story.stageNodes.find((s) => s.uuid === stageId)!;
-    stage.audio &&
-      console.log(
-        `→ ${basePath}/${stage.name}.${getExtension(stage.audio)}`,
-      );
-    // stage.audio &&
-    //   console.log(
-    //     `assets/${stage.audio}\n  → ${basePath}/${stage.name}.${
-    //       getExtension(stage.audio)
-    //     }`,
-    //   );
-    // stage.image && console.log(
-    //   `assets/${stage.image}\n  → ${basePath}/${stage.name}.${
-    //     getExtension(stage.image)
-    //   }`,
-    // );
-
-    const actionId = stage.okTransition?.actionNode;
-    const action = story.actionNodes.find((a) => a.id === actionId)!;
-    stageToProcess.push(
-      ...action.options.map((o: string) => ({
-        stageId: o,
-        basePath: stageIndex === 0 ? "" : `${basePath}/${action.name}`,
-      })),
+  entries: any[] = [];
+  // deno-lint-ignore no-explicit-any
+  storyEntry: any;
+  story?: SerializedPack;
+  entrypoint?: StageNode;
+  stageMap = new Map<string, StageNode>();
+  actionMap = new Map<string, ActionNode>();
+  children: { [k: string]: string[] } = {};
+  parents: { [k: string]: string } = {};
+  assets: { key: string; path: string }[] = [];
+  transitionCount = new Map<string, number>();
+  nightAction?: string;
+  questions = new Set<string>();
+  constructor(opt: ModOptions) {
+    this.packPath = opt.storyPath;
+    this.outputPath = opt.outputFolder ?? opt.storyPath + "-extract";
+  }
+  async init() {
+    this.zipReader = new ZipReader(
+      new BlobReader(new Blob([await Deno.readFile(this.packPath)])),
+      { useWebWorkers: false },
     );
+    this.entries = await this.zipReader.getEntries();
+    this.storyEntry = this.entries.find((e) => e.filename === "story.json")!;
+    const blob = await this.storyEntry.getData(new BlobWriter());
+    this.story = JSON.parse(await blob.text()) as SerializedPack;
+    this.entrypoint = this.story.stageNodes.find((s) => s.squareOne)!;
+    this.story.stageNodes.forEach((s) => this.stageMap.set(s.uuid, s));
+    this.story.actionNodes.forEach((a) => this.actionMap.set(a.id, a));
 
-    if (stageIndex === 0) {
-      for (const element of stageToProcess) {
-        await extractStage(
-          story,
-          element.stageId,
-          stageDone,
-          element.basePath,
-          stageToProcess,
-        );
+    if (this.story.nightModeAvailable) {
+      this.story.stageNodes.forEach((s) => {
+        const dest = s.okTransition?.actionNode;
+        if (dest) {
+          this.transitionCount.set(
+            dest,
+            (this.transitionCount.get(dest) ?? 0) + 1,
+          );
+        }
+      });
+      let maxCount = 0;
+      let maxId;
+
+      for (const [id, count] of this.transitionCount.entries()) {
+        if (count > maxCount) {
+          maxCount = count;
+          maxId = id;
+        }
       }
+      if (maxCount > 2) {
+        this.nightAction = maxId;
+      }
+    }
+  }
+
+  getNodeType(uuid: string): StageType {
+    const nodeChildren = this.children[uuid] ?? [];
+    switch (nodeChildren.length) {
+      case 0:
+        return "STORY";
+      case 1:
+        return (this.children[nodeChildren[0]] ?? []).length > 0
+          ? "FOLDER"
+          : "ITEM";
+      default:
+        return "FOLDER";
+    }
+  }
+
+  async extractPack() {
+    await this.init();
+    const toExplore = new Queue<string>();
+    toExplore.enqueue(this.entrypoint!.uuid);
+    const stagesSeen = new Set<string>();
+    stagesSeen.add(this.entrypoint!.uuid);
+
+    while (toExplore.size > 0) {
+      const current = toExplore.dequeue()!;
+      const stage = this.stageMap.get(current);
+      const okActionId = stage?.okTransition?.actionNode;
+
+      if (
+        okActionId &&
+        okActionId !== stage?.homeTransition?.actionNode &&
+        this.nightAction !== okActionId
+      ) {
+        const action = this.actionMap.get(okActionId)!;
+        for (const option of action.options) {
+          if (!stagesSeen.has(option)) {
+            toExplore.enqueue(option);
+            if (!this.children[current]) {
+              this.children[current] = [];
+            }
+            this.children[current].push(option);
+            this.parents[option] = current;
+          }
+          stagesSeen.add(option);
+        }
+      }
+    }
+    console.log(this.children);
+    this.explore(this.entrypoint!.uuid, "", 0);
+    console.log({ assets: this.assets });
+    for (const { key, path } of this.assets) {
+      const entry = this.entries.find((e) => e.filename === `assets/${key}`)!;
+      const blob = await entry.getData(new BlobWriter());
+      const buffer = await blob.arrayBuffer();
+      const filePath = `${this.outputPath}${path}`;
+      const parentPath = dirname(filePath);
+      await Deno.mkdir(parentPath, { recursive: true });
+      await Deno.writeFile(filePath, new Uint8Array(buffer));
+    }
+
+    const thumbnailEntry = this.entries.find((e) =>
+      e.filename === `thumbnail.png`
+    );
+    if (thumbnailEntry) {
+      const blob = await thumbnailEntry.getData(new BlobWriter());
+      const buffer = await blob.arrayBuffer();
+      const parentPath = `${this.outputPath}/${this.entrypoint!.name}`;
+      await Deno.mkdir(parentPath, { recursive: true });
+      const filePath = `${parentPath}/thumbnail.png`;
+      await Deno.writeFile(filePath, new Uint8Array(buffer));
+    }
+  }
+
+  addAsset(assetKey: string | null, folderPath: string, basename: string) {
+    if (assetKey) {
+      const ext = assetKey.split(".")[1]!;
+      console.log(`→ ${folderPath}/${basename}.${ext}`);
+      this.assets.push({
+        key: assetKey,
+        path: `${folderPath}/${basename}.${ext}`,
+      });
+    }
+  }
+
+  explore(
+    uuid: string,
+    parentPath: string,
+    index: number,
+  ) {
+    const nodeChildren = this.children[uuid] ?? [];
+    const isQuestion = this.questions.has(uuid);
+    let createQuestion = false;
+
+    let folderPath = "";
+    let type: StageType;
+    if (isQuestion) {
+      folderPath = parentPath + "/Question";
+      type = "FOLDER";
+    } else {
+      type = this.getNodeType(uuid);
+      const stage = this.stageMap.get(uuid)!;
+      const parent = this.stageMap.get(this.parents[uuid]);
+      const parentActionNode = this.actionMap.get(
+        parent?.okTransition?.actionNode || "",
+      );
+      createQuestion = stage.squareOne ||
+        ((parentActionNode?.options.length ?? 1) > 1);
+      const prefix = index ? (index.toString().padStart(3, "0") + " - ") : "";
+      let name = stage.name.startsWith(prefix)
+        ? stage.name
+        : prefix + stage.name;
+      const res = /^(.*)(\.[^. ]+ (item|Stage node))/.exec(name);
+      name = res?.[1] ?? name;
+
+      folderPath = parentPath + (type === "FOLDER" ? "/" + name : "");
+
+      switch (type) {
+        case "FOLDER":
+          this.addAsset(stage.audio, folderPath, `0-item`);
+          this.addAsset(stage.image, folderPath, `0-item`);
+          break;
+        case "ITEM":
+          this.addAsset(stage.audio, folderPath, `${name}.item`);
+          this.addAsset(stage.image, folderPath, `${name}.item`);
+          break;
+        case "STORY":
+          this.addAsset(stage.audio, folderPath, name);
+          this.addAsset(stage.image, folderPath, name);
+          break;
+      }
+
+      const path = folderPath + "/" + name +
+        (type === "FOLDER"
+          ? ""
+          : (type === "STORY" ? ".story" : type === "ITEM" ? ".item" : ""));
+      console.log(`${uuid}  ${path.padEnd(100)}`);
+    }
+
+    if (createQuestion && nodeChildren.length > 1) {
+      const questionUuid = crypto.randomUUID();
+      this.questions.add(questionUuid);
+      this.children[questionUuid] = nodeChildren;
+      this.children[uuid] = [questionUuid];
+      this.explore(questionUuid, folderPath, 0);
+    } else {
+      nodeChildren.forEach((child, i) => {
+        const newIndex = type === "ITEM"
+          ? index
+          : (nodeChildren.length > 1 ? i + 1 : 0);
+        this.explore(child, folderPath, newIndex);
+      });
     }
   }
 }
 
 if (import.meta.main) {
   // await extractPack({ storyPath: "test_data/zip/2-full.zip" } as ModOptions);
-  await extractPack(
-    {
-      storyPath: "test_data/zip/2-full.zip",
-    } as ModOptions,
-  );
+  const opt = {
+    storyPath: Deno.args[0] ??
+      "/disk/Videos/Vidéos_data/Lunii/Pack-Lunii/7 ans/Les aventures de Tintin/7+]France Culture Les aventures de Tintin-19 chapitres[by_ipeca.zip",
+  } as ModOptions;
+  await (new PackExtractor(opt).extractPack());
 }
