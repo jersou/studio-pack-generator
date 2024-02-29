@@ -31,6 +31,7 @@ export async function parseArgs(args: string[]) {
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",
     )
+    .alias("help", "h")
     .option("add-delay", {
       alias: "d",
       demandOption: false,
@@ -154,6 +155,7 @@ export async function parseArgs(args: string[]) {
       describe: "generate missing audio item with Open AI TTS",
     })
     .option("open-ai-api-key", {
+      alias: "k",
       demandOption: false,
       boolean: false,
       type: "string",
@@ -169,7 +171,7 @@ export async function parseArgs(args: string[]) {
       describe: "OpenAi model : " + OPEN_AI_MODELS.join(", "),
     })
     .option("open-ai-voice", {
-      alias: "h",
+      alias: "p",
       demandOption: false,
       boolean: false,
       default: "onyx",

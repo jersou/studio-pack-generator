@@ -1,3 +1,7 @@
+### v0.4.0 / 2024.03.01
+
+- breaking: opt "--open-ai-voice" -h → -p
+
 ### v0.3.3 / 2024.02.25
 
 - upgrade deno to 1.41.0 (smaller deno compile binaries)

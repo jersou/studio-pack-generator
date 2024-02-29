@@ -209,7 +209,7 @@ The "super pack" will look like :
 deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or a RSS URL to Studio pack
 
 Options:
-      --help                         Show help                                                                 [boolean]
+  -h, --help                         Show help                                                                 [boolean]
   -d, --add-delay                    add 1 second at the beginning and the end of audio files [boolean] [default: false]
   -n, --auto-next-story-transition   go to next story of group at end of stories              [boolean] [default: false]
   -b, --select-next-story-at-end     select the next story in the menu at end                 [boolean] [default: false]
@@ -227,9 +227,10 @@ Options:
   -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
   -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
   -e, --use-open-ai-tts              generate missing audio item with Open AI TTS             [boolean] [default: false]
-  -f, --open-ai-api-key              the OpenAI API key                                                         [string]
+  -k, --open-ai-api-key              the OpenAI API key                                                         [string]
   -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                          [string] [default: "tts-1"]
-  -h, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
+  -p, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
+  -x, --extract                      [Alpha] extract a zip pack (reverse mode)                [boolean] [default: false]
 ```
 
 Separate options by spaces, ex :
