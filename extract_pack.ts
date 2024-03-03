@@ -113,6 +113,7 @@ export class PackExtractor {
     console.log(this.children);
     this.explore(this.entrypoint!.uuid, "", 0);
     console.log({ assets: this.assets });
+    await Deno.mkdir(this.outputPath, { recursive: true });
     for (const { key, path } of this.assets) {
       const entry = this.entries.find((e) => e.filename === `assets/${key}`)!;
       const blob = await entry.getData(new BlobWriter());
@@ -129,9 +130,7 @@ export class PackExtractor {
     if (thumbnailEntry) {
       const blob = await thumbnailEntry.getData(new BlobWriter());
       const buffer = await blob.arrayBuffer();
-      const parentPath = `${this.outputPath}/${this.entrypoint!.name}`;
-      await Deno.mkdir(parentPath, { recursive: true });
-      const filePath = `${parentPath}/thumbnail.png`;
+      const filePath = `${this.outputPath}/thumbnail.png`;
       await Deno.writeFile(filePath, new Uint8Array(buffer));
     }
   }
@@ -176,8 +175,11 @@ export class PackExtractor {
         : prefix + stage.name;
       const res = /^(.*)(\.[^. ]+ (item|Stage node))/.exec(name);
       name = res?.[1] ?? name;
-
-      folderPath = parentPath + (type === "FOLDER" ? "/" + name : "");
+      if (uuid === this.entrypoint?.uuid) {
+        folderPath = parentPath;
+      } else {
+        folderPath = parentPath + (type === "FOLDER" ? "/" + name : "");
+      }
 
       switch (type) {
         case "FOLDER":
@@ -193,12 +195,6 @@ export class PackExtractor {
           this.addAsset(stage.image, folderPath, name);
           break;
       }
-
-      const path = folderPath + "/" + name +
-        (type === "FOLDER"
-          ? ""
-          : (type === "STORY" ? ".story" : type === "ITEM" ? ".item" : ""));
-      console.log(`${uuid}  ${path.padEnd(100)}`);
     }
 
     if (createQuestion && nodeChildren.length > 1) {
