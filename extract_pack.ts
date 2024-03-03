@@ -133,6 +133,17 @@ export class PackExtractor {
       const filePath = `${this.outputPath}/thumbnail.png`;
       await Deno.writeFile(filePath, new Uint8Array(buffer));
     }
+    const metadata = {
+      "title": this.story?.title ?? "",
+      "description": this.story?.description ?? "",
+      "format": this.story?.format ?? "",
+      "version": this.story?.version ?? "",
+      "nightModeAvailable": !!this.story?.nightModeAvailable,
+    };
+    await Deno.writeTextFile(
+      `${this.outputPath}/metadata.json`,
+      JSON.stringify(metadata, null, "  "),
+    );
   }
 
   addAsset(assetKey: string | null, folderPath: string, basename: string) {

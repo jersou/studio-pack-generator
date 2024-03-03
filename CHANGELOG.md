@@ -1,6 +1,8 @@
 ### v0.4.1 / 2024.03.04
 
 - fix(extract): remove unnecessary root dir in extract
+- fix(extract): add metadata.json in extract #24
+
 ### v0.4.0 / 2024.03.01
 
 - breaking: opt "--open-ai-voice" -h → -p
