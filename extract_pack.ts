@@ -157,6 +157,7 @@ export class PackExtractor {
     }
   }
 
+  // TODO refactor
   explore(
     uuid: string,
     parentPath: string,
@@ -181,9 +182,15 @@ export class PackExtractor {
       createQuestion = stage.squareOne ||
         ((parentActionNode?.options.length ?? 1) > 1);
       const prefix = index ? (index.toString().padStart(3, "0") + " - ") : "";
-      let name = stage.name.startsWith(prefix)
-        ? stage.name
-        : prefix + stage.name;
+      let name;
+      if (type === "ITEM") {
+        // use child stage name
+        name = this.stageMap.get(nodeChildren[0])?.name ?? "stage";
+      } else {
+        name = stage.name;
+      }
+
+      name = name.startsWith(prefix) ? name : prefix + name;
       const res = /^(.*)(\.[^. ]+ (item|Stage node))/.exec(name);
       name = res?.[1] ?? name;
       if (uuid === this.entrypoint?.uuid) {
@@ -229,7 +236,7 @@ if (import.meta.main) {
   // await extractPack({ storyPath: "test_data/zip/2-full.zip" } as ModOptions);
   const opt = {
     storyPath: Deno.args[0] ??
-      "/disk/Videos/Vidéos_data/Lunii/Pack-Lunii/7 ans/Les aventures de Tintin/7+]France Culture Les aventures de Tintin-19 chapitres[by_ipeca.zip",
+      "test_data/zip/2-full.zip",
   } as ModOptions;
   await (new PackExtractor(opt).extractPack());
 }

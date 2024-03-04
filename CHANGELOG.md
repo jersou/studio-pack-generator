@@ -1,3 +1,7 @@
+### v0.4.2 / 2024.03.04
+
+- fix(extract): use child node for item name
+
 ### v0.4.1 / 2024.03.04
 
 - fix(extract): remove unnecessary root dir in extract
