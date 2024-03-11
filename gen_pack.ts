@@ -32,7 +32,7 @@ export type ModOptions = {
   autoNextStoryTransition?: boolean;
   selectNextStoryAtEnd?: boolean;
   addDelay?: boolean;
-  nightMode?: boolean;
+  nightModeAvailable?: boolean;
   seekStory?: string;
   skipWsl?: boolean;
   skipRssImageDl?: boolean;
@@ -128,7 +128,7 @@ async function getMetadata(opt: ModOptions): Promise<Metadata> {
     return JSON.parse(metadataJson);
   } else {
     return {
-      nightMode: !!opt.nightMode,
+      nightModeAvailable: !!opt.nightModeAvailable,
     };
   }
 }

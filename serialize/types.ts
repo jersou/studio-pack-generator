@@ -100,5 +100,5 @@ export type Metadata = {
   description?: string;
   format?: string;
   version?: number;
-  nightMode?: boolean;
+  nightModeAvailable?: boolean;
 };

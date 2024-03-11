@@ -326,6 +326,5 @@ Usage : `deno task <command>`, ex : `deno task fmt`
 
 ## Possible improvements
 
-- https://github.com/jersou/studio-pack-generator/issues/19 : end node
 - clean file download option unless -z
 - ...
