@@ -8,7 +8,7 @@ import { serializePack } from "./serialize/serializer.ts";
 import { getAssetsPaths } from "./serialize/assets.ts";
 import { createPackZip } from "./utils/zip.ts";
 import { downloadRss } from "./generate/rss_parser.ts";
-import { basename, exists, join } from "./deps.ts";
+import { basename, bgRed, exists, join } from "./deps.ts";
 import {
   checkRunPermission,
   convertToImageItem,
@@ -58,6 +58,17 @@ async function genThumbnail(folder: Folder, storyPath: string) {
 }
 
 export async function generatePack(opt: ModOptions) {
+  if (
+    opt.nightMode && (opt.autoNextStoryTransition || opt.selectNextStoryAtEnd)
+  ) {
+    console.log(
+      bgRed(
+        "The night mode is incompatible with auto-next-story-transition or select-next-story-at-end options",
+      ),
+    );
+    Deno.exit(1);
+  }
+
   const start = Date.now();
   console.log({ opt });
   const lang = opt.lang || (await getLang());
