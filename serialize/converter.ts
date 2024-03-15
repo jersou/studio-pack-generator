@@ -28,7 +28,7 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
     description: metadata?.description ?? "",
     format: metadata?.format ?? "v1",
     version: metadata?.version ?? 1,
-    nightModeAvailable: !!(metadata?.nightModeAvailable),
+    nightModeAvailable: !!(metadata?.nightMode),
     entrypoint: {
       class: "StageNode-Entrypoint",
       name: "Cover node",
