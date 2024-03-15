@@ -328,4 +328,6 @@ Usage : `deno task <command>`, ex : `deno task fmt`
 
 - https://github.com/jersou/studio-pack-generator/issues/19 : end node
 - clean file download option unless -z
+- use https://github.com/rhasspy/piper for TTS
+- use git LFS
 - ...

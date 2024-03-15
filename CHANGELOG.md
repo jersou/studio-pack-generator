@@ -1,13 +1,12 @@
 ### v?.?.? / ????.??.??
 
+- fix: exit if nightMode && (autoNextStoryTransition || selectNextStoryAtEnd)
 - fix #25: metadata.json "nightmode" is not extracted correctly by @lasconic and
-  @jersou in https://github.com/jersou/studio-pack-generator/pull/26
+  @jersou in #26
 
 #### New Contributors
 
-- @lasconic made their first contribution in
-  https://github.com/jersou/studio-pack-generator/pull/26
--
+- @lasconic made their first contribution in #26
 
 ### v0.4.2 / 2024.03.04
 
@@ -95,8 +94,7 @@
 
 ### v0.1.17 / 2022.02.09
 
-- Add seekStory parameter in convertAudioOfFolder by @GuillaumeFege in
-  https://github.com/jersou/studio-pack-generator/pull/9
+- Add seekStory parameter in convertAudioOfFolder by @GuillaumeFege in #9
 
 ```
 -c, --seek-story    cut the beginning of stories: 'HH:mm:ss' format or 'N' sec  [string]
@@ -104,8 +102,7 @@
 
 #### New Contributors
 
-- @GuillaumeFege made their first contribution in
-  https://github.com/jersou/studio-pack-generator/pull/9
+- @GuillaumeFege made their first contribution in #9
 
 ### v0.1.16 / 2022.02.03
 
@@ -115,17 +112,13 @@
 ### v0.1.12 / 2021.12.29
 
 - fix(super pack): use useWebWorkers=false option to fix standalone bin unzip
-- compatibility with .opus audio format by @JulienMaille in
-  https://github.com/jersou/studio-pack-generator/pull/5
-- fix: correct settings for 'say' Mac TTS by @dmaxime in
-  https://github.com/jersou/studio-pack-generator/pull/6
+- compatibility with .opus audio format by @JulienMaille in #5
+- fix: correct settings for 'say' Mac TTS by @dmaxime in #6
 
 #### New Contributors
 
-- @JulienMaille made their first contribution in
-  https://github.com/jersou/studio-pack-generator/pull/5
-- @dmaxime made their first contribution in
-  https://github.com/jersou/studio-pack-generator/pull/6
+- @JulienMaille made their first contribution in #5
+- @dmaxime made their first contribution in #6
 
 ### v0.1.11 / 2021.12.25
 
