@@ -2,7 +2,12 @@
 
 import { ModOptions } from "./gen_pack.ts";
 import { BlobReader, BlobWriter, dirname, Queue, ZipReader } from "./deps.ts";
-import { ActionNode, SerializedPack, StageNode } from "./serialize/types.ts";
+import {
+  ActionNode,
+  Metadata,
+  SerializedPack,
+  StageNode,
+} from "./serialize/types.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {
@@ -133,12 +138,12 @@ export class PackExtractor {
       const filePath = `${this.outputPath}/thumbnail.png`;
       await Deno.writeFile(filePath, new Uint8Array(buffer));
     }
-    const metadata = {
+    const metadata: Metadata = {
       "title": this.story?.title ?? "",
       "description": this.story?.description ?? "",
       "format": this.story?.format ?? "",
-      "version": this.story?.version ?? "",
-      "nightModeAvailable": !!this.story?.nightModeAvailable,
+      "version": this.story?.version ?? 0,
+      "nightMode": !!this.story?.nightModeAvailable,
     };
     await Deno.writeTextFile(
       `${this.outputPath}/metadata.json`,

@@ -1,3 +1,14 @@
+### v?.?.? / ????.??.??
+
+- fix #25: metadata.json "nightmode" is not extracted correctly by @lasconic and
+  @jersou in https://github.com/jersou/studio-pack-generator/pull/26
+
+#### New Contributors
+
+- @lasconic made their first contribution in
+  https://github.com/jersou/studio-pack-generator/pull/26
+-
+
 ### v0.4.2 / 2024.03.04
 
 - fix(extract): use child node for item name
