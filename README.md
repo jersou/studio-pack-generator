@@ -270,7 +270,7 @@ All key/value are optional, ex:
   "description": "description - overwrite",
   "format": "v1",
   "version": 1,
-  "nightModeAvailable": false
+  "nightMode: false
 }
 ```
 
