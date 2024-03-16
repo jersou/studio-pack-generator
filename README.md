@@ -1,5 +1,4 @@
 # Studio-Pack-Generator
-
 This project convert a folder or a RSS URL to
 [Studio](https://github.com/marian-m12l/studio) pack zip for Lunii device, see
 file structure below.
@@ -270,7 +269,7 @@ All key/value are optional, ex:
   "description": "description - overwrite",
   "format": "v1",
   "version": 1,
-  "nightMode: false
+  "nightMode": false
 }
 ```
 
