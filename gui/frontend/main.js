@@ -62,17 +62,23 @@ function clearPath(path){
 }
 
 function StageNode({node}) {
-  const children=node?.okTransition?.options?.filter(o=>o.class!=="StageNode-Story").map(o=> StageNode({node:o}))
+  const children=node?.okTransition?.options?.filter(o=>o.class!=="StageNode-Story")
   return node && html`<div class="story">
     <div class="item ${node.class} ${children.length > 1 ? "several":""}">
       <div class="card">
         ${node.image && html`<img src="/file?path=${clearPath(dirname(node.path)+"/"+node.image)}" />`}
         ${node.audio && html`<audio controls src="/file?path=${clearPath(dirname(node.path)+"/"+node.audio)}"></audio>`}
+        ${children.length > 1 ? Openfolder({node}):null}
       </div>
       ${node.class==="StageNode-StoryItem" && html`<div class="story-audio"><audio controls src="/file?path=${clearPath(node.path)}"></audio></div>`}
     </div>
-    ${children&& html`<div class="children">${children}</div>`}
+    ${children&& html`<div class="children">${children.map(o=> StageNode({node:o}))}</div>`}
   </div>`
+}
+
+function Openfolder({node}) {
+  const onClick= ()=> fetch(`/api/openFolder?path=${clearPath(node.path)}`);
+  return html`<button onClick="${onClick}">Open folder</button>`
 }
 
 render(html`<${App}/>`, document.body);

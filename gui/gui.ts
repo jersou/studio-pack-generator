@@ -64,13 +64,25 @@ class StudioPackGeneratorGui {
         const url = new URL(request.url);
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
-          const filePath = path;
-          // const filePath = url.pathname.substring(5);
-          const ext = extname(filePath)?.substring(1);
+          const ext = extname(path)?.substring(1);
           const type = mimeTypes[ext];
-          const content = await Deno.readFile(filePath);
+          const content = await Deno.readFile(path);
           const headers = { "Content-Type": type };
           return new Response(content, { status: 200, headers });
+        } else {
+          return new Response("Not a pack file", { status: 403 });
+        }
+      },
+    },
+    {
+      route: new URLPattern({ pathname: "/api/openFolder" }),
+      exec: async (match: URLPatternResult, request: Request) => {
+        const url = new URL(request.url);
+        const path = decodeURIComponent(url.searchParams.get("path") ?? "");
+        if (path.startsWith(this.#opt!.storyPath)) {
+          // TODO
+          await $`nemo ${path}`.printCommand(true);
+          return new Response("ok", { status: 200 });
         } else {
           return new Response("Not a pack file", { status: 403 });
         }

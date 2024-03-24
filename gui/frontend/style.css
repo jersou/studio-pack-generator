@@ -37,6 +37,7 @@ align-items: start;
 }
 
 .story {
+  position: relative;
   display: flex;
   /*border: #1c2aa9 solid 2px;*/
   /*border-radius: 5px;*/
