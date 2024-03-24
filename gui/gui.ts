@@ -62,8 +62,9 @@ class StudioPackGeneratorGui {
       route: new URLPattern({ pathname: "/file" }),
       exec: async (match: URLPatternResult, request: Request) => {
         const url = new URL(request.url);
-        const filePath = decodeURI(url.searchParams.get("path") ?? "");
-        if (filePath.startsWith(this.#opt!.storyPath)) {
+        const path = decodeURIComponent(url.searchParams.get("path") ?? "");
+        if (path.startsWith(this.#opt!.storyPath)) {
+          const filePath = path;
           // const filePath = url.pathname.substring(5);
           const ext = extname(filePath)?.substring(1);
           const type = mimeTypes[ext];

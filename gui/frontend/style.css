@@ -1,11 +1,10 @@
 body {
-    position: absolute;
-    justify-content: center;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    color: #1c2aa9;
+    margin: 20px;
+}
+
+.app {
+display: flex;
+align-items: start;
 }
 
 .ko {
@@ -39,18 +38,38 @@ body {
 
 .story {
   display: flex;
-  border: #1c2aa9 solid 2px;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 15px;
+  /*border: #1c2aa9 solid 2px;*/
+  /*border-radius: 5px;*/
+  margin-bottom: 15px;
+  flex: 0;
 }
 
 .item {
   flex: 0;
+  display: flex;
+  align-self: start;
+
 }
 .story-audio{
-    margin-left: 20px;
-  border: #1c2aa9 solid 2px;
-  border-radius: 5px;
-  padding: 5px;
+  margin-left: 20px;
+  border: #1c2aa9 solid 10px;
+  border-radius: 50px;
+  padding: 10px;
+}
+.StageNode-StoryItem {
+  align-items: center;
+}
+.card {
+    border: #aaa solid 3px;
+    box-shadow: 6px 6px 8px #bbb;
+    padding: 10px;
+}
+.StageNode-Menu > .card{
+  border: #ff8a8a dashed 8px;
+}
+.StageNode-Menu.several > .card{
+  border: #8ac1ff dashed 8px;
+}
+.StageNode-Entrypoint {
+  border: #ff3232 solid 8px;
 }

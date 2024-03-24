@@ -46,8 +46,8 @@ function App() {
     : html`<div class="ko">The backend is down !</div>`;
   return html`
     ${backendKo}
+    <h1>Studio Pack Generator</h1>
     <div class="app">
-      <h1>Studio Pack Generator</h1>
       <${StageNode} node=${pack.entrypoint} />
     </div>
   `;
@@ -55,23 +55,23 @@ function App() {
 
 function dirname(path) {
   const res = path?.match(/^(.*)(\/[^\/]+)$/)?.[1];
-  console.log({path,res})
   return res??path;
 }
 function clearPath(path){
-  return path.replaceAll("//","/")
+  return encodeURIComponent(path.replaceAll("//","/"))
 }
 
 function StageNode({node}) {
   const children=node?.okTransition?.options?.filter(o=>o.class!=="StageNode-Story").map(o=> StageNode({node:o}))
   return node && html`<div class="story">
-    <div class="item">
-      <div>class : ${node.class}</div>
-      ${node.image && html`<img src="/file?path=${clearPath(dirname(node.path)+"/"+node.image)}" />`}
-      ${node.audio && html`<audio controls src="/file?path=${clearPath(dirname(node.path)+"/"+node.audio)}"></audio>`}
+    <div class="item ${node.class} ${children.length > 1 ? "several":""}">
+      <div class="card">
+        ${node.image && html`<img src="/file?path=${clearPath(dirname(node.path)+"/"+node.image)}" />`}
+        ${node.audio && html`<audio controls src="/file?path=${clearPath(dirname(node.path)+"/"+node.audio)}"></audio>`}
+      </div>
       ${node.class==="StageNode-StoryItem" && html`<div class="story-audio"><audio controls src="/file?path=${clearPath(node.path)}"></audio></div>`}
     </div>
-    <div class="children">${node.okTransition?.options?.map(o=> StageNode({node:o}))}</div>
+    ${children&& html`<div class="children">${children}</div>`}
   </div>`
 }
 
