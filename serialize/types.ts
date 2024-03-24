@@ -1,9 +1,11 @@
 export type Folder = {
   name: string;
+  path?: string;
   files: (Folder | File)[];
 };
 export type File = {
   name: string;
+  path?: string;
   sha1: string;
 };
 
@@ -24,6 +26,7 @@ export type Menu = {
   audio: string | null;
   image: string | null;
   name: string;
+  path?: string;
   okTransition: Action;
 };
 
@@ -48,6 +51,7 @@ export type Story = {
   audio: string;
   image: null;
   name: string;
+  path?: string;
   okTransition: null;
 };
 

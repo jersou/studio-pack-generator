@@ -42,6 +42,7 @@ export type ModOptions = {
   openAiModel?: typeof OPEN_AI_MODELS[number];
   openAiVoice?: typeof OPEN_AI_VOICES[number];
   extract?: boolean;
+  gui?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {
@@ -110,7 +111,6 @@ export async function generatePack(opt: ModOptions) {
     }
     if (!opt.skipZipGeneration) {
       folder = await fsToFolder(opt.storyPath, true);
-
       const metadata: Metadata = await getMetadata(opt);
       const pack = folderToPack(folder, metadata);
       const nightModeAudioItemName = getNightModeAudioItem(folder);
@@ -132,7 +132,7 @@ export async function generatePack(opt: ModOptions) {
   }
 }
 
-async function getMetadata(opt: ModOptions): Promise<Metadata> {
+export async function getMetadata(opt: ModOptions): Promise<Metadata> {
   const metadataPath = `${opt.storyPath}/metadata.json`;
   if (await exists(metadataPath)) {
     const metadataJson = await Deno.readTextFile(metadataPath);

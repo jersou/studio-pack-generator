@@ -32,6 +32,7 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
     entrypoint: {
       class: "StageNode-Entrypoint",
       name: "Cover node",
+      path: folder.path + "/",
       image: getFolderImageItem(folder),
       audio: getFolderAudioItem(folder),
       okTransition: {
@@ -53,6 +54,7 @@ export function folderToMenu(folder: Folder, path: string): Menu {
     image: getFolderImageItem(folder),
     audio: getFolderAudioItem(folder),
     name: folder.name,
+    path: folder.path + "/",
     okTransition: {
       class: "ActionNode",
       name: folder.name + " ActionNode",
@@ -82,6 +84,7 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
   return {
     class: "StageNode-StoryItem",
     name: file.name + " item",
+    path: file.path,
     audio: getFileAudioItem(file, parent),
     image: getFileImageItem(file, parent),
     okTransition: {
@@ -103,6 +106,7 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
 export function fileToStory(file: File): Story {
   return {
     class: "StageNode-Story",
+    path: file.path,
     audio: `${file.sha1}.${getExtension(file.name)}`,
     image: null,
     name: file.name + " Stage node",

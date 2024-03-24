@@ -4,6 +4,7 @@ import { yargs } from "../deps.ts";
 import { generatePack, ModOptions } from "../gen_pack.ts";
 import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
 import { PackExtractor } from "../extract_pack.ts";
+import { openGui } from "../gui/gui.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -23,10 +24,14 @@ export async function parseArgs(args: string[]) {
         }
         return y.wrap(width);
       },
-      async (opts: ModOptions) =>
-        opts.extract
-          ? await new PackExtractor(opts).extractPack()
-          : await generatePack(opts),
+      async (opts: ModOptions) => {
+        if (opts.extract) return await new PackExtractor(opts).extractPack();
+        else if (opts.gui) {
+          return await openGui(opts);
+        } else {
+          return await generatePack(opts);
+        }
+      },
     )
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",
@@ -184,6 +189,13 @@ export async function parseArgs(args: string[]) {
       boolean: true,
       default: false,
       describe: "extract a zip pack (reverse mode)",
+    })
+    .option("gui", {
+      alias: "u",
+      demandOption: false,
+      boolean: true,
+      default: true,
+      describe: "open GUI (on localhost:3333)",
     })
     .version(false)
     .demandCommand(1)
