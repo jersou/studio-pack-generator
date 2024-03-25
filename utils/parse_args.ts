@@ -194,7 +194,7 @@ export async function parseArgs(args: string[]) {
       alias: "u",
       demandOption: false,
       boolean: true,
-      default: true,
+      default: false,
       describe: "open GUI (on localhost:3333)",
     })
     .version(false)

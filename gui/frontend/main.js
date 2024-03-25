@@ -10,14 +10,14 @@ const wsUri =
 
 function updateOnEvent(setWsOk, setPack) {
   const socket = new WebSocket(wsUri);
-  socket.addEventListener("open", (event) => {
+  socket.addEventListener("open", () => {
     console.log("WebSocket: open");
     setWsOk(true);
   });
   socket.addEventListener("message", (event) => {
     console.log("WebSocket: message from server");
-    const data = JSON.parse(event.data)
-    if(data.type==="fs-update"){
+    const data = JSON.parse(event.data);
+    if (data.type === "fs-update") {
       setPack(data.pack);
     }
   });
@@ -38,7 +38,7 @@ function App() {
   // example
   const [pack, setPack] = useState({});
 
-  useEffect(async () => {
+  useEffect(() => {
     updateOnEvent(setWsOk, setPack);
   }, []);
   const backendKo = wsOk
@@ -55,30 +55,51 @@ function App() {
 
 function dirname(path) {
   const res = path?.match(/^(.*)(\/[^\/]+)$/)?.[1];
-  return res??path;
+  return res ?? path;
 }
-function clearPath(path){
-  return encodeURIComponent(path.replaceAll("//","/"))
+function clearPath(path) {
+  return encodeURIComponent(path.replaceAll("//", "/"));
 }
 
-function StageNode({node}) {
-  const children=node?.okTransition?.options?.filter(o=>o.class!=="StageNode-Story")
+function StageNode({ node }) {
+  const children = node?.okTransition?.options?.filter((o) =>
+    o.class !== "StageNode-Story"
+  );
   return node && html`<div class="story">
-    <div class="item ${node.class} ${children.length > 1 ? "several":""}">
+    <div class="item ${node.class} ${children.length > 1 ? "several" : ""}">
       <div class="card">
-        ${node.image && html`<img src="/file?path=${clearPath(dirname(node.path)+"/"+node.image)}" />`}
-        ${node.audio && html`<audio controls src="/file?path=${clearPath(dirname(node.path)+"/"+node.audio)}"></audio>`}
-        ${children.length > 1 ? Openfolder({node}):null}
+        ${
+    node.image &&
+    html`<img src="/file?path=${
+      clearPath(dirname(node.path) + "/" + node.image)
+    }" />`
+  }
+        ${
+    node.audio &&
+    html`<audio controls src="/file?path=${
+      clearPath(dirname(node.path) + "/" + node.audio)
+    }"></audio>`
+  }
+        ${children.length > 1 ? Openfolder({ node }) : null}
       </div>
-      ${node.class==="StageNode-StoryItem" && html`<div class="story-audio"><audio controls src="/file?path=${clearPath(node.path)}"></audio></div>`}
+      ${
+    node.class === "StageNode-StoryItem" &&
+    html`<div class="story-audio"><audio controls src="/file?path=${
+      clearPath(node.path)
+    }"></audio></div>`
+  }
     </div>
-    ${children&& html`<div class="children">${children.map(o=> StageNode({node:o}))}</div>`}
-  </div>`
+    ${
+    children && html`<div class="children">${
+      children.map((o) => StageNode({ node: o }))
+    }</div>`
+  }
+  </div>`;
 }
 
-function Openfolder({node}) {
-  const onClick= ()=> fetch(`/api/openFolder?path=${clearPath(node.path)}`);
-  return html`<button onClick="${onClick}">Open folder</button>`
+function Openfolder({ node }) {
+  const onClick = () => fetch(`/api/openFolder?path=${clearPath(node.path)}`);
+  return html`<button onClick="${onClick}">Open folder</button>`;
 }
 
 render(html`<${App}/>`, document.body);

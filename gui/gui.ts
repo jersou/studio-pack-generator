@@ -60,7 +60,7 @@ class StudioPackGeneratorGui {
   #routes = [
     {
       route: new URLPattern({ pathname: "/file" }),
-      exec: async (match: URLPatternResult, request: Request) => {
+      exec: async (_match: URLPatternResult, request: Request) => {
         const url = new URL(request.url);
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
@@ -76,7 +76,7 @@ class StudioPackGeneratorGui {
     },
     {
       route: new URLPattern({ pathname: "/api/openFolder" }),
-      exec: async (match: URLPatternResult, request: Request) => {
+      exec: async (_match: URLPatternResult, request: Request) => {
         const url = new URL(request.url);
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
@@ -96,7 +96,7 @@ class StudioPackGeneratorGui {
 
   async main() {
     await this.#loadAssets();
-    const onListen = async (params: { hostname: string; port: number }) => {
+    const onListen = (params: { hostname: string; port: number }) => {
       (async () => {
         const watcher = Deno.watchFs(this.#opt!.storyPath);
         for await (const event of watcher) {
