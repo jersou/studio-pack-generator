@@ -20,7 +20,7 @@ type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
 };
 
-export async function openGui(opt: ModOptions) {
+export function openGui(opt: ModOptions) {
   if (!opt.storyPath) {
     console.log("No story path → exit");
     Deno.exit(1);
@@ -30,8 +30,6 @@ export async function openGui(opt: ModOptions) {
   uiApp.update = true;
   uiApp.openInBrowser = true;
   uiApp.setStudioPackGeneratorOpt(opt);
-  const pack = await getPack(opt);
-  console.log(JSON.stringify(pack, null, "  "));
   return uiApp.main();
 }
 
@@ -100,10 +98,10 @@ class StudioPackGeneratorGui {
       (async () => {
         const watcher = Deno.watchFs(this.#opt!.storyPath);
         for await (const event of watcher) {
-          console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+          // console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
           console.log(">>>> event", event);
           const pack = await getPack(this.#opt!);
-          console.log(JSON.stringify(pack, null, "  "));
+          // console.log(JSON.stringify(pack, null, "  "));
           this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
         }
       })();
