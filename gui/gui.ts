@@ -15,6 +15,7 @@ import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { mimeTypes } from "./mime-types.ts";
+import { throttle } from "./lodash-throttle-v4.1.1.js";
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
@@ -96,13 +97,14 @@ class StudioPackGeneratorGui {
     await this.#loadAssets();
     const onListen = (params: { hostname: string; port: number }) => {
       (async () => {
-        const watcher = Deno.watchFs(this.#opt!.storyPath);
-        for await (const event of watcher) {
-          // console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-          console.log(">>>> event", event);
+        const onWatchEvent = async () => {
           const pack = await getPack(this.#opt!);
-          // console.log(JSON.stringify(pack, null, "  "));
           this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
+        };
+        const onWatchEventThrottle = throttle(onWatchEvent, 500);
+        const watcher = Deno.watchFs(this.#opt!.storyPath);
+        for await (const _event of watcher) {
+          onWatchEventThrottle();
         }
       })();
 
@@ -166,6 +168,7 @@ class StudioPackGeneratorGui {
       this.#sockets.add(socket);
       console.log(`a client connected! ${this.#sockets.size} clients`);
       const pack = await getPack(this.#opt!);
+      console.log(JSON.stringify(pack, null, "  "));
       socket.send(JSON.stringify({ type: "fs-update", pack }));
     });
     socket.addEventListener("close", () => {
