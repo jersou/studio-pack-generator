@@ -16,17 +16,17 @@ export const minFsWithoutSha = {
     {
       name: "0-item.ogg",
       path: "test_data/fs/0-min/0-item.ogg",
-      sha1: "0-item",
+      sha1: "",
     },
     {
       name: "0-item.png",
       path: "test_data/fs/0-min/0-item.png",
-      sha1: "0-item",
+      sha1: "",
     },
     {
       name: "alice-city.ogg",
       path: "test_data/fs/0-min/alice-city.ogg",
-      sha1: "alice-city",
+      sha1: "",
     },
   ],
   name: "0-min",

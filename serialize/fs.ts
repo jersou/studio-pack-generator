@@ -1,7 +1,6 @@
 import { File, Folder } from "./types.ts";
 import { basename, encodeHex, join } from "../deps.ts";
 import { getLang } from "../utils/i18n.ts";
-import { getNameWithoutExt } from "../utils/utils.ts";
 
 async function ls(path: string): Promise<Deno.DirEntry[]> {
   const entries = [];
@@ -31,7 +30,7 @@ export async function fsToFolder(
       const filePath = join(path, entry.name);
       folder.files.push({
         name: entry.name,
-        sha1: genSha1 ? await getSha1(filePath) : getNameWithoutExt(entry.name),
+        sha1: genSha1 ? await getSha1(filePath) : "",
         path: filePath,
       } as File);
     }
