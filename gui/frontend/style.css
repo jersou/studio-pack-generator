@@ -107,3 +107,10 @@ svg {
   font-size: 40px;
   border-bottom: #888 solid 3px;
 }
+.config{
+  border: #aaa solid 3px;
+  box-shadow: 6px 6px 8px #bbb;
+  padding: 10px;
+  overflow: auto;
+  margin-bottom: 20px;
+}

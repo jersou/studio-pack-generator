@@ -36,7 +36,7 @@ function useComponentSize() {
   return { ref, size };
 }
 
-function updateOnEvent(setWsOk, setPack) {
+function updateOnEvent(setWsOk, setPack, setOpt) {
   const socket = new WebSocket(wsUri);
   socket.addEventListener("open", () => {
     console.log("WebSocket: open");
@@ -47,6 +47,9 @@ function updateOnEvent(setWsOk, setPack) {
     const data = JSON.parse(event.data);
     if (data.type === "fs-update") {
       setPack(data.pack);
+    }
+    if (data.type === "opt") {
+      setOpt(data.opt);
     }
   });
   socket.addEventListener("error", (event) => {
@@ -65,15 +68,17 @@ function App() {
   const [wsOk, setWsOk] = useState(true);
   // example
   const [pack, setPack] = useState({});
+  const [opt, setOpt] = useState({});
 
   useEffect(() => {
-    updateOnEvent(setWsOk, setPack);
+    updateOnEvent(setWsOk, setPack, setOpt);
   }, []);
   const backendKo = wsOk
     ? null
     : html`<div class="ko">The backend is down !</div>`;
   return html`
     ${backendKo}
+    <${Config} opt=${opt} />
     <div class="preview">
       <div class="preview-title">
         Live preview : changes in <span class="folder-path">${pack.entrypoint?.path}</span> will update this view
@@ -81,6 +86,16 @@ function App() {
       <${StageNode} node=${pack.entrypoint} />
     </div>
   `;
+}
+
+function Config({ opt }) {
+  const [visible, setVisible] = useState(true);
+  const toggleVisibility = () => setVisible(!visible);
+
+  return html`<div class="config">
+    <button onclick=${toggleVisibility}>toggleVisibility</button>
+    ${visible && html`<pre>${JSON.stringify(opt, null, "  ")}</pre>`}
+  </div>`;
 }
 
 function dirname(path) {

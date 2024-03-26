@@ -170,6 +170,7 @@ class StudioPackGeneratorGui {
       const pack = await getPack(this.#opt!);
       // console.log(JSON.stringify(pack, null, "  "));
       socket.send(JSON.stringify({ type: "fs-update", pack }));
+      socket.send(JSON.stringify({ type: "opt", opt: this.#opt }));
     });
     socket.addEventListener("close", () => {
       this.#sockets.delete(socket);
