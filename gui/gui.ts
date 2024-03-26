@@ -168,7 +168,7 @@ class StudioPackGeneratorGui {
       this.#sockets.add(socket);
       console.log(`a client connected! ${this.#sockets.size} clients`);
       const pack = await getPack(this.#opt!);
-      console.log(JSON.stringify(pack, null, "  "));
+      // console.log(JSON.stringify(pack, null, "  "));
       socket.send(JSON.stringify({ type: "fs-update", pack }));
     });
     socket.addEventListener("close", () => {

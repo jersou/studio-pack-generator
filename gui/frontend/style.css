@@ -1,39 +1,38 @@
 body {
-    margin: 20px;
+  margin: 20px;
 }
 
 .app {
-display: flex;
-align-items: start;
+  display: flex;
+  align-items: start;
 }
 
 .ko {
-    background-color: red;
-    position: absolute;
-    height: 200px;
-    width: 100%;
-    font-size: 40px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+  background-color: red;
+  position: absolute;
+  height: 200px;
+  width: 100%;
+  font-size: 40px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-
-@media (prefers-color-scheme: light ){
-  body{
+@media (prefers-color-scheme: light) {
+  body {
     background-color: #fff;
     color: #000;
   }
 }
-@media (prefers-color-scheme: dark){
-  body{
+@media (prefers-color-scheme: dark) {
+  body {
     background-color: #222;
     color: #fff;
   }
 }
-.children{
+.children {
 }
 
 .story {
@@ -48,9 +47,8 @@ align-items: start;
   flex: 0;
   display: flex;
   align-self: start;
-
 }
-.story-audio{
+.story-audio {
   border: #1c2aa9 solid 10px;
   border-radius: 50px;
   padding: 10px;
@@ -59,22 +57,22 @@ align-items: start;
   align-items: center;
 }
 .card {
-    border: #aaa solid 3px;
-    box-shadow: 6px 6px 8px #bbb;
-    padding: 10px;
-    margin-bottom: 15px;
-    flex:0;
+  border: #aaa solid 3px;
+  box-shadow: 6px 6px 8px #bbb;
+  padding: 10px;
+  margin-bottom: 15px;
+  flex: 0;
 }
-.StageNode-Menu > .card{
+.StageNode-Menu > .card {
   border: #ff8a8a dashed 8px;
 }
-.StageNode-Menu.several > .card{
+.StageNode-Menu.several > .card {
   border: #8ac1ff dashed 8px;
 }
 .StageNode-Entrypoint > .card {
   border: #ff3232 solid 8px;
 }
-.line{
+.line {
   min-width: 80px;
 }
 
@@ -85,9 +83,9 @@ svg {
   width: 36px;
   height: 20px;
 }
-.empty{
-    min-height: 80px;
-    min-width: 80px;
+.empty {
+  min-height: 80px;
+  min-width: 80px;
 }
 .preview {
   border: #aaa solid 3px;
@@ -96,4 +94,16 @@ svg {
   overflow: auto;
   /*justify-content: center;*/
   /*display: flex;*/
+}
+
+.folder-path {
+  font-family: monospace;
+  font-size: 20px;
+  vertical-align: middle;
+}
+.preview-title {
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: 40px;
+  border-bottom: #888 solid 3px;
 }

@@ -27,6 +27,9 @@ export type Menu = {
   image: string | null;
   name: string;
   path?: string;
+  audioTimestamp?: number;
+  imageTimestamp?: number;
+  pathTimestamp?: number;
   okTransition: Action;
 };
 

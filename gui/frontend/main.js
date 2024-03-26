@@ -75,7 +75,9 @@ function App() {
   return html`
     ${backendKo}
     <div class="preview">
-      <h1>Live preview :</h1>
+      <div class="preview-title">
+        Live preview : changes in <span class="folder-path">${pack.entrypoint?.path}</span> will update this view
+      </div>
       <${StageNode} node=${pack.entrypoint} />
     </div>
   `;
@@ -133,7 +135,7 @@ function StageNode({ node, last, first }) {
     node.image &&
     html`<img src="/file?path=${
       clearPath(dirname(node.path) + "/" + node.image)
-    }"
+    }&ts=${node.imageTimestamp}"
     title=${dirname(node.path) + node.image}
     />`
   }
@@ -141,7 +143,7 @@ function StageNode({ node, last, first }) {
     node.audio &&
     html`<audio controls src="/file?path=${
       clearPath(dirname(node.path) + "/" + node.audio)
-    }"
+    }&ts=${node.audioTimestamp}"
     title=${dirname(node.path) + node.audio}
     ></audio>`
   }
@@ -155,7 +157,7 @@ function StageNode({ node, last, first }) {
       </div>
       <div class="story-audio"><audio controls src="/file?path=${
       clearPath(node.path)
-    }"
+    }&ts=${node.pathTimestamp}"
     title=${node.path}></audio></div>`
   }
     </div>
