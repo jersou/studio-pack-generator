@@ -43,7 +43,9 @@ export const expectedMinPack: Pack = {
     class: "StageNode-Entrypoint",
     name: "Cover node",
     audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+    audioPath: undefined,
     image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
+    imagePath: undefined,
     okTransition: {
       class: "ActionNode",
       name: "Action node",
@@ -218,7 +220,9 @@ export const expectedMoyPack: Pack = {
     class: "StageNode-Entrypoint",
     name: "Cover node",
     audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+    audioPath: undefined,
     image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
+    imagePath: undefined,
     okTransition: {
       class: "ActionNode",
       name: "Action node",
@@ -228,6 +232,10 @@ export const expectedMoyPack: Pack = {
           name: "Choose a place",
           image: null,
           audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+          audioPath: undefined,
+          audioTimestamp: undefined,
+          imagePath: undefined,
+          imageTimestamp: undefined,
           okTransition: {
             name: "Choose a place ActionNode",
             class: "ActionNode",
@@ -237,6 +245,10 @@ export const expectedMoyPack: Pack = {
                 name: "city.ogg item",
                 audio: "5e6cb53d9acef28a6f57edf317c31bda673d64ed.ogg",
                 image: "5e36825dd492cd428ec8408f55f8dddfe6a1248a.png",
+                audioPath: undefined,
+                audioTimestamp: undefined,
+                imagePath: undefined,
+                imageTimestamp: undefined,
                 okTransition: {
                   name: "city.ogg ActionNode",
                   class: "ActionNode",
@@ -251,9 +263,14 @@ export const expectedMoyPack: Pack = {
                   ],
                 },
                 path: undefined,
+                pathTimestamp: undefined,
               },
               {
                 class: "StageNode-StoryItem",
+                audioPath: undefined,
+                audioTimestamp: undefined,
+                imagePath: undefined,
+                imageTimestamp: undefined,
                 name: "alice-jungle.ogg item",
                 audio: "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
                 image: "da5e7052795b59001f09e2caf27412ef8212f23f.png",
@@ -271,10 +288,12 @@ export const expectedMoyPack: Pack = {
                   ],
                 },
                 path: undefined,
+                pathTimestamp: undefined,
               },
             ],
           },
           path: "undefined/",
+          pathTimestamp: undefined,
         },
       ],
     },
@@ -816,12 +835,18 @@ export const expectedFullPack: Pack = {
     name: "Cover node",
     image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
     audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+    imagePath: undefined,
+    audioPath: undefined,
     okTransition: {
       class: "ActionNode",
       name: "Action node",
       options: [
         {
           class: "StageNode-Menu",
+          audioPath: undefined,
+          audioTimestamp: undefined,
+          imagePath: undefined,
+          imageTimestamp: undefined,
           image: null,
           audio: "53018173b8245b5d03d729da410daed6d3fd3570.ogg",
           name: "Choose a character",
@@ -832,6 +857,10 @@ export const expectedFullPack: Pack = {
               {
                 class: "StageNode-Menu",
                 image: "c68e4b1028b3c93e434506e6a0203e5edbaed43b.png",
+                imagePath: undefined,
+                imageTimestamp: undefined,
+                audioPath: undefined,
+                audioTimestamp: undefined,
                 audio: "6ef0a88a7b823fc81a85d448c971821d3570e606.ogg",
                 name: "Alice",
                 okTransition: {
@@ -842,6 +871,10 @@ export const expectedFullPack: Pack = {
                       class: "StageNode-Menu",
                       image: null,
                       audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+                      audioPath: undefined,
+                      audioTimestamp: undefined,
+                      imagePath: undefined,
+                      imageTimestamp: undefined,
                       name: "Choose a place",
                       okTransition: {
                         class: "ActionNode",
@@ -852,8 +885,12 @@ export const expectedFullPack: Pack = {
                             name: "city.ogg item",
                             audio:
                               "5e6cb53d9acef28a6f57edf317c31bda673d64ed.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
                             image:
                               "5e36825dd492cd428ec8408f55f8dddfe6a1248a.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
                             okTransition: {
                               name: "city.ogg ActionNode",
                               class: "ActionNode",
@@ -869,14 +906,21 @@ export const expectedFullPack: Pack = {
                               ],
                             },
                             path: undefined,
+                            pathTimestamp: undefined,
                           },
                           {
                             class: "StageNode-StoryItem",
                             name: "alice-jungle.ogg item",
                             audio:
                               "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
+
                             image:
                               "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
+
                             okTransition: {
                               name: "alice-jungle.ogg ActionNode",
                               class: "ActionNode",
@@ -892,19 +936,26 @@ export const expectedFullPack: Pack = {
                               ],
                             },
                             path: undefined,
+                            pathTimestamp: undefined,
                           },
                         ],
                       },
                       path: "undefined/",
+                      pathTimestamp: undefined,
                     },
                   ],
                 },
                 path: "undefined/",
+                pathTimestamp: undefined,
               },
               {
                 class: "StageNode-Menu",
+                audioPath: undefined,
+                audioTimestamp: undefined,
                 image: "4977589ba6e6d131a500309d3f8ee84c66b615f1.png",
                 audio: "f8932ae73324764b45bb7a3e1e92f4fabde3c2f8.ogg",
+                imagePath: undefined,
+                imageTimestamp: undefined,
                 name: "Bob",
                 okTransition: {
                   class: "ActionNode",
@@ -912,7 +963,11 @@ export const expectedFullPack: Pack = {
                   options: [
                     {
                       class: "StageNode-Menu",
+                      audioPath: undefined,
+                      audioTimestamp: undefined,
                       image: null,
+                      imagePath: undefined,
+                      imageTimestamp: undefined,
                       audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
                       name: "Choose a place",
                       okTransition: {
@@ -924,8 +979,14 @@ export const expectedFullPack: Pack = {
                             name: "bob-city.ogg item",
                             audio:
                               "e260fd4baef8d32d1cb598355ca691e5fe401bc8.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
+
                             image:
                               "95daa0dc90c3f15300edb39c807e9c9d6acff3f6.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
+
                             okTransition: {
                               name: "bob-city.ogg ActionNode",
                               class: "ActionNode",
@@ -941,14 +1002,19 @@ export const expectedFullPack: Pack = {
                               ],
                             },
                             path: undefined,
+                            pathTimestamp: undefined,
                           },
                           {
                             class: "StageNode-StoryItem",
                             name: "jungle.ogg item",
                             audio:
                               "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
                             image:
                               "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
                             okTransition: {
                               name: "jungle.ogg ActionNode",
                               class: "ActionNode",
@@ -964,18 +1030,22 @@ export const expectedFullPack: Pack = {
                               ],
                             },
                             path: undefined,
+                            pathTimestamp: undefined,
                           },
                         ],
                       },
                       path: "undefined/",
+                      pathTimestamp: undefined,
                     },
                   ],
                 },
                 path: "undefined/",
+                pathTimestamp: undefined,
               },
             ],
           },
           path: "undefined/",
+          pathTimestamp: undefined,
         },
       ],
     },

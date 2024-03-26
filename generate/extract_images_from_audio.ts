@@ -15,7 +15,7 @@ export async function extractImagesFromAudio(rootpath: string, folder: Folder) {
     if (isFolder(file)) {
       await extractImagesFromAudio(join(rootpath, file.name), file);
     } else if (isStory(file)) {
-      const imageItem = getFileImageItem(file, folder);
+      const imageItem = getFileImageItem(file, folder)?.assetName ?? null;
       if (!imageItem) {
         const inputPath = join(rootpath, file.name);
         const outputPath = join(

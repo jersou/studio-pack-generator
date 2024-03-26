@@ -134,18 +134,17 @@ function StageNode({ node, last, first }) {
         ${
     node.image &&
     html`<img src="/file?path=${
-      clearPath(dirname(node.path) + "/" + node.image)
+      clearPath(node.imagePath)
     }&ts=${node.imageTimestamp}"
-    title=${dirname(node.path) + node.image}
+    title=${node.imagePath}
     />`
   }
         ${
     node.audio &&
-    html`<audio controls src="/file?path=${
-      clearPath(dirname(node.path) + "/" + node.audio)
-    }&ts=${node.audioTimestamp}"
-    title=${dirname(node.path) + node.audio}
-    ></audio>`
+    html`<audio
+      controls
+      src="/file?path=${clearPath(node.audioPath)}&ts=${node.audioTimestamp}"
+      title=${node.audioPath}></audio>`
   }
         ${children.length > 1 ? OpenFolder({ node }) : null}
       </div>
@@ -155,10 +154,12 @@ function StageNode({ node, last, first }) {
       <div class="story-line">
       <svg width="36" height="20"><path d="M0 10 H36" fill="transparent" stroke="orange" stroke-width="8" /></svg>
       </div>
-      <div class="story-audio"><audio controls src="/file?path=${
-      clearPath(node.path)
-    }&ts=${node.pathTimestamp}"
-    title=${node.path}></audio></div>`
+      <div class="story-audio">
+        <audio
+          controls
+          src="/file?path=${clearPath(node.path)}&ts=${node.pathTimestamp}"
+          title=${node.path}></audio>
+      </div>`
   }
     </div>
     ${

@@ -38,7 +38,10 @@ export function getFolderAudioItem(folder: Folder) {
     folderAudioItemRegEx.test(f.name)
   ) as File;
   if (file) {
-    return `${file.sha1}.${getExtension(file.name)}`;
+    return {
+      assetName: `${file.sha1}.${getExtension(file.name)}`,
+      path: file.path,
+    };
   } else {
     return null;
   }
@@ -60,7 +63,10 @@ export function getFolderImageItem(folder: Folder) {
     folderImageItemRegEx.test(f.name)
   ) as File;
   if (file) {
-    return `${file.sha1}.${getExtension(file.name)}`;
+    return {
+      assetName: `${file.sha1}.${getExtension(file.name)}`,
+      path: file.path,
+    };
   } else {
     return null;
   }
@@ -75,7 +81,10 @@ export function getFileAudioItem(file: File, parent: Folder) {
       fileAudioItemRegEx.test(f.name),
   ) as File;
   if (audioItem) {
-    return `${audioItem.sha1}.${getExtension(audioItem.name)}`;
+    return {
+      assetName: `${audioItem.sha1}.${getExtension(audioItem.name)}`,
+      path: file.path,
+    };
   } else {
     return null;
   }
@@ -90,14 +99,20 @@ export function getFileImageItem(file: File, parent: Folder) {
       fileImageItemRegEx.test(f.name),
   ) as File;
   if (ImageItem) {
-    return `${ImageItem.sha1}.${getExtension(ImageItem.name)}`;
+    return {
+      assetName: `${ImageItem.sha1}.${getExtension(ImageItem.name)}`,
+      path: ImageItem.path,
+    };
   } else {
     return null;
   }
 }
 
 export function getFileAudioStory(file: File) {
-  return `${file.sha1}.${getExtension(file.name)}`;
+  return {
+    assetName: `${file.sha1}.${getExtension(file.name)}`,
+    path: file.path,
+  };
 }
 
 export function isStory(file: File): boolean {
