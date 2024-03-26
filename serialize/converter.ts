@@ -50,19 +50,23 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
   };
 
   if (folder.path) {
-    if (audio) {
-      res.entrypoint.audioTimestamp = Deno.statSync(folder.path + "/" + audio)
-        .mtime
-        ?.getTime();
-    }
-    if (image) {
-      res.entrypoint.imageTimestamp = Deno.statSync(folder.path + "/" + image)
-        .mtime
-        ?.getTime();
-    }
-    if (folder.path) {
-      res.entrypoint.pathTimestamp = Deno.statSync(folder.path).mtime
-        ?.getTime();
+    try {
+      if (audio) {
+        res.entrypoint.audioTimestamp = Deno.statSync(folder.path + "/" + audio)
+          .mtime
+          ?.getTime();
+      }
+      if (image) {
+        res.entrypoint.imageTimestamp = Deno.statSync(folder.path + "/" + image)
+          .mtime
+          ?.getTime();
+      }
+      if (folder.path) {
+        res.entrypoint.pathTimestamp = Deno.statSync(folder.path).mtime
+          ?.getTime();
+      }
+    } catch (_) {
+      //
     }
   }
 
@@ -97,16 +101,20 @@ export function folderToMenu(folder: Folder, path: string): Menu {
   };
 
   if (folder.path) {
-    if (audio) {
-      res.audioTimestamp = Deno.statSync(folder.path + "/" + audio).mtime
-        ?.getTime();
-    }
-    if (image) {
-      res.imageTimestamp = Deno.statSync(folder.path + "/" + image).mtime
-        ?.getTime();
-    }
-    if (folder.path) {
-      res.pathTimestamp = Deno.statSync(folder.path).mtime?.getTime();
+    try {
+      if (audio) {
+        res.audioTimestamp = Deno.statSync(folder.path + "/" + audio).mtime
+          ?.getTime();
+      }
+      if (image) {
+        res.imageTimestamp = Deno.statSync(folder.path + "/" + image).mtime
+          ?.getTime();
+      }
+      if (folder.path) {
+        res.pathTimestamp = Deno.statSync(folder.path).mtime?.getTime();
+      }
+    } catch (_) {
+      //
     }
   }
 
@@ -145,16 +153,20 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
     },
   };
   if (parent.path) {
-    if (audio) {
-      res.audioTimestamp = Deno.statSync(parent.path + "/" + audio).mtime
-        ?.getTime();
-    }
-    if (image) {
-      res.imageTimestamp = Deno.statSync(parent.path + "/" + image).mtime
-        ?.getTime();
-    }
-    if (file.path) {
-      res.pathTimestamp = Deno.statSync(file.path).mtime?.getTime();
+    try {
+      if (audio) {
+        res.audioTimestamp = Deno.statSync(parent.path + "/" + audio).mtime
+          ?.getTime();
+      }
+      if (image) {
+        res.imageTimestamp = Deno.statSync(parent.path + "/" + image).mtime
+          ?.getTime();
+      }
+      if (file.path) {
+        res.pathTimestamp = Deno.statSync(file.path).mtime?.getTime();
+      }
+    } catch (_) {
+      //
     }
   }
 
