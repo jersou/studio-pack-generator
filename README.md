@@ -231,6 +231,8 @@ Options:
   -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                          [string] [default: "tts-1"]
   -p, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
   -x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
+  -u, --gui                          open GUI (on localhost:3333)                              [boolean] [default: true]
+      --config-file                  json config file                                                           [string]
 ```
 
 Separate options by spaces, ex :
@@ -304,6 +306,40 @@ studio-pack-generator -x -o output/dir  2-full.zip
 
 Note: it doesn't work well with "menu" nodes and with pack without "question"
 stage.
+
+## json config file
+
+```
+--config-file=<json file path>
+```
+
+Format (all the properties are optionals) :
+
+```json
+{
+  "addDelay": false,
+  "autoNextStoryTransition": false,
+  "selectNextStoryAtEnd": false,
+  "nightMode": false,
+  "skipAudioConvert": false,
+  "skipImageConvert": false,
+  "skipAudioItemGen": false,
+  "skipExtractImageFromMp3": false,
+  "skipImageItemGen": false,
+  "skipNotRss": false,
+  "skipRssImageDl": false,
+  "skipWsl": false,
+  "skipZipGeneration": false,
+  "useOpenAiTts": false,
+  "lang": "fr-FR",
+  "outputFolder": "/tmp/",
+  "seekStory": "1",
+  "openAiApiKey": "",
+  "openAiModel": "tts-1",
+  "openAiVoice": "onyx",
+  "gui": false
+}
+```
 
 ## Development
 

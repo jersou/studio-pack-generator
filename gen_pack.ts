@@ -43,6 +43,7 @@ export type ModOptions = {
   openAiVoice?: typeof OPEN_AI_VOICES[number];
   extract?: boolean;
   gui?: boolean;
+  configFile?: string;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {

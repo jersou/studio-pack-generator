@@ -25,8 +25,16 @@ export async function parseArgs(args: string[]) {
         return y.wrap(width);
       },
       async (opts: ModOptions) => {
-        if (opts.extract) return await new PackExtractor(opts).extractPack();
-        else if (opts.gui) {
+        if (opts.configFile) {
+          const optsFromFile = JSON.parse(
+            await Deno.readTextFile(opts.configFile),
+          );
+          opts = { ...opts, ...optsFromFile };
+        }
+
+        if (opts.extract) {
+          return await new PackExtractor(opts).extractPack();
+        } else if (opts.gui) {
           return await openGui(opts);
         } else {
           return await generatePack(opts);
@@ -196,6 +204,13 @@ export async function parseArgs(args: string[]) {
       boolean: true,
       default: true,
       describe: "open GUI (on localhost:3333)",
+    })
+    .option("config-file", {
+      demandOption: false,
+      boolean: false,
+      default: undefined,
+      type: "string",
+      describe: "json config file",
     })
     .version(false)
     .demandCommand(1)
