@@ -80,19 +80,35 @@ function App() {
   const backendKo = wsOk
     ? null
     : html`<div class="ko">The backend is down !</div>`;
-  const [zoom, setZoom] = useState(80);
+  const [zoom, setZoom] = useState(50);
   return html`
     ${backendKo}
     <${Config} opt=${opt} setOpt=${setOpt} />
 
+    <sl-card class="card-basic" style="width: 100%">
+      <div style="align-items: center; display: flex">
+        <sl-button variant="default">
+          <sl-icon slot="prefix" name="box-seam-fill"></sl-icon>
+          Generate the pack
+        </sl-button>
+        <sl-progress-bar value="0" style="margin-left:10px; min-width: 400px;"></sl-progress-bar>
+      </div>
+    </sl-card>
+
     <sl-details open style="box-shadow: var(--sl-shadow-large)">
-      <span slot="summary" style="font-size: 25px">
-        Live preview : changes in <span class="folder-path">${pack.entrypoint?.path}</span> will update this view
+      <span slot="summary" style="font-size: 25px; display: flex; align-items: center;">
+      <sl-icon name="arrow-repeat" style="margin-right: 10px"></sl-icon> Live preview : changes in <span class="folder-path">${pack.entrypoint?.path}</span> will update this view
       </span>
-      <sl-range label="Zoom" min="1" max="100" value=${zoom} onInput=${(e) =>
-    setZoom(
-      e.target.value,
-    )} style="margin-bottom: 10px; max-width: 400px"></sl-range>
+      <div class="zoom">
+        Zoom :
+        <sl-range  tooltip="bottom"
+                   min="1"
+                   max="100"
+                   value=${zoom}
+                   onInput=${(e) => setZoom(e.target.value)}
+                   style="margin-bottom: 10px; max-width: 400px"></sl-range>
+      </div>
+
       <div class="preview" style="zoom: ${zoom / 100}">
         <${StageNode} node=${pack.entrypoint} />
       </div>
@@ -110,7 +126,10 @@ function Config({ opt, setOpt }) {
 
   return html`
       <sl-details open style="box-shadow: var(--sl-shadow-large)">
-        <div slot="summary" style="font-size: 25px">Configuration</div>
+        <div slot="summary" style="font-size: 25px; display: flex; align-items: center;">
+          <sl-icon name="gear-fill" style="margin-right: 10px"></sl-icon>
+          Configuration
+        </div>
       <div class="config">
         <sl-checkbox checked=${opt.addDelay} onInput=${update("addDelay")}>
           Add 1 second at the beginning and the end of audio files
@@ -204,10 +223,6 @@ function Config({ opt, setOpt }) {
       </sl-details>`;
 }
 
-function dirname(path) {
-  const res = path?.match(/^(.*)(\/[^\/]+)$/)?.[1];
-  return res ?? path;
-}
 function clearPath(path) {
   return encodeURIComponent(path.replaceAll("//", "/"));
 }
@@ -299,7 +314,10 @@ function StageNode({ node, last, first }) {
 function OpenFolder({ node }) {
   const onClick = () =>
     fetch(`${BASE}/api/openFolder?path=${clearPath(node.path)}`);
-  return html`<button onClick="${onClick}">Open folder</button>`;
+  return html`
+    <sl-button variant="default" size="large" circle onClick="${onClick}">
+    <sl-icon name="folder2-open" label="Open the folder"></sl-icon>
+  </sl-button>`;
 }
 
 render(html`<${App}/>`, document.body);

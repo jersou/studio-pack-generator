@@ -49,7 +49,7 @@ class StudioPackGeneratorGui {
   notExitIfNoClient: boolean | string = false;
   openInBrowser: boolean | string = false;
   openInBrowserAppMode: boolean | string = false;
-  update: boolean | string = false;
+  update: boolean | string = true; // TODO false
   _update_desc = "update assets_bundle.json";
   #opt?: ModOptions;
   #server: Deno.HttpServer | undefined;

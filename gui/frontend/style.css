@@ -1,5 +1,7 @@
 body {
-  margin: 20px;
+  padding: 20px;
+  position: absolute;
+  min-width: 925px;
 }
 
 .app {
@@ -32,8 +34,6 @@ body {
 /*    color: #fff;*/
 /*  }*/
 /*}*/
-.children {
-}
 
 .story {
   position: relative;
@@ -107,9 +107,17 @@ svg {
   font-size: 25px;
   border-bottom: #888 solid 3px;
 }
-.config{
+.config {
   display: grid;
-  row-gap: 10px;
+  row-gap: 5px;
   column-gap: 20px;
   grid-template-columns: 1fr 1fr;
+  max-width: 1000px;
+}
+.zoom {
+  display: flex;
+}
+.zoom > sl-range {
+  flex: 1;
+  margin-left: 20px;
 }
