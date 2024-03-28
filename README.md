@@ -218,7 +218,7 @@ Options:
   -o, --output-folder                zip output folder                                                          [string]
   -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
   -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
-  -j, --skip-image-convert           skip convert image                                       [boolean] [default: false]
+  -j, --skip-image-convert           skip image convert                                       [boolean] [default: false]
   -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]

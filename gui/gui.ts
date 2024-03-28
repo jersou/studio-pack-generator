@@ -127,10 +127,10 @@ class StudioPackGeneratorGui {
       this.openInBrowserAppMode === "true";
     const arg = appMode ? "--app=" : "";
     if (this.openInBrowser === true || this.openInBrowser === "true") {
-      if (await $.commandExists("chromium")) {
-        await $`chromium ${arg}http://${this.hostname}:${this.port}/`;
-      } else if (await $.commandExists("google-chrome")) {
+      if (await $.commandExists("google-chrome")) {
         await $`google-chrome ${arg}http://${this.hostname}:${this.port}/`;
+      } else if (await $.commandExists("chromium")) {
+        await $`chromium ${arg}http://${this.hostname}:${this.port}/`;
       } else {
         await $`gio open http://${this.hostname}:${this.port}/`;
       }

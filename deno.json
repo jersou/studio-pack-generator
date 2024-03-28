@@ -1,14 +1,14 @@
 {
   "tasks": {
     "bundle": "deno bundle studio_pack_generator.ts dist/studio_pack_generator.js",
-    "fmt": "deno fmt --ignore=vendor,dist,.cov_profile,gui/frontend/assets_bundle.json,gui/frontend/htm@3.1.1-preact-standalone.module.js,gui/lodash-throttle-v4.1.1.js",
+    "fmt": "deno fmt --ignore=tmp,vendor,dist,.cov_profile,gui/frontend/assets_bundle.json,gui/frontend/htm@3.1.1-preact-standalone.module.js,gui/lodash-throttle-v4.1.1.js,gui/frontend/shoelace-style@2.15.0.js",
     "gen-bin": "./gen-bin.sh",
     "gen-cov": "rm -rf .cov_profile && deno test --coverage=.cov_profile -A && deno coverage .cov_profile --lcov --exclude=vendor > .cov_profile/cov_profile.lcov && genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov",
-    "lint": "deno lint --ignore=vendor,dist,gui/frontend/,gui/lodash-throttle-v4.1.1.js",
+    "lint": "deno lint --ignore=tmp,vendor,dist,gui/frontend/,gui/lodash-throttle-v4.1.1.js,gui/frontend/shoelace-style@2.15.0.js",
     "pre-commit": "deno task fmt --check && deno task lint && deno task test",
     "pre-commit-fast": "deno run -A pre-commit-fast.ts",
     "start": "deno run -A --unstable studio_pack_generator.ts",
-    "test": "deno test -A --ignore=vendor,dist --no-check",
+    "test": "deno test -A --ignore=tmp,vendor,dist --no-check",
     "test-watch": "deno test -A --watch --unstable",
     "vendor": "rm -rf vendor/; deno vendor --config .empty-config.json --force studio_pack_generator.ts deps.ts test_deps.ts pre-commit-fast.ts; echo '{\n}' > .empty-config.json"
   }

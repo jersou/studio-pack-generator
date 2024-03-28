@@ -20,18 +20,18 @@ body {
   z-index: 1000;
 }
 
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: #fff;
-    color: #000;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #222;
-    color: #fff;
-  }
-}
+/*@media (prefers-color-scheme: light) {*/
+/*  body {*/
+/*    background-color: #fff;*/
+/*    color: #000;*/
+/*  }*/
+/*}*/
+/*@media (prefers-color-scheme: dark) {*/
+/*  body {*/
+/*    background-color: #222;*/
+/*    color: #fff;*/
+/*  }*/
+/*}*/
 .children {
 }
 
@@ -88,10 +88,10 @@ svg {
   min-width: 80px;
 }
 .preview {
-  border: #aaa solid 3px;
-  box-shadow: 6px 6px 8px #bbb;
-  padding: 10px;
-  overflow: auto;
+  /*border: #aaa solid 3px;*/
+  /*box-shadow: 6px 6px 8px #bbb;*/
+  /*padding: 10px;*/
+  /*overflow: auto;*/
   /*justify-content: center;*/
   /*display: flex;*/
 }
@@ -104,13 +104,12 @@ svg {
 .preview-title {
   margin-bottom: 20px;
   padding: 10px;
-  font-size: 40px;
+  font-size: 25px;
   border-bottom: #888 solid 3px;
 }
 .config{
-  border: #aaa solid 3px;
-  box-shadow: 6px 6px 8px #bbb;
-  padding: 10px;
-  overflow: auto;
-  margin-bottom: 20px;
+  display: grid;
+  row-gap: 10px;
+  column-gap: 20px;
+  grid-template-columns: 1fr 1fr;
 }

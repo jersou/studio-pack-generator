@@ -14,7 +14,7 @@ setCwd(projetBasePath);
 const cwd = `${projetBasePath}`;
 
 const runs = [
-  { cwd, cmd: `deno task fmt` },
+  { cwd, cmd: `deno task fmt --check` },
   { cwd, cmd: `deno task lint` },
   { cwd, cmd: `deno task test` },
 ];
