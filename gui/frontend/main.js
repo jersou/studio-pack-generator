@@ -111,7 +111,6 @@ function updateOnEvent(setWsOk, setPack, setOpt, setInProgress) {
 
 function App() {
   const [wsOk, setWsOk] = useState(true);
-  // example
   const [pack, setPack] = useState({});
   const [opt, setOpt] = useState({});
   const [inProgress, setInProgress] = useState(false);
@@ -228,14 +227,6 @@ function Config({ opt, setOpt }) {
     update("skipImageItemGen")
   }>
           Skip image item generation
-        </sl-checkbox>
-        <sl-checkbox checked=${opt.skipNotRss} onInput=${update("skipNotRss")}>
-          Skip all except download RSS files
-        </sl-checkbox>
-        <sl-checkbox checked=${opt.skipRssImageDl} onInput=${
-    update("skipRssImageDl")
-  }>
-          Skip RSS image download of items
         </sl-checkbox>
         <sl-checkbox checked=${opt.skipWsl} onInput=${update("skipWsl")}>
           Disable WSL usage
@@ -374,11 +365,11 @@ function StageNode({ node, last, first }) {
     ${
       children && html`<div class="children">${
         children.map((o, i) =>
-          StageNode({
-            node: o,
-            first: i === 0,
-            last: children.length === i + 1,
-          })
+          html`<${StageNode}
+          key=${i}
+          node=${o}
+          first=${i === 0}
+          last=${children.length === i + 1} />`
         )
       }</div>`
     }
