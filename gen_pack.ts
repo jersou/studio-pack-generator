@@ -69,7 +69,7 @@ export async function generatePack(opt: ModOptions) {
         "The night mode is incompatible with auto-next-story-transition or select-next-story-at-end options",
       ),
     );
-    Deno.exit(1);
+    Deno.exit(4);
   }
 
   const start = Date.now();

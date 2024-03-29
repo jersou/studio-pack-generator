@@ -15,6 +15,35 @@ const wsUri = `ws://${
     ? BASE.substring(7) + "/"
     : window.location.host + window.location.pathname
 }api/events-ws`;
+
+// Always escape HTML for text arguments!
+function escapeHtml(html) {
+  const div = document.createElement("div");
+  div.textContent = html;
+  return div.innerHTML;
+}
+
+// Custom function to emit toast notifications
+function notify(
+  message,
+  variant = "primary",
+  icon = "info-circle",
+  duration = 3000,
+) {
+  const alert = Object.assign(document.createElement("sl-alert"), {
+    variant,
+    closable: true,
+    duration: duration,
+    innerHTML: `
+        <sl-icon name="${icon}" slot="icon"></sl-icon>
+        ${escapeHtml(message)}
+      `,
+  });
+
+  document.body.append(alert);
+  return alert.toast();
+}
+
 function useComponentSize() {
   const [size, setSize] = useState({ height: 0, width: 0 });
   const ref = useRef();
@@ -40,20 +69,32 @@ function useComponentSize() {
   return { ref, size };
 }
 
-function updateOnEvent(setWsOk, setPack, setOpt) {
+function updateOnEvent(setWsOk, setPack, setOpt, setInProgress) {
   const socket = new WebSocket(wsUri);
   socket.addEventListener("open", () => {
     console.log("WebSocket: open");
     setWsOk(true);
   });
   socket.addEventListener("message", (event) => {
-    console.log("WebSocket: message from server");
     const data = JSON.parse(event.data);
+    console.log("WebSocket", data.type);
     if (data.type === "fs-update") {
       setPack(data.pack);
     }
     if (data.type === "opt") {
       setOpt(data.opt);
+    }
+    if (data.type === "SPG-start") {
+      notify("Start the pach generation");
+      setInProgress(true);
+    }
+    if (data.type === "SPG-end") {
+      if (data.ok) {
+        notify("Generation success !", "success");
+      } else {
+        notify("Generation error !", "danger");
+      }
+      setInProgress(false);
     }
   });
   socket.addEventListener("error", (event) => {
@@ -73,40 +114,56 @@ function App() {
   // example
   const [pack, setPack] = useState({});
   const [opt, setOpt] = useState({});
+  const [inProgress, setInProgress] = useState(false);
 
   useEffect(() => {
-    updateOnEvent(setWsOk, setPack, setOpt);
+    updateOnEvent(setWsOk, setPack, setOpt, setInProgress);
   }, []);
   const backendKo = wsOk
     ? null
     : html`<div class="ko">The backend is down !</div>`;
   const [zoom, setZoom] = useState(50);
+
+  const runSpg = useCallback(() => {
+    fetch(`${BASE}/api/runSpg`, {
+      method: "POST",
+      body: JSON.stringify(opt),
+    });
+  }, [opt]);
+
   return html`
     ${backendKo}
     <${Config} opt=${opt} setOpt=${setOpt} />
 
     <sl-card class="card-basic" style="width: 100%">
       <div style="align-items: center; display: flex">
-        <sl-button variant="default">
+      <sl-button variant="default" size="large" onClick=${runSpg} disabled=${inProgress}>
           <sl-icon slot="prefix" name="box-seam-fill"></sl-icon>
           Generate the pack
         </sl-button>
-        <sl-progress-bar value="0" style="margin-left:10px; min-width: 400px;"></sl-progress-bar>
+        ${
+    inProgress
+      ? html`<sl-progress-bar indeterminate style="margin-left:10px; min-width: 800px;"></sl-progress-bar>`
+      : html`<sl-progress-bar value="0" style="margin-left:10px; min-width: 800px;"></sl-progress-bar>`
+  }
       </div>
     </sl-card>
 
     <sl-details open style="box-shadow: var(--sl-shadow-large)">
       <span slot="summary" style="font-size: 25px; display: flex; align-items: center;">
-      <sl-icon name="arrow-repeat" style="margin-right: 10px"></sl-icon> Live preview : changes in <span class="folder-path">${pack.entrypoint?.path}</span> will update this view
+      <sl-icon name="arrow-repeat" style="margin-right: 10px">
+
+      </sl-icon> Live preview : changes in <${OpenFolder} path=${pack.entrypoint?.path}/>
+          will update this view
       </span>
       <div class="zoom">
         Zoom :
-        <sl-range  tooltip="bottom"
-                   min="1"
-                   max="100"
-                   value=${zoom}
-                   onInput=${(e) => setZoom(e.target.value)}
-                   style="margin-bottom: 10px; max-width: 400px"></sl-range>
+        <sl-range tooltip="bottom"
+                  min="1"
+                  max="100"
+                  value=${zoom}
+                  onInput=${(e) => setZoom(e.target.value)}
+                  style="margin-bottom: 10px; max-width: 400px"></sl-range>
       </div>
 
       <div class="preview" style="zoom: ${zoom / 100}">
@@ -260,34 +317,47 @@ function StageNode({ node, last, first }) {
     o.class !== "StageNode-Story"
   );
 
-  return node && html`<div class="story">
+  return node &&
+    html`<div class="story" title=${
+      node.class === "ZipMenu" ? node.path : undefined
+    }>
     ${node.class !== "StageNode-Entrypoint" && Line({ last, first })}
-    <div class="item ${node.class} ${children.length > 1 ? "several" : ""}">
+    <div class="item ${node.class} ${
+      children && children.length > 1 ? "several" : ""
+    }">
       <div class="card">
-        ${!node.image && !node.audio && html`<div class="empty"></div>`}
+        ${
+      node.class === "ZipMenu"
+        ? html`<sl-icon name="box-seam-fill"></sl-icon>`
+        : (!node.image && !node.audio && html`<div class="empty"></div>`)
+    }
 
         ${
-    node.image &&
-    html`<img src="${BASE}/file?path=${
-      clearPath(node.imagePath)
-    }&ts=${node.imageTimestamp}"
+      node.image &&
+      html`<img src="${BASE}/file?path=${
+        clearPath(node.imagePath)
+      }&ts=${node.imageTimestamp}"
     title=${node.imagePath}
     />`
-  }
+    }
         ${
-    node.audio &&
-    html`<audio
+      node.audio &&
+      html`<audio
       controls
       src="${BASE}/file?path=${
-      clearPath(node.audioPath)
-    }&ts=${node.audioTimestamp}"
+        clearPath(node.audioPath)
+      }&ts=${node.audioTimestamp}"
       title=${node.audioPath}></audio>`
-  }
-        ${children.length > 1 ? OpenFolder({ node }) : null}
+    }
+        ${
+      children && children.length > 1
+        ? OpenFolder({ path: node.path, icon: true })
+        : null
+    }
       </div>
       ${
-    node.class === "StageNode-StoryItem" &&
-    html`
+      node.class === "StageNode-StoryItem" &&
+      html`
       <div class="story-line">
       <svg width="36" height="20"><path d="M0 10 H36" fill="transparent" stroke="orange" stroke-width="8" /></svg>
       </div>
@@ -295,29 +365,40 @@ function StageNode({ node, last, first }) {
         <audio
           controls
           src="${BASE}/file?path=${
-      clearPath(node.path)
-    }&ts=${node.pathTimestamp}"
+        clearPath(node.path)
+      }&ts=${node.pathTimestamp}"
           title=${node.path}></audio>
       </div>`
-  }
+    }
     </div>
     ${
-    children && html`<div class="children">${
-      children.map((o, i) =>
-        StageNode({ node: o, first: i === 0, last: children.length === i + 1 })
-      )
-    }</div>`
-  }
+      children && html`<div class="children">${
+        children.map((o, i) =>
+          StageNode({
+            node: o,
+            first: i === 0,
+            last: children.length === i + 1,
+          })
+        )
+      }</div>`
+    }
   </div>`;
 }
 
-function OpenFolder({ node }) {
-  const onClick = () =>
-    fetch(`${BASE}/api/openFolder?path=${clearPath(node.path)}`);
-  return html`
-    <sl-button variant="default" size="large" circle onClick="${onClick}">
-    <sl-icon name="folder2-open" label="Open the folder"></sl-icon>
-  </sl-button>`;
+function OpenFolder({ path, icon }) {
+  const onClick = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    fetch(`${BASE}/api/openFolder?path=${clearPath(path)}`);
+  };
+  return icon
+    ? html`<sl-icon-button name="folder2-open" label="Open the folder" style="font-size: 2rem;" onClick="${onClick}"/>`
+    : html`
+    <sl-button variant="text" size="large" onClick=${onClick}>
+      <sl-icon slot="prefix" name="folder2-open"></sl-icon>
+      <span CLASS="folder-path">${path}</span>
+    </sl-button>
+  `;
 }
 
 render(html`<${App}/>`, document.body);

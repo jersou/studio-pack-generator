@@ -10,7 +10,7 @@ import assetsFromJson from "./assets_bundle.json" with { type: "json" };
 import { walk } from "https://deno.land/std@0.219.0/fs/walk.ts";
 import { assert } from "https://deno.land/std@0.219.0/assert/assert.ts";
 import { extname } from "https://deno.land/std@0.219.0/path/extname.ts";
-import { getMetadata, ModOptions } from "../gen_pack.ts";
+import { generatePack, getMetadata, ModOptions } from "../gen_pack.ts";
 import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
@@ -24,12 +24,14 @@ type Assets = {
 export function openGui(opt: ModOptions) {
   if (!opt.storyPath) {
     console.log("No story path → exit");
-    Deno.exit(1);
+    Deno.exit(5);
   }
 
   const uiApp = new StudioPackGeneratorGui();
-  uiApp.update = true;
-  uiApp.openInBrowser = true;
+  // TODO false
+  uiApp.update = !opt.isCompiled;
+  uiApp.openInBrowser = !!opt.isCompiled;
+  uiApp.notExitIfNoClient = !opt.isCompiled;
   uiApp.setStudioPackGeneratorOpt(opt);
   return uiApp.main();
 }
@@ -38,6 +40,16 @@ async function getPack(opt: ModOptions) {
   const folder = await fsToFolder(opt.storyPath, false);
   const metadata: Metadata = await getMetadata(opt);
   return folderToPack(folder, metadata);
+}
+
+async function runSpg(opt: ModOptions) {
+  try {
+    await generatePack({ ...opt });
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 class StudioPackGeneratorGui {
@@ -49,7 +61,7 @@ class StudioPackGeneratorGui {
   notExitIfNoClient: boolean | string = false;
   openInBrowser: boolean | string = false;
   openInBrowserAppMode: boolean | string = false;
-  update: boolean | string = true; // TODO false
+  update: boolean | string = false;
   _update_desc = "update assets_bundle.json";
   #opt?: ModOptions;
   #server: Deno.HttpServer | undefined;
@@ -74,13 +86,63 @@ class StudioPackGeneratorGui {
       },
     },
     {
-      route: new URLPattern({ pathname: "/api/openFolder" }),
+      route: new URLPattern({ pathname: "/api/runSpg" }),
       exec: async (_match: URLPatternResult, request: Request) => {
+        const opt = await request.json();
+        const optFiltered = {
+          addDelay: opt.addDelay,
+          autoNextStoryTransition: opt.autoNextStoryTransition,
+          selectNextStoryAtEnd: opt.selectNextStoryAtEnd,
+          nightMode: opt.nightMode,
+          skipAudioConvert: opt.skipAudioConvert,
+          skipImageConvert: opt.skipImageConvert,
+          skipAudioItemGen: opt.skipAudioItemGen,
+          skipExtractImageFromMp3: opt.skipExtractImageFromMp3,
+          skipImageItemGen: opt.skipImageItemGen,
+          skipNotRss: opt.skipNotRss,
+          skipRssImageDl: opt.skipRssImageDl,
+          skipWsl: opt.skipWsl,
+          skipZipGeneration: opt.skipZipGeneration,
+          useOpenAiTts: opt.useOpenAiTts,
+          lang: opt.lang,
+          outputFolder: opt.outputFolder,
+          seekStory: opt.seekStory,
+          openAiApiKey: opt.openAiApiKey,
+          openAiModel: opt.openAiModel,
+          openAiVoice: opt.openAiVoice,
+        };
+        const configPath = `${this.#opt!.storyPath}/config.json`;
+        console.log(`Write config to ${configPath}`);
+        await Deno.writeTextFile(
+          configPath,
+          JSON.stringify(optFiltered, null, "  "),
+        );
+        console.log(`Run SPG on ${this.#opt!.storyPath}`);
+
+        (async () => {
+          console.log("SPG start");
+          this.#sendWs(JSON.stringify({ type: "SPG-start" }));
+
+          try {
+            const res = await runSpg(this.#opt!);
+            console.log("SPG end");
+            this.#sendWs(JSON.stringify({ type: "SPG-end", ok: res }));
+          } catch (error) {
+            console.error(error);
+          }
+        })();
+
+        return new Response("ok", { status: 200 });
+      },
+    },
+    {
+      route: new URLPattern({ pathname: "/api/openFolder" }),
+      exec: (_match: URLPatternResult, request: Request) => {
         const url = new URL(request.url);
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
-          // TODO
-          await $`nemo ${path}`.printCommand(true);
+          // TODO : other file explorers
+          $`nemo ${path}`.printCommand(true).spawn();
           return new Response("ok", { status: 200 });
         } else {
           return new Response("Not a pack file", { status: 403 });
@@ -98,8 +160,12 @@ class StudioPackGeneratorGui {
     const onListen = (params: { hostname: string; port: number }) => {
       (async () => {
         const onWatchEvent = async () => {
-          const pack = await getPack(this.#opt!);
-          this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
+          try {
+            const pack = await getPack(this.#opt!);
+            this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
+          } catch (e) {
+            console.error(e);
+          }
         };
         const onWatchEventThrottle = throttle(onWatchEvent, 500);
         const watcher = Deno.watchFs(this.#opt!.storyPath);
@@ -167,10 +233,14 @@ class StudioPackGeneratorGui {
     socket.addEventListener("open", async () => {
       this.#sockets.add(socket);
       console.log(`a client connected! ${this.#sockets.size} clients`);
-      const pack = await getPack(this.#opt!);
-      // console.log(JSON.stringify(pack, null, "  "));
-      socket.send(JSON.stringify({ type: "fs-update", pack }));
-      socket.send(JSON.stringify({ type: "opt", opt: this.#opt }));
+      try {
+        const pack = await getPack(this.#opt!);
+        // console.log(JSON.stringify(pack, null, "  "));
+        socket.send(JSON.stringify({ type: "fs-update", pack }));
+        socket.send(JSON.stringify({ type: "opt", opt: this.#opt }));
+      } catch (e) {
+        console.error(e);
+      }
     });
     socket.addEventListener("close", () => {
       this.#sockets.delete(socket);

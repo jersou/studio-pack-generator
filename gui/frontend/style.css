@@ -98,7 +98,6 @@ svg {
 
 .folder-path {
   font-family: monospace;
-  font-size: 20px;
   vertical-align: middle;
 }
 .preview-title {
@@ -120,4 +119,8 @@ svg {
 .zoom > sl-range {
   flex: 1;
   margin-left: 20px;
+}
+
+.ZipMenu {
+  font-size: 50px;
 }
