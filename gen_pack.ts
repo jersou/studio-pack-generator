@@ -44,6 +44,7 @@ export type ModOptions = {
   extract?: boolean;
   gui?: boolean;
   configFile?: string;
+  isCompiled?: boolean;
 };
 
 async function genThumbnail(folder: Folder, storyPath: string) {

@@ -29,7 +29,7 @@ export async function parseArgs(args: string[]) {
           const optsFromFile = JSON.parse(
             await Deno.readTextFile(opts.configFile),
           );
-          opts = { ...opts, ...optsFromFile };
+          opts = { ...opts, ...optsFromFile, storyPath: opts.storyPath };
         }
 
         if (opts.extract) {
@@ -211,6 +211,13 @@ export async function parseArgs(args: string[]) {
       default: undefined,
       type: "string",
       describe: "json config file",
+    })
+    .option("is-compiled", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      hidden: true,
+      describe: "true if compiled with deno compile",
     })
     .version(false)
     .demandCommand(1)
