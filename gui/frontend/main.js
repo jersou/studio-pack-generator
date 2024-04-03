@@ -85,7 +85,7 @@ function updateOnEvent(setWsOk, setPack, setOpt, setInProgress) {
       setOpt(data.opt);
     }
     if (data.type === "SPG-start") {
-      notify("Start the pach generation");
+      notify("Start the generation");
       setInProgress(true);
     }
     if (data.type === "SPG-end") {
