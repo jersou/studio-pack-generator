@@ -4,7 +4,7 @@ import { yargs } from "../deps.ts";
 import { generatePack, ModOptions } from "../gen_pack.ts";
 import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
 import { PackExtractor } from "../extract_pack.ts";
-import { openGui } from "../gui/gui.ts";
+import { openGuiServer } from "../gui/gui.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -34,8 +34,8 @@ export async function parseArgs(args: string[]) {
 
         if (opts.extract) {
           return await new PackExtractor(opts).extractPack();
-        } else if (opts.gui) {
-          return await openGui(opts);
+        } else if (opts.server) {
+          return await openGuiServer(opts);
         } else {
           return await generatePack(opts);
         }
@@ -198,12 +198,18 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "extract a zip pack (reverse mode)",
     })
-    .option("gui", {
-      alias: "u",
+    .option("server", {
+      hidden: true,
       demandOption: false,
       boolean: true,
-      default: true,
-      describe: "open GUI (on localhost:3333)",
+      default: false,
+      describe: "open GUI server",
+    })
+    .option("port", {
+      hidden: true,
+      demandOption: false,
+      default: "5555",
+      describe: "port of GUI server",
     })
     .option("config-file", {
       demandOption: false,

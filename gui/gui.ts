@@ -1,12 +1,7 @@
 #!/usr/bin/env -S deno run  --allow-net=localhost:5555 --allow-env --allow-read --allow-write=assets_bundle.json --allow-run
 
 import $ from "https://deno.land/x/dax@0.39.2/mod.ts";
-import {
-  decodeBase64,
-  encodeBase64,
-} from "https://deno.land/std@0.220.0/encoding/base64.ts";
 import { cliteRun } from "https://deno.land/x/clite_parser@0.2.1/clite_parser.ts";
-import assetsFromJson from "./assets_bundle.json" with { type: "json" };
 import { walk } from "https://deno.land/std@0.219.0/fs/walk.ts";
 import { assert } from "https://deno.land/std@0.219.0/assert/assert.ts";
 import { extname } from "https://deno.land/std@0.219.0/path/extname.ts";
@@ -21,7 +16,7 @@ type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
 };
 
-export function openGui(opt: ModOptions) {
+export function openGuiServer(opt: ModOptions) {
   if (!opt.storyPath) {
     console.log("No story path → exit");
     Deno.exit(5);
@@ -66,7 +61,6 @@ class StudioPackGeneratorGui {
   #opt?: ModOptions;
   #server: Deno.HttpServer | undefined;
   #sockets = new Set<WebSocket>();
-  #assets: Assets = {};
   #wsRoute = new URLPattern({ pathname: "/api/events-ws" });
   #routes = [
     {
@@ -156,23 +150,24 @@ class StudioPackGeneratorGui {
   }
 
   async main() {
-    await this.#loadAssets();
     const onListen = (params: { hostname: string; port: number }) => {
-      (async () => {
-        const onWatchEvent = async () => {
-          try {
-            const pack = await getPack(this.#opt!);
-            this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
-          } catch (e) {
-            console.error(e);
+      if (this.#opt!.storyPath) {
+        (async () => {
+          const onWatchEvent = async () => {
+            try {
+              const pack = await getPack(this.#opt!);
+              this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
+            } catch (e) {
+              console.error(e);
+            }
+          };
+          const onWatchEventThrottle = throttle(onWatchEvent, 500);
+          const watcher = Deno.watchFs(this.#opt!.storyPath);
+          for await (const _event of watcher) {
+            onWatchEventThrottle();
           }
-        };
-        const onWatchEventThrottle = throttle(onWatchEvent, 500);
-        const watcher = Deno.watchFs(this.#opt!.storyPath);
-        for await (const _event of watcher) {
-          onWatchEventThrottle();
-        }
-      })();
+        })();
+      }
 
       this.port = params.port;
       this.hostname = params.hostname;
@@ -213,12 +208,6 @@ class StudioPackGeneratorGui {
         return await exec(match, request);
       }
     }
-    for (const file of Object.values(this.#assets ?? {})) {
-      if (file.route?.exec(request.url)) {
-        const headers = { "Content-Type": file.type };
-        return new Response(file.content, { status: 200, headers });
-      }
-    }
     if (this.#wsRoute.exec(request.url)) {
       return this.#handleWsRequest(request);
     }
@@ -255,54 +244,6 @@ class StudioPackGeneratorGui {
       }
     });
     return response;
-  }
-
-  async updateAssets() {
-    console.log("update assets_bundle.json");
-    const frontendPath = $.path(import.meta).resolve(`../frontend/`).toString();
-    for await (const entry of walk(frontendPath, { includeDirs: false })) {
-      assert(entry.path.startsWith(frontendPath));
-      const path = entry.path.substring(frontendPath.length);
-      const ext = extname(path)?.substring(1);
-      const type = mimeTypes[ext];
-      const content = await Deno.readFile(entry.path);
-      const route = new URLPattern({ pathname: path });
-      this.#assets[path] = { type, route, content };
-      console.log({ path, type });
-    }
-    const paths = Object.keys(this.#assets).sort();
-    const assets: Assets = {};
-    paths.forEach((path) => (assets[path] = this.#assets[path]));
-    await Deno.writeTextFile(
-      $.path(import.meta).resolve("../assets_bundle.json").toString(),
-      JSON.stringify(assets, (key, value) => {
-        if (key === "content") {
-          return encodeBase64(value as Uint8Array);
-        } else if (key === "route") {
-          return (value as URLPattern).pathname;
-        } else {
-          return value;
-        }
-      }, "  "),
-    );
-  }
-
-  async #loadAssets() {
-    if (this.update === true || this.update === "true") {
-      await this.updateAssets();
-    } else {
-      for (const [key, asset] of Object.entries(assetsFromJson)) {
-        this.#assets[key] = {
-          type: asset?.type,
-          route: new URLPattern({ pathname: asset.route }),
-          content: decodeBase64(asset.content),
-        };
-      }
-    }
-    if (this.#assets["/index.html"]) {
-      const route = new URLPattern({ pathname: "/" });
-      this.#assets["/"] = { ...this.#assets["/index.html"], route };
-    }
   }
 }
 

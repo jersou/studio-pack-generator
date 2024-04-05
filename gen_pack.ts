@@ -42,7 +42,8 @@ export type ModOptions = {
   openAiModel?: typeof OPEN_AI_MODELS[number];
   openAiVoice?: typeof OPEN_AI_VOICES[number];
   extract?: boolean;
-  gui?: boolean;
+  server?: boolean;
+  port?: string;
   configFile?: string;
   isCompiled?: boolean;
 };
