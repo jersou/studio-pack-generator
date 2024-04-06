@@ -12,7 +12,8 @@ import {
   ZipMenu,
 } from "./types.ts";
 import { BlobReader, BlobWriter, ZipReader } from "../deps.ts";
-import { ModOptions } from "../gen_pack.ts";
+
+import { ModOptions } from "../types.ts";
 
 type SerializePackOption = {
   autoNextStoryTransition?: boolean;

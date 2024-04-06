@@ -3,12 +3,13 @@
 import $ from "https://deno.land/x/dax@0.39.2/mod.ts";
 import { cliteRun } from "https://deno.land/x/clite_parser@0.2.1/clite_parser.ts";
 import { extname } from "https://deno.land/std@0.219.0/path/extname.ts";
-import { generatePack, getMetadata, ModOptions } from "../gen_pack.ts";
+import { generatePack, getMetadata } from "../gen_pack.ts";
 import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { mimeTypes } from "./mime-types.ts";
 import { throttle } from "./lodash-throttle-v4.1.1.js";
+import { ModOptions } from "../types.ts";
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };

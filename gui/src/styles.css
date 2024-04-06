@@ -1,7 +1,6 @@
 body {
-  padding: 20px;
+  padding: 10px;
   position: absolute;
-  min-width: 925px;
 }
 
 .app {
@@ -61,7 +60,7 @@ body {
   min-width: 80px;
 }
 
-svg {
+.story-node-svg {
   position: absolute;
 }
 .story-line {
@@ -85,7 +84,6 @@ svg {
 }
 .config {
   display: grid;
-  row-gap: 5px;
   column-gap: 20px;
   grid-template-columns: 1fr 1fr;
   max-width: 1000px;

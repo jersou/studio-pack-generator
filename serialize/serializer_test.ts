@@ -10,7 +10,8 @@ import {
   expectedMoyPackSerialized,
 } from "../test_data/test_data.ts";
 import { serializePack } from "./serializer.ts";
-import { ModOptions } from "../gen_pack.ts";
+
+import { ModOptions } from "../types.ts";
 
 type Obj = {
   id?: string;

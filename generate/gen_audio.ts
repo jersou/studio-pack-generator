@@ -1,6 +1,6 @@
-import { ModOptions } from "../gen_pack.ts";
 import { generate_audio_basic_tts } from "./basic_tts.ts";
 import { generate_audio_with_openAI } from "./openai_tts.ts";
+import { ModOptions } from "../types.ts";
 
 export async function generateAudio(
   title: string,
