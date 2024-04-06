@@ -22,24 +22,9 @@ body {
   z-index: 1000;
 }
 
-/*@media (prefers-color-scheme: light) {*/
-/*  body {*/
-/*    background-color: #fff;*/
-/*    color: #000;*/
-/*  }*/
-/*}*/
-/*@media (prefers-color-scheme: dark) {*/
-/*  body {*/
-/*    background-color: #222;*/
-/*    color: #fff;*/
-/*  }*/
-/*}*/
-
 .story {
   position: relative;
   display: flex;
-  /*border: #1c2aa9 solid 2px;*/
-  /*border-radius: 5px;*/
   flex: 0;
 }
 
@@ -86,14 +71,6 @@ svg {
 .empty {
   min-height: 80px;
   min-width: 80px;
-}
-.preview {
-  /*border: #aaa solid 3px;*/
-  /*box-shadow: 6px 6px 8px #bbb;*/
-  /*padding: 10px;*/
-  /*overflow: auto;*/
-  /*justify-content: center;*/
-  /*display: flex;*/
 }
 
 .folder-path {

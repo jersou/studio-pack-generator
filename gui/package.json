@@ -1,0 +1,27 @@
+{
+  "name": "studio-pack-generator-gui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
+    "@tauri-apps/api": "^1",
+    "notistack": "^3.0.1",
+    "preact": "^10.16.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
+    "@tauri-apps/cli": "^1",
+    "typescript": "^5.0.2",
+    "vite": "^5.0.0"
+  }
+}
