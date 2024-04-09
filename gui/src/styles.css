@@ -58,6 +58,12 @@ body {
 }
 .line {
   min-width: 80px;
+  /*display: none;*/
+  /*position: absolute;*/
+}
+
+.line > svg  {
+  position: absolute;
 }
 
 .story-node-svg {

@@ -8,7 +8,7 @@ import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { mimeTypes } from "./mime-types.ts";
-import { throttle } from "./lodash-throttle-v4.1.1.js";
+import { throttle } from "./src/lodash-throttle-v4.1.1.js";
 import { ModOptions } from "../types.ts";
 
 type Assets = {
@@ -125,7 +125,12 @@ class StudioPackGeneratorGui {
           }
         })();
 
-        return new Response("ok", { status: 200 });
+        return new Response("ok", {
+          status: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*", // TODO
+          },
+        });
       },
     },
     {
@@ -136,7 +141,12 @@ class StudioPackGeneratorGui {
         if (path.startsWith(this.#opt!.storyPath)) {
           // TODO : other file explorers
           $`nemo ${path}`.printCommand(true).spawn();
-          return new Response("ok", { status: 200 });
+          return new Response("ok", {
+            status: 200,
+            headers: {
+              "Access-Control-Allow-Origin": "*", // TODO
+            },
+          });
         } else {
           return new Response("Not a pack file", { status: 403 });
         }
@@ -160,7 +170,7 @@ class StudioPackGeneratorGui {
               console.error(e);
             }
           };
-          const onWatchEventThrottle = throttle(onWatchEvent, 500);
+          const onWatchEventThrottle = throttle(onWatchEvent, 1000);
           const watcher = Deno.watchFs(this.#opt!.storyPath);
           for await (const _event of watcher) {
             onWatchEventThrottle();

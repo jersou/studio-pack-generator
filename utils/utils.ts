@@ -83,7 +83,7 @@ export function getFileAudioItem(file: File, parent: Folder) {
   if (audioItem) {
     return {
       assetName: `${audioItem.sha1}.${getExtension(audioItem.name)}`,
-      path: file.path,
+      path: audioItem.path,
     };
   } else {
     return null;
