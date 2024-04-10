@@ -16,7 +16,8 @@ import { StageNode } from "./stageNode.tsx";
 import { Pack } from "../../serialize/types";
 import { enqueueSnackbar } from "notistack";
 import {ModOptions} from "../../types.ts";
-import { throttle } from "./lodash-throttle-v4.1.1.js";
+import { listen } from '@tauri-apps/api/event'
+import {clearPath} from "./utils.tsx";
 
 // const BASE= "";
 export const BASE = "http://localhost:5555";
@@ -39,12 +40,17 @@ function notify(
 ) {
   enqueueSnackbar(message, { variant, autoHideDuration });
 }
+listen('tauri://file-drop', event => {
+  console.log(event)
+  fetch(`${BASE}/api/storyPath?path=${clearPath((event.payload as string[])[0])}`);
+})
 
 export function updateOnEvent(
   setWsOk: (b: boolean) => unknown,
   setPack?: (p: any) => unknown,
   setOpt?: (p: any) => unknown,
-  setInProgress?: (p: boolean) => unknown
+  setInProgress?: (p: boolean) => unknown,
+  setUpdatePackInProgress?: (p: boolean) => unknown
 ) {
   const socket = new WebSocket(wsUri);
   socket.addEventListener("open", () => {
@@ -55,7 +61,9 @@ export function updateOnEvent(
     const data = JSON.parse(event.data);
     console.log("WebSocket", data.type);
     if (data.type === "fs-update") {
-      setPack?.(data.pack);
+      setUpdatePackInProgress?.(true)
+      setTimeout(()=> setPack?.(data.pack), 500)
+      setTimeout(()=> setUpdatePackInProgress?.(false), 1000)
     }
     if (data.type === "opt") {
       setOpt?.(data.opt);
@@ -86,7 +94,8 @@ export function updateOnEvent(
       updateOnEvent(setWsOk)
     }, 5000);
   });
-  return socket
+
+  return ()=> socket.close();
 }
 
 export function App() {
@@ -111,10 +120,10 @@ export function App() {
   });
   const [opt, setOpt] = useState<Partial<ModOptions>>({});
   const [inProgress, setInProgress] = useState(false);
+  const [updatePackInProgress, setUpdatePackInProgress] = useState(false);
 
   useEffect(() => {
-   const  socket = updateOnEvent(setWsOk, setPack, setOpt, setInProgress);
-   return ()=> socket.close();
+    return updateOnEvent(setWsOk, setPack, setOpt, setInProgress,setUpdatePackInProgress);
   }, []);
   const backendKo = wsOk ? null : <div class="ko">The backend is down !</div>;
   const [zoom, setZoom] = useState(50);
@@ -174,6 +183,9 @@ export function App() {
             style={{ marginBottom: 10, maxWidth: 400 }}
           />
         </div>
+          {updatePackInProgress ? (
+            <div style={{backgroundColor:"red"}}>update-pack-in-progress</div>
+            ):null }
 
         <div class="preview" style={{ zoom: zoom / 100}}>
           <StageNode node={pack.entrypoint} />

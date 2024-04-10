@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "tauri-dev": "tauri dev"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

@@ -10,21 +10,14 @@ import { folderToPack } from "../serialize/converter.ts";
 import { mimeTypes } from "./mime-types.ts";
 import { throttle } from "./src/lodash-throttle-v4.1.1.js";
 import { ModOptions } from "../types.ts";
+import FsWatcher = Deno.FsWatcher;
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
 };
 
 export function openGuiServer(opt: ModOptions) {
-  if (!opt.storyPath) {
-    console.log("No story path → exit");
-    Deno.exit(5);
-  }
-
   const uiApp = new StudioPackGeneratorGui();
-  // TODO false
-  uiApp.update = !opt.isCompiled;
-  uiApp.openInBrowser = !!opt.isCompiled;
   uiApp.notExitIfNoClient = !opt.isCompiled;
   uiApp.setStudioPackGeneratorOpt(opt);
   return uiApp.main();
@@ -53,12 +46,9 @@ class StudioPackGeneratorGui {
   hostname = "localhost";
   port = 5555;
   notExitIfNoClient: boolean | string = false;
-  openInBrowser: boolean | string = false;
-  openInBrowserAppMode: boolean | string = false;
-  update: boolean | string = false;
   _update_desc = "update assets_bundle.json";
   #opt?: ModOptions;
-  #server: Deno.HttpServer | undefined;
+  #watcher: FsWatcher;
   #sockets = new Set<WebSocket>();
   #wsRoute = new URLPattern({ pathname: "/api/events-ws" });
   #routes = [
@@ -140,7 +130,7 @@ class StudioPackGeneratorGui {
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
           // TODO : other file explorers
-          $`nemo ${path}`.printCommand(true).spawn();
+          $`nemo ${path}`.noThrow(true).printCommand(true).spawn();
           return new Response("ok", {
             status: 200,
             headers: {
@@ -152,61 +142,61 @@ class StudioPackGeneratorGui {
         }
       },
     },
+    {
+      route: new URLPattern({ pathname: "/api/storyPath" }),
+      exec: (_match: URLPatternResult, request: Request) => {
+        const url = new URL(request.url);
+        const path = decodeURIComponent(url.searchParams.get("path") ?? "");
+        this.#watchStoryPath(path);
+        return new Response("ok", {
+          status: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*", // TODO
+          },
+        });
+      },
+    },
   ] as const;
 
   #sendWs(data: string | ArrayBufferLike | Blob | ArrayBufferView) {
     this.#sockets.forEach((s) => s.send(data));
   }
 
+  async #watchStoryPath(path: string) {
+    this.#opt!.storyPath = path;
+    if (this.#watcher) {
+      this.#watcher.close();
+    }
+    const onWatchEvent = async () => {
+      try {
+        const pack = await getPack(this.#opt!);
+        this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    const onWatchEventThrottle = throttle(onWatchEvent, 1000);
+    onWatchEventThrottle();
+    this.#watcher = Deno.watchFs(this.#opt!.storyPath);
+    for await (const _event of this.#watcher) {
+      onWatchEventThrottle();
+    }
+  }
+
   async main() {
     const onListen = (params: { hostname: string; port: number }) => {
       if (this.#opt!.storyPath) {
-        (async () => {
-          const onWatchEvent = async () => {
-            try {
-              const pack = await getPack(this.#opt!);
-              this.#sendWs(JSON.stringify({ type: "fs-update", pack }));
-            } catch (e) {
-              console.error(e);
-            }
-          };
-          const onWatchEventThrottle = throttle(onWatchEvent, 1000);
-          const watcher = Deno.watchFs(this.#opt!.storyPath);
-          for await (const _event of watcher) {
-            onWatchEventThrottle();
-          }
-        })();
+        this.#watchStoryPath(this.#opt!.storyPath);
       }
 
       this.port = params.port;
       this.hostname = params.hostname;
       console.log(`Listen on ${this.hostname}:${this.port}`);
-
-      if (this.openInBrowser && this.openInBrowser !== "false") {
-        this.#openInBrowser().then();
-      }
     };
-    this.#server = Deno.serve(
+    Deno.serve(
       { hostname: this.hostname, port: this.port, onListen },
       (r) => this.#handleRequest(r),
     );
-  }
-
-  async #openInBrowser() {
-    const appMode = this.openInBrowserAppMode === true ||
-      this.openInBrowserAppMode === "true";
-    const arg = appMode ? "--app=" : "";
-    if (this.openInBrowser === true || this.openInBrowser === "true") {
-      if (await $.commandExists("google-chrome")) {
-        await $`google-chrome ${arg}http://${this.hostname}:${this.port}/`;
-      } else if (await $.commandExists("chromium")) {
-        await $`chromium ${arg}http://${this.hostname}:${this.port}/`;
-      } else {
-        await $`gio open http://${this.hostname}:${this.port}/`;
-      }
-    } else {
-      await $`${this.openInBrowser} ${arg}http://${this.hostname}:${this.port}/`;
-    }
   }
 
   async #handleRequest(request: Request) {
