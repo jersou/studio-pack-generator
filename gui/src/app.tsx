@@ -21,6 +21,7 @@ import {clearPath} from "./utils.tsx";
 import {Loader} from "./loader.tsx";
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDropDown";
 
 // const BASE= "";
 export const BASE = "http://localhost:5555";
@@ -171,7 +172,7 @@ export function App() {
           )}
         </CardContent>
       </Card>
-      {pack.entrypoint?.path ? <Accordion defaultExpanded>
+      {pack.entrypoint?.path ? <Accordion defaultExpanded expandIcon={<ArrowDownwardIcon />}>
         <AccordionSummary
           style={{ fontSize: 25, display: "flex", alignItems: "center" }}
         >

@@ -1,6 +1,13 @@
 body {
-  padding: 10px;
   position: absolute;
+  min-width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  padding: 10px;
 }
 
 .app {

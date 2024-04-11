@@ -1,4 +1,4 @@
-import { useCallback } from "preact/hooks";
+import {useCallback, useState} from "preact/hooks";
 import { ChangeEvent } from "react";
 import {
   Accordion,
@@ -36,13 +36,14 @@ export function Config({
     [opt]
   );
   // console.log({opt})
+  const [expanded, setExpanded] = useState(false)
 
   return (
-    <Accordion>
+    <Accordion onChange={(_,exp)=>setExpanded(exp)}>
       <AccordionSummary expandIcon={<ArrowDownwardIcon />}>
         <Stack alignItems="center" direction="row" gap={2}>
           <SettingsIcon />
-          <Typography style={{ fontSize: 25 }}> Configuration (click here to show/hide)</Typography>
+          <Typography style={{ fontSize: 25 }}> Configuration (click here to {expanded?"hide":"show"})</Typography>
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
