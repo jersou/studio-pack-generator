@@ -71,7 +71,7 @@ export async function serializePack(
     serialized.actionNodes.push(nightAction);
     const nightStage: StageNode = {
       image: null,
-      audio: serializePackOption?.nightModeAudioItemName || null, // TODO
+      audio: serializePackOption?.nightModeAudioItemName || null,
       controlSettings: {
         autoplay: true,
         home: true,

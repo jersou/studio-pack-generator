@@ -10,7 +10,7 @@ export function StageNode({
   last,
   first,
 }: {
-  node: Menu | StoryItem | Entrypoint; // TODO type node
+  node: Menu | StoryItem | Entrypoint;
   last?: boolean;
   first?: boolean;
 }) {
@@ -47,6 +47,7 @@ export function StageNode({
             )}
             {node.audio && (
               <audio
+                preload="metadata"
                 controls
                 src={`${BASE}/file?path=${clearPath(
                   node.audioPath ?? ""
@@ -72,8 +73,8 @@ export function StageNode({
               </div>
               <div class="story-audio">
                 <audio
+                  preload="metadata"
                   controls
-                  preload="auto"
                   src={`${BASE}/file?path=${clearPath(node.path ?? "")}&ts= ${node.pathTimestamp}`}
                   title={node.path}
                 ></audio>

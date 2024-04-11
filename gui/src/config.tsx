@@ -38,11 +38,11 @@ export function Config({
   // console.log({opt})
 
   return (
-    <Accordion defaultExpanded>
+    <Accordion>
       <AccordionSummary expandIcon={<ArrowDownwardIcon />}>
         <Stack alignItems="center" direction="row" gap={2}>
           <SettingsIcon />
-          <Typography style={{ fontSize: 25 }}> Configuration</Typography>
+          <Typography style={{ fontSize: 25 }}> Configuration (click here to show/hide)</Typography>
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
