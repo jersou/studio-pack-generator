@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "studio-pack-generator-gui",
-    "version": "0.0.0"
+    "version": "0.5.0"
   },
   "tauri": {
     "allowlist": {
@@ -31,6 +31,7 @@
       "active": true,
       "targets": "all",
       "identifier": "studio-pack-generator-gui",
+      "externalBin": ["../../dist/studio-pack-generator"],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

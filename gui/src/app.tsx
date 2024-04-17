@@ -172,8 +172,8 @@ export function App() {
           )}
         </CardContent>
       </Card>
-      {pack.entrypoint?.path ? <Accordion defaultExpanded expandIcon={<ArrowDownwardIcon />}>
-        <AccordionSummary
+      {pack.entrypoint?.path ? <Accordion defaultExpanded>
+        <AccordionSummary expandIcon={<ArrowDownwardIcon />}
           style={{ fontSize: 25, display: "flex", alignItems: "center" }}
         >
           <Stack alignItems="center" direction="row" gap={2}>

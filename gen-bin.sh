@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-
+set -x
+set -o errexit
 rm -f dist/*.zip || true
 mkdir -p dist/
 version=$(./version.ts)

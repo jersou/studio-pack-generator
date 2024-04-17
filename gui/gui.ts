@@ -10,7 +10,6 @@ import { folderToPack } from "../serialize/converter.ts";
 import { mimeTypes } from "./mime-types.ts";
 import { throttle } from "./src/lodash-throttle-v4.1.1.js";
 import { ModOptions } from "../types.ts";
-import FsWatcher = Deno.FsWatcher;
 
 // TODO : add generated APIKEY for http request auth
 
@@ -89,7 +88,7 @@ class StudioPackGeneratorGui {
   notExitIfNoClient: boolean | string = false;
   _update_desc = "update assets_bundle.json";
   #opt?: ModOptions;
-  #watcher: FsWatcher;
+  #watcher?: Deno.FsWatcher;
   #sockets = new Set<WebSocket>();
   #wsRoute = new URLPattern({ pathname: "/api/events-ws" });
   #routes = [
@@ -201,7 +200,7 @@ class StudioPackGeneratorGui {
     if (this.#watcher) {
       try {
         this.#watcher.close();
-        this.#watcher = null;
+        this.#watcher = undefined;
       } catch (e) {
         console.error("#watcher.close()", e);
       }
@@ -252,7 +251,7 @@ class StudioPackGeneratorGui {
     }
   }
 
-  async main() {
+  main() {
     const onListen = (params: { hostname: string; port: number }) => {
       if (this.#opt!.storyPath) {
         this.#watchStoryPath(this.#opt!.storyPath);

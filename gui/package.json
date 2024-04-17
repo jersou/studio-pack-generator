@@ -8,7 +8,11 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "tauri-dev": "tauri dev"
+    "tauri-dev": "tauri dev",
+    "tauri-build": "tauri build",
+    "tauri-build-x86_64-pc-windows-msvc": "tauri build --target x86_64-pc-windows-msvc",
+    "tauri-build-aarch64-apple-darwin": "tauri build --target aarch64-apple-darwin",
+    "tauri-build-x86_64-apple-darwin": "tauri build --target x86_64-apple-darwin"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

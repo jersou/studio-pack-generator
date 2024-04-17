@@ -35,7 +35,7 @@ export async function parseArgs(args: string[]) {
         if (opts.extract) {
           return await new PackExtractor(opts).extractPack();
         } else if (opts.server) {
-          return await openGuiServer(opts);
+          return openGuiServer(opts);
         } else {
           return await generatePack(opts);
         }

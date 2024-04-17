@@ -145,8 +145,8 @@ async function writeFolderWithUrl(folder: FolderWithUrl, parentPath: string) {
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
     isFolder(file)
-      ? await writeFolderWithUrl(file, path)
-      : await writeFileWithUrl(file, path);
+      ? await writeFolderWithUrl(file as FolderWithUrl, path)
+      : await writeFileWithUrl(file as FileWithUrl, path);
   }
 }
 

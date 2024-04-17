@@ -17,6 +17,7 @@ const runs = [
   { cwd, cmd: `deno task fmt --check` },
   { cwd, cmd: `deno task lint` },
   { cwd, cmd: `deno task test` },
+  { cwd, cmd: `deno task check` },
 ];
 
 await runPreCommit(runs);
