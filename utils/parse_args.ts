@@ -178,6 +178,33 @@ export async function parseArgs(args: string[]) {
       type: "string",
       describe: "OpenAi voice : " + OPEN_AI_VOICES.join(", "),
     })
+    .option("use-coqui-tts", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "use coqui TTS",
+    })
+    .option("coqui-tts-model", {
+      demandOption: false,
+      boolean: false,
+      type: "string",
+      default: "tts_models/multilingual/multi-dataset/xtts_v2",
+      describe: "coqui TTS model",
+    })
+    .option("coqui-tts-language-idx", {
+      demandOption: false,
+      boolean: false,
+      type: "string",
+      default: "fr",
+      describe: "coqui TTS language_idx",
+    })
+    .option("coqui-tts-speaker-idx", {
+      demandOption: false,
+      boolean: false,
+      type: "string",
+      default: "Abrahan Mack",
+      describe: "coqui TTS speaker_idx",
+    })
     .option("extract", {
       alias: "x",
       demandOption: false,

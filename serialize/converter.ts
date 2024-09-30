@@ -9,6 +9,7 @@ import {
   ZipMenu,
 } from "./types.ts";
 import {
+  cleanStageName,
   firstStoryFile,
   getExtension,
   getFileAudioItem,
@@ -55,7 +56,7 @@ export function folderToMenu(folder: Folder, path: string): Menu {
     name: folder.name,
     okTransition: {
       class: "ActionNode",
-      name: folder.name + " ActionNode",
+      name: folder.name,
       options: folder.files
         .map((f) =>
           isFolder(f)
@@ -81,18 +82,18 @@ export function fileToZipMenu(path: string): ZipMenu {
 export function fileToStoryItem(file: File, parent: Folder): StoryItem {
   return {
     class: "StageNode-StoryItem",
-    name: file.name + " item",
+    name: cleanStageName(file.name),
     audio: getFileAudioItem(file, parent),
     image: getFileImageItem(file, parent),
     okTransition: {
-      name: file.name + " ActionNode",
+      name: cleanStageName(file.name),
       class: "ActionNode",
       options: [
         {
           class: "StageNode-Story",
           audio: getFileAudioStory(file),
           image: null,
-          name: file.name + " Stage node",
+          name: cleanStageName(file.name),
           okTransition: null,
         },
       ],
@@ -105,7 +106,7 @@ export function fileToStory(file: File): Story {
     class: "StageNode-Story",
     audio: `${file.sha1}.${getExtension(file.name)}`,
     image: null,
-    name: file.name + " Stage node",
+    name: cleanStageName(file.name),
     okTransition: null,
   };
 }

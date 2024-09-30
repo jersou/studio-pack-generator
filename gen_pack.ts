@@ -41,6 +41,10 @@ export type ModOptions = {
   openAiApiKey?: string;
   openAiModel?: typeof OPEN_AI_MODELS[number];
   openAiVoice?: typeof OPEN_AI_VOICES[number];
+  useCoquiTts?: boolean;
+  coquiTtsModel?: string;
+  coquiTtsLanguageIdx?: string;
+  coquiTtsSpeakerIdx?: string;
   extract?: boolean;
 };
 
