@@ -195,5 +195,5 @@ export function convertToValidFilename(name: string): string {
 }
 
 export function cleanStageName(name: string): string {
-  return name.replace(/^\d{13} - /g, "").replace(/\.[^/.]+$/, "").trim();
+  return name.replace(/^\d* *-? */g, "").replace(/\.[^/.]+$/, "").trim();
 }
