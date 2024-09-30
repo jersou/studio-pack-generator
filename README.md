@@ -229,6 +229,10 @@ Options:
   -k, --open-ai-api-key              the OpenAI API key                                                         [string]
   -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                          [string] [default: "tts-1"]
   -p, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
+  --use-coqui-tts                    generate missing audio item with coqui TTS             [boolean] [default: false]
+  --coqui-tts-model                  model to use with with coqui TTS                       [string] [default: "tts_models/multilingual/multi-dataset/xtts_v2"]
+  --coqui-tts-language-idx           language to use  with coqui multi TTS models            [string] [default: "fr"]
+  --coqui-tts-speaker-idx            speaker to use  with coqui multi TTS models            [string] [default: "Abrahan Mack"]
   -x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
 ```
 
