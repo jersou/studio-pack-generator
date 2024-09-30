@@ -5,7 +5,8 @@
       <map />
     </option>
   </component>
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/test-data" />
@@ -14,13 +15,12 @@
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/tools" />
       <excludeFolder url="file://$MODULE_DIR$/vendor" />
+      <excludeFolder url="file://$MODULE_DIR$/gui/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/gui/src-tauri/target" />
       <excludePattern pattern=".*" />
       <excludePattern pattern="lock.json" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="SonarLintModuleSettings">
-    <option name="uniqueId" value="43083ddf-484d-45cc-8bdb-a4ebff0da10b" />
   </component>
 </module>
