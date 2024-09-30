@@ -1,12 +1,14 @@
-### v?.?.? / ????.??.??
+### v0.4.3 / 2024.09.30
 
 - fix: exit if nightMode && (autoNextStoryTransition || selectNextStoryAtEnd)
 - fix #25: metadata.json "nightmode" is not extracted correctly by @lasconic and
   @jersou in #26
+- feat #27: Coqui TTS and stage name cleanup by @farfromrefug
 
 #### New Contributors
 
 - @lasconic made their first contribution in #26
+- @farfromrefug made their first contribution in #27
 
 ### v0.4.2 / 2024.03.04
 
