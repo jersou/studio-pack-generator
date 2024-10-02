@@ -113,8 +113,7 @@ export async function generatePack(opt: ModOptions) {
     pathsToHandle = await downloadRss(opt.storyPath, ".", opt);
     console.log(`downloaded in ${opt.storyPath}`);
   }
-  for (let index = 0; index < pathsToHandle.length; index++) {
-    const storyPath = pathsToHandle[index];
+  for (const storyPath of pathsToHandle) {
     if (!opt.skipNotRss) {
       let folder: Folder = await fsToFolder(storyPath, false);
       if (!opt.skipExtractImageFromMp3) {
