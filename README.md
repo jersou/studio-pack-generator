@@ -237,6 +237,9 @@ Options:
   --image-item-gen-font              font used for image item generations                    [string] [default: "Arial"]
   --thumbnail-from-first-item        generate thumbnail from first item instead of first chapter       [boolean] [default: false]
   --rss-split-length                 RSS will be split in parts of N length                 [number] [default: 10]
+  --rss-split-seasons                RSS create different packs per season                  [boolean] [default: false]
+  --rss-min-duration                 RSS min episode duration                               [number] [default: 0]
+  --rss-use-image-as-thumbnail       Use rss image (first item with image) as thumbnail     [boolean] [default: false]
   --use-thumbnail-as-root-image      Use thumbnail as 'root' image instead of generated one     [boolean] [default: false]
 ```
 
