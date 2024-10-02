@@ -2,7 +2,7 @@
 /tmp
 /test_data/tmp*
 /.cov_profile
-/dist/*.zip
+/dist/
 /tmp.ts
 /.idea/vcs.xml
 /.idea/active-tab-highlighter.xml
@@ -11,3 +11,7 @@
 /.idea/inspectionProfiles
 /.idea/sonarlint/
 /.idea/
+/gui/node_modules/
+/gui/src-tauri/target/
+/gui/dist
+/gui/.vite
