@@ -1,12 +1,16 @@
 import { $, i18next, yellow } from "../deps.ts";
 
 const en = {
+  season: "Season",
+  special: "Special",
   partQuestion: "Choose your part",
   partTitle: "Part",
   storyQuestion: "Choose your story",
   NightModeTransition: "Want to listen to a new story?",
 };
 const fr = {
+  season: "Saison",
+  special: "Hors-Série",
   partQuestion: "Choisis ta partie",
   partTitle: "Partie",
   storyQuestion: "Choisis ton histoire",

@@ -119,12 +119,57 @@ export async function parseArgs(args: string[]) {
       default: false,
       describe: "skip image item generation",
     })
+    .option("image-item-gen-font", {
+      demandOption: false,
+      boolean: false,
+      default: "Arial",
+      type: "string",
+      describe: "font used for image item generation",
+    })
+    .option("thumbnail-from-first-item", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "generate thumbnail from first item instead of first chapter",
+    })
     .option("skip-not-rss", {
       alias: "s",
       demandOption: false,
       boolean: true,
       default: false,
       describe: "skip all except download RSS files",
+    })
+    .option("rss-split-length", {
+      demandOption: false,
+      boolean: false,
+      default: 10,
+      type: 'number',
+      describe: "RSS will be split in parts of N length",
+    })
+    .option("rss-split-seasons", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "RSS create different packs per season",
+    })
+    .option("rss-min-duration", {
+      demandOption: false,
+      boolean: false,
+      type:'number',
+      default: 0,
+      describe: "RSS min episode duration",
+    })
+    .option("rss-use-image-as-thumbnail", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "Use rss image (first item with image) as thumbnail",
+    })
+    .option("use-thumbnail-as-root-image", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "Use thumbnail as 'root' image instead of generated one",
     })
     .option("skip-rss-image-dl", {
       alias: "r",

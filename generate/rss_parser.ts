@@ -3,11 +3,15 @@ import {
   convertToValidFilename,
   getExtension,
   getNameWithoutExt,
+  groupBy,
   isFile,
   isFolder,
 } from "../utils/utils.ts";
 import { bgBlue, bgGreen, exists, i18next, join, parse } from "../deps.ts";
 import { File } from "../serialize/types.ts";
+import type { ModOptions } from "../gen_pack.ts";
+import { Metadata } from "../serialize/types.ts";
+import { convertImage } from "./gen_image.ts";
 
 export type Rss = {
   title: string;
@@ -29,6 +33,11 @@ export type RssItem = {
   enclosure: {
     "@url": string;
   };
+  "podcast:season"?:number,
+"podcast:episode"?:number,
+  "itunes:season"?:number,
+  "itunes:episode"?:number,
+  "itunes:duration"?:string,
   "itunes:image"?: {
     "@href": string;
   };
@@ -36,6 +45,8 @@ export type RssItem = {
 export type FolderWithUrl = {
   name: string;
   files: (FolderWithUrl | FileWithUrl)[];
+  metadata?: Metadata,
+  thumbnailUrl?: string
 };
 export type FileWithUrl = File & {
   url: string;
@@ -43,8 +54,8 @@ export type FileWithUrl = File & {
 
 async function getFolderWithUrlFromRssUrl(
   url: string,
-  skipRssImageDl: boolean,
-): Promise<FolderWithUrl> {
+  opt: ModOptions
+): Promise<FolderWithUrl[]> {
   console.log(bgGreen(`→ url = ${url}`));
 
   const resp = await fetch(url);
@@ -52,28 +63,64 @@ async function getFolderWithUrlFromRssUrl(
   // @ts-ignore rss conv
   // deno-lint-ignore no-explicit-any
   const rss: Rss = (parse(xml).rss as any).channel;
+  const metadata = {
+    title: rss.title,
+    description: rss.description
+  } as Metadata;
+  if (opt.rssMinDuration > 0) {
+    rss.item = rss.item.filter(i=>{
+      const duration = i["itunes:duration"];
+      if (duration) {
+        return duration.split(':').reduce((acc, val, index)=> acc + Math.pow(60 , 2-index) * parseInt(val, 10), 0) >= opt.rssMinDuration;
+      } else {
+        return true;
+      }
+    })
+  }
+  // we reverse the array to have oldest episodes first. This should ensure episode correctly sorted
+  let rssItems = [rss.item.reverse()];
+    let seasonIds: string[] = [];
+  if (opt.rssSplitSeasons) {
+    const grouped = groupBy( rss.item, item => {
+      const season = item["itunes:season"] ?? item["podcast:season"] ?? 0;
+      return season+'';
+    })
+    const sorted = Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]));
+    seasonIds = sorted.map(i => i[0]);
+    // we sort based on season. Season 0 will be items without a rss season => specials
+    rssItems = sorted.map(i =>i[1]);
+  }
+  const rssName = convertToValidFilename(rss.title);
   const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
-  const fs: FolderWithUrl = {
-    name: convertToValidFilename(rss.title),
+  const fss: FolderWithUrl[] = rssItems.map((items, index)=>{
+    const name = rssItems.length > 1 ? `${rssName} ${seasonIds[index] === '0' ? i18next.t("special") :  i18next.t("season") + ' ' + seasonIds[index]}` : rssName;
+    return {
+    name,
     files: [],
-  };
-  if (imgUrl) {
-    fs.files.push({
-      name: `0-item-to-resize.${getExtension(imgUrl)}`,
-      url: imgUrl,
-      sha1: "",
-    });
+    thumbnailUrl: opt.rssUseImageAsThumbnail ? items.find(item=>item["itunes:image"]?.["@href"])?.["itunes:image"]?.["@href"] : undefined,
+    metadata:{...metadata, title: name}
+  }});
+  for (let index = 0; index < fss.length; index++) {
+    const fs = fss[index];
+    if (imgUrl) {
+      fs.files.push({
+        name: `0-item-to-resize.${getExtension(imgUrl)}`,
+        url: imgUrl,
+        sha1: "",
+      });
+    }
+    const items = rssItems[index].sort(
+      (a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime(),
+    );
+    console.log(bgBlue(`→ ${items.length} items`));
+    if (items.length <= opt.rssSplitLength) {
+      fs.files.push(getFolderOfStories(items, opt.skipRssImageDl));
+    } else {
+      fs.files.push(getFolderParts(items, opt.skipRssImageDl));
+    }
   }
-  const items = rss.item.sort(
-    (a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime(),
-  );
-  console.log(bgBlue(`→ ${items.length} items`));
-  if (rss.item.length <= 10) {
-    fs.files.push(getFolderOfStories(items, skipRssImageDl));
-  } else {
-    fs.files.push(getFolderParts(items, skipRssImageDl));
-  }
-  return fs;
+  
+  return fss;
 }
 
 export function getItemFileName(item: RssItem) {
@@ -166,19 +213,38 @@ async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
 export async function downloadRss(
   url: string,
   parentPath: string,
-  skipRssImageDl: boolean,
+  opt: ModOptions 
 ) {
-  const fs = await getFolderWithUrlFromRssUrl(url, skipRssImageDl);
-  await writeFolderWithUrl(fs, parentPath);
-  const storyPath = join(parentPath, fs.name);
-
-  const itemToResize = fs.files.find(
-    (f) => isFile(f) && f.name.startsWith("0-item-to-resize"),
-  )!;
-  if (itemToResize) {
-    const itemToResizePath = join(storyPath, itemToResize.name);
-    await convertToImageItem(itemToResizePath, join(storyPath, "0-item.png"));
-    await Deno.remove(itemToResizePath);
+  const fss = await getFolderWithUrlFromRssUrl(url, opt);
+  const result = [];
+  for (let index = 0; index < fss.length; index++) {
+    const fs = fss[index];
+    await writeFolderWithUrl(fs, parentPath);
+    const storyPath = join(parentPath, fs.name);
+    if (fs.thumbnailUrl) {
+      const thumbnailFileName = `thumbnail.${getExtension(fs.thumbnailUrl)}`
+      const resp = await fetch(fs.thumbnailUrl);
+      const file = await Deno.open(join(storyPath, thumbnailFileName), { create: true, write: true });
+      await resp.body?.pipeTo(file.writable);
+      if (!thumbnailFileName.endsWith('.png')) {
+        await convertImage(join(storyPath, thumbnailFileName), join(storyPath, "thumbnail.png"));
+      }
+    }
+    if (fs.metadata) {
+      await Deno.writeTextFile(
+        `${storyPath}/metadata.json`,
+        JSON.stringify(fs.metadata, null, "  "),
+      );
+    }
+    const itemToResize = fs.files.find(
+      (f) => isFile(f) && f.name.startsWith("0-item-to-resize"),
+    )!;
+    if (itemToResize) {
+      const itemToResizePath = join(storyPath, itemToResize.name);
+      await convertToImageItem(itemToResizePath, join(storyPath, "0-item.png"));
+      await Deno.remove(itemToResizePath);
+    }
+    result.push(storyPath);
   }
-  return storyPath;
+  return result;
 }

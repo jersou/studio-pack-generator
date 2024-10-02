@@ -12,7 +12,7 @@ import {
 } from "../utils/utils.ts";
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
-import { i18next, join } from "../deps.ts";
+import { basename, i18next, join } from "../deps.ts";
 import { ModOptions } from "../gen_pack.ts";
 
 function getTitle(name: string): string {
@@ -28,12 +28,16 @@ export async function genMissingItems(
   lang: string,
   isRoot: boolean,
   rootpath: string,
-  opt: ModOptions,
+  opt: ModOptions
 ) {
   if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
     await checkRunPermission();
     if (!opt.skipImageItemGen && !getFolderImageItem(folder)) {
-      await generateImage(getTitle(folder.name), `${rootpath}/0-item.png`);
+      if (isRoot && opt.useThumbnailAsRootImage) {
+        await Deno.copyFile(join(rootpath, 'thumbnail.png'), `${rootpath}/0-item.png`);
+      } else {
+        await generateImage(getTitle(folder.name), `${rootpath}/0-item.png`, opt.imageItemGenFont);
+      }
     }
     if (!opt.skipAudioItemGen && !getFolderAudioItem(folder)) {
       await generateAudio(
@@ -59,19 +63,20 @@ export async function genMissingItems(
           lang,
           false,
           join(rootpath, file.name),
-          opt,
+          opt
         );
       } else if (isStory(file)) {
         if (!opt.skipImageItemGen && !getFileImageItem(file, folder)) {
           await generateImage(
             getTitle(getNameWithoutExt(file.name)),
-            `${rootpath}/${getNameWithoutExt(file.name)}.item.png`,
+            `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.png`,
+            opt.imageItemGenFont
           );
         }
         if (!opt.skipAudioItemGen && !getFileAudioItem(file, folder)) {
           await generateAudio(
             getTitle(getNameWithoutExt(file.name)),
-            `${rootpath}/${getNameWithoutExt(file.name)}.item.wav`,
+            `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.wav`,
             lang,
             opt,
           );

@@ -1,7 +1,7 @@
 export {
-  bgBlue,
-  bgGreen,
-  bgRed,
+  blue as bgBlue,
+  green as bgGreen,
+  red as bgRed,
   yellow,
 } from "https://deno.land/std@0.216.0/fmt/colors.ts";
 export { exists } from "https://deno.land/std@0.216.0/fs/exists.ts";

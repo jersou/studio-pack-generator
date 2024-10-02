@@ -51,7 +51,7 @@ async function convertImageFile(inputPath: string, outputPath: string) {
     "-gravity",
     "center",
     "-extent",
-    "320x240",
+    "300x220",
     outputPath,
   ];
   console.log(bgBlue('"' + cmd.join('" "') + '"'));
