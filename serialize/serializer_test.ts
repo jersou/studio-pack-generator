@@ -60,6 +60,9 @@ function clone(object: any) {
 const emptyOpt: ModOptions = {
   lang: "fr",
   storyPath: "",
+  imageItemGenFont: "Arial",
+  rssMinDuration: 0,
+  thumbnailFromFirstItem: false
 };
 
 Deno.test("serializePack-min", async () => {
@@ -101,6 +104,9 @@ Deno.test("serializePack-next-menu", async () => {
     lang: "fr",
     storyPath: "",
     selectNextStoryAtEnd: true,
+    imageItemGenFont: "Arial",
+    rssMinDuration: 0,
+    thumbnailFromFirstItem: false
   });
   assertEquals(
     clearIds(clone(pack)),

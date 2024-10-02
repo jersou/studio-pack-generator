@@ -24,13 +24,13 @@ import { fileImageItemRegEx } from "./utils/utils.ts";
 export type ModOptions = {
   storyPath: string;
   lang: string;
-  rssSplitLength: number;
-  rssSplitSeasons: boolean;
+  rssSplitLength?: number;
+  rssSplitSeasons?: boolean;
   rssMinDuration: number;
-  rssUseImageAsThumbnail: boolean;
+  rssUseImageAsThumbnail?: boolean;
   skipImageItemGen?: boolean;
   thumbnailFromFirstItem: boolean;
-  useThumbnailAsRootImage: boolean;
+  useThumbnailAsRootImage?: boolean;
   imageItemGenFont: string;
   skipAudioItemGen?: boolean;
   skipAudioConvert?: boolean;
@@ -44,7 +44,7 @@ export type ModOptions = {
   nightMode?: boolean;
   seekStory?: string;
   skipWsl?: boolean;
-  skipRssImageDl: boolean;
+  skipRssImageDl?: boolean;
   outputFolder?: string;
   useOpenAiTts?: boolean;
   openAiApiKey?: string;
