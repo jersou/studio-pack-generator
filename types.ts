@@ -10,7 +10,14 @@ export const OPEN_AI_MODELS = ["tts-1", "tts-1-hd"] as const;
 export type ModOptions = {
   storyPath: string;
   lang: string;
+  rssSplitLength: number;
+  rssSplitSeasons?: boolean;
+  rssMinDuration: number;
+  rssUseImageAsThumbnail?: boolean;
   skipImageItemGen?: boolean;
+  thumbnailFromFirstItem: boolean;
+  useThumbnailAsRootImage?: boolean;
+  imageItemGenFont: string;
   skipAudioItemGen?: boolean;
   skipAudioConvert?: boolean;
   skipImageConvert?: boolean;
@@ -29,6 +36,10 @@ export type ModOptions = {
   openAiApiKey?: string;
   openAiModel?: typeof OPEN_AI_MODELS[number];
   openAiVoice?: typeof OPEN_AI_VOICES[number];
+  useCoquiTts?: boolean;
+  coquiTtsModel?: string;
+  coquiTtsLanguageIdx?: string;
+  coquiTtsSpeakerIdx?: string;
   extract?: boolean;
   server?: boolean;
   port?: string;

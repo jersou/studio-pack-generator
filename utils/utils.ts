@@ -94,7 +94,8 @@ export function getFileImageItem(file: File, parent: Folder) {
   const nameWithoutExt = getNameWithoutExt(file.name);
   const ImageItem = parent.files.find(
     (f) =>
-      getNameWithoutExt(rmDiacritic(f.name)).replace(/.item$/, "") ===
+      getNameWithoutExt(rmDiacritic(f.name))
+          .replace(/(-generated)?.item$/, "") ===
         rmDiacritic(nameWithoutExt) &&
       fileImageItemRegEx.test(f.name),
   ) as File;
@@ -206,5 +207,18 @@ export function rmDiacritic(s: string) {
 }
 
 export function convertToValidFilename(name: string): string {
-  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()! ]/g, " ").trim();
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").trim();
+}
+
+export function cleanStageName(name: string): string {
+  return name.replace(/^\d* *-? */g, "").replace(/\.[^/.]+$/, "").trim();
+}
+export function groupBy<T>(
+  array: T[],
+  predicate: (value: T, index: number, array: T[]) => string,
+) {
+  return array.reduce((acc, value, index, array) => {
+    (acc[predicate(value, index, array)] ||= []).push(value);
+    return acc;
+  }, {} as { [key: string]: T[] });
 }

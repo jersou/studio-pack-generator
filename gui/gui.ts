@@ -40,7 +40,7 @@ export function openGui(opt: ModOptions) {
 
 async function getPack(opt: ModOptions) {
   const folder = await fsToFolder(opt.storyPath, false);
-  const metadata: Metadata = await getMetadata(opt);
+  const metadata: Metadata = await getMetadata(opt.storyPath, opt);
   return folderToPack(folder, metadata);
 }
 

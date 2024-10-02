@@ -1,14 +1,30 @@
-### v?.?.? / ????.??.??
+### v0.4.4 / 2024.10.02
+
+- feat: now support split by season with many new options by @farfromrefug. See
+  readme for added options :
+
+```
+--rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]
+--rss-min-duration             RSS min episode duration                                      [number] [default: 0]
+--rss-use-image-as-thumbnail   Use rss image (first item with image) as thumbnail       [boolean] [default: false]
+```
+
+The default behaviour stays the same. Also marked generated images (from text)
+as generated in the name for easier filtering (should not break anything).
+
+### v0.4.3 / 2024.09.30
 
 - feat: Studio Pack Generator GUI !
 
 - fix: exit if nightMode && (autoNextStoryTransition || selectNextStoryAtEnd)
 - fix #25: metadata.json "nightmode" is not extracted correctly by @lasconic and
   @jersou in #26
+- feat #27: Coqui TTS and stage name cleanup by @farfromrefug
 
 #### New Contributors
 
 - @lasconic made their first contribution in #26
+- @farfromrefug made their first contribution in #27
 
 ### v0.4.2 / 2024.03.04
 

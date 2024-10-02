@@ -9,6 +9,7 @@ import {
   ZipMenu,
 } from "./types.ts";
 import {
+  cleanStageName,
   firstStoryFile,
   getExtension,
   getFileAudioItem,
@@ -93,7 +94,7 @@ export function folderToMenu(folder: Folder, path: string): Menu {
     pathTimestamp: folderPath ? getMTime(folderPath) : undefined,
     okTransition: {
       class: "ActionNode",
-      name: folder.name + " ActionNode",
+      name: folder.name,
       options: folder.files
         .map((f) =>
           isFolder(f)
@@ -130,7 +131,7 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
   const image = getFileImageItem(file, parent);
   const res: StoryItem = {
     class: "StageNode-StoryItem",
-    name: file.name + " item",
+    name: cleanStageName(file.name),
     path: file.path,
     audio: audio?.assetName ?? null,
     image: image?.assetName ?? null,
@@ -140,14 +141,14 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
     imageTimestamp: parent.path && image ? getMTime(image?.path) : undefined,
     pathTimestamp: parent.path && file.path ? getMTime(file.path) : undefined,
     okTransition: {
-      name: file.name + " ActionNode",
+      name: cleanStageName(file.name),
       class: "ActionNode",
       options: [
         {
           class: "StageNode-Story",
           audio: getFileAudioStory(file)?.assetName ?? null,
           image: null,
-          name: file.name + " Stage node",
+          name: cleanStageName(file.name),
           okTransition: null,
         },
       ],
@@ -162,7 +163,7 @@ export function fileToStory(file: File): Story {
     path: file.path,
     audio: `${file.sha1}.${getExtension(file.name)}`,
     image: null,
-    name: file.name + " Stage node",
+    name: cleanStageName(file.name),
     okTransition: null,
   };
 }

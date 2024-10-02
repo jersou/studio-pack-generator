@@ -222,7 +222,15 @@ Options:
   -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
+      --image-item-gen-font          font used for image item generation                     [string] [default: "Arial"]
+      --thumbnail-from-first-item    generate thumbnail from first item instead of first chapter
+                                                                                              [boolean] [default: false]
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
+      --rss-split-length             RSS will be split in parts of N length                       [number] [default: 10]
+      --rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]
+      --rss-min-duration             RSS min episode duration                                      [number] [default: 0]
+      --rss-use-image-as-thumbnail   Use rss image (first item with image) as thumbnail       [boolean] [default: false]
+      --use-thumbnail-as-root-image  Use thumbnail as 'root' image instead of generated one   [boolean] [default: false]
   -r, --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
   -w, --skip-wsl                     disable WSL usage                                        [boolean] [default: false]
   -z, --skip-zip-generation          only process item generation, don't create zip           [boolean] [default: false]
@@ -230,6 +238,10 @@ Options:
   -k, --open-ai-api-key              the OpenAI API key                                                         [string]
   -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                          [string] [default: "tts-1"]
   -p, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer   [string] [default: "onyx"]
+      --use-coqui-tts                use coqui TTS                                            [boolean] [default: false]
+      --coqui-tts-model              coqui TTS model [string] [default: "tts_models/multilingual/multi-dataset/xtts_v2"]
+      --coqui-tts-language-idx       coqui TTS language_idx                                     [string] [default: "fr"]
+      --coqui-tts-speaker-idx        coqui TTS speaker_idx                            [string] [default: "Abrahan Mack"]
   -x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
   -u, --gui                          open GUI (on localhost:3333)                              [boolean] [default: true]
       --config-file                  json config file                                                           [string]
@@ -272,7 +284,7 @@ All key/value are optional, ex:
   "description": "description - overwrite",
   "format": "v1",
   "version": 1,
-  "nightModeAvailable": false
+  "nightMode": false
 }
 ```
 

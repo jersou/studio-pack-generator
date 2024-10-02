@@ -62,6 +62,22 @@ export async function generate_audio_basic_tts(
       "LEF32@22050",
     ];
     await $`say ${args}`.noThrow();
+  } else if (opt.useCoquiTts) {
+    const args = [
+      "--text",
+      title,
+      "--model_name",
+      opt.coquiTtsModel,
+      "--out_path",
+      convertPath(outputPath),
+    ].concat(
+      opt.coquiTtsLanguageIdx
+        ? ["--language_idx", opt.coquiTtsLanguageIdx]
+        : [],
+    ).concat(
+      opt.coquiTtsSpeakerIdx ? ["--speaker_idx", opt.coquiTtsSpeakerIdx] : [],
+    );
+    await $`tts ${args}`;
   } else {
     const pico2waveCommand = await getPico2waveCommand();
     const cmd = [
