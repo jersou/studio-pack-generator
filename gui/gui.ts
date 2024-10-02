@@ -157,7 +157,11 @@ class StudioPackGeneratorGui {
     this.#sockets.forEach((s) => s.send(data));
   }
 
-  async main() {
+  async main(storyPath?: string) {
+    console.log(this.#opt);
+    if (storyPath) {
+      this.#opt = { storyPath } as ModOptions;
+    }
     await this.#loadAssets();
     const onListen = (params: { hostname: string; port: number }) => {
       (async () => {
