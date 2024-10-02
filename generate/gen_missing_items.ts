@@ -12,7 +12,7 @@ import {
 } from "../utils/utils.ts";
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
-import { basename, i18next, join } from "../deps.ts";
+import { i18next, join } from "../deps.ts";
 import { ModOptions } from "../gen_pack.ts";
 
 function getTitle(name: string): string {
