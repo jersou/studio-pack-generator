@@ -350,7 +350,19 @@ Format (all the properties are optionals) :
   "openAiApiKey": "",
   "openAiModel": "tts-1",
   "openAiVoice": "onyx",
-  "gui": false
+  "gui": false,
+  "imageItemGenFont": "Arial",
+  "thumbnailFromFirstItem": false,
+  "rssSplitLength": 10,
+  "rssSplitSeasons": false,
+  "rssMinDuration": 0,
+  "rssUseImageAsThumbnail": false,
+  "useThumbnailAsRootImage": false,
+  "useCoquiTts": false,
+  "coquiTtsModel": "tts_models/multilingual/multi-dataset/xtts_v2",
+  "coquiTtsLanguageIdx": "fr",
+  "coquiTtsSpeakerIdx": "Abrahan Mack",
+  "port": 5555
 }
 ```
 
