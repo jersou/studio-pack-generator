@@ -205,6 +205,12 @@ export async function parseArgs(args: string[]) {
       default: true,
       describe: "open GUI (on localhost:5555)",
     })
+    .option("port", {
+      hidden: true,
+      demandOption: false,
+      default: "5555",
+      describe: "port of GUI server",
+    })
     .option("config-file", {
       demandOption: false,
       boolean: false,
