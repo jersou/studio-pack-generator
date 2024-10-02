@@ -24,7 +24,7 @@ import { fileImageItemRegEx } from "./utils/utils.ts";
 export type ModOptions = {
   storyPath: string;
   lang: string;
-  rssSplitLength?: number;
+  rssSplitLength: number;
   rssSplitSeasons?: boolean;
   rssMinDuration: number;
   rssUseImageAsThumbnail?: boolean;
@@ -44,7 +44,7 @@ export type ModOptions = {
   nightMode?: boolean;
   seekStory?: string;
   skipWsl?: boolean;
-  skipRssImageDl?: boolean;
+  skipRssImageDl: boolean;
   outputFolder?: string;
   useOpenAiTts?: boolean;
   openAiApiKey?: string;
