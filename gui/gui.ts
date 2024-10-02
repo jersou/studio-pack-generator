@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run  --allow-net=localhost:5555 --allow-env --allow-read --allow-write=assets_bundle.json --allow-run
+#!/usr/bin/env -S deno run  -A
 
 import $ from "https://deno.land/x/dax@0.39.2/mod.ts";
 import {
@@ -54,6 +54,45 @@ async function runSpg(opt: ModOptions) {
   }
 }
 
+function getAccessControlAllowOrigin(request: Request): Record<string, string> {
+  const origin = request.headers.get("Origin");
+  if ((origin ?? "").startsWith("http://localhost:")) {
+    return { "Access-Control-Allow-Origin": (origin ?? "http://localhost") };
+  } else {
+    return {};
+  }
+}
+async function getFileBrowser() {
+  switch (Deno.build.os) {
+    case "windows":
+      return ["start"];
+    case "darwin":
+      return ["open"];
+    case "linux":
+    default:
+      if (await $.commandExists("gio")) {
+        return ["gio", "open"];
+      } else if (await $.commandExists("xdg-open")) {
+        return ["xdg-open"];
+      } else if (await $.commandExists("nautilus")) {
+        return ["nautilus"];
+      } else if (await $.commandExists("nemo")) {
+        return ["nemo"];
+      } else {
+        return null;
+      }
+  }
+}
+
+async function openFolder(path: string) {
+  const fileBrowser = await getFileBrowser();
+  if (fileBrowser) {
+    return $`${fileBrowser} ${path}`.noThrow(true).printCommand(true).spawn();
+  } else {
+    return null;
+  }
+}
+
 class StudioPackGeneratorGui {
   setStudioPackGeneratorOpt(opt: ModOptions) {
     this.#opt = opt;
@@ -66,6 +105,7 @@ class StudioPackGeneratorGui {
   update: boolean | string = false;
   _update_desc = "update assets_bundle.json";
   #opt?: ModOptions;
+  #watcher?: Deno.FsWatcher;
   #server: Deno.HttpServer | undefined;
   #sockets = new Set<WebSocket>();
   #assets: Assets = {};
@@ -134,7 +174,10 @@ class StudioPackGeneratorGui {
           }
         })();
 
-        return new Response("ok", { status: 200 });
+        return new Response("ok", {
+          status: 200,
+          headers: getAccessControlAllowOrigin(request),
+        });
       },
     },
     {
@@ -143,12 +186,26 @@ class StudioPackGeneratorGui {
         const url = new URL(request.url);
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
-          // TODO : other file explorers
-          $`nemo ${path}`.printCommand(true).spawn();
-          return new Response("ok", { status: 200 });
+          openFolder(path);
+          return new Response("ok", {
+            status: 200,
+            headers: getAccessControlAllowOrigin(request),
+          });
         } else {
           return new Response("Not a pack file", { status: 403 });
         }
+      },
+    },
+    {
+      route: new URLPattern({ pathname: "/api/storyPath" }),
+      exec: (_match: URLPatternResult, request: Request) => {
+        const url = new URL(request.url);
+        const path = decodeURIComponent(url.searchParams.get("path") ?? "");
+        this.#watchStoryPath(path);
+        return new Response("ok", {
+          status: 200,
+          headers: getAccessControlAllowOrigin(request),
+        });
       },
     },
   ] as const;
@@ -157,14 +214,78 @@ class StudioPackGeneratorGui {
     this.#sockets.forEach((s) => s.send(data));
   }
 
+  async #watchStoryPath(path: string) {
+    this.#opt!.storyPath = path;
+    if (this.#watcher) {
+      try {
+        this.#watcher.close();
+        this.#watcher = undefined;
+      } catch (e) {
+        console.error("#watcher.close()", e);
+      }
+    }
+    if (this.#opt!.storyPath) {
+      try {
+        const onWatchEvent = async (newStoryPath?: boolean) => {
+          const pack = await getPack(this.#opt!);
+          this.#sendWs(
+            JSON.stringify({ type: "fs-update", pack, newStoryPath }),
+          );
+        };
+        const onWatchEventThrottle = throttle(onWatchEvent, 1000);
+        onWatchEventThrottle(true);
+        console.log({ storyPath: this.#opt!.storyPath });
+        this.#watcher = Deno.watchFs(this.#opt!.storyPath);
+        for await (const _event of this.#watcher) {
+          onWatchEventThrottle();
+        }
+      } catch (e) {
+        console.error("watchStoryPath", e);
+      }
+    } else {
+      this.#sendWs(
+        JSON.stringify({
+          type: "fs-update",
+          pack: {
+            title: "",
+            description: "",
+            format: "",
+            version: 0,
+            nightModeAvailable: false,
+            entrypoint: {
+              class: "StageNode-Entrypoint",
+              name: "",
+              okTransition: {
+                class: "ActionNode",
+                name: "",
+                options: [],
+              },
+              image: null,
+              audio: null,
+            },
+          },
+          newStoryPath: true,
+        }),
+      );
+    }
+  }
+
   async main(storyPath?: string) {
     console.log(this.#opt);
     if (storyPath) {
       this.#opt = { storyPath } as ModOptions;
     }
+    if (!this.#opt?.storyPath) {
+      console.log("No story path → exit");
+      Deno.exit(5);
+    }
+
     await this.#loadAssets();
     const onListen = (params: { hostname: string; port: number }) => {
       (async () => {
+        if (this.#opt!.storyPath) {
+          this.#watchStoryPath(this.#opt!.storyPath);
+        }
         const onWatchEvent = async () => {
           try {
             const pack = await getPack(this.#opt!);
@@ -212,23 +333,28 @@ class StudioPackGeneratorGui {
   }
 
   async #handleRequest(request: Request) {
-    console.log(`handle ${request.url}`);
-    for (const { route, exec } of this.#routes) {
-      const match = route.exec(request.url);
-      if (match) {
-        return await exec(match, request);
+    try {
+      console.log(`handle ${request.url}`);
+      for (const { route, exec } of this.#routes) {
+        const match = route.exec(request.url);
+        if (match) {
+          return await exec(match, request);
+        }
       }
-    }
-    for (const file of Object.values(this.#assets ?? {})) {
-      if (file.route?.exec(request.url)) {
-        const headers = { "Content-Type": file.type };
-        return new Response(file.content, { status: 200, headers });
+      for (const file of Object.values(this.#assets ?? {})) {
+        if (file.route?.exec(request.url)) {
+          const headers = { "Content-Type": file.type };
+          return new Response(file.content, { status: 200, headers });
+        }
       }
+      if (this.#wsRoute.exec(request.url)) {
+        return this.#handleWsRequest(request);
+      }
+      return new Response("", { status: 404 });
+    } catch (err) {
+      console.error("handleRequest error", err);
+      return new Response("", { status: 500 });
     }
-    if (this.#wsRoute.exec(request.url)) {
-      return this.#handleWsRequest(request);
-    }
-    return new Response("", { status: 404 });
   }
 
   #handleWsRequest(request: Request) {
@@ -239,13 +365,17 @@ class StudioPackGeneratorGui {
     socket.addEventListener("open", async () => {
       this.#sockets.add(socket);
       console.log(`a client connected! ${this.#sockets.size} clients`);
-      try {
-        const pack = await getPack(this.#opt!);
-        // console.log(JSON.stringify(pack, null, "  "));
-        socket.send(JSON.stringify({ type: "fs-update", pack }));
-        socket.send(JSON.stringify({ type: "opt", opt: this.#opt }));
-      } catch (e) {
-        console.error(e);
+      if (this.#opt?.storyPath) {
+        try {
+          const pack = await getPack(this.#opt!);
+          // console.log(JSON.stringify(pack, null, "  "));
+          socket.send(
+            JSON.stringify({ type: "fs-update", pack, newStoryPath: true }),
+          );
+          socket.send(JSON.stringify({ type: "opt", opt: this.#opt }));
+        } catch (e) {
+          console.error(e);
+        }
       }
     });
     socket.addEventListener("close", () => {
