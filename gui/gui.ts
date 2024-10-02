@@ -31,8 +31,8 @@ export function openGui(opt: ModOptions) {
   const uiApp = new StudioPackGeneratorGui();
   // TODO false
   uiApp.update = !opt.isCompiled;
-  uiApp.openInBrowser = !!opt.isCompiled;
-  uiApp.notExitIfNoClient = !opt.isCompiled;
+  uiApp.openInBrowser = true;
+  uiApp.notExitIfNoClient = false;
   uiApp.port = parseInt(opt.port || "5555");
   uiApp.setStudioPackGeneratorOpt(opt);
   return uiApp.main();
@@ -325,6 +325,7 @@ class StudioPackGeneratorGui {
       } else if (await $.commandExists("chromium")) {
         await $`chromium ${arg}http://${this.hostname}:${this.port}/`;
       } else {
+        // TODO WINDOWS / MAC
         await $`gio open http://${this.hostname}:${this.port}/`;
       }
     } else {
@@ -395,7 +396,8 @@ class StudioPackGeneratorGui {
 
   async updateAssets() {
     console.log("update assets_bundle.json");
-    const frontendPath = $.path(import.meta).resolve(`../frontend/`).toString();
+    const frontendPath = $.path(import.meta).resolve(`../frontend/dist/`)
+      .toString();
     for await (const entry of walk(frontendPath, { includeDirs: false })) {
       assert(entry.path.startsWith(frontendPath));
       const path = entry.path.substring(frontendPath.length);

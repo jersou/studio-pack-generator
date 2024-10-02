@@ -1,11 +1,11 @@
 {
   "tasks": {
     "bundle": "deno bundle studio_pack_generator.ts dist/studio_pack_generator.js",
-    "fmt": "deno fmt --ignore=gui/assets_bundle.json,gui/frontend-src,.git,.github,tmp,vendor,dist,.cov_profile,gui/dist,gui/frontend/assets_bundle.json,gui/node_modules,gui/frontend/htm@3.1.1-preact-standalone.module.js,gui/src/,gui/vite.config.ts,gui/lodash-throttle-v4.1.1.js,gui/frontend/shoelace-style@2.15.0.js,gui/src-tauri/target",
+    "fmt": "deno fmt --ignore=gui/assets_bundle.json,gui/frontend,.git,.github,tmp,vendor,dist,.cov_profile,gui/dist,gui/node_modules,gui/src/,gui/vite.config.ts,gui/lodash-throttle-v4.1.1.js,gui/src-tauri/target",
     "gen-bin": "./gen-bin.sh",
     "gen-cov": "rm -rf .cov_profile && deno test --coverage=.cov_profile -A && deno coverage .cov_profile --lcov --exclude=vendor > .cov_profile/cov_profile.lcov && genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov",
     "check": "deno check studio_pack_generator.ts",
-    "lint": "deno lint --ignore=.git,gui/frontend-src,.github,tmp,vendor,dist,gui/frontend/,gui/lodash-throttle-v4.1.1.js,gui/src/,gui/dist,gui/node_modules,gui/vite.config.ts,gui/frontend/shoelace-style@2.15.0.js,gui/src-tauri/target",
+    "lint": "deno lint --ignore=.git,gui/frontend,.github,tmp,vendor,dist,gui/lodash-throttle-v4.1.1.js,gui/src/,gui/dist,gui/node_modules,gui/vite.config.ts,gui/src-tauri/target",
     "pre-commit": "deno task fmt --check && deno task lint && deno task test",
     "pre-commit-fast": "deno run -A pre-commit-fast.ts",
     "start": "deno run -A --unstable studio_pack_generator.ts",

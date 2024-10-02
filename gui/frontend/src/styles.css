@@ -1,7 +1,13 @@
 body {
-  padding: 20px;
   position: absolute;
-  min-width: 925px;
+  min-width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  padding: 10px;
 }
 
 .app {
@@ -22,24 +28,9 @@ body {
   z-index: 1000;
 }
 
-/*@media (prefers-color-scheme: light) {*/
-/*  body {*/
-/*    background-color: #fff;*/
-/*    color: #000;*/
-/*  }*/
-/*}*/
-/*@media (prefers-color-scheme: dark) {*/
-/*  body {*/
-/*    background-color: #222;*/
-/*    color: #fff;*/
-/*  }*/
-/*}*/
-
 .story {
   position: relative;
   display: flex;
-  /*border: #1c2aa9 solid 2px;*/
-  /*border-radius: 5px;*/
   flex: 0;
 }
 
@@ -74,9 +65,15 @@ body {
 }
 .line {
   min-width: 80px;
+  /*display: none;*/
+  /*position: absolute;*/
 }
 
-svg {
+.line > svg  {
+  position: absolute;
+}
+
+.story-node-svg {
   position: absolute;
 }
 .story-line {
@@ -86,14 +83,6 @@ svg {
 .empty {
   min-height: 80px;
   min-width: 80px;
-}
-.preview {
-  /*border: #aaa solid 3px;*/
-  /*box-shadow: 6px 6px 8px #bbb;*/
-  /*padding: 10px;*/
-  /*overflow: auto;*/
-  /*justify-content: center;*/
-  /*display: flex;*/
 }
 
 .folder-path {
@@ -108,19 +97,59 @@ svg {
 }
 .config {
   display: grid;
-  row-gap: 5px;
   column-gap: 20px;
   grid-template-columns: 1fr 1fr;
   max-width: 1000px;
 }
 .zoom {
   display: flex;
-}
-.zoom > sl-range {
-  flex: 1;
-  margin-left: 20px;
+  align-items: center;
+  margin-bottom: 10px
 }
 
 .ZipMenu {
   font-size: 50px;
+}
+
+.loader{
+  z-index: 1000;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #bbbbbb88;
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 200px;
+  height: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  border-radius: 50%;
+  border-width: 20px;
+  border-style: solid;
+  border-color: #555 transparent #555 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
