@@ -57,7 +57,11 @@ export type ModOptions = {
   extract?: boolean;
 };
 
-async function genThumbnail(folder: Folder, storyPath: string, thumbnailFromFirstItem: boolean) {
+async function genThumbnail(
+  folder: Folder,
+  storyPath: string,
+  thumbnailFromFirstItem: boolean,
+) {
   await checkRunPermission();
   const thumbnailPath = join(storyPath, "thumbnail.png");
   if (!(await exists(thumbnailPath))) {
@@ -65,15 +69,13 @@ async function genThumbnail(folder: Folder, storyPath: string, thumbnailFromFirs
     let thumbnailItemPath = storyPath;
     if (thumbnailFromFirstItem) {
       let files = folder.files;
-      let insideFolder = files.find(isFolder)
-      while(insideFolder) {
+      let insideFolder = files.find(isFolder);
+      while (insideFolder) {
         files = insideFolder.files;
         thumbnailItemPath = join(thumbnailItemPath, insideFolder.name);
-        insideFolder = files.find(isFolder)
+        insideFolder = files.find(isFolder);
       }
-      itemFile = files.find((f) =>
-        fileImageItemRegEx.test(f.name)
-      ) as File;
+      itemFile = files.find((f) => fileImageItemRegEx.test(f.name)) as File;
     }
     if (!itemFile) {
       thumbnailItemPath = storyPath;
@@ -82,7 +84,10 @@ async function genThumbnail(folder: Folder, storyPath: string, thumbnailFromFirs
       ) as File;
     }
     if (itemFile) {
-      await convertToImageItem(join(thumbnailItemPath, itemFile.name), thumbnailPath);
+      await convertToImageItem(
+        join(thumbnailItemPath, itemFile.name),
+        thumbnailPath,
+      );
     }
   }
 }
@@ -142,7 +147,7 @@ export async function generatePack(opt: ModOptions) {
       }
       if (!opt.skipZipGeneration) {
         folder = await fsToFolder(storyPath, true);
-  
+
         const metadata: Metadata = await getMetadata(storyPath, opt);
         const pack = folderToPack(folder, metadata);
         const nightModeAudioItemName = getNightModeAudioItem(folder);
@@ -163,10 +168,12 @@ export async function generatePack(opt: ModOptions) {
       }
     }
   }
-  
 }
 
-async function getMetadata(storyPath:string, opt: ModOptions): Promise<Metadata> {
+async function getMetadata(
+  storyPath: string,
+  opt: ModOptions,
+): Promise<Metadata> {
   const metadataPath = `${storyPath}/metadata.json`;
   if (await exists(metadataPath)) {
     const metadataJson = await Deno.readTextFile(metadataPath);

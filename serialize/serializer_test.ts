@@ -64,7 +64,7 @@ const emptyOpt: ModOptions = {
   rssMinDuration: 0,
   thumbnailFromFirstItem: false,
   rssSplitLength: 10,
-  skipRssImageDl: false
+  skipRssImageDl: false,
 };
 
 Deno.test("serializePack-min", async () => {
@@ -110,7 +110,7 @@ Deno.test("serializePack-next-menu", async () => {
     rssMinDuration: 0,
     thumbnailFromFirstItem: false,
     rssSplitLength: 10,
-    skipRssImageDl: false
+    skipRssImageDl: false,
   });
   assertEquals(
     clearIds(clone(pack)),

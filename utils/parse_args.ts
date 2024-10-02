@@ -143,7 +143,7 @@ export async function parseArgs(args: string[]) {
       demandOption: false,
       boolean: false,
       default: 10,
-      type: 'number',
+      type: "number",
       describe: "RSS will be split in parts of N length",
     })
     .option("rss-split-seasons", {
@@ -155,7 +155,7 @@ export async function parseArgs(args: string[]) {
     .option("rss-min-duration", {
       demandOption: false,
       boolean: false,
-      type:'number',
+      type: "number",
       default: 0,
       describe: "RSS min episode duration",
     })

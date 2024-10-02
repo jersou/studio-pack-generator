@@ -1,7 +1,11 @@
 import { $, bgGreen } from "../deps.ts";
 import { getConvertCommand } from "../utils/external_commands.ts";
 
-export async function generateImage(title: string, outputPath: string, fontName: string) {
+export async function generateImage(
+  title: string,
+  outputPath: string,
+  fontName: string,
+) {
   console.log(bgGreen(`Generate image to ${outputPath}`));
 
   const convertCommand = await getConvertCommand();

@@ -28,15 +28,22 @@ export async function genMissingItems(
   lang: string,
   isRoot: boolean,
   rootpath: string,
-  opt: ModOptions
+  opt: ModOptions,
 ) {
   if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
     await checkRunPermission();
     if (!opt.skipImageItemGen && !getFolderImageItem(folder)) {
       if (isRoot && opt.useThumbnailAsRootImage) {
-        await Deno.copyFile(join(rootpath, 'thumbnail.png'), `${rootpath}/0-item.png`);
+        await Deno.copyFile(
+          join(rootpath, "thumbnail.png"),
+          `${rootpath}/0-item.png`,
+        );
       } else {
-        await generateImage(getTitle(folder.name), `${rootpath}/0-item.png`, opt.imageItemGenFont);
+        await generateImage(
+          getTitle(folder.name),
+          `${rootpath}/0-item.png`,
+          opt.imageItemGenFont,
+        );
       }
     }
     if (!opt.skipAudioItemGen && !getFolderAudioItem(folder)) {
@@ -63,14 +70,14 @@ export async function genMissingItems(
           lang,
           false,
           join(rootpath, file.name),
-          opt
+          opt,
         );
       } else if (isStory(file)) {
         if (!opt.skipImageItemGen && !getFileImageItem(file, folder)) {
           await generateImage(
             getTitle(getNameWithoutExt(file.name)),
             `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.png`,
-            opt.imageItemGenFont
+            opt.imageItemGenFont,
           );
         }
         if (!opt.skipAudioItemGen && !getFileAudioItem(file, folder)) {
