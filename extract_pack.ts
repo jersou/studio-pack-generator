@@ -1,6 +1,5 @@
 #!/usr/bin/env -S deno run -A
 
-import { ModOptions } from "./gen_pack.ts";
 import { BlobReader, BlobWriter, dirname, Queue, ZipReader } from "./deps.ts";
 import {
   ActionNode,
@@ -8,6 +7,7 @@ import {
   SerializedPack,
   StageNode,
 } from "./serialize/types.ts";
+import { ModOptions } from "./types.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {

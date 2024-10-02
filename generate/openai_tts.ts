@@ -1,17 +1,8 @@
 import { $, bgBlue, bgRed, OpenAI } from "../deps.ts";
-import { ModOptions } from "../gen_pack.ts";
+
+import { ModOptions } from "../types.ts";
 
 let openAI_client: OpenAI;
-
-export const OPEN_AI_VOICES = [
-  "alloy",
-  "echo",
-  "fable",
-  "onyx",
-  "nova",
-  "shimmer",
-] as const;
-export const OPEN_AI_MODELS = ["tts-1", "tts-1-hd"] as const;
 
 export async function generate_audio_with_openAI(
   title: string,

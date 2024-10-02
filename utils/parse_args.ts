@@ -1,10 +1,10 @@
 #!/usr/bin/env -S deno run --allow-run --allow-read --allow-write
 
 import { yargs } from "../deps.ts";
-import { generatePack, ModOptions } from "../gen_pack.ts";
-import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
+import { generatePack } from "../gen_pack.ts";
 import { PackExtractor } from "../extract_pack.ts";
 import { openGui } from "../gui/gui.ts";
+import { ModOptions, OPEN_AI_MODELS, OPEN_AI_VOICES } from "../types.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -203,7 +203,7 @@ export async function parseArgs(args: string[]) {
       demandOption: false,
       boolean: true,
       default: true,
-      describe: "open GUI (on localhost:3333)",
+      describe: "open GUI (on localhost:5555)",
     })
     .option("config-file", {
       demandOption: false,

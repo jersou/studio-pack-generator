@@ -13,7 +13,8 @@ import {
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
 import { i18next, join } from "../deps.ts";
-import { ModOptions } from "../gen_pack.ts";
+
+import { ModOptions } from "../types.ts";
 
 function getTitle(name: string): string {
   if (/^[0-9]* *-? *$/.test(name)) {

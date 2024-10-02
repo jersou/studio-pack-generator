@@ -1,5 +1,7 @@
 ### v?.?.? / ????.??.??
 
+- feat: Studio Pack Generator GUI !
+
 - fix: exit if nightMode && (autoNextStoryTransition || selectNextStoryAtEnd)
 - fix #25: metadata.json "nightmode" is not extracted correctly by @lasconic and
   @jersou in #26

@@ -17,35 +17,7 @@ import {
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 import { convertImageOfFolder } from "./utils/convert_image.ts";
-import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "./generate/openai_tts.ts";
-
-export type ModOptions = {
-  storyPath: string;
-  lang: string;
-  skipImageItemGen?: boolean;
-  skipAudioItemGen?: boolean;
-  skipAudioConvert?: boolean;
-  skipImageConvert?: boolean;
-  skipExtractImageFromMp3?: boolean;
-  skipZipGeneration?: boolean;
-  skipNotRss?: boolean;
-  autoNextStoryTransition?: boolean;
-  selectNextStoryAtEnd?: boolean;
-  addDelay?: boolean;
-  nightMode?: boolean;
-  seekStory?: string;
-  skipWsl?: boolean;
-  skipRssImageDl?: boolean;
-  outputFolder?: string;
-  useOpenAiTts?: boolean;
-  openAiApiKey?: string;
-  openAiModel?: typeof OPEN_AI_MODELS[number];
-  openAiVoice?: typeof OPEN_AI_VOICES[number];
-  extract?: boolean;
-  gui?: boolean;
-  configFile?: string;
-  isCompiled?: boolean;
-};
+import { ModOptions } from "./types.ts";
 
 async function genThumbnail(folder: Folder, storyPath: string) {
   await checkRunPermission();

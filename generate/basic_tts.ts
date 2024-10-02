@@ -1,4 +1,3 @@
-import { ModOptions } from "../gen_pack.ts";
 import { bgBlue } from "https://deno.land/std@0.216.0/fmt/colors.ts";
 import { $ } from "../deps.ts";
 import { convertPath } from "../utils/utils.ts";
@@ -6,6 +5,7 @@ import {
   checkCommand,
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
+import { ModOptions } from "../types.ts";
 
 let hasPico2waveWslCache: undefined | boolean;
 
