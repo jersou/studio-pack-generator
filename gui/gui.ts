@@ -33,7 +33,7 @@ export function openGui(opt: ModOptions) {
   uiApp.update = !opt.isCompiled;
   uiApp.openInBrowser = true;
   uiApp.notExitIfNoClient = false;
-  uiApp.port = parseInt(opt.port || "5555");
+  uiApp.port = opt.port || 5555;
   uiApp.setStudioPackGeneratorOpt(opt);
   return uiApp.main();
 }

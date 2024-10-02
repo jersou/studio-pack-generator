@@ -278,9 +278,9 @@ export async function parseArgs(args: string[]) {
       describe: "open GUI (on localhost:5555)",
     })
     .option("port", {
-      hidden: true,
       demandOption: false,
-      default: "5555",
+      default: 5555,
+      type: "number",
       describe: "port of GUI server",
     })
     .option("config-file", {

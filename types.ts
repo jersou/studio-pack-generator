@@ -42,7 +42,7 @@ export type ModOptions = {
   coquiTtsSpeakerIdx?: string;
   extract?: boolean;
   server?: boolean;
-  port?: string;
+  port?: number;
   configFile?: string;
   isCompiled?: boolean;
   gui?: boolean;

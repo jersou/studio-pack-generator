@@ -1,3 +1,8 @@
+### v?.?.? / ????.??.??
+
+- feat: Studio Pack Generator GUI !
+- feat: config file
+
 ### v0.4.4 / 2024.10.02
 
 - feat: now support split by season with many new options by @farfromrefug. See
@@ -13,8 +18,6 @@ The default behaviour stays the same. Also marked generated images (from text)
 as generated in the name for easier filtering (should not break anything).
 
 ### v0.4.3 / 2024.09.30
-
-- feat: Studio Pack Generator GUI !
 
 - fix: exit if nightMode && (autoNextStoryTransition || selectNextStoryAtEnd)
 - fix #25: metadata.json "nightmode" is not extracted correctly by @lasconic and
