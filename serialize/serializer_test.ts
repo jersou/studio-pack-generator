@@ -62,7 +62,9 @@ const emptyOpt: ModOptions = {
   storyPath: "",
   imageItemGenFont: "Arial",
   rssMinDuration: 0,
-  thumbnailFromFirstItem: false
+  thumbnailFromFirstItem: false,
+  rssSplitLength: 10,
+  skipRssImageDl: false
 };
 
 Deno.test("serializePack-min", async () => {
@@ -106,7 +108,9 @@ Deno.test("serializePack-next-menu", async () => {
     selectNextStoryAtEnd: true,
     imageItemGenFont: "Arial",
     rssMinDuration: 0,
-    thumbnailFromFirstItem: false
+    thumbnailFromFirstItem: false,
+    rssSplitLength: 10,
+    skipRssImageDl: false
   });
   assertEquals(
     clearIds(clone(pack)),
