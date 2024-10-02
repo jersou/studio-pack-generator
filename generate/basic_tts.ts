@@ -69,8 +69,14 @@ export async function generate_audio_basic_tts(
       "--model_name",
       opt.coquiTtsModel,
       "--out_path",
-      convertPath(outputPath)
-    ].concat(opt.coquiTtsLanguageIdx?["--language_idx", opt.coquiTtsLanguageIdx]:[]).concat(opt.coquiTtsSpeakerIdx?["--speaker_idx", opt.coquiTtsSpeakerIdx]:[]);
+      convertPath(outputPath),
+    ].concat(
+      opt.coquiTtsLanguageIdx
+        ? ["--language_idx", opt.coquiTtsLanguageIdx]
+        : [],
+    ).concat(
+      opt.coquiTtsSpeakerIdx ? ["--speaker_idx", opt.coquiTtsSpeakerIdx] : [],
+    );
     await $`tts ${args}`;
   } else {
     const pico2waveCommand = await getPico2waveCommand();
