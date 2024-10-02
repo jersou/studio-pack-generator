@@ -98,6 +98,7 @@ export type ZipMenu = {
 export type Metadata = {
   title?: string;
   description?: string;
+  thumbnail?: string;
   format?: string;
   version?: number;
   nightMode?: boolean;
