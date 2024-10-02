@@ -1,3 +1,17 @@
+### v0.4.4 / 2024.10.02
+
+- feat: now support split by season with many new options by @farfromrefug. See
+  readme for added options :
+
+```
+--rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]
+--rss-min-duration             RSS min episode duration                                      [number] [default: 0]
+--rss-use-image-as-thumbnail   Use rss image (first item with image) as thumbnail       [boolean] [default: false]
+```
+
+The default behaviour stays the same. Also marked generated images (from text)
+as generated in the name for easier filtering (should not break anything).
+
 ### v0.4.3 / 2024.09.30
 
 - fix: exit if nightMode && (autoNextStoryTransition || selectNextStoryAtEnd)
