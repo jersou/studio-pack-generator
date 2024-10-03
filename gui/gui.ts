@@ -271,7 +271,7 @@ class StudioPackGeneratorGui {
   }
 
   async main(storyPath?: string) {
-    console.log(this.#opt);
+    console.log("GUI options", this.#opt);
     if (storyPath) {
       this.#opt = { storyPath } as ModOptions;
     }

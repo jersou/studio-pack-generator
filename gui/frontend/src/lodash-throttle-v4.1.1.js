@@ -8,13 +8,13 @@
  */
 
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
 
 /** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
+var symbolTag = "[object Symbol]";
 
 /** Used to match leading and trailing whitespace. */
 var reTrim = /^\s+|\s+$/g;
@@ -32,13 +32,15 @@ var reIsOctal = /^0o[0-7]+$/i;
 var freeParseInt = parseInt;
 
 /** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+var freeGlobal =
+  typeof global == "object" && global && global.Object === Object && global;
 
 /** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+var freeSelf =
+  typeof self == "object" && self && self.Object === Object && self;
 
 /** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
+var root = freeGlobal || freeSelf || Function("return this")();
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -52,7 +54,7 @@ var objectToString = objectProto.toString;
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max,
-    nativeMin = Math.min;
+  nativeMin = Math.min;
 
 /**
  * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -70,7 +72,7 @@ var nativeMax = Math.max,
  * }, _.now());
  * // => Logs the number of milliseconds it took for the deferred invocation.
  */
-var now = function() {
+var now = function () {
   return root.Date.now();
 };
 
@@ -130,30 +132,32 @@ var now = function() {
  */
 function debounce(func, wait, options) {
   var lastArgs,
-      lastThis,
-      maxWait,
-      result,
-      timerId,
-      lastCallTime,
-      lastInvokeTime = 0,
-      leading = false,
-      maxing = false,
-      trailing = true;
+    lastThis,
+    maxWait,
+    result,
+    timerId,
+    lastCallTime,
+    lastInvokeTime = 0,
+    leading = false,
+    maxing = false,
+    trailing = true;
 
-  if (typeof func != 'function') {
+  if (typeof func != "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   wait = toNumber(wait) || 0;
   if (isObject(options)) {
     leading = !!options.leading;
-    maxing = 'maxWait' in options;
-    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+    maxing = "maxWait" in options;
+    maxWait = maxing
+      ? nativeMax(toNumber(options.maxWait) || 0, wait)
+      : maxWait;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
   }
 
   function invokeFunc(time) {
     var args = lastArgs,
-        thisArg = lastThis;
+      thisArg = lastThis;
 
     lastArgs = lastThis = undefined;
     lastInvokeTime = time;
@@ -172,21 +176,25 @@ function debounce(func, wait, options) {
 
   function remainingWait(time) {
     var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime,
-        result = wait - timeSinceLastCall;
+      timeSinceLastInvoke = time - lastInvokeTime,
+      result = wait - timeSinceLastCall;
 
     return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
   }
 
   function shouldInvoke(time) {
     var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime;
+      timeSinceLastInvoke = time - lastInvokeTime;
 
     // Either this is the first call, activity has stopped and we're at the
     // trailing edge, the system time has gone backwards and we're treating
     // it as the trailing edge, or we've hit the `maxWait` limit.
-    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
-      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+    return (
+      lastCallTime === undefined ||
+      timeSinceLastCall >= wait ||
+      timeSinceLastCall < 0 ||
+      (maxing && timeSinceLastInvoke >= maxWait)
+    );
   }
 
   function timerExpired() {
@@ -224,7 +232,7 @@ function debounce(func, wait, options) {
 
   function debounced() {
     var time = now(),
-        isInvoking = shouldInvoke(time);
+      isInvoking = shouldInvoke(time);
 
     lastArgs = arguments;
     lastThis = this;
@@ -296,19 +304,19 @@ function debounce(func, wait, options) {
  */
 function throttle(func, wait, options) {
   var leading = true,
-      trailing = true;
+    trailing = true;
 
-  if (typeof func != 'function') {
+  if (typeof func != "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   if (isObject(options)) {
-    leading = 'leading' in options ? !!options.leading : leading;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+    leading = "leading" in options ? !!options.leading : leading;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
   }
   return debounce(func, wait, {
-    'leading': leading,
-    'maxWait': wait,
-    'trailing': trailing
+    leading: leading,
+    maxWait: wait,
+    trailing: trailing,
   });
 }
 
@@ -339,7 +347,7 @@ function throttle(func, wait, options) {
  */
 function isObject(value) {
   var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
+  return !!value && (type == "object" || type == "function");
 }
 
 /**
@@ -367,7 +375,7 @@ function isObject(value) {
  * // => false
  */
 function isObjectLike(value) {
-  return !!value && typeof value == 'object';
+  return !!value && typeof value == "object";
 }
 
 /**
@@ -388,8 +396,10 @@ function isObjectLike(value) {
  * // => false
  */
 function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+  return (
+    typeof value == "symbol" ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag)
+  );
 }
 
 /**
@@ -416,26 +426,28 @@ function isSymbol(value) {
  * // => 3.2
  */
 function toNumber(value) {
-  if (typeof value == 'number') {
+  if (typeof value == "number") {
     return value;
   }
   if (isSymbol(value)) {
     return NAN;
   }
   if (isObject(value)) {
-    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-    value = isObject(other) ? (other + '') : other;
+    var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+    value = isObject(other) ? other + "" : other;
   }
-  if (typeof value != 'string') {
+  if (typeof value != "string") {
     return value === 0 ? value : +value;
   }
-  value = value.replace(reTrim, '');
+  value = value.replace(reTrim, "");
   var isBinary = reIsBinary.test(value);
-  return (isBinary || reIsOctal.test(value))
+  return isBinary || reIsOctal.test(value)
     ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-    : (reIsBadHex.test(value) ? NAN : +value);
+    : reIsBadHex.test(value)
+      ? NAN
+      : +value;
 }
 
 // module.exports = throttle;
 
-export { throttle }
+export { throttle };

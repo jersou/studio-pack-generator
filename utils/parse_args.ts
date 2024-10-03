@@ -143,7 +143,7 @@ export async function parseArgs(args: string[]) {
       demandOption: false,
       boolean: true,
       default: false,
-      describe: "generate thumbnail from first item instead of first chapter",
+      describe: "gen thumbnail from first item instead of first chapter",
     })
     .option("skip-not-rss", {
       alias: "s",

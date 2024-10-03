@@ -1,4 +1,4 @@
-import {useCallback, useState} from "preact/hooks";
+import { useCallback, useState } from "preact/hooks";
 import { ChangeEvent } from "react";
 import {
   Accordion,
@@ -16,7 +16,11 @@ import {
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDropDown";
-import {ModOptions} from "../../../types.ts";
+import { ModOptions } from "../../../types.ts";
+
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormLabel from "@mui/material/FormLabel";
 
 export function Config({
   opt,
@@ -35,22 +39,59 @@ export function Config({
       }),
     [opt]
   );
-  // console.log({opt})
-  const [expanded, setExpanded] = useState(false)
+  console.log({ opt });
+  const [expanded, setExpanded] = useState(false);
+  const ttsType = opt.useOpenAiTts
+    ? "openAI"
+    : opt.useCoquiTts
+      ? "coqui"
+      : "os";
+  const onTtsChange = (event: any) => {
+    console.log(event.target.value);
+    switch (event.target.value) {
+      case "os":
+        setOpt({
+          ...opt,
+          useCoquiTts: false,
+          useOpenAiTts: false,
+        });
+        break;
+      case "openAI":
+        setOpt({
+          ...opt,
+          useCoquiTts: false,
+          useOpenAiTts: true,
+        });
+        break;
+      case "coqui":
+        setOpt({
+          ...opt,
+          useCoquiTts: true,
+          useOpenAiTts: false,
+        });
+        break;
+    }
+  };
 
   return (
-    <Accordion onChange={(_,exp)=>setExpanded(exp)}>
+    <Accordion onChange={(_, exp) => setExpanded(exp)}>
       <AccordionSummary expandIcon={<ArrowDownwardIcon />}>
         <Stack alignItems="center" direction="row" gap={2}>
           <SettingsIcon />
-          <Typography style={{ fontSize: 25 }}> Configuration (click here to {expanded?"hide":"show"})</Typography>
+          <Typography style={{ fontSize: 25 }}>
+            {" "}
+            Configuration (click here to {expanded ? "hide" : "show"})
+          </Typography>
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
         <div class="config">
           <FormControlLabel
             control={
-              <Checkbox checked={!!opt.addDelay} onChange={update("addDelay")} />
+              <Checkbox
+                checked={!!opt.addDelay}
+                onChange={update("addDelay")}
+              />
             }
             label="Add 1 second at the beginning and the end of audio files"
           />
@@ -144,71 +185,139 @@ export function Config({
           <FormControlLabel
             control={
               <Checkbox
-                checked={!!opt.useOpenAiTts}
-                onChange={update("useOpenAiTts")}
+                checked={!!opt.thumbnailFromFirstItem}
+                onChange={update("thumbnailFromFirstItem")}
               />
             }
-            label="Generate missing audio item with Open AI TTS"
+            label="Generate thumbnail from first item instead of first chapter"
           />
-
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!!opt.useThumbnailAsRootImage}
+                onChange={update("useThumbnailAsRootImage")}
+              />
+            }
+            label="Use thumbnail as 'root' image instead of generated one"
+          />
           <TextField
             variant="standard"
-            value={opt.lang}
+            value={opt.imageItemGenFont || ""}
+            onChange={update("imageItemGenFont")}
+            label="Font used for image item generation"
+          ></TextField>
+          <TextField
+            variant="standard"
+            value={opt.lang || ""}
             onChange={update("lang")}
             label="The lang used to generate menu and items. Auto detected by default"
           ></TextField>
           <TextField
             variant="standard"
-            value={opt.outputFolder}
-            onChange={update("outputFolder")}
-            label="Zip output folder"
-          ></TextField>
-          <TextField
-            variant="standard"
-            value={opt.seekStory}
+            value={opt.seekStory || ""}
             onChange={update("seekStory")}
             label="Cut the beginning of stories: 'HH:mm:ss' format or 'N' sec"
           ></TextField>
           <TextField
             variant="standard"
-            value={opt.openAiApiKey}
-            onChange={update("openAiApiKey")}
-            label="The OpenAI API key"
+            value={opt.outputFolder || ""}
+            onChange={update("outputFolder")}
+            label="Zip output folder"
           ></TextField>
 
-          <FormControl fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="openAiModel-label">OpenAi model</InputLabel>
-            <Select
-              variant="standard"
-              labelId="openAiModel-label"
-              value={opt.openAiModel??""}
-              onsl-change={update("openAiModel")}
-              label="OpenAi model"
+          <FormControl style={{ gridColumn: "1 / 3" }}>
+            <FormLabel id="tts-label">
+              Generate missing audio item with :
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="tts-label"
+              name="tts-radio-buttons-group"
+              value={ttsType}
+              onChange={onTtsChange}
             >
-              <MenuItem value=""></MenuItem>
-              <MenuItem value="tts-1">tts-1</MenuItem>
-              <MenuItem value="tts-1-hd">tts-1-hd</MenuItem>
-            </Select>
+              <FormControlLabel value="os" control={<Radio />} label="OS TTS" />
+              <FormControlLabel
+                value="openAI"
+                control={<Radio />}
+                label="OpenAI TTS"
+              />
+              <FormControlLabel
+                value="coqui"
+                control={<Radio />}
+                label="Coqui TTS"
+              />
+            </RadioGroup>
           </FormControl>
 
-          <FormControl fullWidth sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="openAiVoice-label">OpenAi voice</InputLabel>
-            <Select
-              variant="standard"
-              labelId="openAiVoice-label"
-              value={opt.openAiVoice??""}
-              onsl-change={update("openAiVoice")}
-              label="OpenAi voice"
-            >
-              <MenuItem value=""></MenuItem>
-              <MenuItem value="alloy">alloy</MenuItem>
-              <MenuItem value="echo">echo</MenuItem>
-              <MenuItem value="fable">fable</MenuItem>
-              <MenuItem value="onyx">onyx</MenuItem>
-              <MenuItem value="nova">nova</MenuItem>
-              <MenuItem value="shimmer">shimmer</MenuItem>
-            </Select>
-          </FormControl>
+          {opt.useOpenAiTts && (
+            <>
+              <TextField
+                variant="standard"
+                value={opt.openAiApiKey || ""}
+                onChange={update("openAiApiKey")}
+                label="The OpenAI API key"
+              ></TextField>
+
+              <FormControl fullWidth sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="openAiModel-label">OpenAi model</InputLabel>
+                <Select
+                  variant="standard"
+                  labelId="openAiModel-label"
+                  value={opt.openAiModel ?? ""}
+                  onsl-change={update("openAiModel")}
+                  label="OpenAi model"
+                >
+                  <MenuItem value=""></MenuItem>
+                  <MenuItem value="tts-1">tts-1</MenuItem>
+                  <MenuItem value="tts-1-hd">tts-1-hd</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="openAiVoice-label">OpenAi voice</InputLabel>
+                <Select
+                  variant="standard"
+                  labelId="openAiVoice-label"
+                  value={opt.openAiVoice ?? ""}
+                  onsl-change={update("openAiVoice")}
+                  label="OpenAi voice"
+                >
+                  <MenuItem value=""></MenuItem>
+                  <MenuItem value="alloy">alloy</MenuItem>
+                  <MenuItem value="echo">echo</MenuItem>
+                  <MenuItem value="fable">fable</MenuItem>
+                  <MenuItem value="onyx">onyx</MenuItem>
+                  <MenuItem value="nova">nova</MenuItem>
+                  <MenuItem value="shimmer">shimmer</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+          )}
+
+          {opt.useCoquiTts && (
+            <>
+              <TextField
+                variant="standard"
+                value={opt.coquiTtsModel || ""}
+                onChange={update("coquiTtsModel")}
+                label="Coqui TTS model"
+              />
+              <TextField
+                variant="standard"
+                value={opt.coquiTtsLanguageIdx || ""}
+                onChange={update("coquiTtsLanguageIdx")}
+                label="coqui TTS language_idx"
+              />
+              <TextField
+                variant="standard"
+                value={opt.coquiTtsSpeakerIdx || ""}
+                onChange={update("coquiTtsSpeakerIdx")}
+                label="coqui TTS speaker_idx"
+              />
+            </>
+          )}
+
           {/*<TextField value={opt.storyPath} onInput=${update("storyPath")}*/}
           {/*   clearable label="Story path"></TextField>*/}
           {/*<Checkbox>Extract a zip pack (reverse mode)</Checkbox>*/}

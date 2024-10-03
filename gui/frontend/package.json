@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -14,7 +15,8 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "notistack": "^3.0.1",
-    "preact": "^10.16.0"
+    "preact": "^10.16.0",
+    "prettier": "^3.3.3"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",

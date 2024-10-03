@@ -203,7 +203,11 @@ The "super pack" will look like :
 - Image formats : png, jpg, bmp.
 - Audio formats : mp3, ogg, opus, wav.
 
-## Usage
+## GUI
+
+no RSS
+
+## CLI usage
 
 ```
 deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or a RSS URL to Studio pack
@@ -223,8 +227,7 @@ Options:
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
       --image-item-gen-font          font used for image item generation                     [string] [default: "Arial"]
-      --thumbnail-from-first-item    generate thumbnail from first item instead of first chapter
-                                                                                              [boolean] [default: false]
+      --thumbnail-from-first-item    gen thumbnail from first item instead of first chapter   [boolean] [default: false]
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
       --rss-split-length             RSS will be split in parts of N length                       [number] [default: 10]
       --rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]

@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { Config } from "./config.tsx";
 import {
-  Accordion, AccordionDetails,
+  Accordion,
+  AccordionDetails,
   AccordionSummary,
   Button,
   Card,
   CardContent,
   LinearProgress,
-  Slider, Stack, Typography,
+  Slider,
+  Stack,
+  Typography,
 } from "@mui/material";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import SyncIcon from "@mui/icons-material/Sync";
@@ -15,10 +18,10 @@ import { OpenFolder } from "./openFolder.tsx";
 import { StageNode } from "./stageNode.tsx";
 import { Pack } from "../../../serialize/types";
 import { enqueueSnackbar } from "notistack";
-import {ModOptions} from "../../../types.ts";
-import {Loader} from "./loader.tsx";
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import { ModOptions } from "../../../types.ts";
+import { Loader } from "./loader.tsx";
+import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDropDown";
 
 // const BASE= "";
@@ -43,7 +46,7 @@ function notify(
   enqueueSnackbar(message, { variant, autoHideDuration });
 }
 
-function clearStoryPath(){
+function clearStoryPath() {
   fetch(`${BASE}/api/storyPath?path=`);
 }
 
@@ -63,11 +66,11 @@ export function updateOnEvent(
     const data = JSON.parse(event.data);
     console.log("WebSocket", data.type);
     if (data.type === "fs-update") {
-      if(data.newStoryPath) {
-        setUpdatePackInProgress?.(true)
+      if (data.newStoryPath) {
+        setUpdatePackInProgress?.(true);
       }
-      setTimeout(()=> setPack?.(data.pack), 500)
-      setTimeout(()=> setUpdatePackInProgress?.(false), 1000)
+      setTimeout(() => setPack?.(data.pack), 500);
+      setTimeout(() => setUpdatePackInProgress?.(false), 1000);
     }
     if (data.type === "opt") {
       setOpt?.(data.opt);
@@ -94,12 +97,12 @@ export function updateOnEvent(
     setWsOk(false);
     // retry in 5s
     setTimeout(() => {
-      console.log("Timeout")
-      updateOnEvent(setWsOk)
+      console.log("Timeout");
+      updateOnEvent(setWsOk);
     }, 5000);
   });
 
-  return ()=> socket.close();
+  return () => socket.close();
 }
 
 export function App() {
@@ -127,7 +130,13 @@ export function App() {
   const [updatePackInProgress, setUpdatePackInProgress] = useState(false);
 
   useEffect(() => {
-    return updateOnEvent(setWsOk, setPack, setOpt, setInProgress,setUpdatePackInProgress);
+    return updateOnEvent(
+      setWsOk,
+      setPack,
+      setOpt,
+      setInProgress,
+      setUpdatePackInProgress
+    );
   }, []);
   const backendKo = wsOk ? null : <div class="ko">The backend is down !</div>;
   const runSpg = useCallback(() => {
@@ -139,79 +148,99 @@ export function App() {
 
   return (
     <>
-      {(updatePackInProgress) ? (
-          <Loader/>
-      ):null }
+      {updatePackInProgress ? <Loader /> : null}
       {backendKo}
       <Config opt={opt} setOpt={setOpt} />
 
       <Card style={{ width: "100%" }}>
         <CardContent>
-          {pack.entrypoint?.path ? <div style={{alignItems: "center", display: "flex"}}>
-            <Button size="large" onClick={clearStoryPath} disabled={inProgress} startIcon={<RestartAltIcon/>}>
-              Unload the pack
-            </Button>
-            <Button size="large" onClick={runSpg} disabled={inProgress} startIcon={<InventoryIcon/>}>
-              Generate the pack
-            </Button>
-          </div> : <EmptyPreview/>}
+          {pack.entrypoint?.path ? (
+            <div style={{ alignItems: "center", display: "flex" }}>
+              <Button
+                size="large"
+                onClick={clearStoryPath}
+                disabled={inProgress}
+                startIcon={<RestartAltIcon />}
+              >
+                Unload the pack
+              </Button>
+              <Button
+                size="large"
+                onClick={runSpg}
+                disabled={inProgress}
+                startIcon={<InventoryIcon />}
+              >
+                Generate the pack
+              </Button>
+            </div>
+          ) : (
+            <EmptyPreview />
+          )}
 
           {inProgress ? (
-            <LinearProgress style={{marginLeft: 10, minWidth: 500}}/>
+            <LinearProgress style={{ marginLeft: 10, minWidth: 500 }} />
           ) : (
             <LinearProgress
               variant="determinate"
               value={0}
-              style={{marginLeft: 10, minWidth: 500}}
+              style={{ marginLeft: 10, minWidth: 500 }}
             />
           )}
         </CardContent>
       </Card>
-      {pack.entrypoint?.path ? <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ArrowDownwardIcon />}
-          style={{ fontSize: 25, display: "flex", alignItems: "center" }}
-        >
-          <Stack alignItems="center" direction="row" gap={2}>
-            <SyncIcon />
-            <Typography style={{ fontSize: 25 }}> Live preview</Typography>
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Preview pack={pack}/>
-        </AccordionDetails>
-      </Accordion>:null}
+      {pack.entrypoint?.path ? (
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            expandIcon={<ArrowDownwardIcon />}
+            style={{ fontSize: 25, display: "flex", alignItems: "center" }}
+          >
+            <Stack alignItems="center" direction="row" gap={2}>
+              <SyncIcon />
+              <Typography style={{ fontSize: 25 }}> Live preview</Typography>
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Preview pack={pack} />
+          </AccordionDetails>
+        </Accordion>
+      ) : null}
     </>
   );
 }
 
-function Preview({pack}:{pack:Pack}){
+function Preview({ pack }: { pack: Pack }) {
   const [zoom, setZoom] = useState(50);
-  return <>
-    changes in{" "}
-    <OpenFolder path={pack.entrypoint?.path as string} />
-    will update this view
-    <div class="zoom">
-      <div>Zoom :</div>
-      <Slider
-        min={1}
-        max={100}
-        step={10}
-        marks
-        value={zoom}
-        onChange={(_, v) => setZoom(v as number)}
-        style={{  maxWidth: 400, marginLeft: 20 }}
-      />
-    </div>
-
-    <div class="preview" style={{ zoom: zoom / 100}}>
-      <StageNode node={pack.entrypoint} />
-    </div>
-  </>
+  return (
+    <>
+      changes in <OpenFolder path={pack.entrypoint?.path as string} />
+      will update this view
+      <div class="zoom">
+        <div>Zoom :</div>
+        <Slider
+          min={1}
+          max={100}
+          step={10}
+          marks
+          value={zoom}
+          onChange={(_, v) => setZoom(v as number)}
+          style={{ maxWidth: 400, marginLeft: 20 }}
+        />
+      </div>
+      <div class="preview" style={{ zoom: zoom / 100 }}>
+        <StageNode node={pack.entrypoint} />
+      </div>
+    </>
+  );
 }
 
-function EmptyPreview(){
-  return  <Stack alignItems="center" direction="row" gap={2}>
-      <DriveFolderUploadIcon/>
-      <Typography style={{ fontSize: 20 }}> drop folder on this window to load the pack</Typography>
+function EmptyPreview() {
+  return (
+    <Stack alignItems="center" direction="row" gap={2}>
+      <DriveFolderUploadIcon />
+      <Typography style={{ fontSize: 20 }}>
+        {" "}
+        drop folder on this window to load the pack
+      </Typography>
     </Stack>
+  );
 }

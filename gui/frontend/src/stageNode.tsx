@@ -28,7 +28,7 @@ export function StageNode({
             : undefined
         }
       >
-        {node.class !== "StageNode-Entrypoint" && <Line {...{ last, first }}/>}
+        {node.class !== "StageNode-Entrypoint" && <Line {...{ last, first }} />}
         <div
           class={`item ${node.class} ${children && children.length > 1 ? "several" : ""}`}
           title={node.path ?? ""}
@@ -86,7 +86,7 @@ export function StageNode({
           <div class="children">
             {children.map((o, i: number) => (
               <StageNode
-                key={(o.path??(o.class+i))}
+                key={o.path ?? o.class + i}
                 node={o as Menu}
                 first={i === 0}
                 last={children.length === i + 1}
