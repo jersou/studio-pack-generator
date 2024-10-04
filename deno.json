@@ -28,5 +28,5 @@
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.52"
   },
   "exports": "./studio_pack_generator.ts",
-  "publish": { "exclude": ["tools"] }
+  "publish": { "exclude": ["tools", "gui/frontend/src", "test_data/"] }
 }

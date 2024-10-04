@@ -27,6 +27,10 @@ Examples:
 
 ## Optional dependencies
 
+**[Windows release](https://github.com/jersou/studio-pack-generator/releases) of
+studio-pack-generator embeds these tools in zip file, and use Windows TTS
+instead of picoTTS (unless you have WSL and picoTTS installed).**
+
 - **ffmpeg** : used to extract images from story mp3 files, increase volume of
   files, convert to the right format.
   <br>→ Use `--skip-audio-convert` and `--skip-extract-image-from-mp3` to avoid
@@ -38,10 +42,6 @@ Examples:
 
 Install optional dependencies :
 `sudo apt update && sudo apt install -y ffmpeg libttspico-utils imagemagick`
-
-[Windows release](https://github.com/jersou/studio-pack-generator/releases) of
-studio-pack-generator embeds these tools in zip file, and use Windows TTS
-instead of picoTTS (unless you have WSL and picoTTS installed).
 
 Use "-miva" option to skip all generations that use these tools.
 
@@ -56,30 +56,21 @@ or  studio-pack-generator-aarch64-apple       "my story folder or a rss url"
 or  studio-pack-generator-x86_64-apple        "my story folder or a rss url"
 ```
 
-### Or use [Deno](https://deno.land/)
+#### Or clone the repo and run with [Deno](https://deno.land/) :
 
 This project is written in Typescript for [deno](https://deno.land/) runtime.
-Install deno : https://deno.land/#installation
-
-#### Run from web directly (will be cached for the next launches) :
-
-```
-deno run -A https://raw.githubusercontent.com/jersou/studio-pack-generator/main/studio_pack_generator.ts "my story folder or a rss url"
-```
-
-#### Or install with deno :
-
-```
-deno install --name studio-pack-generator -A --unstable -f https://raw.githubusercontent.com/jersou/studio-pack-generator/main/studio_pack_generator.ts
-→ and then run :  studio-pack-generator "my story folder or a rss url"
-```
-
-#### Or clone the repo and run with deno :
+Install deno : https://deno.land/
 
 ```
 git clone https://github.com/jersou/studio-pack-generator
 cd studio-pack-generator
-deno run -A studio_pack_generator.ts "my story folder or a rss url"
+deno -A studio_pack_generator.ts "my story folder or a rss url"
+```
+
+#### Or run from web directly (will be cached for the next launches) :
+
+```
+deno -A jsr:@jersou/studio-pack-generator "my story folder or a rss url"
 ```
 
 ## Story folder structure
@@ -205,6 +196,8 @@ The "super pack" will look like :
 
 ## GUI
 
+TODO
+
 no RSS
 
 ## CLI usage
@@ -274,6 +267,8 @@ Separate options by spaces, ex :
 - Option to add 1 sec of silence at the beginning and end of sound files.
 - Option to skip the beginning of stories.
 - Zip Pack aggregation
+- OpenAI & Coqui TTS
+- a GUI
 
 ### Overwrite metadata
 
@@ -300,7 +295,7 @@ To use OpenAI TTS, use `--use-open-ai-tts` option, and you must set the API key:
 - or use --open-ai-api-key parameter
 - or enter the key when the program prompt
 
-## reverse process : extract pack from zip
+## Reverse process : extract pack from zip
 
 Extract a file stucture from zip pack :
 

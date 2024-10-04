@@ -1,7 +1,8 @@
 ### v?.?.? / ????.??.??
 
 - feat: Studio Pack Generator GUI !
-- feat: config file
+- feat: json config file
+- update dependencies, refactor, use jsr
 
 ### v0.4.4 / 2024.10.02
 
