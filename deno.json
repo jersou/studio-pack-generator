@@ -1,4 +1,7 @@
 {
+  "version": "0.5.0",
+  "license": "MIT",
+  "name": "@jersou/studio-pack-generator",
   "tasks": {
     "bundle": "deno bundle studio_pack_generator.ts dist/studio_pack_generator.js",
     "fmt": "deno fmt --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile",
@@ -23,5 +26,7 @@
     "@std/media-types": "jsr:@std/media-types@^1.0.3",
     "@std/path": "jsr:@std/path@^1.0.6",
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.52"
-  }
+  },
+  "exports": "./studio_pack_generator.ts",
+  "publish": { "exclude": ["tools"] }
 }
