@@ -315,8 +315,10 @@ class StudioPackGeneratorGui {
     const appMode = this.openInBrowserAppMode === true ||
       this.openInBrowserAppMode === "true";
     const arg = appMode ? "--app=" : "";
+    const url = `http://${
+      this.hostname.startsWith("::") ? this.hostname : "127.0.0.1" // FIXME
+    }:${this.port}/`;
     if (this.openInBrowser === true || this.openInBrowser === "true") {
-      const url = `http://${this.hostname}:${this.port}/`;
       switch (Deno.build.os) {
         case "windows":
           await $`cmd /s /c start '' /b ${url}`;
@@ -327,13 +329,13 @@ class StudioPackGeneratorGui {
         case "linux":
         default:
           if (await $.commandExists("xdg-open")) {
-            await $`xdg-open http://${this.hostname}:${this.port}/`;
+            await $`xdg-open ${url}`;
           } else {
-            await $`gio open http://${this.hostname}:${this.port}/`;
+            await $`gio open ${url}`;
           }
       }
     } else {
-      await $`${this.openInBrowser} ${arg}http://${this.hostname}:${this.port}/`;
+      await $`${this.openInBrowser} ${arg}${url}`;
     }
   }
 
