@@ -9,7 +9,7 @@ import type {
   StageNode,
 } from "./serialize/serialize-types.ts";
 import type { ModOptions } from "./types.ts";
-import { Queue } from "https://deno.land/x/yocto_queue@v0.1.4/mod.ts";
+import { Queue } from "./utils/queue.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {
