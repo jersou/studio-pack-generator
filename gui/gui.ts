@@ -11,9 +11,9 @@ import { generatePack, getMetadata } from "../gen_pack.ts";
 import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
-import { mimeTypes } from "./mime-types.ts";
 import { throttle } from "@es-toolkit/es-toolkit";
 import { ModOptions } from "../types.ts";
+import { contentType } from "@std/media-types";
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
@@ -114,8 +114,8 @@ class StudioPackGeneratorGui {
         const url = new URL(request.url);
         const path = decodeURIComponent(url.searchParams.get("path") ?? "");
         if (path.startsWith(this.#opt!.storyPath)) {
-          const ext = extname(path)?.substring(1);
-          const type = mimeTypes[ext];
+          const ext = extname(path);
+          const type = contentType(ext) ?? "application/octet-stream";
           const content = await Deno.readFile(path);
           const headers = { "Content-Type": type };
           return new Response(content, { status: 200, headers });
@@ -398,8 +398,8 @@ class StudioPackGeneratorGui {
     for await (const entry of walk(frontendPath, { includeDirs: false })) {
       assert(entry.path.startsWith(frontendPath));
       const path = entry.path.substring(frontendPath.length);
-      const ext = extname(path)?.substring(1);
-      const type = mimeTypes[ext];
+      const ext = extname(path);
+      const type = contentType(ext) ?? "";
       const content = await Deno.readFile(entry.path);
       const route = new URLPattern({ pathname: path });
       this.#assets[path] = { type, route, content };

@@ -22,6 +22,7 @@
       "jsr:@std/io@0.221": "jsr:@std/io@0.221.0",
       "jsr:@std/io@^0.221.0": "jsr:@std/io@0.221.0",
       "jsr:@std/io@^0.224.9": "jsr:@std/io@0.224.9",
+      "jsr:@std/media-types@^1.0.3": "jsr:@std/media-types@1.0.3",
       "jsr:@std/path@1": "jsr:@std/path@1.0.6",
       "jsr:@std/path@^1": "jsr:@std/path@1.0.6",
       "jsr:@std/path@^1.0.6": "jsr:@std/path@1.0.6",
@@ -104,6 +105,9 @@
         "dependencies": [
           "jsr:@std/bytes@^1.0.2"
         ]
+      },
+      "@std/media-types@1.0.3": {
+        "integrity": "b12d30a7852f7578f4d210622df713bbfd1cbdd9b4ec2eaf5c1845ab70bab159"
       },
       "@std/path@1.0.6": {
         "integrity": "ab2c55f902b380cf28e0eec501b4906e4c1960d13f00e11cfbcd21de15f18fed"
@@ -507,6 +511,7 @@
       "jsr:@std/fmt@^1.0.2",
       "jsr:@std/fs@^1.0.4",
       "jsr:@std/io@^0.224.9",
+      "jsr:@std/media-types@^1.0.3",
       "jsr:@std/path@^1.0.6",
       "jsr:@zip-js/zip-js@^2.7.52"
     ]

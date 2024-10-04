@@ -21,6 +21,7 @@
     "@std/fmt": "jsr:@std/fmt@^1.0.2",
     "@std/fs": "jsr:@std/fs@^1.0.4",
     "@std/io": "jsr:@std/io@^0.224.9",
+    "@std/media-types": "jsr:@std/media-types@^1.0.3",
     "@std/path": "jsr:@std/path@^1.0.6",
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.52"
   }
