@@ -12,7 +12,7 @@ import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { mimeTypes } from "./mime-types.ts";
-import { throttle } from "./lodash-throttle-v4.1.1.js";
+import { throttle } from "@es-toolkit/es-toolkit";
 import { ModOptions } from "../types.ts";
 
 type Assets = {

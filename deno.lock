@@ -5,6 +5,7 @@
       "jsr:@david/dax@^0.42.0": "jsr:@david/dax@0.42.0",
       "jsr:@david/path@0.2": "jsr:@david/path@0.2.0",
       "jsr:@david/which@~0.4.1": "jsr:@david/which@0.4.1",
+      "jsr:@es-toolkit/es-toolkit@^1.23.0": "jsr:@es-toolkit/es-toolkit@1.23.0",
       "jsr:@jersou/clite@^0.5.0": "jsr:@jersou/clite@0.5.0",
       "jsr:@std/assert@^0.221.0": "jsr:@std/assert@0.221.0",
       "jsr:@std/assert@^1.0.6": "jsr:@std/assert@1.0.6",
@@ -50,6 +51,9 @@
       },
       "@david/which@0.4.1": {
         "integrity": "896a682b111f92ab866cc70c5b4afab2f5899d2f9bde31ed00203b9c250f225e"
+      },
+      "@es-toolkit/es-toolkit@1.23.0": {
+        "integrity": "01f6c29f74f1a128fcff79d150868c8e8536b0832974f1aeae5a93fddc6ea153"
       },
       "@jersou/clite@0.5.0": {
         "integrity": "b498bac05ab4d59979ff0c4f5d3af86ba7bb39cc679405e8be9a2fbe4fd83122",
@@ -496,6 +500,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@david/dax@^0.42.0",
+      "jsr:@es-toolkit/es-toolkit@^1.23.0",
       "jsr:@jersou/clite@^0.5.0",
       "jsr:@std/assert@^1.0.6",
       "jsr:@std/encoding@^1.0.5",
