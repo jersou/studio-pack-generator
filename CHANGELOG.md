@@ -1,8 +1,4 @@
-### v0.5.2 / 2024.10.05
-
-- fix: fix open in browser (Windows)
-
-### v0.5.1 / 2024.10.05
+### v0.5.3 / 2024.10.05
 
 - fix: fix open in browser
 
