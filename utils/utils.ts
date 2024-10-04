@@ -189,7 +189,8 @@ export async function convertToImageItem(
   if (result.code === 0) {
     console.log(bgGreen("→ OK"));
   } else {
-    console.log(bgRed("→ KO : \n" + result.stderr));
+    console.log(bgRed("→ KO :"));
+    console.log(result.stderr);
   }
 }
 

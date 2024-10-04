@@ -1,4 +1,4 @@
-import { bgBlue } from "@std/fmt/colors";
+import { blue } from "@std/fmt/colors";
 import $ from "@david/dax";
 
 import { convertPath } from "../utils/utils.ts";
@@ -35,7 +35,7 @@ export async function generate_audio_basic_tts(
   lang: string,
   opt: ModOptions,
 ) {
-  console.log(bgBlue(`Generate basic TTS to ${outputPath}`));
+  console.log(blue(`Generate basic TTS to ${outputPath}`));
 
   if (
     Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))

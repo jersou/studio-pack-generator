@@ -8,7 +8,7 @@ import {
   isFolder,
 } from "../utils/utils.ts";
 import { join } from "@std/path";
-import { bgBlue, bgGreen } from "@std/fmt/colors";
+import { blue, green } from "@std/fmt/colors";
 import { exists } from "@std/fs";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
 import type { File, Metadata } from "../serialize/serialize-types.ts";
@@ -58,7 +58,7 @@ async function getFolderWithUrlFromRssUrl(
   url: string,
   opt: ModOptions,
 ): Promise<FolderWithUrl[]> {
-  console.log(bgGreen(`→ url = ${url}`));
+  console.log(green(`→ url = ${url}`));
 
   const resp = await fetch(url);
   const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
@@ -131,7 +131,7 @@ async function getFolderWithUrlFromRssUrl(
     const items = rssItems[index].sort(
       (a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime(),
     );
-    console.log(bgBlue(`→ ${items.length} items`));
+    console.log(blue(`→ ${items.length} items`));
     if (items.length <= opt.rssSplitLength) {
       fs.files.push(getFolderOfStories(items, !!opt.skipRssImageDl));
     } else {
@@ -218,10 +218,10 @@ async function writeFolderWithUrl(folder: FolderWithUrl, parentPath: string) {
 
 async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
   const filePath = join(parentPath, fileWithUrl.name);
-  console.log(bgBlue(`Download ${fileWithUrl.url}\n    → ${filePath}`));
+  console.log(blue(`Download ${fileWithUrl.url}\n    → ${filePath}`));
 
   if (await exists(filePath)) {
-    console.log(bgGreen(`   → skip`));
+    console.log(green(`   → skip`));
   } else {
     const resp = await fetch(fileWithUrl.url);
     const file = await Deno.open(filePath, { create: true, write: true });

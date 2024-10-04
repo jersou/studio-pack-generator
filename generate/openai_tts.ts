@@ -1,5 +1,5 @@
 import OpenAI from "https://deno.land/x/openai@v4.67.1/mod.ts";
-import { bgBlue, bgRed } from "@std/fmt/colors";
+import { bgRed, blue } from "@std/fmt/colors";
 import $ from "@david/dax";
 
 import type { ModOptions } from "../types.ts";
@@ -31,7 +31,7 @@ export async function generate_audio_with_openAI(
     voice: opt?.openAiVoice ?? "onyx",
   });
   if (result.ok) {
-    console.log(bgBlue(`OpenAI gen OK of "${title}" in ${outputPath}`));
+    console.log(blue(`OpenAI gen OK of "${title}" in ${outputPath}`));
     const file = await Deno.open(outputPath, { create: true, write: true });
     await result.body!.pipeTo(file.writable);
   } else {
