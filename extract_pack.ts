@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run -A
 
-import { BlobReader, BlobWriter, dirname, Queue, ZipReader } from "./deps.ts";
+import { BlobReader, BlobWriter, Queue, ZipReader } from "./deps.ts";
+import { dirname } from "@std/path";
 import {
   ActionNode,
   Metadata,

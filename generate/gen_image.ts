@@ -1,4 +1,6 @@
-import { $, bgGreen } from "../deps.ts";
+import { bgGreen } from "@std/fmt/colors";
+import $ from "@david/dax";
+
 import { getConvertCommand } from "../utils/external_commands.ts";
 
 export async function generateImage(

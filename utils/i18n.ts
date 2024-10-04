@@ -1,4 +1,6 @@
-import { $, i18next, yellow } from "../deps.ts";
+import { i18next } from "../deps.ts";
+import { yellow } from "@std/fmt/colors";
+import $ from "@david/dax";
 
 const en = {
   season: "Season",

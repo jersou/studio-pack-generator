@@ -1,11 +1,7 @@
-import {
-  BlobReader,
-  BlobWriter,
-  Buffer,
-  exists,
-  ZipReader,
-  ZipWriter,
-} from "../deps.ts";
+import { BlobReader, BlobWriter, ZipReader, ZipWriter } from "../deps.ts";
+
+import { Buffer } from "@std/io";
+import { exists } from "@std/fs";
 import { SerializedPack } from "../serialize/types.ts";
 import { Assets } from "../serialize/assets.ts";
 import { getExtension } from "./utils.ts";

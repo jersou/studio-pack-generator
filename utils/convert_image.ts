@@ -4,7 +4,11 @@ import {
   isFolder,
   isImageItem,
 } from "./utils.ts";
-import { $, bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
+import { exists } from "@std/fs";
+import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
+import { join } from "@std/path";
+import $ from "@david/dax";
+
 import { Folder } from "../serialize/types.ts";
 import { getConvertCommand } from "./external_commands.ts";
 

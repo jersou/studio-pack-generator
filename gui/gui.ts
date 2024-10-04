@@ -1,15 +1,12 @@
 #!/usr/bin/env -S deno run  -A
 
-import $ from "https://deno.land/x/dax@0.39.2/mod.ts";
-import {
-  decodeBase64,
-  encodeBase64,
-} from "https://deno.land/std@0.220.0/encoding/base64.ts";
-import { cliteRun } from "https://deno.land/x/clite_parser@0.2.1/clite_parser.ts";
+import $ from "@david/dax";
+import { decodeBase64, encodeBase64 } from "@std/encoding";
+import { cliteRun } from "@jersou/clite";
 import assetsFromJson from "./assets_bundle.json" with { type: "json" };
-import { walk } from "https://deno.land/std@0.219.0/fs/walk.ts";
-import { assert } from "https://deno.land/std@0.219.0/assert/assert.ts";
-import { extname } from "https://deno.land/std@0.219.0/path/extname.ts";
+import { walk } from "@std/fs";
+import { assert } from "@std/assert";
+import { extname } from "@std/path";
 import { generatePack, getMetadata } from "../gen_pack.ts";
 import { fsToFolder } from "../serialize/fs.ts";
 import { Metadata } from "../serialize/types.ts";
@@ -396,7 +393,7 @@ class StudioPackGeneratorGui {
 
   async updateAssets() {
     console.log("update assets_bundle.json");
-    const frontendPath = $.path(import.meta).resolve(`../frontend/dist/`)
+    const frontendPath = $.path(import.meta.url).resolve(`../frontend/dist/`)
       .toString();
     for await (const entry of walk(frontendPath, { includeDirs: false })) {
       assert(entry.path.startsWith(frontendPath));
@@ -412,7 +409,7 @@ class StudioPackGeneratorGui {
     const assets: Assets = {};
     paths.forEach((path) => (assets[path] = this.#assets[path]));
     await Deno.writeTextFile(
-      $.path(import.meta).resolve("../assets_bundle.json").toString(),
+      $.path(import.meta.url).resolve("../assets_bundle.json").toString(),
       JSON.stringify(assets, (key, value) => {
         if (key === "content") {
           return encodeBase64(value as Uint8Array);

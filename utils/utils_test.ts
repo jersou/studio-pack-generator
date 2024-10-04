@@ -20,9 +20,9 @@ import {
   moyFolder,
   moyFs,
 } from "../test_data/test_data.ts";
-import { assertEquals } from "../test_deps.ts";
+import { assertEquals } from "@std/assert";
 import { checkCommand } from "./external_commands.ts";
-import { exists } from "../deps.ts";
+import { exists } from "@std/fs";
 
 Deno.test("isFolder", () => {
   assertEquals(isFolder(moyFs), true);

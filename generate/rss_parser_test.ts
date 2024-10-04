@@ -1,5 +1,5 @@
 import { fixUrl, getItemFileName } from "./rss_parser.ts";
-import { assert, assertEquals } from "../test_deps.ts";
+import { assert, assertEquals } from "@std/assert";
 
 Deno.test("getItemFileName", () => {
   assert(

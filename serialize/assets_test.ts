@@ -6,7 +6,7 @@ import {
   fullFs,
 } from "../test_data/test_data.ts";
 import { getAssetsPaths, getAssetsSha1s, getSha1sMap } from "./assets.ts";
-import { assertArrayIncludes, assertEquals } from "../test_deps.ts";
+import { assertArrayIncludes, assertEquals } from "@std/assert";
 
 Deno.test("getAssetsSha1s", () => {
   const sha1s = getAssetsSha1s(expectedFullPackSerialized);

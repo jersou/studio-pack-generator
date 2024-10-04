@@ -1,6 +1,6 @@
 import { File, Folder, SerializedPack } from "./types.ts";
 import { getNameWithoutExt, isFile, uniq } from "../utils/utils.ts";
-import { join } from "../deps.ts";
+import { join } from "@std/path";
 
 export function getAssetsSha1s(serializedPack: SerializedPack): string[] {
   return [

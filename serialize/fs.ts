@@ -1,5 +1,6 @@
 import { File, Folder } from "./types.ts";
-import { basename, encodeHex, join } from "../deps.ts";
+import { basename, join } from "@std/path";
+import { encodeHex } from "@std/encoding";
 import { getLang } from "../utils/i18n.ts";
 
 async function ls(path: string): Promise<Deno.DirEntry[]> {

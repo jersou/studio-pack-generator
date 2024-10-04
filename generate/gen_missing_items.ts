@@ -12,7 +12,8 @@ import {
 } from "../utils/utils.ts";
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
-import { i18next, join } from "../deps.ts";
+import { i18next } from "../deps.ts";
+import { join } from "@std/path";
 
 import { ModOptions } from "../types.ts";
 

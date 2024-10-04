@@ -1,4 +1,6 @@
-import { $, basename, dirname, posix, win32 } from "../deps.ts";
+import { basename, dirname } from "@std/path";
+import { posix, win32 } from "../deps.ts";
+import $ from "@david/dax";
 
 let ffmpegCommand: string[] = [];
 

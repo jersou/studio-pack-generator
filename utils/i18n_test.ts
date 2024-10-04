@@ -1,5 +1,5 @@
 import { getLang } from "./i18n.ts";
-import { assertEquals } from "https://deno.land/std@0.158.0/testing/asserts.ts";
+import { assertEquals } from "@std/assert";
 
 Deno.test("getLang", async () => {
   const lang = await getLang();

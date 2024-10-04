@@ -7,7 +7,10 @@ import {
   isFile,
   isFolder,
 } from "../utils/utils.ts";
-import { bgBlue, bgGreen, exists, i18next, join, parse } from "../deps.ts";
+import { join } from "@std/path";
+import { bgBlue, bgGreen } from "@std/fmt/colors";
+import { exists } from "@std/fs";
+import { i18next } from "../deps.ts";
 import { File } from "../serialize/types.ts";
 import type { ModOptions } from "../types.ts";
 import { Metadata } from "../serialize/types.ts";

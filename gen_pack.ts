@@ -8,7 +8,9 @@ import { serializePack } from "./serialize/serializer.ts";
 import { getAssetsPaths } from "./serialize/assets.ts";
 import { createPackZip } from "./utils/zip.ts";
 import { downloadRss } from "./generate/rss_parser.ts";
-import { basename, bgRed, exists, join } from "./deps.ts";
+import { exists } from "@std/fs";
+import { bgRed } from "@std/fmt/colors";
+import { basename, join } from "@std/path";
 import {
   checkRunPermission,
   convertToImageItem,

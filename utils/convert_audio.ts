@@ -6,7 +6,11 @@ import {
   isFolder,
   isStory,
 } from "./utils.ts";
-import { $, bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
+import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
+import { exists } from "@std/fs";
+import { join } from "@std/path";
+import $ from "@david/dax";
+
 import { File, Folder } from "../serialize/types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 

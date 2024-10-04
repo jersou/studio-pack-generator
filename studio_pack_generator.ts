@@ -2,7 +2,7 @@
 
 import { parseArgs } from "./utils/parse_args.ts";
 import { version } from "./version.ts";
-import { $ } from "./deps.ts";
+import $ from "@david/dax";
 
 if (import.meta.main) {
   $.setPrintCommand(true);

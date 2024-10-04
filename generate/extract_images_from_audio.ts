@@ -7,7 +7,7 @@ import {
   isFolder,
   isStory,
 } from "../utils/utils.ts";
-import { join } from "../deps.ts";
+import { join } from "@std/path";
 
 export async function extractImagesFromAudio(rootpath: string, folder: Folder) {
   await checkRunPermission();

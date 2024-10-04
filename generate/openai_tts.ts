@@ -1,4 +1,6 @@
-import { $, bgBlue, bgRed, OpenAI } from "../deps.ts";
+import { OpenAI } from "../deps.ts";
+import { bgBlue, bgRed } from "@std/fmt/colors";
+import $ from "@david/dax";
 
 import { ModOptions } from "../types.ts";
 

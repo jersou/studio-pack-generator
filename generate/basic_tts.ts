@@ -1,5 +1,6 @@
-import { bgBlue } from "https://deno.land/std@0.216.0/fmt/colors.ts";
-import { $ } from "../deps.ts";
+import { bgBlue } from "@std/fmt/colors";
+import $ from "@david/dax";
+
 import { convertPath } from "../utils/utils.ts";
 import {
   checkCommand,

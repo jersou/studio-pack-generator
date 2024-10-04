@@ -1,5 +1,7 @@
 import { File, Folder } from "../serialize/types.ts";
-import { $, bgBlue, bgGreen, bgRed } from "../deps.ts";
+import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
+import $ from "@david/dax";
+
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
