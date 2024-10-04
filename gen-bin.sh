@@ -3,7 +3,7 @@ set -x
 set -o errexit
 rm -f dist/*.zip || true
 mkdir -p dist/
-version=$(./version.ts)
+version=$(./utils/version.ts)
 
 for i in \
          x86_64-unknown-linux-gnu,x86_64-linux \
