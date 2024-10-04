@@ -196,9 +196,12 @@ The "super pack" will look like :
 
 ## GUI
 
-TODO
+To run the GUI, use `--gui` : `studio-pack-generator --gui story-path-here`
 
-no RSS
+The GUI does not work in RSS mode. This mode serve a web app on
+http://localhost:5555/
+
+![gui.png](gui.png)
 
 ## CLI usage
 

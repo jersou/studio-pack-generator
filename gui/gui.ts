@@ -26,8 +26,7 @@ export function openGui(opt: ModOptions) {
   }
 
   const uiApp = new StudioPackGeneratorGui();
-  // TODO false
-  uiApp.update = !opt.isCompiled;
+  uiApp.update = false;
   uiApp.openInBrowser = true;
   uiApp.notExitIfNoClient = false;
   uiApp.port = opt.port || 5555;
@@ -317,13 +316,21 @@ class StudioPackGeneratorGui {
       this.openInBrowserAppMode === "true";
     const arg = appMode ? "--app=" : "";
     if (this.openInBrowser === true || this.openInBrowser === "true") {
-      if (await $.commandExists("google-chrome")) {
-        await $`google-chrome ${arg}http://${this.hostname}:${this.port}/`;
-      } else if (await $.commandExists("chromium")) {
-        await $`chromium ${arg}http://${this.hostname}:${this.port}/`;
-      } else {
-        // TODO WINDOWS / MAC
-        await $`gio open http://${this.hostname}:${this.port}/`;
+      const url = `http://${this.hostname}:${this.port}/`;
+      switch (Deno.build.os) {
+        case "windows":
+          await $`cmd /s /c start '' /b ${url}`;
+          break;
+        case "darwin":
+          await $`open ${url}`;
+          break;
+        case "linux":
+        default:
+          if (await $.commandExists("xdg-open")) {
+            await $`xdg-open http://${this.hostname}:${this.port}/`;
+          } else {
+            await $`gio open http://${this.hostname}:${this.port}/`;
+          }
       }
     } else {
       await $`${this.openInBrowser} ${arg}http://${this.hostname}:${this.port}/`;
