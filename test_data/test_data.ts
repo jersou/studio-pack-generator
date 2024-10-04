@@ -1,4 +1,4 @@
-import { Folder, Pack, SerializedPack } from "../serialize/types.ts";
+import type { Folder, Pack, SerializedPack } from "../serialize/types.ts";
 
 export const minFs: Folder = {
   name: "0-min",

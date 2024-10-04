@@ -4,7 +4,8 @@ import yargs from "https://deno.land/x/yargs@v17.7.2-deno/deno.ts";
 import { generatePack } from "../gen_pack.ts";
 import { PackExtractor } from "../extract_pack.ts";
 import { openGui } from "../gui/gui.ts";
-import { ModOptions, OPEN_AI_MODELS, OPEN_AI_VOICES } from "../types.ts";
+import type { ModOptions } from "../types.ts";
+import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../types.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs

@@ -8,8 +8,8 @@ import {
 
 import { Buffer } from "@std/io";
 import { exists } from "@std/fs";
-import { SerializedPack } from "../serialize/types.ts";
-import { Assets } from "../serialize/assets.ts";
+import type { SerializedPack } from "../serialize/types.ts";
+import type { Assets } from "../serialize/assets.ts";
 import { getExtension } from "./utils.ts";
 
 export async function createPackZip(

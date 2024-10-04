@@ -18,7 +18,7 @@ import { OpenFolder } from "./openFolder.tsx";
 import { StageNode } from "./stageNode.tsx";
 import { Pack } from "../../../serialize/types";
 import { enqueueSnackbar } from "notistack";
-import { ModOptions } from "../../../types.ts";
+import type { ModOptions } from "../../../types.ts";
 import { Loader } from "./loader.tsx";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";

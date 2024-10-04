@@ -2,7 +2,7 @@ import OpenAI from "https://deno.land/x/openai@v4.67.1/mod.ts";
 import { bgBlue, bgRed } from "@std/fmt/colors";
 import $ from "@david/dax";
 
-import { ModOptions } from "../types.ts";
+import type { ModOptions } from "../types.ts";
 
 let openAI_client: OpenAI;
 

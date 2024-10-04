@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDropDown";
-import { ModOptions } from "../../../types.ts";
+import type { ModOptions } from "../../../types.ts";
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";

@@ -11,7 +11,7 @@ import {
 } from "../test_data/test_data.ts";
 import { serializePack } from "./serializer.ts";
 
-import { ModOptions } from "../types.ts";
+import type { ModOptions } from "../types.ts";
 
 type Obj = {
   id?: string;

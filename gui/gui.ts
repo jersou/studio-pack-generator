@@ -9,10 +9,10 @@ import { assert } from "@std/assert";
 import { extname } from "@std/path";
 import { generatePack, getMetadata } from "../gen_pack.ts";
 import { fsToFolder } from "../serialize/fs.ts";
-import { Metadata } from "../serialize/types.ts";
+import type { Metadata } from "../serialize/types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { throttle } from "@es-toolkit/es-toolkit";
-import { ModOptions } from "../types.ts";
+import type { ModOptions } from "../types.ts";
 import { contentType } from "@std/media-types";
 
 type Assets = {

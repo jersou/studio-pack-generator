@@ -1,4 +1,4 @@
-import { File, Folder } from "./types.ts";
+import type { File, Folder } from "./types.ts";
 import { basename, join } from "@std/path";
 import { encodeHex } from "@std/encoding";
 import { getLang } from "../utils/i18n.ts";

@@ -2,13 +2,13 @@
 
 import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
 import { dirname } from "@std/path";
-import {
+import type {
   ActionNode,
   Metadata,
   SerializedPack,
   StageNode,
 } from "./serialize/types.ts";
-import { ModOptions } from "./types.ts";
+import type { ModOptions } from "./types.ts";
 import { Queue } from "https://deno.land/x/yocto_queue@v0.1.4/mod.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";

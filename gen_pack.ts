@@ -1,4 +1,4 @@
-import { File, Folder, Metadata } from "./serialize/types.ts";
+import type { File, Folder, Metadata } from "./serialize/types.ts";
 import { fsToFolder } from "./serialize/fs.ts";
 import { extractImagesFromAudio } from "./generate/extract_images_from_audio.ts";
 import { genMissingItems } from "./generate/gen_missing_items.ts";
@@ -21,7 +21,7 @@ import {
 import { getLang, initI18n } from "./utils/i18n.ts";
 import { convertImageOfFolder } from "./utils/convert_image.ts";
 import { fileImageItemRegEx } from "./utils/utils.ts";
-import { ModOptions } from "./types.ts";
+import type { ModOptions } from "./types.ts";
 
 async function genThumbnail(
   folder: Folder,

@@ -6,7 +6,7 @@ import {
   checkCommand,
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
-import { ModOptions } from "../types.ts";
+import type { ModOptions } from "../types.ts";
 
 let hasPico2waveWslCache: undefined | boolean;
 

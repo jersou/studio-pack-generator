@@ -1,4 +1,4 @@
-import {
+import type {
   Action,
   ActionNode,
   Entrypoint,
@@ -13,7 +13,7 @@ import {
 } from "./types.ts";
 import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
 
-import { ModOptions } from "../types.ts";
+import type { ModOptions } from "../types.ts";
 
 type SerializePackOption = {
   autoNextStoryTransition?: boolean;
