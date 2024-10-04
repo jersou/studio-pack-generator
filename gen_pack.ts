@@ -1,4 +1,4 @@
-import type { File, Folder, Metadata } from "./serialize/types.ts";
+import type { File, Folder, Metadata } from "./serialize/serialize-types.ts";
 import { fsToFolder } from "./serialize/fs.ts";
 import { extractImagesFromAudio } from "./generate/extract_images_from_audio.ts";
 import { genMissingItems } from "./generate/gen_missing_items.ts";

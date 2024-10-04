@@ -1,4 +1,4 @@
-import type { Folder } from "../serialize/types.ts";
+import type { Folder } from "../serialize/serialize-types.ts";
 import {
   checkRunPermission,
   convertToImageItem,

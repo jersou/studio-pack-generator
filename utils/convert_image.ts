@@ -9,7 +9,7 @@ import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
 import { join } from "@std/path";
 import $ from "@david/dax";
 
-import type { Folder } from "../serialize/types.ts";
+import type { Folder } from "../serialize/serialize-types.ts";
 import { getConvertCommand } from "./external_commands.ts";
 
 export async function convertImageOfFolder(

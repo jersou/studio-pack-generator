@@ -7,7 +7,7 @@ import type {
   Metadata,
   SerializedPack,
   StageNode,
-} from "./serialize/types.ts";
+} from "./serialize/serialize-types.ts";
 import type { ModOptions } from "./types.ts";
 import { Queue } from "https://deno.land/x/yocto_queue@v0.1.4/mod.ts";
 

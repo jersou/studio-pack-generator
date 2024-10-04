@@ -1,4 +1,4 @@
-import type { File, Folder, SerializedPack } from "./types.ts";
+import type { File, Folder, SerializedPack } from "./serialize-types.ts";
 import { getNameWithoutExt, isFile, uniq } from "../utils/utils.ts";
 import { join } from "@std/path";
 

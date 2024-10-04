@@ -1,4 +1,4 @@
-import type { File, Folder } from "../serialize/types.ts";
+import type { File, Folder } from "../serialize/serialize-types.ts";
 import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
 import $ from "@david/dax";
 

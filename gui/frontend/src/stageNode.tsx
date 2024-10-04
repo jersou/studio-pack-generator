@@ -1,6 +1,6 @@
 import InventoryIcon from "@mui/icons-material/Inventory";
 import { OpenFolder } from "./openFolder.tsx";
-import { Menu, StoryItem, Entrypoint, ZipMenu } from "../../../serialize/types";
+import { Menu, StoryItem, Entrypoint, ZipMenu } from "../../../serialize/serialize-types";
 import { Line } from "./line.tsx";
 import { clearPath } from "./utils.tsx";
 import { BASE } from "./app.tsx";

@@ -9,7 +9,7 @@ import { assert } from "@std/assert";
 import { extname } from "@std/path";
 import { generatePack, getMetadata } from "../gen_pack.ts";
 import { fsToFolder } from "../serialize/fs.ts";
-import type { Metadata } from "../serialize/types.ts";
+import type { Metadata } from "../serialize/serialize-types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { throttle } from "@es-toolkit/es-toolkit";
 import type { ModOptions } from "../types.ts";

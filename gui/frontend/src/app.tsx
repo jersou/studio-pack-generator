@@ -16,7 +16,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import SyncIcon from "@mui/icons-material/Sync";
 import { OpenFolder } from "./openFolder.tsx";
 import { StageNode } from "./stageNode.tsx";
-import { Pack } from "../../../serialize/types";
+import { Pack } from "../../../serialize/serialize-types";
 import { enqueueSnackbar } from "notistack";
 import type { ModOptions } from "../../../types.ts";
 import { Loader } from "./loader.tsx";

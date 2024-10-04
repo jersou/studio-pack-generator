@@ -11,7 +11,7 @@ import { exists } from "@std/fs";
 import { join } from "@std/path";
 import $ from "@david/dax";
 
-import type { File, Folder } from "../serialize/types.ts";
+import type { File, Folder } from "../serialize/serialize-types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export async function convertAudioOfFolder(

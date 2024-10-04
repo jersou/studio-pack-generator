@@ -7,7 +7,7 @@ import type {
   Story,
   StoryItem,
   ZipMenu,
-} from "./types.ts";
+} from "./serialize-types.ts";
 import {
   cleanStageName,
   firstStoryFile,

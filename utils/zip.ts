@@ -8,7 +8,7 @@ import {
 
 import { Buffer } from "@std/io";
 import { exists } from "@std/fs";
-import type { SerializedPack } from "../serialize/types.ts";
+import type { SerializedPack } from "../serialize/serialize-types.ts";
 import type { Assets } from "../serialize/assets.ts";
 import { getExtension } from "./utils.ts";
 

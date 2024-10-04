@@ -11,9 +11,8 @@ import { join } from "@std/path";
 import { bgBlue, bgGreen } from "@std/fmt/colors";
 import { exists } from "@std/fs";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
-import type { File } from "../serialize/types.ts";
+import type { File, Metadata } from "../serialize/serialize-types.ts";
 import type { ModOptions } from "../types.ts";
-import type { Metadata } from "../serialize/types.ts";
 import { convertImage } from "./gen_image.ts";
 
 export type Rss = {

@@ -10,7 +10,7 @@ import type {
   StoryAction,
   StoryItem,
   ZipMenu,
-} from "./types.ts";
+} from "./serialize-types.ts";
 import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
 
 import type { ModOptions } from "../types.ts";
