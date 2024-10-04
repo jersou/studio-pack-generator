@@ -1,4 +1,4 @@
-import { OpenAI } from "../deps.ts";
+import OpenAI from "https://deno.land/x/openai@v4.67.1/mod.ts";
 import { bgBlue, bgRed } from "@std/fmt/colors";
 import $ from "@david/dax";
 

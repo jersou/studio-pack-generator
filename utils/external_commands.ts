@@ -1,5 +1,7 @@
 import { basename, dirname } from "@std/path";
-import { posix, win32 } from "../deps.ts";
+import { fromFileUrl as windowsFromFileUrl } from "@std/path/windows/from-file-url";
+import { fromFileUrl as posixFromFileUrl } from "@std/path/posix/from-file-url";
+
 import $ from "@david/dax";
 
 let ffmpegCommand: string[] = [];
@@ -20,8 +22,8 @@ export async function checkCommand(
 export function getInstallDir(): string {
   if (basename(Deno.execPath()).match(/^deno/i)) {
     const fromFileUrl = Deno.build.os === "windows"
-      ? win32.fromFileUrl
-      : posix.fromFileUrl;
+      ? windowsFromFileUrl
+      : posixFromFileUrl;
     if (Deno.mainModule.match(/^http/)) {
       return ".";
     } else {

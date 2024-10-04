@@ -1,4 +1,10 @@
-import { BlobReader, BlobWriter, ZipReader, ZipWriter } from "../deps.ts";
+import {
+  BlobReader,
+  BlobWriter,
+  terminateWorkers,
+  ZipReader,
+  ZipWriter,
+} from "@zip-js/zip-js";
 
 import { Buffer } from "@std/io";
 import { exists } from "@std/fs";
@@ -16,7 +22,7 @@ export async function createPackZip(
   const blobWriter = new BlobWriter("application/zip");
   const fileInZip: string[] = [];
   const zipWriter = new ZipWriter(blobWriter, {
-    useWebWorkers: false,
+    keepOrder: true,
     dataDescriptor: false,
   });
   const thumbnailPath = `${storyPath}/thumbnail.png`;
@@ -81,4 +87,5 @@ export async function createPackZip(
   const blob = await zipWriter.close();
 
   await Deno.writeFile(zipPath, new Buffer(await blob.arrayBuffer()).bytes());
+  await terminateWorkers();
 }

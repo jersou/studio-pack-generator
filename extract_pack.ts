@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run -A
 
-import { BlobReader, BlobWriter, Queue, ZipReader } from "./deps.ts";
+import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
 import { dirname } from "@std/path";
 import {
   ActionNode,
@@ -9,12 +9,13 @@ import {
   StageNode,
 } from "./serialize/types.ts";
 import { ModOptions } from "./types.ts";
+import { Queue } from "https://deno.land/x/yocto_queue@v0.1.4/mod.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {
   packPath: string;
   outputPath: string;
-  zipReader?: ZipReader;
+  zipReader?: ZipReader<Blob>;
   // deno-lint-ignore no-explicit-any
   entries: any[] = [];
   // deno-lint-ignore no-explicit-any

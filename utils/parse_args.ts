@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --allow-run --allow-read --allow-write
 
-import { yargs } from "../deps.ts";
+import yargs from "https://deno.land/x/yargs@v17.7.2-deno/deno.ts";
 import { generatePack } from "../gen_pack.ts";
 import { PackExtractor } from "../extract_pack.ts";
 import { openGui } from "../gui/gui.ts";

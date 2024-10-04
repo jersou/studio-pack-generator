@@ -11,7 +11,7 @@ import {
   StoryItem,
   ZipMenu,
 } from "./types.ts";
-import { BlobReader, BlobWriter, ZipReader } from "../deps.ts";
+import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
 
 import { ModOptions } from "../types.ts";
 

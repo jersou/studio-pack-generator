@@ -12,7 +12,7 @@ import {
 } from "../utils/utils.ts";
 import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
-import { i18next } from "../deps.ts";
+import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
 import { join } from "@std/path";
 
 import { ModOptions } from "../types.ts";
