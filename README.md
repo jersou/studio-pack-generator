@@ -246,7 +246,7 @@ Options:
       --coqui-tts-language-idx       coqui TTS language_idx                                     [string] [default: "fr"]
       --coqui-tts-speaker-idx        coqui TTS speaker_idx                            [string] [default: "Abrahan Mack"]
   -x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
-  -u, --gui                          open GUI (on localhost:5555)                              [boolean] [default: true]
+  -u, --gui                          open GUI (on localhost:5555)                             [boolean] [default: false]
       --port                         port of GUI server                                         [number] [default: 5555]
       --config-file                  json config file                                                           [string]
 ```
