@@ -1,11 +1,12 @@
-import { ModOptions } from "../gen_pack.ts";
-import { bgBlue } from "https://deno.land/std@0.216.0/fmt/colors.ts";
-import { $ } from "../deps.ts";
+import { blue } from "@std/fmt/colors";
+import $ from "@david/dax";
+
 import { convertPath } from "../utils/utils.ts";
 import {
   checkCommand,
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
+import type { ModOptions } from "../types.ts";
 
 let hasPico2waveWslCache: undefined | boolean;
 
@@ -34,7 +35,7 @@ export async function generate_audio_basic_tts(
   lang: string,
   opt: ModOptions,
 ) {
-  console.log(bgBlue(`Generate basic TTS to ${outputPath}`));
+  console.log(blue(`Generate basic TTS to ${outputPath}`));
 
   if (
     Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))

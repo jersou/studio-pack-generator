@@ -20,9 +20,9 @@ import {
   moyFolder,
   moyFs,
 } from "../test_data/test_data.ts";
-import { assertEquals } from "../test_deps.ts";
+import { assertEquals } from "@std/assert";
 import { checkCommand } from "./external_commands.ts";
-import { exists } from "../deps.ts";
+import { exists } from "@std/fs";
 
 Deno.test("isFolder", () => {
   assertEquals(isFolder(moyFs), true);
@@ -42,14 +42,14 @@ Deno.test("getExtension", () => {
 
 Deno.test("getFolderAudioItem", () => {
   assertEquals(
-    getFolderAudioItem(moyFs),
+    getFolderAudioItem(moyFs)?.assetName ?? null,
     "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
   );
   assertEquals(getFolderAudioItem(emptyFolder), null);
 });
 Deno.test("getFolderImageItem", () => {
   assertEquals(
-    getFolderImageItem(moyFs),
+    getFolderImageItem(moyFs)?.assetName ?? null,
     "5f667e756ba42748a9eea3b0a217579bee960164.png",
   );
 });
@@ -59,20 +59,20 @@ Deno.test("firstStoryFile", () => {
 });
 Deno.test("getFileAudioItem", () => {
   assertEquals(
-    getFileAudioItem(aliceJungleStory, moyFolder),
+    getFileAudioItem(aliceJungleStory, moyFolder)?.assetName ?? null,
     "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
   );
 });
 Deno.test("getFileImageItem", () => {
   assertEquals(
-    getFileImageItem(aliceJungleStory, moyFolder),
+    getFileImageItem(aliceJungleStory, moyFolder)?.assetName ?? null,
     "da5e7052795b59001f09e2caf27412ef8212f23f.png",
   );
   assertEquals(getFileImageItem(aliceJungleStory, moyFs), null);
 });
 Deno.test("getFileAudioStory", () => {
   assertEquals(
-    getFileAudioStory(aliceJungleStory),
+    getFileAudioStory(aliceJungleStory)?.assetName ?? null,
     "f493d4e986a1278ca7db3f7c65bf8ee32535b2e4.ogg",
   );
 });

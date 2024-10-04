@@ -6,8 +6,12 @@ import {
   isFolder,
   isStory,
 } from "./utils.ts";
-import { $, bgBlue, bgGreen, bgRed, exists, join } from "../deps.ts";
-import { File, Folder } from "../serialize/types.ts";
+import { bgRed, blue, green } from "@std/fmt/colors";
+import { exists } from "@std/fs";
+import { join } from "@std/path";
+import $ from "@david/dax";
+
+import type { File, Folder } from "../serialize/serialize-types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
 
 export async function convertAudioOfFolder(
@@ -45,7 +49,7 @@ export async function convertAudioOfFolder(
           await convertAudioFile(tmpPath, maxDb, outPath, addDelay, seek);
           await Deno.remove(tmpPath);
         } else {
-          console.log(bgGreen("→ skip db<1"));
+          console.log(green("→ skip db<1"));
         }
         await Deno.writeTextFile(skipPath, "");
       }
@@ -60,7 +64,7 @@ async function convertAudioFile(
   addDelay: boolean,
   seek: string | undefined,
 ) {
-  console.log(bgBlue(`Convert file ${inputPath} → ${outputPath}`));
+  console.log(blue(`Convert file ${inputPath} → ${outputPath}`));
   const cmd = [
     ...(await getFfmpegCommand()),
     "-i",
@@ -86,7 +90,7 @@ async function convertAudioFile(
     "-y",
     outputPath,
   ];
-  console.log(bgBlue('"' + cmd.join('" "') + '"'));
+  console.log(blue('"' + cmd.join('" "') + '"'));
 
   const result = await $`${cmd}`
     .noThrow()
@@ -94,7 +98,7 @@ async function convertAudioFile(
     .stderr("null");
 
   if (result.code === 0) {
-    console.log(bgGreen("→ OK"));
+    console.log(green("→ OK"));
   } else {
     console.log(bgRed("→ KO"));
   }
@@ -103,7 +107,7 @@ async function convertAudioFile(
 async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
   const maxVolumeRegex = /max_volume: -([0-9]+.[0-9]+) dB/;
   let maxDb = 0;
-  console.log(bgBlue(`get max volume of file ${inputPath}`));
+  console.log(blue(`get max volume of file ${inputPath}`));
   const cmd = [
     ...(await getFfmpegCommand()),
     "-i",
@@ -126,7 +130,7 @@ async function getMaxVolumeOfFile(inputPath: string): Promise<number> {
     if (maxVolLine) {
       maxDb = parseFloat(maxVolumeRegex.exec(maxVolLine)![1]);
     }
-    console.log(bgGreen(`→ OK : ${maxDb} Db`));
+    console.log(green(`→ OK : ${maxDb} Db`));
   } else {
     console.log(bgRed("→ KO"));
   }
@@ -137,13 +141,13 @@ async function checkAudioFormat(filePath: string) {
   const info = await getFfmpegInfo(filePath);
   const isOk = /^ *Stream #0:0: Audio: mp3, 44100 Hz, mono,.*$/m.test(info);
   console.log(
-    bgBlue(`checkAudioFormat of ${filePath} : Format is ${isOk ? "OK" : "KO"}`),
+    blue(`checkAudioFormat of ${filePath} : Format is ${isOk ? "OK" : "KO"}`),
   );
   return isOk;
 }
 
 async function getFfmpegInfo(filePath: string): Promise<string> {
-  console.log(bgBlue(`get info of file ${filePath}`));
+  console.log(blue(`get info of file ${filePath}`));
   const cmd = [
     ...(await getFfmpegCommand()),
     "-i",
@@ -159,6 +163,6 @@ async function getFfmpegInfo(filePath: string): Promise<string> {
   if (result.code === 0) {
     info = result.stderr;
   }
-  // console.log(bgGreen("info=" + info));
+  // console.log(green("info=" + info));
   return info;
 }

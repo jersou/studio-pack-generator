@@ -1,4 +1,4 @@
-import { assertEquals } from "../test_deps.ts";
+import { assertEquals } from "@std/assert";
 import {
   expectedFullPack,
   expectedFullPackNightSerialized,
@@ -10,7 +10,8 @@ import {
   expectedMoyPackSerialized,
 } from "../test_data/test_data.ts";
 import { serializePack } from "./serializer.ts";
-import { ModOptions } from "../gen_pack.ts";
+
+import type { ModOptions } from "../types.ts";
 
 type Obj = {
   id?: string;

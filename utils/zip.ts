@@ -1,13 +1,15 @@
 import {
   BlobReader,
   BlobWriter,
-  Buffer,
-  exists,
+  terminateWorkers,
   ZipReader,
   ZipWriter,
-} from "../deps.ts";
-import { SerializedPack } from "../serialize/types.ts";
-import { Assets } from "../serialize/assets.ts";
+} from "@zip-js/zip-js";
+
+import { Buffer } from "@std/io";
+import { exists } from "@std/fs";
+import type { SerializedPack } from "../serialize/serialize-types.ts";
+import type { Assets } from "../serialize/assets.ts";
 import { getExtension } from "./utils.ts";
 
 export async function createPackZip(
@@ -20,7 +22,7 @@ export async function createPackZip(
   const blobWriter = new BlobWriter("application/zip");
   const fileInZip: string[] = [];
   const zipWriter = new ZipWriter(blobWriter, {
-    useWebWorkers: false,
+    keepOrder: true,
     dataDescriptor: false,
   });
   const thumbnailPath = `${storyPath}/thumbnail.png`;
@@ -85,4 +87,5 @@ export async function createPackZip(
   const blob = await zipWriter.close();
 
   await Deno.writeFile(zipPath, new Buffer(await blob.arrayBuffer()).bytes());
+  await terminateWorkers();
 }

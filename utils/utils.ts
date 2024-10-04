@@ -1,6 +1,9 @@
-import { File, Folder } from "../serialize/types.ts";
-import { $, bgBlue, bgGreen, bgRed } from "../deps.ts";
+import type { File, Folder } from "../serialize/serialize-types.ts";
+import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
+import $ from "@david/dax";
+
 import { getFfmpegCommand } from "./external_commands.ts";
+import type { ModOptions } from "../types.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
@@ -38,7 +41,10 @@ export function getFolderAudioItem(folder: Folder) {
     folderAudioItemRegEx.test(f.name)
   ) as File;
   if (file) {
-    return `${file.sha1}.${getExtension(file.name)}`;
+    return {
+      assetName: `${file.sha1}.${getExtension(file.name)}`,
+      path: file.path,
+    };
   } else {
     return null;
   }
@@ -60,7 +66,10 @@ export function getFolderImageItem(folder: Folder) {
     folderImageItemRegEx.test(f.name)
   ) as File;
   if (file) {
-    return `${file.sha1}.${getExtension(file.name)}`;
+    return {
+      assetName: `${file.sha1}.${getExtension(file.name)}`,
+      path: file.path,
+    };
   } else {
     return null;
   }
@@ -75,7 +84,10 @@ export function getFileAudioItem(file: File, parent: Folder) {
       fileAudioItemRegEx.test(f.name),
   ) as File;
   if (audioItem) {
-    return `${audioItem.sha1}.${getExtension(audioItem.name)}`;
+    return {
+      assetName: `${audioItem.sha1}.${getExtension(audioItem.name)}`,
+      path: audioItem.path,
+    };
   } else {
     return null;
   }
@@ -91,14 +103,20 @@ export function getFileImageItem(file: File, parent: Folder) {
       fileImageItemRegEx.test(f.name),
   ) as File;
   if (ImageItem) {
-    return `${ImageItem.sha1}.${getExtension(ImageItem.name)}`;
+    return {
+      assetName: `${ImageItem.sha1}.${getExtension(ImageItem.name)}`,
+      path: ImageItem.path,
+    };
   } else {
     return null;
   }
 }
 
 export function getFileAudioStory(file: File) {
-  return `${file.sha1}.${getExtension(file.name)}`;
+  return {
+    assetName: `${file.sha1}.${getExtension(file.name)}`,
+    path: file.path,
+  };
 }
 
 export function isStory(file: File): boolean {
@@ -172,7 +190,8 @@ export async function convertToImageItem(
   if (result.code === 0) {
     console.log(bgGreen("→ OK"));
   } else {
-    console.log(bgRed("→ KO : \n" + result.stderr));
+    console.log(bgRed("→ KO :"));
+    console.log(result.stderr);
   }
 }
 
@@ -206,4 +225,14 @@ export function groupBy<T>(
     (acc[predicate(value, index, array)] ||= []).push(value);
     return acc;
   }, {} as { [key: string]: T[] });
+}
+
+export function cleanOption(opt: ModOptions): ModOptions {
+  const cleanOpt: { [k: string]: string | number | boolean } = {};
+  Object.entries(opt).filter(([key]) =>
+    key.length > 1 && !key.includes("-") && key != "$0"
+  )
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .forEach(([k, v]) => (cleanOpt[k] = v));
+  return cleanOpt as ModOptions;
 }

@@ -1,4 +1,7 @@
-import { $, i18next, yellow } from "../deps.ts";
+import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
+
+import { yellow } from "@std/fmt/colors";
+import $ from "@david/dax";
 
 const en = {
   season: "Season",

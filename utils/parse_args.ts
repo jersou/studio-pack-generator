@@ -1,9 +1,11 @@
 #!/usr/bin/env -S deno run --allow-run --allow-read --allow-write
 
-import { yargs } from "../deps.ts";
-import { generatePack, ModOptions } from "../gen_pack.ts";
-import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../generate/openai_tts.ts";
+import yargs from "https://deno.land/x/yargs@v17.7.2-deno/deno.ts";
+import { generatePack } from "../gen_pack.ts";
 import { PackExtractor } from "../extract_pack.ts";
+import { openGui } from "../gui/gui.ts";
+import type { ModOptions } from "../types.ts";
+import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../types.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -23,10 +25,22 @@ export async function parseArgs(args: string[]) {
         }
         return y.wrap(width);
       },
-      async (opts: ModOptions) =>
-        opts.extract
-          ? await new PackExtractor(opts).extractPack()
-          : await generatePack(opts),
+      async (opts: ModOptions) => {
+        if (opts.configFile) {
+          const optsFromFile = JSON.parse(
+            await Deno.readTextFile(opts.configFile),
+          );
+          opts = { ...opts, ...optsFromFile, storyPath: opts.storyPath };
+        }
+
+        if (opts.extract) {
+          return await new PackExtractor(opts).extractPack();
+        } else if (opts.gui) {
+          return await openGui(opts);
+        } else {
+          return await generatePack(opts);
+        }
+      },
     )
     .usage(
       "deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or RSS url to Studio pack",
@@ -96,7 +110,7 @@ export async function parseArgs(args: string[]) {
       demandOption: false,
       boolean: true,
       default: false,
-      describe: "skip convert image",
+      describe: "skip image convert",
     })
     .option("skip-audio-item-gen", {
       alias: "a",
@@ -130,7 +144,7 @@ export async function parseArgs(args: string[]) {
       demandOption: false,
       boolean: true,
       default: false,
-      describe: "generate thumbnail from first item instead of first chapter",
+      describe: "gen thumbnail from first item instead of first chapter",
     })
     .option("skip-not-rss", {
       alias: "s",
@@ -256,6 +270,33 @@ export async function parseArgs(args: string[]) {
       boolean: true,
       default: false,
       describe: "extract a zip pack (reverse mode)",
+    })
+    .option("gui", {
+      alias: "u",
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "open GUI (on localhost:5555)",
+    })
+    .option("port", {
+      demandOption: false,
+      default: 5555,
+      type: "number",
+      describe: "port of GUI server",
+    })
+    .option("config-file", {
+      demandOption: false,
+      boolean: false,
+      default: undefined,
+      type: "string",
+      describe: "json config file",
+    })
+    .option("is-compiled", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      hidden: true,
+      describe: "true if compiled with deno compile",
     })
     .version(false)
     .demandCommand(1)

@@ -1,3 +1,9 @@
+### v?.?.? / ????.??.??
+
+- feat: Studio Pack Generator GUI !
+- feat: json config file
+- update dependencies, refactor, use jsr
+
 ### v0.4.4 / 2024.10.02
 
 - feat: now support split by season with many new options by @farfromrefug. See

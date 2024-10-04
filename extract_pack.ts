@@ -1,19 +1,21 @@
 #!/usr/bin/env -S deno run -A
 
-import { ModOptions } from "./gen_pack.ts";
-import { BlobReader, BlobWriter, dirname, Queue, ZipReader } from "./deps.ts";
-import {
+import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
+import { dirname } from "@std/path";
+import type {
   ActionNode,
   Metadata,
   SerializedPack,
   StageNode,
-} from "./serialize/types.ts";
+} from "./serialize/serialize-types.ts";
+import type { ModOptions } from "./types.ts";
+import { Queue } from "./utils/queue.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {
   packPath: string;
   outputPath: string;
-  zipReader?: ZipReader;
+  zipReader?: ZipReader<Blob>;
   // deno-lint-ignore no-explicit-any
   entries: any[] = [];
   // deno-lint-ignore no-explicit-any

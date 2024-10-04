@@ -27,6 +27,10 @@ Examples:
 
 ## Optional dependencies
 
+**[Windows release](https://github.com/jersou/studio-pack-generator/releases) of
+studio-pack-generator embeds these tools in zip file, and use Windows TTS
+instead of picoTTS (unless you have WSL and picoTTS installed).**
+
 - **ffmpeg** : used to extract images from story mp3 files, increase volume of
   files, convert to the right format.
   <br>→ Use `--skip-audio-convert` and `--skip-extract-image-from-mp3` to avoid
@@ -38,10 +42,6 @@ Examples:
 
 Install optional dependencies :
 `sudo apt update && sudo apt install -y ffmpeg libttspico-utils imagemagick`
-
-[Windows release](https://github.com/jersou/studio-pack-generator/releases) of
-studio-pack-generator embeds these tools in zip file, and use Windows TTS
-instead of picoTTS (unless you have WSL and picoTTS installed).
 
 Use "-miva" option to skip all generations that use these tools.
 
@@ -56,30 +56,21 @@ or  studio-pack-generator-aarch64-apple       "my story folder or a rss url"
 or  studio-pack-generator-x86_64-apple        "my story folder or a rss url"
 ```
 
-### Or use [Deno](https://deno.land/)
+#### Or clone the repo and run with [Deno](https://deno.land/) :
 
 This project is written in Typescript for [deno](https://deno.land/) runtime.
-Install deno : https://deno.land/#installation
-
-#### Run from web directly (will be cached for the next launches) :
-
-```
-deno run -A https://raw.githubusercontent.com/jersou/studio-pack-generator/main/studio_pack_generator.ts "my story folder or a rss url"
-```
-
-#### Or install with deno :
-
-```
-deno install --name studio-pack-generator -A --unstable -f https://raw.githubusercontent.com/jersou/studio-pack-generator/main/studio_pack_generator.ts
-→ and then run :  studio-pack-generator "my story folder or a rss url"
-```
-
-#### Or clone the repo and run with deno :
+Install deno : https://deno.land/
 
 ```
 git clone https://github.com/jersou/studio-pack-generator
 cd studio-pack-generator
-deno run -A studio_pack_generator.ts "my story folder or a rss url"
+deno -A studio_pack_generator.ts "my story folder or a rss url"
+```
+
+#### Or run from web directly (will be cached for the next launches) :
+
+```
+deno -A jsr:@jersou/studio-pack-generator "my story folder or a rss url"
 ```
 
 ## Story folder structure
@@ -203,7 +194,13 @@ The "super pack" will look like :
 - Image formats : png, jpg, bmp.
 - Audio formats : mp3, ogg, opus, wav.
 
-## Usage
+## GUI
+
+TODO
+
+no RSS
+
+## CLI usage
 
 ```
 deno run -A studio_pack_generator.ts [options] <story path | RSS URL>    convert a folder or a RSS URL to Studio pack
@@ -218,13 +215,12 @@ Options:
   -o, --output-folder                zip output folder                                                          [string]
   -c, --seek-story                   cut the beginning of stories: 'HH:mm:ss' format or 'N' sec                 [string]
   -v, --skip-audio-convert           skip convert audio (and skip increase volume)            [boolean] [default: false]
-  -j, --skip-image-convert           skip convert image                                       [boolean] [default: false]
+  -j, --skip-image-convert           skip image convert                                       [boolean] [default: false]
   -a, --skip-audio-item-gen          skip audio item generation                               [boolean] [default: false]
   -m, --skip-extract-image-from-mp3  skip extract item image from story mp3                   [boolean] [default: false]
   -i, --skip-image-item-gen          skip image item generation                               [boolean] [default: false]
       --image-item-gen-font          font used for image item generation                     [string] [default: "Arial"]
-      --thumbnail-from-first-item    generate thumbnail from first item instead of first chapter
-                                                                                              [boolean] [default: false]
+      --thumbnail-from-first-item    gen thumbnail from first item instead of first chapter   [boolean] [default: false]
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
       --rss-split-length             RSS will be split in parts of N length                       [number] [default: 10]
       --rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]
@@ -243,6 +239,9 @@ Options:
       --coqui-tts-language-idx       coqui TTS language_idx                                     [string] [default: "fr"]
       --coqui-tts-speaker-idx        coqui TTS speaker_idx                            [string] [default: "Abrahan Mack"]
   -x, --extract                      extract a zip pack (reverse mode)                        [boolean] [default: false]
+  -u, --gui                          open GUI (on localhost:5555)                             [boolean] [default: false]
+      --port                         port of GUI server                                         [number] [default: 5555]
+      --config-file                  json config file                                                           [string]
 ```
 
 Separate options by spaces, ex :
@@ -268,6 +267,8 @@ Separate options by spaces, ex :
 - Option to add 1 sec of silence at the beginning and end of sound files.
 - Option to skip the beginning of stories.
 - Zip Pack aggregation
+- OpenAI & Coqui TTS
+- a GUI
 
 ### Overwrite metadata
 
@@ -294,7 +295,7 @@ To use OpenAI TTS, use `--use-open-ai-tts` option, and you must set the API key:
 - or use --open-ai-api-key parameter
 - or enter the key when the program prompt
 
-## reverse process : extract pack from zip
+## Reverse process : extract pack from zip
 
 Extract a file stucture from zip pack :
 
@@ -316,6 +317,58 @@ studio-pack-generator -x -o output/dir  2-full.zip
 
 Note: it doesn't work well with "menu" nodes and with pack without "question"
 stage.
+
+## json config file
+
+The parameters can be imported from a json file with :
+
+```
+--config-file=<json file path>
+```
+
+File format (all the properties are optionals) :
+
+```json
+{
+  "addDelay": false,
+  "autoNextStoryTransition": false,
+  "selectNextStoryAtEnd": false,
+  "nightMode": false,
+  "skipAudioConvert": false,
+  "skipImageConvert": false,
+  "skipAudioItemGen": false,
+  "skipExtractImageFromMp3": false,
+  "skipImageItemGen": false,
+  "skipNotRss": false,
+  "skipRssImageDl": false,
+  "skipWsl": false,
+  "skipZipGeneration": false,
+  "useOpenAiTts": false,
+  "lang": "fr-FR",
+  "outputFolder": "/tmp/",
+  "seekStory": "1",
+  "openAiApiKey": "",
+  "openAiModel": "tts-1",
+  "openAiVoice": "onyx",
+  "gui": false,
+  "imageItemGenFont": "Arial",
+  "thumbnailFromFirstItem": false,
+  "rssSplitLength": 10,
+  "rssSplitSeasons": false,
+  "rssMinDuration": 0,
+  "rssUseImageAsThumbnail": false,
+  "useThumbnailAsRootImage": false,
+  "useCoquiTts": false,
+  "coquiTtsModel": "tts_models/multilingual/multi-dataset/xtts_v2",
+  "coquiTtsLanguageIdx": "fr",
+  "coquiTtsSpeakerIdx": "Abrahan Mack",
+  "port": 5555
+}
+```
+
+At the end of the generation, a file `0-config.json` will be written in the
+story folder. It can be use for the next run :
+`studio_pack_generator --config-file="<story path>/0-config.json" "<story path>"`
 
 ## Development
 

@@ -1,0 +1,154 @@
+body {
+  position: absolute;
+  min-width: 100%;
+  margin: 0;
+  display: flex;
+}
+
+#root {
+  padding: 10px;
+}
+
+.app {
+  display: flex;
+  align-items: start;
+}
+
+.ko {
+  background-color: red;
+  position: absolute;
+  height: 200px;
+  width: 100%;
+  font-size: 40px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.story {
+  position: relative;
+  display: flex;
+  flex: 0;
+}
+
+.item {
+  flex: 0;
+  display: flex;
+  align-self: start;
+}
+.story-audio {
+  border: #1c2aa9 solid 10px;
+  border-radius: 50px;
+  padding: 10px;
+}
+.StageNode-StoryItem {
+  align-items: center;
+}
+.card {
+  border: #aaa solid 3px;
+  box-shadow: 6px 6px 8px #bbb;
+  padding: 10px;
+  margin-bottom: 15px;
+  flex: 0;
+}
+.StageNode-Menu > .card {
+  border: #ff8a8a dashed 8px;
+}
+.StageNode-Menu.several > .card {
+  border: #8ac1ff dashed 8px;
+}
+.StageNode-Entrypoint > .card {
+  border: #ff3232 solid 8px;
+}
+.line {
+  min-width: 80px;
+  /*display: none;*/
+  /*position: absolute;*/
+}
+
+.line > svg {
+  position: absolute;
+}
+
+.story-node-svg {
+  position: absolute;
+}
+.story-line {
+  width: 36px;
+  height: 20px;
+}
+.empty {
+  min-height: 80px;
+  min-width: 80px;
+}
+
+.folder-path {
+  font-family: monospace;
+  vertical-align: middle;
+}
+.preview-title {
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: 25px;
+  border-bottom: #888 solid 3px;
+}
+.config {
+  display: grid;
+  column-gap: 20px;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1000px;
+}
+.zoom {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ZipMenu {
+  font-size: 50px;
+}
+
+.loader {
+  z-index: 1000;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #bbbbbb88;
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 200px;
+  height: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  border-radius: 50%;
+  border-width: 20px;
+  border-style: solid;
+  border-color: #555 transparent #555 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

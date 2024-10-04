@@ -7,10 +7,12 @@ import {
   isFile,
   isFolder,
 } from "../utils/utils.ts";
-import { bgBlue, bgGreen, exists, i18next, join, parse } from "../deps.ts";
-import { File } from "../serialize/types.ts";
-import type { ModOptions } from "../gen_pack.ts";
-import { Metadata } from "../serialize/types.ts";
+import { join } from "@std/path";
+import { blue, green } from "@std/fmt/colors";
+import { exists } from "@std/fs";
+import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
+import type { File, Metadata } from "../serialize/serialize-types.ts";
+import type { ModOptions } from "../types.ts";
 import { convertImage } from "./gen_image.ts";
 
 export type Rss = {
@@ -56,7 +58,7 @@ async function getFolderWithUrlFromRssUrl(
   url: string,
   opt: ModOptions,
 ): Promise<FolderWithUrl[]> {
-  console.log(bgGreen(`→ url = ${url}`));
+  console.log(green(`→ url = ${url}`));
 
   const resp = await fetch(url);
   const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
@@ -129,11 +131,11 @@ async function getFolderWithUrlFromRssUrl(
     const items = rssItems[index].sort(
       (a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime(),
     );
-    console.log(bgBlue(`→ ${items.length} items`));
+    console.log(blue(`→ ${items.length} items`));
     if (items.length <= opt.rssSplitLength) {
-      fs.files.push(getFolderOfStories(items, opt.skipRssImageDl));
+      fs.files.push(getFolderOfStories(items, !!opt.skipRssImageDl));
     } else {
-      fs.files.push(getFolderParts(items, opt.skipRssImageDl));
+      fs.files.push(getFolderParts(items, !!opt.skipRssImageDl));
     }
   }
 
@@ -209,17 +211,17 @@ async function writeFolderWithUrl(folder: FolderWithUrl, parentPath: string) {
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
     isFolder(file)
-      ? await writeFolderWithUrl(file, path)
-      : await writeFileWithUrl(file, path);
+      ? await writeFolderWithUrl(file as FolderWithUrl, path)
+      : await writeFileWithUrl(file as FileWithUrl, path);
   }
 }
 
 async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
   const filePath = join(parentPath, fileWithUrl.name);
-  console.log(bgBlue(`Download ${fileWithUrl.url}\n    → ${filePath}`));
+  console.log(blue(`Download ${fileWithUrl.url}\n    → ${filePath}`));
 
   if (await exists(filePath)) {
-    console.log(bgGreen(`   → skip`));
+    console.log(green(`   → skip`));
   } else {
     const resp = await fetch(fileWithUrl.url);
     const file = await Deno.open(filePath, { create: true, write: true });

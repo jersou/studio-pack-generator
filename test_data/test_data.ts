@@ -1,4 +1,8 @@
-import { Folder, Pack, SerializedPack } from "../serialize/types.ts";
+import type {
+  Folder,
+  Pack,
+  SerializedPack,
+} from "../serialize/serialize-types.ts";
 
 export const minFs: Folder = {
   name: "0-min",
@@ -15,18 +19,22 @@ export const minFsWithoutSha = {
   files: [
     {
       name: "0-item.ogg",
+      path: "test_data/fs/0-min/0-item.ogg",
       sha1: "",
     },
     {
       name: "0-item.png",
+      path: "test_data/fs/0-min/0-item.png",
       sha1: "",
     },
     {
       name: "alice-city.ogg",
+      path: "test_data/fs/0-min/alice-city.ogg",
       sha1: "",
     },
   ],
   name: "0-min",
+  path: "./test_data/fs/0-min",
 };
 
 export const expectedMinPack: Pack = {
@@ -39,7 +47,9 @@ export const expectedMinPack: Pack = {
     class: "StageNode-Entrypoint",
     name: "Cover node",
     audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+    audioPath: undefined,
     image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
+    imagePath: undefined,
     okTransition: {
       class: "ActionNode",
       name: "Action node",
@@ -50,9 +60,11 @@ export const expectedMinPack: Pack = {
           image: null,
           name: "alice-city",
           okTransition: null,
+          path: undefined,
         },
       ],
     },
+    path: "undefined/",
   },
 };
 
@@ -212,7 +224,9 @@ export const expectedMoyPack: Pack = {
     class: "StageNode-Entrypoint",
     name: "Cover node",
     audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+    audioPath: undefined,
     image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
+    imagePath: undefined,
     okTransition: {
       class: "ActionNode",
       name: "Action node",
@@ -222,6 +236,10 @@ export const expectedMoyPack: Pack = {
           name: "Choose a place",
           image: null,
           audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+          audioPath: undefined,
+          audioTimestamp: undefined,
+          imagePath: undefined,
+          imageTimestamp: undefined,
           okTransition: {
             name: "Choose a place",
             class: "ActionNode",
@@ -231,6 +249,10 @@ export const expectedMoyPack: Pack = {
                 name: "city",
                 audio: "5e6cb53d9acef28a6f57edf317c31bda673d64ed.ogg",
                 image: "5e36825dd492cd428ec8408f55f8dddfe6a1248a.png",
+                audioPath: undefined,
+                audioTimestamp: undefined,
+                imagePath: undefined,
+                imageTimestamp: undefined,
                 okTransition: {
                   name: "city",
                   class: "ActionNode",
@@ -244,9 +266,15 @@ export const expectedMoyPack: Pack = {
                     },
                   ],
                 },
+                path: undefined,
+                pathTimestamp: undefined,
               },
               {
                 class: "StageNode-StoryItem",
+                audioPath: undefined,
+                audioTimestamp: undefined,
+                imagePath: undefined,
+                imageTimestamp: undefined,
                 name: "alice-jungle",
                 audio: "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
                 image: "da5e7052795b59001f09e2caf27412ef8212f23f.png",
@@ -263,12 +291,17 @@ export const expectedMoyPack: Pack = {
                     },
                   ],
                 },
+                path: undefined,
+                pathTimestamp: undefined,
               },
             ],
           },
+          path: "undefined/",
+          pathTimestamp: undefined,
         },
       ],
     },
+    path: "undefined/",
   },
 };
 
@@ -806,12 +839,18 @@ export const expectedFullPack: Pack = {
     name: "Cover node",
     image: "5f667e756ba42748a9eea3b0a217579bee960164.png",
     audio: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a.ogg",
+    imagePath: undefined,
+    audioPath: undefined,
     okTransition: {
       class: "ActionNode",
       name: "Action node",
       options: [
         {
           class: "StageNode-Menu",
+          audioPath: undefined,
+          audioTimestamp: undefined,
+          imagePath: undefined,
+          imageTimestamp: undefined,
           image: null,
           audio: "53018173b8245b5d03d729da410daed6d3fd3570.ogg",
           name: "Choose a character",
@@ -822,6 +861,10 @@ export const expectedFullPack: Pack = {
               {
                 class: "StageNode-Menu",
                 image: "c68e4b1028b3c93e434506e6a0203e5edbaed43b.png",
+                imagePath: undefined,
+                imageTimestamp: undefined,
+                audioPath: undefined,
+                audioTimestamp: undefined,
                 audio: "6ef0a88a7b823fc81a85d448c971821d3570e606.ogg",
                 name: "Alice",
                 okTransition: {
@@ -832,6 +875,10 @@ export const expectedFullPack: Pack = {
                       class: "StageNode-Menu",
                       image: null,
                       audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
+                      audioPath: undefined,
+                      audioTimestamp: undefined,
+                      imagePath: undefined,
+                      imageTimestamp: undefined,
                       name: "Choose a place",
                       okTransition: {
                         class: "ActionNode",
@@ -842,8 +889,12 @@ export const expectedFullPack: Pack = {
                             name: "city",
                             audio:
                               "5e6cb53d9acef28a6f57edf317c31bda673d64ed.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
                             image:
                               "5e36825dd492cd428ec8408f55f8dddfe6a1248a.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
                             okTransition: {
                               name: "city",
                               class: "ActionNode",
@@ -858,14 +909,22 @@ export const expectedFullPack: Pack = {
                                 },
                               ],
                             },
+                            path: undefined,
+                            pathTimestamp: undefined,
                           },
                           {
                             class: "StageNode-StoryItem",
                             name: "alice-jungle",
                             audio:
                               "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
+
                             image:
                               "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
+
                             okTransition: {
                               name: "alice-jungle",
                               class: "ActionNode",
@@ -880,17 +939,27 @@ export const expectedFullPack: Pack = {
                                 },
                               ],
                             },
+                            path: undefined,
+                            pathTimestamp: undefined,
                           },
                         ],
                       },
+                      path: "undefined/",
+                      pathTimestamp: undefined,
                     },
                   ],
                 },
+                path: "undefined/",
+                pathTimestamp: undefined,
               },
               {
                 class: "StageNode-Menu",
+                audioPath: undefined,
+                audioTimestamp: undefined,
                 image: "4977589ba6e6d131a500309d3f8ee84c66b615f1.png",
                 audio: "f8932ae73324764b45bb7a3e1e92f4fabde3c2f8.ogg",
+                imagePath: undefined,
+                imageTimestamp: undefined,
                 name: "Bob",
                 okTransition: {
                   class: "ActionNode",
@@ -898,7 +967,11 @@ export const expectedFullPack: Pack = {
                   options: [
                     {
                       class: "StageNode-Menu",
+                      audioPath: undefined,
+                      audioTimestamp: undefined,
                       image: null,
+                      imagePath: undefined,
+                      imageTimestamp: undefined,
                       audio: "95617b401ff08d2e981ac1f10d8c9dd862f5c203.ogg",
                       name: "Choose a place",
                       okTransition: {
@@ -910,8 +983,14 @@ export const expectedFullPack: Pack = {
                             name: "bob-city",
                             audio:
                               "e260fd4baef8d32d1cb598355ca691e5fe401bc8.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
+
                             image:
                               "95daa0dc90c3f15300edb39c807e9c9d6acff3f6.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
+
                             okTransition: {
                               name: "bob-city",
                               class: "ActionNode",
@@ -926,14 +1005,20 @@ export const expectedFullPack: Pack = {
                                 },
                               ],
                             },
+                            path: undefined,
+                            pathTimestamp: undefined,
                           },
                           {
                             class: "StageNode-StoryItem",
                             name: "jungle",
                             audio:
                               "78adc1006ff121cbf1c7052a02be47c398aecd78.ogg",
+                            audioPath: undefined,
+                            audioTimestamp: undefined,
                             image:
                               "da5e7052795b59001f09e2caf27412ef8212f23f.png",
+                            imagePath: undefined,
+                            imageTimestamp: undefined,
                             okTransition: {
                               name: "jungle",
                               class: "ActionNode",
@@ -948,18 +1033,27 @@ export const expectedFullPack: Pack = {
                                 },
                               ],
                             },
+                            path: undefined,
+                            pathTimestamp: undefined,
                           },
                         ],
                       },
+                      path: "undefined/",
+                      pathTimestamp: undefined,
                     },
                   ],
                 },
+                path: "undefined/",
+                pathTimestamp: undefined,
               },
             ],
           },
+          path: "undefined/",
+          pathTimestamp: undefined,
         },
       ],
     },
+    path: "undefined/",
   },
 };
 export const expectedSha1s = [
@@ -2088,115 +2182,160 @@ export const expectedFullFolder = {
   files: [
     {
       name: "0-item.ogg",
+      path: "test_data/fs/2-full/0-item.ogg",
       sha1: "1a23e1732632e8bbcb7607a92edd3c3ec3c3357a",
     },
     {
       name: "0-item.png",
+      path: "test_data/fs/2-full/0-item.png",
       sha1: "5f667e756ba42748a9eea3b0a217579bee960164",
     },
     {
       files: [
         {
           name: "0-item.ogg",
+          path: "test_data/fs/2-full/Choose a character/0-item.ogg",
           sha1: "53018173b8245b5d03d729da410daed6d3fd3570",
         },
         {
           files: [
             {
               name: "0-item.ogg",
+              path: "test_data/fs/2-full/Choose a character/Alice/0-item.ogg",
               sha1: "6ef0a88a7b823fc81a85d448c971821d3570e606",
             },
             {
               name: "0-item.png",
+              path: "test_data/fs/2-full/Choose a character/Alice/0-item.png",
               sha1: "c68e4b1028b3c93e434506e6a0203e5edbaed43b",
             },
             {
               files: [
                 {
                   name: "0-item.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/0-item.ogg",
                   sha1: "95617b401ff08d2e981ac1f10d8c9dd862f5c203",
                 },
                 {
                   name: "city.item.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/city.item.ogg",
                   sha1: "5e6cb53d9acef28a6f57edf317c31bda673d64ed",
                 },
                 {
                   name: "city.item.png",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/city.item.png",
                   sha1: "5e36825dd492cd428ec8408f55f8dddfe6a1248a",
                 },
                 {
                   name: "city.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/city.ogg",
                   sha1: "46fe70d98b9763ab70b7e7cea4627e4f8b7c585a",
                 },
                 {
                   name: "jungle.item.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/jungle.item.ogg",
                   sha1: "78adc1006ff121cbf1c7052a02be47c398aecd78",
                 },
                 {
                   name: "jungle.item.png",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/jungle.item.png",
+
                   sha1: "da5e7052795b59001f09e2caf27412ef8212f23f",
                 },
                 {
                   name: "jungle.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Alice/Choose a place/jungle.ogg",
                   sha1: "f493d4e986a1278ca7db3f7c65bf8ee32535b2e4",
                 },
               ],
               name: "Choose a place",
+              path:
+                "test_data/fs/2-full/Choose a character/Alice/Choose a place",
             },
           ],
           name: "Alice",
+          path: "test_data/fs/2-full/Choose a character/Alice",
         },
         {
           files: [
             {
               name: "0-item.ogg",
+              path: "test_data/fs/2-full/Choose a character/Bob/0-item.ogg",
+
               sha1: "f8932ae73324764b45bb7a3e1e92f4fabde3c2f8",
             },
             {
               name: "0-item.png",
+              path: "test_data/fs/2-full/Choose a character/Bob/0-item.png",
+
               sha1: "4977589ba6e6d131a500309d3f8ee84c66b615f1",
             },
             {
               files: [
                 {
                   name: "0-item.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/0-item.ogg",
                   sha1: "95617b401ff08d2e981ac1f10d8c9dd862f5c203",
                 },
                 {
                   name: "desert.item.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/desert.item.ogg",
                   sha1: "e260fd4baef8d32d1cb598355ca691e5fe401bc8",
                 },
                 {
                   name: "desert.item.png",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/desert.item.png",
                   sha1: "95daa0dc90c3f15300edb39c807e9c9d6acff3f6",
                 },
                 {
                   name: "desert.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/desert.ogg",
                   sha1: "90304af3b9d81fb1590ad367df796e791ea78750",
                 },
                 {
                   name: "jungle.item.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/jungle.item.ogg",
                   sha1: "78adc1006ff121cbf1c7052a02be47c398aecd78",
                 },
                 {
                   name: "jungle.item.png",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/jungle.item.png",
                   sha1: "da5e7052795b59001f09e2caf27412ef8212f23f",
                 },
                 {
                   name: "jungle.ogg",
+                  path:
+                    "test_data/fs/2-full/Choose a character/Bob/Choose a place/jungle.ogg",
                   sha1: "084c25abd45f62e50aed566e74ae3317bf844d6c",
                 },
               ],
               name: "Choose a place",
+              path: "test_data/fs/2-full/Choose a character/Bob/Choose a place",
             },
           ],
           name: "Bob",
+          path: "test_data/fs/2-full/Choose a character/Bob",
         },
       ],
       name: "Choose a character",
+      path: "test_data/fs/2-full/Choose a character",
     },
   ],
   name: "2-full",
+  path: "./test_data/fs/2-full",
 };
 
 export const expectedSortFolder = {
@@ -2205,15 +2344,19 @@ export const expectedSortFolder = {
       files: [
         {
           name: "2 jungle.ogg",
+          path: "test_data/fs/3-sort/Choose a place/2 jungle.ogg",
           sha1: "084c25abd45f62e50aed566e74ae3317bf844d6c",
         },
         {
           name: "10 desert.ogg",
+          path: "test_data/fs/3-sort/Choose a place/10 desert.ogg",
           sha1: "90304af3b9d81fb1590ad367df796e791ea78750",
         },
       ],
       name: "Choose a place",
+      path: "test_data/fs/3-sort/Choose a place",
     },
   ],
   name: "3-sort",
+  path: "./test_data/fs/3-sort",
 };

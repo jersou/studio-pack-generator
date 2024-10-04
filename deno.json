@@ -1,15 +1,33 @@
 {
+  "version": "0.5.0",
+  "license": "MIT",
+  "name": "@jersou/studio-pack-generator",
   "tasks": {
-    "bundle": "deno bundle studio_pack_generator.ts dist/studio_pack_generator.js",
-    "fmt": "deno fmt --ignore=vendor,dist,.cov_profile,tmp,gui",
+    "fmt": "deno fmt --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
     "gen-bin": "./gen-bin.sh",
-    "gen-cov": "rm -rf .cov_profile && deno test --coverage=.cov_profile -A && deno coverage .cov_profile --lcov --exclude=vendor > .cov_profile/cov_profile.lcov && genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov",
-    "lint": "deno lint --ignore=vendor,dist,tmp,gui",
-    "pre-commit": "deno fmt --ignore=vendor,dist,tmp,gui --check && deno lint --ignore=vendor,dist && deno test -A --ignore=vendor,dist --no-check",
-    "pre-commit-fast": "deno run -A pre-commit-fast.ts",
-    "start": "deno run -A  --unstable studio_pack_generator.ts",
-    "test": "deno test -A --ignore=vendor,dist,.cov_profile,tmp,gui",
-    "test-watch": "deno test -A --watch --unstable",
-    "vendor": "rm -rf vendor/; deno vendor --config .empty-config.json --force studio_pack_generator.ts deps.ts test_deps.ts pre-commit-fast.ts; echo '{\n}' > .empty-config.json"
-  }
+    "gen-cov": "rm -rf .cov_profile && deno test --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor --coverage=.cov_profile -A && deno coverage .cov_profile --lcov  > .cov_profile/cov_profile.lcov && genhtml -o .cov_profile/html .cov_profile/cov_profile.lcov",
+    "check": "deno check studio_pack_generator.ts",
+    "lint": "deno lint --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
+    "pre-commit": "deno task fmt --check && deno task lint && deno task test && deno task check",
+    "start": "deno run -A --unstable studio_pack_generator.ts",
+    "test": "deno test -A --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
+    "test-watch": "deno test -A --watch --unstable --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor"
+  },
+  "imports": {
+    "@david/dax": "jsr:@david/dax@^0.42.0",
+    "@es-toolkit/es-toolkit": "jsr:@es-toolkit/es-toolkit@^1.23.0",
+    "@jersou/clite": "jsr:@jersou/clite@^0.5.0",
+    "@std/assert": "jsr:@std/assert@^1.0.6",
+    "@std/encoding": "jsr:@std/encoding@^1.0.5",
+    "@std/fmt": "jsr:@std/fmt@^1.0.2",
+    "@std/fs": "jsr:@std/fs@^1.0.4",
+    "@std/io": "jsr:@std/io@^0.224.9",
+    "@std/media-types": "jsr:@std/media-types@^1.0.3",
+    "@std/path": "jsr:@std/path@^1.0.6",
+    "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.52",
+    "https://deno.land/": "./vendor/deno.land/",
+    "https://deno.land/std/": "./vendor/deno.land/std@0.216.0/"
+  },
+  "exports": "./studio_pack_generator.ts",
+  "publish": { "exclude": ["tools", "gui/frontend/src", "test_data/"] }
 }
