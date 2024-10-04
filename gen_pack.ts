@@ -121,9 +121,12 @@ export async function generatePack(opt: ModOptions) {
           nightModeAudioItemName,
         });
         const assets = getAssetsPaths(serializedPack, folder);
+        const date = new Date().toISOString().substring(0, 19)
+          .replace("T", "--")
+          .replaceAll(":", "-");
         const zipPath = opt.outputFolder
-          ? join(opt.outputFolder, `${basename(storyPath)}-${Date.now()}.zip`)
-          : `${storyPath}-${Date.now()}.zip`;
+          ? join(opt.outputFolder, `${basename(storyPath)}-${date}.zip`)
+          : `${storyPath}-${date}.zip`;
         await createPackZip(zipPath, storyPath, serializedPack, assets);
         console.log(
           `Done (${
