@@ -13,6 +13,7 @@ import { bgRed } from "@std/fmt/colors";
 import { basename, join } from "@std/path";
 import {
   checkRunPermission,
+  cleanOption,
   convertToImageItem,
   folderImageItemRegEx,
   getNightModeAudioItem,
@@ -22,6 +23,7 @@ import { getLang, initI18n } from "./utils/i18n.ts";
 import { convertImageOfFolder } from "./utils/convert_image.ts";
 import { fileImageItemRegEx } from "./utils/utils.ts";
 import type { ModOptions } from "./types.ts";
+import $ from "@david/dax";
 
 async function genThumbnail(
   folder: Folder,
@@ -125,8 +127,8 @@ export async function generatePack(opt: ModOptions) {
           .replace("T", "--")
           .replaceAll(":", "-");
         const zipPath = opt.outputFolder
-          ? join(opt.outputFolder, `${basename(storyPath)}-${date}.zip`)
-          : `${storyPath}-${date}.zip`;
+          ? join(opt.outputFolder, `${basename(storyPath)}--${date}.zip`)
+          : `${storyPath}--${date}.zip`;
         await createPackZip(zipPath, storyPath, serializedPack, assets);
         console.log(
           `Done (${
@@ -135,6 +137,9 @@ export async function generatePack(opt: ModOptions) {
         );
       }
     }
+    await $.path(`${storyPath}/0-config.json`).writeText(
+      JSON.stringify(cleanOption(opt), null, " "),
+    );
   }
 }
 

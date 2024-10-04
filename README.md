@@ -325,11 +325,13 @@ stage.
 
 ## json config file
 
+The parameters can be imported from a json file with :
+
 ```
 --config-file=<json file path>
 ```
 
-Format (all the properties are optionals) :
+File format (all the properties are optionals) :
 
 ```json
 {
@@ -368,6 +370,10 @@ Format (all the properties are optionals) :
   "port": 5555
 }
 ```
+
+At the end of the generation, a file `0-config.json` will be written in the
+story folder. It can be use for the next run :
+`studio_pack_generator --config-file="<story path>/0-config.json" "<story path>"`
 
 ## Development
 

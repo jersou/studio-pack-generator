@@ -3,6 +3,7 @@ import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
 import $ from "@david/dax";
 
 import { getFfmpegCommand } from "./external_commands.ts";
+import type { ModOptions } from "../types.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
@@ -224,4 +225,14 @@ export function groupBy<T>(
     (acc[predicate(value, index, array)] ||= []).push(value);
     return acc;
   }, {} as { [key: string]: T[] });
+}
+
+export function cleanOption(opt: ModOptions): ModOptions {
+  const cleanOpt: { [k: string]: string | number | boolean } = {};
+  Object.entries(opt).filter(([key]) =>
+    key.length > 1 && !key.includes("-") && key != "$0"
+  )
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .forEach(([k, v]) => (cleanOpt[k] = v));
+  return cleanOpt as ModOptions;
 }
