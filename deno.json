@@ -7,7 +7,6 @@
     "check": "deno check studio_pack_generator.ts",
     "lint": "deno lint --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,gui/lodash-throttle-v4.1.1.js",
     "pre-commit": "deno task fmt --check && deno task lint && deno task test && deno task check",
-    "pre-commit-fast": "deno run -A pre-commit-fast.ts",
     "start": "deno run -A --unstable studio_pack_generator.ts",
     "test": "deno test -A --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,gui/lodash-throttle-v4.1.1.js",
     "test-watch": "deno test -A --watch --unstable"
