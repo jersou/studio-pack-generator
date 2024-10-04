@@ -123,7 +123,7 @@ export class PackExtractor {
     await Deno.mkdir(this.outputPath, { recursive: true });
     for (const { key, path } of this.assets) {
       const entry = this.entries.find((e) => e.filename === `assets/${key}`)!;
-      const blob = entry.getData(new BlobWriter());
+      const blob = await entry.getData(new BlobWriter());
       const buffer = await blob.arrayBuffer();
       const filePath = `${this.outputPath}${path}`;
       const parentPath = dirname(filePath);
@@ -135,7 +135,7 @@ export class PackExtractor {
       e.filename === `thumbnail.png`
     );
     if (thumbnailEntry) {
-      const blob = thumbnailEntry.getData(new BlobWriter());
+      const blob = await thumbnailEntry.getData(new BlobWriter());
       const buffer = await blob.arrayBuffer();
       const filePath = `${this.outputPath}/thumbnail.png`;
       await Deno.writeFile(filePath, new Uint8Array(buffer));
