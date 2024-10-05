@@ -316,7 +316,7 @@ class StudioPackGeneratorGui {
       this.openInBrowserAppMode === "true";
     const arg = appMode ? "--app=" : "";
     const url = `http://${
-      this.hostname.startsWith("::") ? "127.0.0.1" : this.hostname // FIXME
+      this.hostname.startsWith("::") ? "localhost" : this.hostname // FIXME
     }:${this.port}/`;
     if (this.openInBrowser === true || this.openInBrowser === "true") {
       switch (Deno.build.os) {
