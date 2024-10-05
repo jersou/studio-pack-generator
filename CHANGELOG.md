@@ -1,14 +1,11 @@
 ### v0.5.5 / 2024.10.05
 
-- fix: fix open in browser
-- fix(zip): Unhandled error in child worker
-
-### v0.5.0 / 2024.10.05
-
 - feat: Studio Pack Generator GUI !
 - feat: json config file
 - update dependencies, refactor, use jsr
 - feat: zip suffix: ts → date
+- fix: fix open in browser
+- fix(zip): Unhandled error in child worker
 
 ### v0.4.4 / 2024.10.02
 
