@@ -15,7 +15,7 @@ type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {
   packPath: string;
   outputPath: string;
-  zipReader?: ZipReader<Blob>;
+  zipReader?: ZipReader;
   // deno-lint-ignore no-explicit-any
   entries: any[] = [];
   // deno-lint-ignore no-explicit-any
