@@ -1,3 +1,9 @@
+### v0.5.6 / 2024.10.06
+
+- fix: coqui TTS on Windows in some cases
+- fix RSS genration after the v0.5.0 refactor
+- upgrade: deno.land/x/xml@2.1.3 → @libs/xml@6.0.0
+
 ### v0.5.5 / 2024.10.05
 
 - feat: Studio Pack Generator GUI !
