@@ -150,8 +150,10 @@ export function firstStoryFile(folder: Folder) {
   ) as File;
 }
 
-export function convertPath(path: string) {
-  return Deno.build.os === "windows" ? convWindowsWslPath(path) : path;
+export function convertPath(path: string, opt: ModOptions) {
+  return (Deno.build.os === "windows" && !opt.skipWsl)
+    ? convWindowsWslPath(path)
+    : path;
 }
 
 export function convWindowsWslPath(path: string, cwd?: string): string {

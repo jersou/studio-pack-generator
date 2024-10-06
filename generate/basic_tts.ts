@@ -4,6 +4,7 @@ import $ from "@david/dax";
 import { convertPath } from "../utils/utils.ts";
 import {
   checkCommand,
+  getCoquiCommand,
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
 import type { ModOptions } from "../types.ts";
@@ -38,21 +39,23 @@ export async function generate_audio_basic_tts(
   console.log(blue(`Generate basic TTS to ${outputPath}`));
 
   if (opt.useCoquiTts) {
-    const args = [
+    const coquiCommand = await getCoquiCommand();
+    const cmd = [
+      ...coquiCommand,
       "--text",
       title,
       "--model_name",
       opt.coquiTtsModel,
       "--out_path",
-      convertPath(outputPath),
-    ].concat(
-      opt.coquiTtsLanguageIdx
-        ? ["--language_idx", opt.coquiTtsLanguageIdx]
-        : [],
-    ).concat(
-      opt.coquiTtsSpeakerIdx ? ["--speaker_idx", opt.coquiTtsSpeakerIdx] : [],
-    );
-    await $`tts ${args}`;
+      outputPath,
+    ];
+    if (opt.coquiTtsLanguageIdx) {
+      cmd.push("--language_idx", opt.coquiTtsLanguageIdx);
+    }
+    if (opt.coquiTtsSpeakerIdx) {
+      cmd.push("--speaker_idx", opt.coquiTtsSpeakerIdx);
+    }
+    await $`${cmd}`;
   } else if (
     Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))
   ) {
@@ -72,7 +75,7 @@ export async function generate_audio_basic_tts(
   } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
     const args = [
       "-o",
-      convertPath(outputPath),
+      convertPath(outputPath, opt),
       "--file-format",
       "WAVE",
       "--data-format",
@@ -87,7 +90,7 @@ export async function generate_audio_basic_tts(
       "-l",
       lang,
       "-w",
-      convertPath(outputPath),
+      convertPath(outputPath, opt),
       ` . ${title} . `,
     ];
     await $`${cmd}`.noThrow();
