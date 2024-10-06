@@ -14,6 +14,7 @@ import { folderToPack } from "../serialize/converter.ts";
 import { throttle } from "@es-toolkit/es-toolkit";
 import type { ModOptions } from "../types.ts";
 import { contentType } from "@std/media-types";
+import { red } from "@std/fmt/colors";
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
@@ -23,6 +24,10 @@ export function openGui(opt: ModOptions) {
   if (!opt.storyPath) {
     console.log("No story path → exit");
     Deno.exit(5);
+  }
+  if (opt.storyPath.startsWith("http")) {
+    console.log(red("The GUI mode doesn't work with RSS url !"));
+    Deno.exit(6);
   }
 
   const uiApp = new StudioPackGeneratorGui();
