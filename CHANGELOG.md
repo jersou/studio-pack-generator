@@ -1,3 +1,8 @@
+### v0.5.7 / 2024.10.06
+
+- fix: coqui-tts error on windows
+- fix: the GUI config is not used by the backend
+
 ### v0.5.6 / 2024.10.06
 
 - fix: coqui TTS on Windows in some cases
