@@ -1,4 +1,4 @@
-import { File, Folder, Metadata } from "./serialize/types.ts";
+import type { File, Folder, Metadata } from "./serialize/serialize-types.ts";
 import { fsToFolder } from "./serialize/fs.ts";
 import { extractImagesFromAudio } from "./generate/extract_images_from_audio.ts";
 import { genMissingItems } from "./generate/gen_missing_items.ts";
@@ -8,9 +8,12 @@ import { serializePack } from "./serialize/serializer.ts";
 import { getAssetsPaths } from "./serialize/assets.ts";
 import { createPackZip } from "./utils/zip.ts";
 import { downloadRss } from "./generate/rss_parser.ts";
-import { basename, bgRed, exists, join } from "./deps.ts";
+import { exists } from "@std/fs";
+import { bgRed } from "@std/fmt/colors";
+import { basename, join } from "@std/path";
 import {
   checkRunPermission,
+  cleanOption,
   convertToImageItem,
   folderImageItemRegEx,
   getNightModeAudioItem,
@@ -18,46 +21,15 @@ import {
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 import { convertImageOfFolder } from "./utils/convert_image.ts";
-import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "./generate/openai_tts.ts";
 import { fileImageItemRegEx } from "./utils/utils.ts";
+import type { ModOptions } from "./types.ts";
+import $ from "@david/dax";
 
-export type ModOptions = {
-  storyPath: string;
-  lang: string;
-  rssSplitLength: number;
-  rssSplitSeasons?: boolean;
-  rssMinDuration: number;
-  rssUseImageAsThumbnail?: boolean;
-  skipImageItemGen?: boolean;
-  thumbnailFromFirstItem: boolean;
-  useThumbnailAsRootImage?: boolean;
-  imageItemGenFont: string;
-  skipAudioItemGen?: boolean;
-  skipAudioConvert?: boolean;
-  skipImageConvert?: boolean;
-  skipExtractImageFromMp3?: boolean;
-  skipZipGeneration?: boolean;
-  skipNotRss?: boolean;
-  autoNextStoryTransition?: boolean;
-  selectNextStoryAtEnd?: boolean;
-  addDelay?: boolean;
-  nightMode?: boolean;
-  seekStory?: string;
-  skipWsl?: boolean;
-  skipRssImageDl: boolean;
-  outputFolder?: string;
-  useOpenAiTts?: boolean;
-  openAiApiKey?: string;
-  openAiModel?: typeof OPEN_AI_MODELS[number];
-  openAiVoice?: typeof OPEN_AI_VOICES[number];
-  useCoquiTts?: boolean;
-  coquiTtsModel?: string;
-  coquiTtsLanguageIdx?: string;
-  coquiTtsSpeakerIdx?: string;
-  extract?: boolean;
-};
-
-async function genThumbnail(folder: Folder, storyPath: string, thumbnailFromFirstItem: boolean) {
+async function genThumbnail(
+  folder: Folder,
+  storyPath: string,
+  thumbnailFromFirstItem: boolean,
+) {
   await checkRunPermission();
   const thumbnailPath = join(storyPath, "thumbnail.png");
   if (!(await exists(thumbnailPath))) {
@@ -65,15 +37,13 @@ async function genThumbnail(folder: Folder, storyPath: string, thumbnailFromFirs
     let thumbnailItemPath = storyPath;
     if (thumbnailFromFirstItem) {
       let files = folder.files;
-      let insideFolder = files.find(isFolder)
-      while(insideFolder) {
+      let insideFolder = files.find(isFolder);
+      while (insideFolder) {
         files = insideFolder.files;
         thumbnailItemPath = join(thumbnailItemPath, insideFolder.name);
-        insideFolder = files.find(isFolder)
+        insideFolder = files.find(isFolder);
       }
-      itemFile = files.find((f) =>
-        fileImageItemRegEx.test(f.name)
-      ) as File;
+      itemFile = files.find((f) => fileImageItemRegEx.test(f.name)) as File;
     }
     if (!itemFile) {
       thumbnailItemPath = storyPath;
@@ -82,7 +52,10 @@ async function genThumbnail(folder: Folder, storyPath: string, thumbnailFromFirs
       ) as File;
     }
     if (itemFile) {
-      await convertToImageItem(join(thumbnailItemPath, itemFile.name), thumbnailPath);
+      await convertToImageItem(
+        join(thumbnailItemPath, itemFile.name),
+        thumbnailPath,
+      );
     }
   }
 }
@@ -96,11 +69,11 @@ export async function generatePack(opt: ModOptions) {
         "The night mode is incompatible with auto-next-story-transition or select-next-story-at-end options",
       ),
     );
-    Deno.exit(1);
+    Deno.exit(4);
   }
 
   const start = Date.now();
-  console.log({ opt });
+  console.log("generatePack", { opt });
   const lang = opt.lang || (await getLang());
   await initI18n(lang);
   let pathsToHandle = [opt.storyPath];
@@ -108,8 +81,7 @@ export async function generatePack(opt: ModOptions) {
     pathsToHandle = await downloadRss(opt.storyPath, ".", opt);
     console.log(`downloaded in ${opt.storyPath}`);
   }
-  for (let index = 0; index < pathsToHandle.length; index++) {
-    const storyPath = pathsToHandle[index];
+  for (const storyPath of pathsToHandle) {
     if (!opt.skipNotRss) {
       let folder: Folder = await fsToFolder(storyPath, false);
       if (!opt.skipExtractImageFromMp3) {
@@ -142,7 +114,7 @@ export async function generatePack(opt: ModOptions) {
       }
       if (!opt.skipZipGeneration) {
         folder = await fsToFolder(storyPath, true);
-  
+
         const metadata: Metadata = await getMetadata(storyPath, opt);
         const pack = folderToPack(folder, metadata);
         const nightModeAudioItemName = getNightModeAudioItem(folder);
@@ -151,9 +123,12 @@ export async function generatePack(opt: ModOptions) {
           nightModeAudioItemName,
         });
         const assets = getAssetsPaths(serializedPack, folder);
+        const date = new Date().toISOString().substring(0, 19)
+          .replace("T", "--")
+          .replaceAll(":", "-");
         const zipPath = opt.outputFolder
-          ? join(opt.outputFolder, `${basename(storyPath)}-${Date.now()}.zip`)
-          : `${storyPath}-${Date.now()}.zip`;
+          ? join(opt.outputFolder, `${basename(storyPath)}--${date}.zip`)
+          : `${storyPath}--${date}.zip`;
         await createPackZip(zipPath, storyPath, serializedPack, assets);
         console.log(
           `Done (${
@@ -162,11 +137,16 @@ export async function generatePack(opt: ModOptions) {
         );
       }
     }
+    await $.path(`${storyPath}/0-config.json`).writeText(
+      JSON.stringify(cleanOption(opt), null, " "),
+    );
   }
-  
 }
 
-async function getMetadata(storyPath:string, opt: ModOptions): Promise<Metadata> {
+export async function getMetadata(
+  storyPath: string,
+  opt: ModOptions,
+): Promise<Metadata> {
   const metadataPath = `${storyPath}/metadata.json`;
   if (await exists(metadataPath)) {
     const metadataJson = await Deno.readTextFile(metadataPath);

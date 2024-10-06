@@ -11,3 +11,7 @@
 /.idea/inspectionProfiles
 /.idea/sonarlint/
 /.idea/
+/gui/node_modules/
+/gui/src-tauri/target/
+/gui/dist
+/gui/.vite

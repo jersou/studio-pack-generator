@@ -1,4 +1,4 @@
-import {
+import type {
   Action,
   ActionNode,
   Entrypoint,
@@ -10,9 +10,10 @@ import {
   StoryAction,
   StoryItem,
   ZipMenu,
-} from "./types.ts";
-import { BlobReader, BlobWriter, ZipReader } from "../deps.ts";
-import { ModOptions } from "../gen_pack.ts";
+} from "./serialize-types.ts";
+import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
+
+import type { ModOptions } from "../types.ts";
 
 type SerializePackOption = {
   autoNextStoryTransition?: boolean;
@@ -70,7 +71,7 @@ export async function serializePack(
     serialized.actionNodes.push(nightAction);
     const nightStage: StageNode = {
       image: null,
-      audio: serializePackOption?.nightModeAudioItemName || null, // TODO
+      audio: serializePackOption?.nightModeAudioItemName || null,
       controlSettings: {
         autoplay: true,
         home: true,

@@ -1,4 +1,4 @@
-import {
+import type {
   File,
   Folder,
   Menu,
@@ -7,7 +7,7 @@ import {
   Story,
   StoryItem,
   ZipMenu,
-} from "./types.ts";
+} from "./serialize-types.ts";
 import {
   cleanStageName,
   firstStoryFile,
@@ -24,7 +24,10 @@ import {
 
 export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
-  return {
+  const audio = getFolderAudioItem(folder);
+  const image = getFolderImageItem(folder);
+  const folderPath = folder.path + "/";
+  const res: Pack = {
     title: metadata?.title ?? folder.name,
     description: metadata?.description ?? "",
     format: metadata?.format ?? "v1",
@@ -33,8 +36,11 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
     entrypoint: {
       class: "StageNode-Entrypoint",
       name: "Cover node",
-      image: getFolderImageItem(folder),
-      audio: getFolderAudioItem(folder),
+      path: folderPath,
+      image: image?.assetName ?? null,
+      audio: audio?.assetName ?? null,
+      imagePath: image?.path,
+      audioPath: audio?.path,
       okTransition: {
         class: "ActionNode",
         name: "Action node",
@@ -46,14 +52,46 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
       },
     },
   };
+
+  if (folder.path) {
+    try {
+      if (audio) {
+        res.entrypoint.audioTimestamp = Deno.statSync(folder.path + "/" + audio)
+          .mtime
+          ?.getTime();
+      }
+      if (image) {
+        res.entrypoint.imageTimestamp = Deno.statSync(folder.path + "/" + image)
+          .mtime
+          ?.getTime();
+      }
+      if (folder.path) {
+        res.entrypoint.pathTimestamp = Deno.statSync(folder.path).mtime
+          ?.getTime();
+      }
+    } catch (_) {
+      //
+    }
+  }
+
+  return res;
 }
 
 export function folderToMenu(folder: Folder, path: string): Menu {
-  return {
+  const image = getFolderImageItem(folder);
+  const audio = getFolderAudioItem(folder);
+  const folderPath = folder.path + "/";
+  const res: Menu = {
     class: "StageNode-Menu",
-    image: getFolderImageItem(folder),
-    audio: getFolderAudioItem(folder),
+    image: image?.assetName ?? null,
+    audio: audio?.assetName ?? null,
     name: folder.name,
+    path: folderPath,
+    imagePath: image?.path,
+    audioPath: audio?.path,
+    audioTimestamp: folder.path && audio ? getMTime(audio?.path) : undefined,
+    imageTimestamp: folder.path && image ? getMTime(image?.path) : undefined,
+    pathTimestamp: folderPath ? getMTime(folderPath) : undefined,
     okTransition: {
       class: "ActionNode",
       name: folder.name,
@@ -70,6 +108,7 @@ export function folderToMenu(folder: Folder, path: string): Menu {
         .filter((f) => f) as (Menu | ZipMenu | StoryItem)[],
     },
   };
+  return res;
 }
 
 export function fileToZipMenu(path: string): ZipMenu {
@@ -79,19 +118,35 @@ export function fileToZipMenu(path: string): ZipMenu {
   };
 }
 
+function getMTime(path: string | undefined) {
+  try {
+    return path ? Deno.statSync(path).mtime?.getTime() : undefined;
+  } catch (_) {
+    //
+  }
+}
+
 export function fileToStoryItem(file: File, parent: Folder): StoryItem {
-  return {
+  const audio = getFileAudioItem(file, parent);
+  const image = getFileImageItem(file, parent);
+  const res: StoryItem = {
     class: "StageNode-StoryItem",
     name: cleanStageName(file.name),
-    audio: getFileAudioItem(file, parent),
-    image: getFileImageItem(file, parent),
+    path: file.path,
+    audio: audio?.assetName ?? null,
+    image: image?.assetName ?? null,
+    imagePath: image?.path,
+    audioPath: audio?.path,
+    audioTimestamp: parent.path && audio ? getMTime(audio?.path) : undefined,
+    imageTimestamp: parent.path && image ? getMTime(image?.path) : undefined,
+    pathTimestamp: parent.path && file.path ? getMTime(file.path) : undefined,
     okTransition: {
       name: cleanStageName(file.name),
       class: "ActionNode",
       options: [
         {
           class: "StageNode-Story",
-          audio: getFileAudioStory(file),
+          audio: getFileAudioStory(file)?.assetName ?? null,
           image: null,
           name: cleanStageName(file.name),
           okTransition: null,
@@ -99,11 +154,13 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
       ],
     },
   };
+  return res;
 }
 
 export function fileToStory(file: File): Story {
   return {
     class: "StageNode-Story",
+    path: file.path,
     audio: `${file.sha1}.${getExtension(file.name)}`,
     image: null,
     name: cleanStageName(file.name),

@@ -17,8 +17,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/gui/dist" />
       <excludeFolder url="file://$MODULE_DIR$/gui/src-tauri/target" />
+      <excludeFolder url="file://$MODULE_DIR$/gui/frontend/dist" />
       <excludePattern pattern=".*" />
       <excludePattern pattern="lock.json" />
+      <excludePattern pattern="deno.lock" />
+      <excludePattern pattern="package-lock.json" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

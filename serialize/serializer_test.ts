@@ -1,4 +1,4 @@
-import { assertEquals } from "../test_deps.ts";
+import { assertEquals } from "@std/assert";
 import {
   expectedFullPack,
   expectedFullPackNightSerialized,
@@ -10,7 +10,8 @@ import {
   expectedMoyPackSerialized,
 } from "../test_data/test_data.ts";
 import { serializePack } from "./serializer.ts";
-import { ModOptions } from "../gen_pack.ts";
+
+import type { ModOptions } from "../types.ts";
 
 type Obj = {
   id?: string;
@@ -64,7 +65,7 @@ const emptyOpt: ModOptions = {
   rssMinDuration: 0,
   thumbnailFromFirstItem: false,
   rssSplitLength: 10,
-  skipRssImageDl: false
+  skipRssImageDl: false,
 };
 
 Deno.test("serializePack-min", async () => {
@@ -110,7 +111,7 @@ Deno.test("serializePack-next-menu", async () => {
     rssMinDuration: 0,
     thumbnailFromFirstItem: false,
     rssSplitLength: 10,
-    skipRssImageDl: false
+    skipRssImageDl: false,
   });
   assertEquals(
     clearIds(clone(pack)),

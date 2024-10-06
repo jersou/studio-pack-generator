@@ -4,7 +4,7 @@ import {
   expectedSortFolder,
   minFsWithoutSha,
 } from "../test_data/test_data.ts";
-import { assertEquals } from "../test_deps.ts";
+import { assertEquals } from "@std/assert";
 
 Deno.test("fsToFolder", async () => {
   const folder = await fsToFolder("./test_data/fs/2-full");

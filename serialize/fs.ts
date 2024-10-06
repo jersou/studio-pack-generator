@@ -1,5 +1,6 @@
-import { File, Folder } from "./types.ts";
-import { basename, encodeHex, join } from "../deps.ts";
+import type { File, Folder } from "./serialize-types.ts";
+import { basename, join } from "@std/path";
+import { encodeHex } from "@std/encoding";
 import { getLang } from "../utils/i18n.ts";
 
 async function ls(path: string): Promise<Deno.DirEntry[]> {
@@ -16,6 +17,7 @@ export async function fsToFolder(
 ): Promise<Folder> {
   const folder: Folder = {
     name: basename(path),
+    path,
     files: [],
   };
   const entries = await ls(path);
@@ -26,9 +28,11 @@ export async function fsToFolder(
     if (entry.isDirectory) {
       folder.files.push(await fsToFolder(join(path, entry.name), genSha1));
     } else {
+      const filePath = join(path, entry.name);
       folder.files.push({
         name: entry.name,
-        sha1: genSha1 ? await getSha1(join(path, entry.name)) : "",
+        sha1: genSha1 ? await getSha1(filePath) : "",
+        path: filePath,
       } as File);
     }
   }

@@ -1,8 +1,14 @@
-import { $, bgGreen } from "../deps.ts";
+import { green } from "@std/fmt/colors";
+import $ from "@david/dax";
+
 import { getConvertCommand } from "../utils/external_commands.ts";
 
-export async function generateImage(title: string, outputPath: string, fontName: string) {
-  console.log(bgGreen(`Generate image to ${outputPath}`));
+export async function generateImage(
+  title: string,
+  outputPath: string,
+  fontName: string,
+) {
+  console.log(green(`Generate image to ${outputPath}`));
 
   const convertCommand = await getConvertCommand();
   const cmd = [
@@ -24,7 +30,7 @@ export async function generateImage(title: string, outputPath: string, fontName:
   await $`${cmd}`.noThrow();
 }
 export async function convertImage(inputPath: string, outputPath: string) {
-  console.log(bgGreen(`convert image ${inputPath} to ${outputPath}`));
+  console.log(green(`convert image ${inputPath} to ${outputPath}`));
 
   const convertCommand = await getConvertCommand();
   const cmd = [

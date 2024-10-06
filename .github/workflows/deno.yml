@@ -2,7 +2,7 @@ name: Deno
 
 on:
   push:
-    branches: [main,dev]
+    branches: ['*']
     tags:
       - v*
   pull_request:
@@ -46,7 +46,7 @@ jobs:
           deno-version: v1.46.3
 
       - name: check version
-        run: test $(./version.ts) = ${GITHUB_REF##*/}
+        run: test v$(./utils/version.ts) = ${GITHUB_REF##*/}
 
       - name: Generate binaries
         run: ./gen-bin.sh
