@@ -4,7 +4,6 @@ import $ from "@david/dax";
 import { convertPath } from "../utils/utils.ts";
 import {
   checkCommand,
-  getCoquiCommand,
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
 import type { ModOptions } from "../types.ts";
@@ -38,25 +37,7 @@ export async function generate_audio_basic_tts(
 ) {
   console.log(blue(`Generate basic TTS to ${outputPath}`));
 
-  if (opt.useCoquiTts) {
-    const coquiCommand = await getCoquiCommand();
-    const cmd = [
-      ...coquiCommand,
-      "--text",
-      title,
-      "--model_name",
-      opt.coquiTtsModel,
-      "--out_path",
-      outputPath,
-    ];
-    if (opt.coquiTtsLanguageIdx) {
-      cmd.push("--language_idx", opt.coquiTtsLanguageIdx);
-    }
-    if (opt.coquiTtsSpeakerIdx) {
-      cmd.push("--speaker_idx", opt.coquiTtsSpeakerIdx);
-    }
-    await $`${cmd}`;
-  } else if (
+  if (
     Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))
   ) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
