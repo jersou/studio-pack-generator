@@ -46,4 +46,7 @@ export type ModOptions = {
   configFile?: string;
   isCompiled?: boolean;
   gui?: boolean;
+  skipWriteTtsCache?: boolean;
+  skipReadTtsCache?: boolean;
+  ttsReadCachePath?: string;
 };

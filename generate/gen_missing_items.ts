@@ -78,14 +78,14 @@ export async function genMissingItems(
         if (!opt.skipImageItemGen && !getFileImageItem(file, folder)) {
           await generateImage(
             getTitle(getNameWithoutExt(file.name)),
-            `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.png`,
+            `${rootpath}/${getNameWithoutExt(file.name)}.item.png`,
             opt.imageItemGenFont,
           );
         }
         if (!opt.skipAudioItemGen && !getFileAudioItem(file, folder)) {
           await generateAudio(
             getTitle(getNameWithoutExt(file.name)),
-            `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.wav`,
+            `${rootpath}/${getNameWithoutExt(file.name)}.item.wav`,
             lang,
             opt,
           );

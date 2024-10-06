@@ -7,6 +7,8 @@ import {
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
 import type { ModOptions } from "../types.ts";
+import { cacheTtsFile, useCachedTtsFile } from "./tts_cache.ts";
+import { bgRed } from "@std/fmt/colors";
 
 let hasPico2waveWslCache: undefined | boolean;
 
@@ -40,6 +42,18 @@ export async function generate_audio_basic_tts(
   if (
     Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))
   ) {
+    await windows_tts(outputPath, opt, title);
+  } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
+    await macos_tts(outputPath, opt, title);
+  } else {
+    await pico2wave_tts(lang, outputPath, opt, title);
+  }
+}
+
+async function windows_tts(outputPath: string, opt: ModOptions, title: string) {
+  const cacheKey = ["windows_tts", title];
+
+  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
@@ -52,8 +66,20 @@ export async function generate_audio_basic_tts(
       `$speak.Speak(" . ${title.replace(/["' ]/g, " ")} . "); ` +
       `$speak.Dispose();`,
     ];
-    await $`PowerShell ${args}`.noThrow();
-  } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
+    const res = await $`PowerShell ${args}`.noThrow();
+    if (res.code === 0) {
+      if (!opt.skipWriteTtsCache) {
+        await cacheTtsFile(outputPath, cacheKey);
+      }
+    } else {
+      console.log(bgRed(`windows_tts gen KO for "${title}"`));
+    }
+  }
+}
+
+async function macos_tts(outputPath: string, opt: ModOptions, title: string) {
+  const cacheKey = ["macos_tts", title];
+  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
     const args = [
       "-o",
       convertPath(outputPath, opt),
@@ -61,9 +87,27 @@ export async function generate_audio_basic_tts(
       "WAVE",
       "--data-format",
       "LEF32@22050",
+      title,
     ];
-    await $`say ${args}`.noThrow();
-  } else {
+    const res = await $`say ${args}`.noThrow();
+    if (res.code === 0) {
+      if (!opt.skipWriteTtsCache) {
+        await cacheTtsFile(outputPath, cacheKey);
+      }
+    } else {
+      console.log(bgRed(`macos_tts gen KO for "${title}"`));
+    }
+  }
+}
+
+async function pico2wave_tts(
+  lang: string,
+  outputPath: string,
+  opt: ModOptions,
+  title: string,
+) {
+  const cacheKey = ["pico2wave_tts", title, lang];
+  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
     const pico2waveCommand = await getPico2waveCommand();
     const cmd = [
       pico2waveCommand[0],
@@ -74,6 +118,13 @@ export async function generate_audio_basic_tts(
       convertPath(outputPath, opt),
       ` . ${title} . `,
     ];
-    await $`${cmd}`.noThrow();
+    const res = await $`${cmd}`.noThrow();
+    if (res.code === 0) {
+      if (!opt.skipWriteTtsCache) {
+        await cacheTtsFile(outputPath, cacheKey);
+      }
+    } else {
+      console.log(bgRed(`pico2wave_tts gen KO for "${title}"`));
+    }
   }
 }
