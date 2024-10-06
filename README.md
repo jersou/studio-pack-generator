@@ -247,7 +247,7 @@ Options:
       --config-file                  json config file                                                           [string]
       --skip-read-tts-cache          disable the TTS cache usage                              [boolean] [default: false]
       --skip-write-tts-cache         disable the TTS cache write                              [boolean] [default: false]
-      --tts-cache-path               path to the TTS cache  [string]               [default: "<SPG dir>/.spg-TTS-cache"]
+      --tts-cache-path               path to the TTS cache                [string] [default: "<SPG dir>/.spg-TTS-cache"]
 ```
 
 Separate options by spaces, ex :
@@ -292,6 +292,11 @@ All key/value are optional, ex:
   "nightMode": false
 }
 ```
+
+## TTS cache
+
+A folder `<studio-pack-generator install dir>/.spg-TTS-cache/` is used to keep
+the generated audio files.
 
 ## OpenAI TTS
 

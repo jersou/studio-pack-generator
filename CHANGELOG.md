@@ -1,3 +1,7 @@
+### v0.5.8 / 2024.10.07
+
+- feat: cache generated TTS file
+
 ### v0.5.7 / 2024.10.06
 
 - fix: coqui-tts error on windows
