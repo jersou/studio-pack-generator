@@ -15,6 +15,7 @@ import { throttle } from "@es-toolkit/es-toolkit";
 import type { ModOptions } from "../types.ts";
 import { contentType } from "@std/media-types";
 import { red } from "@std/fmt/colors";
+import { cleanOption } from "../utils/utils.ts";
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
@@ -132,34 +133,7 @@ class StudioPackGeneratorGui {
       route: new URLPattern({ pathname: "/api/runSpg" }),
       exec: async (_match: URLPatternResult, request: Request) => {
         const opt = await request.json();
-        const optFiltered = {
-          addDelay: opt.addDelay,
-          autoNextStoryTransition: opt.autoNextStoryTransition,
-          selectNextStoryAtEnd: opt.selectNextStoryAtEnd,
-          nightMode: opt.nightMode,
-          skipAudioConvert: opt.skipAudioConvert,
-          skipImageConvert: opt.skipImageConvert,
-          skipAudioItemGen: opt.skipAudioItemGen,
-          skipExtractImageFromMp3: opt.skipExtractImageFromMp3,
-          skipImageItemGen: opt.skipImageItemGen,
-          skipNotRss: opt.skipNotRss,
-          skipRssImageDl: opt.skipRssImageDl,
-          skipWsl: opt.skipWsl,
-          skipZipGeneration: opt.skipZipGeneration,
-          useOpenAiTts: opt.useOpenAiTts,
-          lang: opt.lang,
-          outputFolder: opt.outputFolder,
-          seekStory: opt.seekStory,
-          openAiApiKey: opt.openAiApiKey,
-          openAiModel: opt.openAiModel,
-          openAiVoice: opt.openAiVoice,
-        };
-        const configPath = `${this.#opt!.storyPath}/config.json`;
-        console.log(`Write config to ${configPath}`);
-        await Deno.writeTextFile(
-          configPath,
-          JSON.stringify(optFiltered, null, "  "),
-        );
+        const optFiltered = cleanOption(opt);
         console.log(`Run SPG on ${this.#opt!.storyPath}`);
 
         (async () => {
@@ -167,7 +141,10 @@ class StudioPackGeneratorGui {
           this.#sendWs(JSON.stringify({ type: "SPG-start" }));
 
           try {
-            const res = await runSpg(this.#opt!);
+            const res = await runSpg({
+              ...optFiltered,
+              storyPath: this.#opt!.storyPath,
+            });
             console.log("SPG end");
             this.#sendWs(JSON.stringify({ type: "SPG-end", ok: res }));
           } catch (error) {
