@@ -39,6 +39,7 @@ export type RssItem = {
   "podcast:season"?: number;
   "podcast:episode"?: number;
   "itunes:season"?: number;
+  "itunes:subtitle"?: string;
   "itunes:episode"?: number;
   "itunes:duration"?: string;
   "itunes:image"?: {
@@ -144,7 +145,7 @@ async function getFolderWithUrlFromRssUrl(
 }
 
 export function getItemFileName(item: RssItem) {
-  const title = convertToValidFilename(item.title!);
+  const title = convertToValidFilename((item['itunes:subtitle'] || item.title)!);
   return (
     new Date(item.pubDate).getTime() +
     ` - ${title}.${getExtension(item.enclosure["@url"])}`
