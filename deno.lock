@@ -7,6 +7,8 @@
       "jsr:@david/which@~0.4.1": "jsr:@david/which@0.4.1",
       "jsr:@es-toolkit/es-toolkit@^1.23.0": "jsr:@es-toolkit/es-toolkit@1.23.0",
       "jsr:@jersou/clite@^0.5.0": "jsr:@jersou/clite@0.5.0",
+      "jsr:@libs/typing@3": "jsr:@libs/typing@3.1.0",
+      "jsr:@libs/xml@^6.0.0": "jsr:@libs/xml@6.0.0",
       "jsr:@std/assert@^0.221.0": "jsr:@std/assert@0.221.0",
       "jsr:@std/assert@^1.0.6": "jsr:@std/assert@1.0.6",
       "jsr:@std/bytes@^0.221.0": "jsr:@std/bytes@0.221.0",
@@ -61,6 +63,15 @@
         "dependencies": [
           "jsr:@std/fmt@1.0.2",
           "jsr:@std/text@1.0.6"
+        ]
+      },
+      "@libs/typing@3.1.0": {
+        "integrity": "091b59f57a99f84c9fccf8f59534f77f177705ac25183b575c83fd7aa6dcfafe"
+      },
+      "@libs/xml@6.0.0": {
+        "integrity": "d629f461bc10598de9ad55470f3b7c9bf1707cc2b90be9603a129259b8e5d0a5",
+        "dependencies": [
+          "jsr:@libs/typing@3"
         ]
       },
       "@std/assert@0.221.0": {
@@ -132,6 +143,7 @@
       "jsr:@david/dax@^0.42.0",
       "jsr:@es-toolkit/es-toolkit@^1.23.0",
       "jsr:@jersou/clite@^0.5.0",
+      "jsr:@libs/xml@^6.0.0",
       "jsr:@std/assert@^1.0.6",
       "jsr:@std/encoding@^1.0.5",
       "jsr:@std/fmt@^1.0.2",
