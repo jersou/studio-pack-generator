@@ -135,9 +135,9 @@ async function getFolderWithUrlFromRssUrl(
     );
     console.log(blue(`→ ${items.length} items`));
     if (items.length <= opt.rssSplitLength) {
-      fs.files.push(getFolderOfStories(items, !!opt.skipRssImageDl));
+      fs.files.push(await getFolderOfStories(items, opt));
     } else {
-      fs.files.push(getFolderParts(items, !!opt.skipRssImageDl));
+      fs.files.push(await getFolderParts(items, opt));
     }
   }
 
@@ -158,13 +158,13 @@ export function fixUrl(url: string): string {
     .replace(/^.*http:\/\//g, "http://");
 }
 
-function getFolderOfStories(
+async function getFolderOfStories(
   items: RssItem[],
-  skipRssImageDl: boolean,
-): FolderWithUrl {
+  opt: ModOptions,
+): Promise<FolderWithUrl> {
   return {
     name: i18next.t("storyQuestion"),
-    files: items.flatMap((item) => {
+    files: (await Promise.all(items.map(async (item) => {
       const itemFiles = [{
         name: getItemFileName(item),
         url: fixUrl(item.enclosure["@url"]),
@@ -182,14 +182,14 @@ function getFolderOfStories(
       }
 
       return itemFiles;
-    }),
+    }))).flat(),
   };
 }
 
-function getFolderParts(
+async function getFolderParts(
   items: RssItem[],
-  skipRssImageDl: boolean,
-): FolderWithUrl {
+  opt: ModOptions,
+): Promise<FolderWithUrl> {
   const partCount = Math.ceil(items.length / 10);
   const parts: RssItem[][] = [];
   for (let i = 0; i < partCount; i++) {
@@ -201,10 +201,10 @@ function getFolderParts(
 
   return {
     name: i18next.t("partQuestion"),
-    files: parts.map((part, index) => ({
+    files: await Promise.all(parts.map(async (part, index) => ({
       name: `${i18next.t("partTitle")} ${index + 1}`,
-      files: [getFolderOfStories(part, skipRssImageDl)],
-    })),
+      files: [await getFolderOfStories(part, opt)],
+    }))),
   };
 }
 
