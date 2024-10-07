@@ -181,6 +181,12 @@ export async function parseArgs(args: string[]) {
       default: 0,
       describe: "RSS min episode duration",
     })
+    .option("rss-use-subtitle-as-title", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "Use rss items subtitle as title",
+    })
     .option("rss-use-image-as-thumbnail", {
       demandOption: false,
       boolean: true,

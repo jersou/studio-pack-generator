@@ -149,8 +149,8 @@ async function getFolderWithUrlFromRssUrl(
   return fss;
 }
 
-export function getItemFileName(item: RssItem) {
-  const title = convertToValidFilename((item['itunes:subtitle'] || item.title)!);
+export function getItemFileName(item: RssItem, opt: ModOptions) {
+  const title = convertToValidFilename((opt.rssUseSubtitleAsTitle && item['itunes:subtitle'] || item.title)!);
   return (
     new Date(item.pubDate).getTime() +
     ` - ${title}.${getExtension(item.enclosure["@url"])}`
@@ -171,18 +171,18 @@ async function getFolderOfStories(
     name: i18next.t("storyQuestion"),
     files: (await Promise.all(items.map(async (item) => {
       const itemFiles = [{
-        name: getItemFileName(item),
+        name: getItemFileName(item, opt),
         url: fixUrl(item.enclosure["@url"]),
         sha1: "",
       }, {
-        name: getNameWithoutExt(getItemFileName(item)) + '-metadata.json',
-        data:{...item, title: item['itunes:subtitle'] || item.title},
+        name: getNameWithoutExt(getItemFileName(item, opt)) + '-metadata.json',
+        data:{...item, title: (opt.rssUseSubtitleAsTitle && item['itunes:subtitle']) || item.title},
         sha1: "",
       }];
       const imageUrl = opt.customModule?.fetchRssItemImage ? await opt.customModule?.fetchRssItemImage(item, opt):  item["itunes:image"]?.["@href"];
       if (!opt.skipRssImageDl && imageUrl) {
         itemFiles.push({
-          name: `${getNameWithoutExt(getItemFileName(item))}.item.${
+          name: `${getNameWithoutExt(getItemFileName(item, opt))}.item.${
             getExtension(imageUrl)
           }`,
           url: imageUrl,

@@ -20,6 +20,7 @@ export type ModOptions = {
   rssSplitSeasons?: boolean;
   rssMinDuration: number;
   rssUseImageAsThumbnail?: boolean;
+  rssUseSubtitleAsTitle?: boolean;
   skipImageItemGen?: boolean;
   thumbnailFromFirstItem: boolean;
   useThumbnailAsRootImage?: boolean;
