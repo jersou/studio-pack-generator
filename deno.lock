@@ -6,6 +6,7 @@
       "jsr:@david/path@0.2": "jsr:@david/path@0.2.0",
       "jsr:@david/which@~0.4.1": "jsr:@david/which@0.4.1",
       "jsr:@dbushell/audio-duration": "jsr:@dbushell/audio-duration@0.6.0",
+      "jsr:@dbushell/audio-duration@^0.6.0": "jsr:@dbushell/audio-duration@0.6.0",
       "jsr:@es-toolkit/es-toolkit@^1.23.0": "jsr:@es-toolkit/es-toolkit@1.23.0",
       "jsr:@jersou/clite@^0.5.0": "jsr:@jersou/clite@0.5.0",
       "jsr:@libs/typing@3": "jsr:@libs/typing@3.1.0",
@@ -167,6 +168,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@david/dax@^0.42.0",
+      "jsr:@dbushell/audio-duration@^0.6.0",
       "jsr:@es-toolkit/es-toolkit@^1.23.0",
       "jsr:@jersou/clite@^0.5.0",
       "jsr:@libs/xml@^6.0.0",

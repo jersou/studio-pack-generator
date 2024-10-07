@@ -26,7 +26,7 @@ import {
 import { join } from "@std/path";
 import { exists } from "@std/fs";
 
-import { duration } from "jsr:@dbushell/audio-duration";
+import { duration } from "@dbushell/audio-duration";
 
 export async function folderToPack(
   folder: Folder,
