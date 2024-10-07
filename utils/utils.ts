@@ -76,10 +76,10 @@ export function getFolderImageItem(folder: Folder) {
 }
 
 export function getFileAudioItem(file: File, parent: Folder) {
-  const nameWithoutExt = getNameWithoutExt(file.name);
+  const nameWithoutExt = rmDiacritic(getNameWithoutExt(file.name));
   const audioItem = parent.files.find(
     (f) =>
-      getNameWithoutExt(rmDiacritic(f.name)).replace(/.item$/, "") ===
+      getNameWithoutExt(rmDiacritic(f.name)).replace(/(-generated)?.item$/, "") ===
         rmDiacritic(nameWithoutExt) &&
       fileAudioItemRegEx.test(f.name),
   ) as File;
