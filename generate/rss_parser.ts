@@ -170,8 +170,8 @@ async function getFolderOfStories(
         url: fixUrl(item.enclosure["@url"]),
         sha1: "",
       }];
-      const imageUrl = item["itunes:image"]?.["@href"];
-      if (!skipRssImageDl && imageUrl) {
+      const imageUrl = opt.customModule?.fetchRssItemImage ? await opt.customModule?.fetchRssItemImage(item, opt):  item["itunes:image"]?.["@href"];
+      if (!opt.skipRssImageDl && imageUrl) {
         itemFiles.push({
           name: `${getNameWithoutExt(getItemFileName(item))}.item.${
             getExtension(imageUrl)

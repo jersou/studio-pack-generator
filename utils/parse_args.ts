@@ -33,6 +33,14 @@ export async function parseArgs(args: string[]) {
           opts = { ...opts, ...optsFromFile, storyPath: opts.storyPath };
         }
 
+        if (opts.customScript) {
+          try {
+            opts.customModule = await import(opts.customScript);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
         if (opts.extract) {
           return await new PackExtractor(opts).extractPack();
         } else if (opts.gui) {
@@ -297,6 +305,13 @@ export async function parseArgs(args: string[]) {
       default: false,
       hidden: true,
       describe: "true if compiled with deno compile",
+    })
+    .option("custom-script", {
+      demandOption: false,
+      boolean: false,
+      default: undefined,
+      type: "string",
+      describe: "custom script to be used for custom image... handling",
     })
     .version(false)
     .demandCommand(1)
