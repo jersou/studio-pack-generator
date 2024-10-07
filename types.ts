@@ -55,7 +55,7 @@ export type ModOptions = {
   gui?: boolean;
   skipWriteTtsCache?: boolean;
   skipReadTtsCache?: boolean;
-  ttsReadCachePath?: string;
+  ttsCachePath?: string;
   customScript?: string;
   customModule?: CustomModule;
   i18n?: Record<string, string>;

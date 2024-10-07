@@ -53,7 +53,9 @@ export async function generate_audio_basic_tts(
 async function windows_tts(outputPath: string, opt: ModOptions, title: string) {
   const cacheKey = ["windows_tts", title];
 
-  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
+  if (
+    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+  ) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
       "::Sixteen,[System.Speech.AudioFormat.AudioChannel]::Mono)";
@@ -69,7 +71,7 @@ async function windows_tts(outputPath: string, opt: ModOptions, title: string) {
     const res = await $`PowerShell ${args}`.noThrow();
     if (res.code === 0) {
       if (!opt.skipWriteTtsCache) {
-        await cacheTtsFile(outputPath, cacheKey);
+        await cacheTtsFile(outputPath, cacheKey, opt);
       }
     } else {
       console.log(bgRed(`windows_tts gen KO for "${title}"`));
@@ -79,7 +81,9 @@ async function windows_tts(outputPath: string, opt: ModOptions, title: string) {
 
 async function macos_tts(outputPath: string, opt: ModOptions, title: string) {
   const cacheKey = ["macos_tts", title];
-  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
+  if (
+    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+  ) {
     const args = [
       "-o",
       convertPath(outputPath, opt),
@@ -92,7 +96,7 @@ async function macos_tts(outputPath: string, opt: ModOptions, title: string) {
     const res = await $`say ${args}`.noThrow();
     if (res.code === 0) {
       if (!opt.skipWriteTtsCache) {
-        await cacheTtsFile(outputPath, cacheKey);
+        await cacheTtsFile(outputPath, cacheKey, opt);
       }
     } else {
       console.log(bgRed(`macos_tts gen KO for "${title}"`));
@@ -107,7 +111,9 @@ async function pico2wave_tts(
   title: string,
 ) {
   const cacheKey = ["pico2wave_tts", title, lang];
-  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
+  if (
+    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+  ) {
     const pico2waveCommand = await getPico2waveCommand();
     const cmd = [
       pico2waveCommand[0],
@@ -121,7 +127,7 @@ async function pico2wave_tts(
     const res = await $`${cmd}`.noThrow();
     if (res.code === 0) {
       if (!opt.skipWriteTtsCache) {
-        await cacheTtsFile(outputPath, cacheKey);
+        await cacheTtsFile(outputPath, cacheKey, opt);
       }
     } else {
       console.log(bgRed(`pico2wave_tts gen KO for "${title}"`));

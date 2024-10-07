@@ -16,7 +16,9 @@ export async function generate_audio_with_coqui(
     opt.coquiTtsLanguageIdx,
     opt.coquiTtsModel,
   ];
-  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
+  if (
+    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+  ) {
     const coquiCommand = await getCoquiCommand();
     const cmd = [
       ...coquiCommand,
@@ -36,7 +38,7 @@ export async function generate_audio_with_coqui(
     const res = await $`${cmd}`.noThrow(true);
     if (res.code === 0) {
       if (!opt.skipWriteTtsCache) {
-        await cacheTtsFile(outputPath, cacheKey);
+        await cacheTtsFile(outputPath, cacheKey, opt);
       }
     } else {
       console.log(bgRed(`Coqui gen KO for "${title}"`));

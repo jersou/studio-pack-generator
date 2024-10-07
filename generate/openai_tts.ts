@@ -13,7 +13,9 @@ export async function generate_audio_with_openAI(
   opt: ModOptions,
 ) {
   const cacheKey = ["OpenAiTts", title, opt.openAiVoice, opt.openAiModel];
-  if (opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey)) {
+  if (
+    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+  ) {
     if (!openAI_client) {
       if (opt?.openAiApiKey) {
         openAI_client = new OpenAI({ apiKey: opt.openAiApiKey });
@@ -38,7 +40,7 @@ export async function generate_audio_with_openAI(
       const file = await Deno.open(outputPath, { create: true, write: true });
       await result.body!.pipeTo(file.writable);
       if (!opt.skipWriteTtsCache) {
-        await cacheTtsFile(outputPath, cacheKey);
+        await cacheTtsFile(outputPath, cacheKey, opt);
       }
     } else {
       console.log(bgRed(`OpenAI gen KO for "${title}"`), result);
