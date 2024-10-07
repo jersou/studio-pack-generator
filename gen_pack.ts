@@ -116,7 +116,7 @@ export async function generatePack(opt: ModOptions) {
         folder = await fsToFolder(storyPath, true);
 
         const metadata: Metadata = await getMetadata(storyPath, opt);
-        const pack = folderToPack(folder, metadata);
+        const pack = await folderToPack(folder, metadata);
         const nightModeAudioItemName = getNightModeAudioItem(folder);
         const serializedPack = await serializePack(pack, opt, {
           autoNextStoryTransition: opt.autoNextStoryTransition,

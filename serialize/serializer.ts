@@ -227,7 +227,9 @@ async function exploreStageNode(
     type: "stage",
     uuid,
   };
-
+  if (((stageNode as Story).duration !== undefined)) {
+    serializedStageNode.duration = (stageNode as Story).duration;
+  }
   if (
     serializedStageNode.okTransition === null &&
     stageNode.class === "StageNode-Story" &&

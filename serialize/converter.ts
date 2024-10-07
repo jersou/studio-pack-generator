@@ -17,12 +17,18 @@ import {
   getFileImageItem,
   getFolderAudioItem,
   getFolderImageItem,
+  getNameWithoutExt,
   isFolder,
   isStory,
   isZipFile,
 } from "../utils/utils.ts";
 
-export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
+import { join } from "@std/path";
+import { exists } from "@std/fs";
+
+import {duration} from 'jsr:@dbushell/audio-duration';
+
+export async function folderToPack(folder: Folder, metadata?: Metadata): Promise<Pack> {
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
   const audio = getFolderAudioItem(folder);
   const image = getFolderImageItem(folder);
@@ -46,8 +52,8 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
         name: "Action node",
         options: [
           firstSubFolder
-            ? folderToMenu(firstSubFolder, "")
-            : fileToStory(firstStoryFile(folder)!),
+            ? await folderToMenu(firstSubFolder, "")
+            : await fileToStory(firstStoryFile(folder)!),
         ],
       },
     },
@@ -77,7 +83,7 @@ export function folderToPack(folder: Folder, metadata?: Metadata): Pack {
   return res;
 }
 
-export function folderToMenu(folder: Folder, path: string): Menu {
+export async function folderToMenu(folder: Folder, path: string): Promise<Menu> {
   const image = getFolderImageItem(folder);
   const audio = getFolderAudioItem(folder);
   const folderPath = folder.path + "/";
@@ -95,16 +101,16 @@ export function folderToMenu(folder: Folder, path: string): Menu {
     okTransition: {
       class: "ActionNode",
       name: folder.name,
-      options: folder.files
-        .map((f) =>
+      options: (await Promise.all(folder.files
+        .map(async (f) =>
           isFolder(f)
-            ? folderToMenu(f as Folder, path + "/" + f.name)
+            ? await folderToMenu(f as Folder, path + "/" + f.name)
             : isStory(f as File)
-            ? fileToStoryItem(f as File, folder)
+            ? await fileToStoryItem(f as File, folder)
             : isZipFile(f as File)
-            ? fileToZipMenu(`${path}/${folder.name}/${f.name}`)
+            ? await fileToZipMenu(`${path}/${folder.name}/${f.name}`)
             : null
-        )
+        )))
         .filter((f) => f) as (Menu | ZipMenu | StoryItem)[],
     },
   };
@@ -126,12 +132,22 @@ function getMTime(path: string | undefined) {
   }
 }
 
-export function fileToStoryItem(file: File, parent: Folder): StoryItem {
+export async function fileToStoryItem(file: File, parent: Folder): Promise<StoryItem> {
   const audio = getFileAudioItem(file, parent);
   const image = getFileImageItem(file, parent);
+  let name = cleanStageName(file.name);
+  const metadataPath = join(parent.path!, getNameWithoutExt(file.name)+ "-metadata.json");
+  if (await exists(metadataPath)) {
+    try {
+      const metadata =JSON.parse(await Deno.readTextFile(metadataPath))
+      name = metadata?.title ?? name
+    } catch (error) {
+      console.error(`error reading json metadata: ${metadataPath}`, error);
+    }
+  }
   const res: StoryItem = {
     class: "StageNode-StoryItem",
-    name: cleanStageName(file.name),
+    name,
     path: file.path,
     audio: audio?.assetName ?? null,
     image: image?.assetName ?? null,
@@ -141,14 +157,15 @@ export function fileToStoryItem(file: File, parent: Folder): StoryItem {
     imageTimestamp: parent.path && image ? getMTime(image?.path) : undefined,
     pathTimestamp: parent.path && file.path ? getMTime(file.path) : undefined,
     okTransition: {
-      name: cleanStageName(file.name),
+      name,
       class: "ActionNode",
       options: [
         {
           class: "StageNode-Story",
           audio: getFileAudioStory(file)?.assetName ?? null,
+          duration: (await duration(file.path!)),
           image: null,
-          name: cleanStageName(file.name),
+          name,
           okTransition: null,
         },
       ],

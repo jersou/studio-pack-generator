@@ -29,6 +29,7 @@ export type Menu = {
   path?: string;
   audioPath?: string;
   imagePath?: string;
+  duration?: number;
   audioTimestamp?: number;
   imageTimestamp?: number;
   pathTimestamp?: number;
@@ -54,6 +55,7 @@ export type StoryAction = {
 export type Story = {
   class: "StageNode-Story";
   audio: string;
+  duration?: number;
   image: null;
   name: string;
   path?: string;
@@ -64,6 +66,7 @@ export type StageNode = {
   uuid: string;
   squareOne: boolean;
   type: string;
+  duration?: number;
   name: string;
   homeTransition: { actionNode: string; optionIndex: number } | null;
   audio: string | null;

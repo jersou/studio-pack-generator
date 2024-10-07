@@ -78,7 +78,6 @@ export async function genMissingItems(
       } else if (isStory(file)) {
         let title = getTitle(getNameWithoutExt(file.name));
         const metadataPath  =join(rootpath, getNameWithoutExt(file.name)+ "-metadata.json");
-        console.log('metadataPath', metadataPath, await exists(metadataPath))
         if (await exists(metadataPath)) {
           try {
             const metadata =JSON.parse(await Deno.readTextFile(metadataPath))
