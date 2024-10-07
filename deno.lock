@@ -5,12 +5,15 @@
       "jsr:@david/dax@^0.42.0": "jsr:@david/dax@0.42.0",
       "jsr:@david/path@0.2": "jsr:@david/path@0.2.0",
       "jsr:@david/which@~0.4.1": "jsr:@david/which@0.4.1",
+      "jsr:@dbushell/audio-duration": "jsr:@dbushell/audio-duration@0.6.0",
       "jsr:@es-toolkit/es-toolkit@^1.23.0": "jsr:@es-toolkit/es-toolkit@1.23.0",
       "jsr:@jersou/clite@^0.5.0": "jsr:@jersou/clite@0.5.0",
       "jsr:@libs/typing@3": "jsr:@libs/typing@3.1.0",
       "jsr:@libs/xml@^6.0.0": "jsr:@libs/xml@6.0.0",
+      "jsr:@std/assert@^0.216.0": "jsr:@std/assert@0.216.0",
       "jsr:@std/assert@^0.221.0": "jsr:@std/assert@0.221.0",
       "jsr:@std/assert@^1.0.6": "jsr:@std/assert@1.0.6",
+      "jsr:@std/bytes@1.0": "jsr:@std/bytes@1.0.2",
       "jsr:@std/bytes@^0.221.0": "jsr:@std/bytes@0.221.0",
       "jsr:@std/bytes@^1.0.2": "jsr:@std/bytes@1.0.2",
       "jsr:@std/crypto@^1.0.3": "jsr:@std/crypto@1.0.3",
@@ -23,9 +26,11 @@
       "jsr:@std/fs@^1.0.4": "jsr:@std/fs@1.0.4",
       "jsr:@std/internal@^1.0.4": "jsr:@std/internal@1.0.4",
       "jsr:@std/io@0.221": "jsr:@std/io@0.221.0",
+      "jsr:@std/io@0.224": "jsr:@std/io@0.224.9",
       "jsr:@std/io@^0.221.0": "jsr:@std/io@0.221.0",
       "jsr:@std/io@^0.224.9": "jsr:@std/io@0.224.9",
       "jsr:@std/media-types@^1.0.3": "jsr:@std/media-types@1.0.3",
+      "jsr:@std/path@0.216": "jsr:@std/path@0.216.0",
       "jsr:@std/path@1": "jsr:@std/path@1.0.6",
       "jsr:@std/path@^1": "jsr:@std/path@1.0.6",
       "jsr:@std/path@^1.0.6": "jsr:@std/path@1.0.6",
@@ -56,6 +61,14 @@
       "@david/which@0.4.1": {
         "integrity": "896a682b111f92ab866cc70c5b4afab2f5899d2f9bde31ed00203b9c250f225e"
       },
+      "@dbushell/audio-duration@0.6.0": {
+        "integrity": "477ab528eec95f344c5fe84020b7556a97885fcb4b150e3c06ecdf97c00ccc9c",
+        "dependencies": [
+          "jsr:@std/bytes@1.0",
+          "jsr:@std/io@0.224",
+          "jsr:@std/path@0.216"
+        ]
+      },
       "@es-toolkit/es-toolkit@1.23.0": {
         "integrity": "01f6c29f74f1a128fcff79d150868c8e8536b0832974f1aeae5a93fddc6ea153"
       },
@@ -74,6 +87,9 @@
         "dependencies": [
           "jsr:@libs/typing@3"
         ]
+      },
+      "@std/assert@0.216.0": {
+        "integrity": "f65392edf3bec39e2d1028e51f1da549db81691034b244eaba83318a757c0c2e"
       },
       "@std/assert@0.221.0": {
         "integrity": "a5f1aa6e7909dbea271754fd4ab3f4e687aeff4873b4cef9a320af813adb489a"
@@ -123,6 +139,12 @@
       },
       "@std/media-types@1.0.3": {
         "integrity": "b12d30a7852f7578f4d210622df713bbfd1cbdd9b4ec2eaf5c1845ab70bab159"
+      },
+      "@std/path@0.216.0": {
+        "integrity": "85c121f1b43f7fb17e225567c4f151b3a67796ed8c619d37f9d61ea46116a2f0",
+        "dependencies": [
+          "jsr:@std/assert@^0.216.0"
+        ]
       },
       "@std/path@1.0.6": {
         "integrity": "ab2c55f902b380cf28e0eec501b4906e4c1960d13f00e11cfbcd21de15f18fed"

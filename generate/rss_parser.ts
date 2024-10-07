@@ -108,13 +108,17 @@ async function getFolderWithUrlFromRssUrl(
     rssItems = sorted.map((i) => i[1]);
   }
   const rssName = convertToValidFilename(rss.title);
-  const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || rss["itunes:image"]?.["@href"] || "";
+  const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] ||
+    rss["itunes:image"]?.["@href"] || "";
   const fss: FolderWithUrlOrData[] = rssItems.map((items, index) => {
     const name = rssItems.length > 1
       ? `${rssName} ${
         seasonIds[index] === "0"
-          ? opt.i18n?.['special'] || i18next.t("special")
-          : sprintf(opt.i18n?.['season'] ||  i18next.t("season"), seasonIds[index])
+          ? opt.i18n?.["special"] || i18next.t("special")
+          : sprintf(
+            opt.i18n?.["season"] || i18next.t("season"),
+            seasonIds[index],
+          )
       }`
       : rssName;
     return {
@@ -131,7 +135,9 @@ async function getFolderWithUrlFromRssUrl(
     const fs = fss[index];
     if (imgUrl) {
       fs.files.push({
-        name: opt.skipImageConvert ? `0-item.${getExtension(imgUrl)}` : `0-item-to-resize.${getExtension(imgUrl)}`,
+        name: opt.skipImageConvert
+          ? `0-item.${getExtension(imgUrl)}`
+          : `0-item-to-resize.${getExtension(imgUrl)}`,
         url: imgUrl,
         sha1: "",
       });
@@ -151,7 +157,9 @@ async function getFolderWithUrlFromRssUrl(
 }
 
 export function getItemFileName(item: RssItem, opt: ModOptions) {
-  const title = convertToValidFilename((opt.rssUseSubtitleAsTitle && item['itunes:subtitle'] || item.title)!);
+  const title = convertToValidFilename(
+    (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"] || item.title)!,
+  );
   return (
     new Date(item.pubDate).getTime() +
     ` - ${title}.${getExtension(item.enclosure["@url"])}`
@@ -169,18 +177,24 @@ async function getFolderOfStories(
   opt: ModOptions,
 ): Promise<FolderWithUrlOrData> {
   return {
-    name: opt.i18n?.['storyQuestion'] || i18next.t("storyQuestion"),
+    name: opt.i18n?.["storyQuestion"] || i18next.t("storyQuestion"),
     files: (await Promise.all(items.map(async (item) => {
       const itemFiles = [{
         name: getItemFileName(item, opt),
         url: fixUrl(item.enclosure["@url"]),
         sha1: "",
       }, {
-        name: getNameWithoutExt(getItemFileName(item, opt)) + '-metadata.json',
-        data:{...item, title: (opt.rssUseSubtitleAsTitle && item['itunes:subtitle']) || item.title},
+        name: getNameWithoutExt(getItemFileName(item, opt)) + "-metadata.json",
+        data: {
+          ...item,
+          title: (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
+            item.title,
+        },
         sha1: "",
       }];
-      const imageUrl = opt.customModule?.fetchRssItemImage ? await opt.customModule?.fetchRssItemImage(item, opt):  item["itunes:image"]?.["@href"];
+      const imageUrl = opt.customModule?.fetchRssItemImage
+        ? await opt.customModule?.fetchRssItemImage(item, opt)
+        : item["itunes:image"]?.["@href"];
       if (!opt.skipRssImageDl && imageUrl) {
         itemFiles.push({
           name: `${getNameWithoutExt(getItemFileName(item, opt))}.item.${
@@ -210,15 +224,18 @@ async function getFolderParts(
   }
 
   return {
-    name: opt.i18n?.['partQuestion'] || i18next.t("partQuestion"),
+    name: opt.i18n?.["partQuestion"] || i18next.t("partQuestion"),
     files: await Promise.all(parts.map(async (part, index) => ({
-      name: sprintf( i18next.t("partTitle"),index + 1),
+      name: sprintf(i18next.t("partTitle"), index + 1),
       files: [await getFolderOfStories(part, opt)],
     }))),
   };
 }
 
-async function writeFolderWithUrl(folder: FolderWithUrlOrData, parentPath: string) {
+async function writeFolderWithUrl(
+  folder: FolderWithUrlOrData,
+  parentPath: string,
+) {
   const path = join(parentPath, folder.name);
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
@@ -228,28 +245,33 @@ async function writeFolderWithUrl(folder: FolderWithUrlOrData, parentPath: strin
   }
 }
 
-async function writeFileWithUrl(fileWithUrlOrData: FileWithUrlOrData, parentPath: string) {
+async function writeFileWithUrl(
+  fileWithUrlOrData: FileWithUrlOrData,
+  parentPath: string,
+) {
   const filePath = join(parentPath, fileWithUrlOrData.name);
   console.log(blue(`Download ${fileWithUrlOrData.url}\n    → ${filePath}`));
 
   if (await exists(filePath)) {
     console.log(green(`   → skip`));
   } else if (fileWithUrlOrData.url) {
-    if (fileWithUrlOrData.url.startsWith('http')) {
+    if (fileWithUrlOrData.url.startsWith("http")) {
       const resp = await fetch(fileWithUrlOrData.url);
       const file = await Deno.open(filePath, { create: true, write: true });
       await resp.body?.pipeTo(file.writable);
     } else {
       const file = await Deno.open(filePath, { create: true, write: true });
-      await (await Deno.open(fileWithUrlOrData.url)).readable.pipeTo(file.writable);
+      await (await Deno.open(fileWithUrlOrData.url)).readable.pipeTo(
+        file.writable,
+      );
     }
   } else if (fileWithUrlOrData.data) {
     let toWrite = fileWithUrlOrData.data;
-    if (typeof toWrite === 'object') {
+    if (typeof toWrite === "object") {
       toWrite = JSON.stringify(toWrite);
     }
-    if (typeof toWrite === 'string') {
-      toWrite = new TextEncoder().encode(toWrite)
+    if (typeof toWrite === "string") {
+      toWrite = new TextEncoder().encode(toWrite);
     }
     await Deno.writeFile(filePath, toWrite as Uint8Array);
   }

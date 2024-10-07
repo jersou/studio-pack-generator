@@ -36,7 +36,10 @@ export async function genMissingItems(
   if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
     await checkRunPermission();
     if (!opt.skipImageItemGen && !getFolderImageItem(folder)) {
-      if (isRoot && opt.useThumbnailAsRootImage && await exists(join(rootpath, "thumbnail.png")))  {
+      if (
+        isRoot && opt.useThumbnailAsRootImage &&
+        await exists(join(rootpath, "thumbnail.png"))
+      ) {
         await Deno.copyFile(
           join(rootpath, "thumbnail.png"),
           `${rootpath}/0-item.png`,
@@ -59,7 +62,7 @@ export async function genMissingItems(
     }
     if (!opt.skipAudioItemGen && isRoot && !getNightModeAudioItem(folder)) {
       await generateAudio(
-        opt.i18n?.['NightModeTransition'] || i18next.t("NightModeTransition"),
+        opt.i18n?.["NightModeTransition"] || i18next.t("NightModeTransition"),
         `${rootpath}/0-night-mode.wav`,
         lang,
         opt,
@@ -77,13 +80,19 @@ export async function genMissingItems(
         );
       } else if (isStory(file)) {
         let title = getTitle(getNameWithoutExt(file.name));
-        const metadataPath  =join(rootpath, getNameWithoutExt(file.name)+ "-metadata.json");
+        const metadataPath = join(
+          rootpath,
+          getNameWithoutExt(file.name) + "-metadata.json",
+        );
         if (await exists(metadataPath)) {
           try {
-            const metadata =JSON.parse(await Deno.readTextFile(metadataPath))
-            title = metadata?.title ?? title
+            const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
+            title = metadata?.title ?? title;
           } catch (error) {
-            console.error(`error reading json metadata: ${metadataPath}`, error);
+            console.error(
+              `error reading json metadata: ${metadataPath}`,
+              error,
+            );
           }
         }
         if (!opt.skipImageItemGen && !getFileImageItem(file, folder)) {

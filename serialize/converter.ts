@@ -26,9 +26,12 @@ import {
 import { join } from "@std/path";
 import { exists } from "@std/fs";
 
-import {duration} from 'jsr:@dbushell/audio-duration';
+import { duration } from "jsr:@dbushell/audio-duration";
 
-export async function folderToPack(folder: Folder, metadata?: Metadata): Promise<Pack> {
+export async function folderToPack(
+  folder: Folder,
+  metadata?: Metadata,
+): Promise<Pack> {
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
   const audio = getFolderAudioItem(folder);
   const image = getFolderImageItem(folder);
@@ -83,7 +86,10 @@ export async function folderToPack(folder: Folder, metadata?: Metadata): Promise
   return res;
 }
 
-export async function folderToMenu(folder: Folder, path: string): Promise<Menu> {
+export async function folderToMenu(
+  folder: Folder,
+  path: string,
+): Promise<Menu> {
   const image = getFolderImageItem(folder);
   const audio = getFolderAudioItem(folder);
   const folderPath = folder.path + "/";
@@ -132,15 +138,21 @@ function getMTime(path: string | undefined) {
   }
 }
 
-export async function fileToStoryItem(file: File, parent: Folder): Promise<StoryItem> {
+export async function fileToStoryItem(
+  file: File,
+  parent: Folder,
+): Promise<StoryItem> {
   const audio = getFileAudioItem(file, parent);
   const image = getFileImageItem(file, parent);
   let name = cleanStageName(file.name);
-  const metadataPath = join(parent.path!, getNameWithoutExt(file.name)+ "-metadata.json");
+  const metadataPath = join(
+    parent.path!,
+    getNameWithoutExt(file.name) + "-metadata.json",
+  );
   if (await exists(metadataPath)) {
     try {
-      const metadata =JSON.parse(await Deno.readTextFile(metadataPath))
-      name = metadata?.title ?? name
+      const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
+      name = metadata?.title ?? name;
     } catch (error) {
       console.error(`error reading json metadata: ${metadataPath}`, error);
     }

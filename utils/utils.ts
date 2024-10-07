@@ -79,7 +79,10 @@ export function getFileAudioItem(file: File, parent: Folder) {
   const nameWithoutExt = rmDiacritic(getNameWithoutExt(file.name));
   const audioItem = parent.files.find(
     (f) =>
-      getNameWithoutExt(rmDiacritic(f.name)).replace(/(-generated)?.item$/, "") ===
+      getNameWithoutExt(rmDiacritic(f.name)).replace(
+          /(-generated)?.item$/,
+          "",
+        ) ===
         rmDiacritic(nameWithoutExt) &&
       fileAudioItemRegEx.test(f.name),
   ) as File;
@@ -214,7 +217,10 @@ export function rmDiacritic(s: string) {
 
 export function convertToValidFilename(name: string): string {
   // first we remove all unwanted chars. Then we "trim" the spaces
-  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").replace(/\s{1,}/, " ").trim();
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").replace(
+    /\s{1,}/,
+    " ",
+  ).trim();
 }
 
 export function cleanStageName(name: string): string {
