@@ -1,4 +1,4 @@
-import { RssItem } from "./generate/rss_parser.ts";
+import type { RssItem } from "./generate/rss_parser.ts";
 
 export const OPEN_AI_VOICES = [
   "alloy",

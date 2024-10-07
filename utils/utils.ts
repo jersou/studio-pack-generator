@@ -231,7 +231,7 @@ export function groupBy<T>(
 }
 
 export function cleanOption(opt: ModOptions): ModOptions {
-  const cleanOpt: { [k: string]: string | number | boolean | any } = {};
+  const cleanOpt: { [k: string]: string | number | boolean | object } = {};
   Object.entries(opt).filter(([key]) =>
     key.length > 1 && !key.includes("-") && key != "$0"
   )

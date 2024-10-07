@@ -58,7 +58,7 @@ export type FolderWithUrlOrData = {
 export type FileWithUrlOrData = File & {
   url?: string;
 } & {
-  data?: any;
+  data?: string | Uint8Array | object;
 };
 
 async function getFolderWithUrlFromRssUrl(
@@ -250,7 +250,7 @@ async function writeFileWithUrl(fileWithUrlOrData: FileWithUrlOrData, parentPath
     if (typeof toWrite === 'string') {
       toWrite = new TextEncoder().encode(toWrite)
     }
-    await Deno.writeFile(filePath, toWrite);
+    await Deno.writeFile(filePath, toWrite as Uint8Array);
   }
 }
 
