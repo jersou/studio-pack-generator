@@ -145,16 +145,18 @@ export async function fileToStoryItem(
   const audio = getFileAudioItem(file, parent);
   const image = getFileImageItem(file, parent);
   let name = cleanStageName(file.name);
-  const metadataPath = join(
-    parent.path!,
-    getNameWithoutExt(file.name) + "-metadata.json",
-  );
-  if (await exists(metadataPath)) {
-    try {
-      const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
-      name = metadata?.title ?? name;
-    } catch (error) {
-      console.error(`error reading json metadata: ${metadataPath}`, error);
+  if (parent.path) {
+    const metadataPath = join(
+      parent.path!,
+      getNameWithoutExt(file.name) + "-metadata.json",
+    );
+    if (await exists(metadataPath)) {
+      try {
+        const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
+        name = metadata?.title ?? name;
+      } catch (error) {
+        console.error(`error reading json metadata: ${metadataPath}`, error);
+      }
     }
   }
   const res: StoryItem = {
@@ -175,7 +177,7 @@ export async function fileToStoryItem(
         {
           class: "StageNode-Story",
           audio: getFileAudioStory(file)?.assetName ?? null,
-          duration: (await duration(file.path!)),
+          duration: file.path ? (await duration(file.path)) : undefined,
           image: null,
           name,
           okTransition: null,

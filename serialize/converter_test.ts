@@ -10,18 +10,18 @@ import {
 } from "../test_data/test_data.ts";
 import { getExtension } from "../utils/utils.ts";
 
-Deno.test("folderToPack-min", () => {
-  const pack = folderToPack(minFs);
+Deno.test("folderToPack-min", async () => {
+  const pack = await folderToPack(minFs);
   assertEquals(pack, expectedMinPack);
 });
 
-Deno.test("folderToPack-moy", () => {
-  const pack = folderToPack(moyFs);
+Deno.test("folderToPack-moy", async () => {
+  const pack = await folderToPack(moyFs);
   assertEquals(pack, expectedMoyPack);
 });
 
-Deno.test("folderToPack-full", () => {
-  const pack = folderToPack(fullFs);
+Deno.test("folderToPack-full", async () => {
+  const pack = await folderToPack(fullFs);
   assertEquals(pack, expectedFullPack);
 });
 
