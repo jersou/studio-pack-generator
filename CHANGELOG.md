@@ -1,6 +1,9 @@
 ### v0.5.8 / ??.??.??
 
 - feat: cache generated TTS file
+- feat: custom script and more #30
+  - feat: add custom i18n in config
+  - feat: add "Use rss items subtitle as title"
 
 ### v0.5.7 / 2024.10.06
 

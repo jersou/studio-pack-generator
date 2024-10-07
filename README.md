@@ -228,6 +228,7 @@ Options:
       --rss-split-length             RSS will be split in parts of N length                       [number] [default: 10]
       --rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]
       --rss-min-duration             RSS min episode duration                                      [number] [default: 0]
+      --rss-use-subtitle-as-title    Use rss items subtitle as title                          [boolean] [default: false]
       --rss-use-image-as-thumbnail   Use rss image (first item with image) as thumbnail       [boolean] [default: false]
       --use-thumbnail-as-root-image  Use thumbnail as 'root' image instead of generated one   [boolean] [default: false]
   -r, --skip-rss-image-dl            skip RSS image download of items                         [boolean] [default: false]
@@ -248,6 +249,7 @@ Options:
       --skip-read-tts-cache          disable the TTS cache usage                              [boolean] [default: false]
       --skip-write-tts-cache         disable the TTS cache write                              [boolean] [default: false]
       --tts-cache-path               path to the TTS cache                [string] [default: "<SPG dir>/.spg-TTS-cache"]
+      --custom-script                custom script to be used for custom image... handling                      [string]
 ```
 
 Separate options by spaces, ex :
@@ -340,6 +342,16 @@ stage.
 ## TTS cache
 
 To speed up / save CPU
+
+## Custom script to fetch RSS image
+
+Usage : `--custom-script=<path>`
+
+```
+export interface CustomModule {
+   fetchRssItemImage?: (item: RssItem, opt: ModOptions) => Promise<string>;
+}
+```
 
 ## json config file
 
