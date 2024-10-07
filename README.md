@@ -10,6 +10,18 @@ Supported OS: Windows / Linux / macOS
 
 **[⭐ A big french community is present on Discord to create and share Lunii packs ⭐](https://discord.com/invite/jg9MjHBWQC)**
 
+**🔊💬🎵 Other devices/Apps use the Studio pack format :**
+
+- [Telmi-story-teller](https://github.com/DantSu/Telmi-story-teller) for the
+  Miyoo Mini retro gaming console
+- [Conty](https://github.com/Akylas/conty) -
+  [android app on the PlayStore](https://play.google.com/store/apps/details?id=com.akylas.conty)
+- [Boîte à histoires - android app apk](https://github.com/Cyri1/bah)
+- [Nimilou](https://github.com/octera/Nimilou) -
+  [android app on the PlayStore](https://play.google.com/store/apps/details?id=info.octera.droidstorybox)
+- [Grigri - the open storyteller](https://github.com/olup/grigri)
+- [open-story-teller - Open source hardware/software](https://github.com/arabine/open-story-teller)
+
 ## Quick start
 
 ```shell
