@@ -225,9 +225,14 @@ async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
   if (await exists(filePath)) {
     console.log(green(`   → skip`));
   } else {
-    const resp = await fetch(fileWithUrl.url);
-    const file = await Deno.open(filePath, { create: true, write: true });
-    await resp.body?.pipeTo(file.writable);
+    if (fileWithUrl.url.startsWith('http')) {
+      const resp = await fetch(fileWithUrl.url);
+      const file = await Deno.open(filePath, { create: true, write: true });
+      await resp.body?.pipeTo(file.writable);
+    } else {
+      const file = await Deno.open(filePath, { create: true, write: true });
+      await (await Deno.open(fileWithUrl.url)).readable.pipeTo(file.writable);
+    }
   }
 }
 
