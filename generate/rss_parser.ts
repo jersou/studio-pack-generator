@@ -28,6 +28,9 @@ export type Rss = {
       "@href"?: string;
     };
   };
+  "itunes:image"?: {
+    "@href": string;
+  };
   item: RssItem[];
 };
 export type RssItem = {
@@ -104,8 +107,7 @@ async function getFolderWithUrlFromRssUrl(
     rssItems = sorted.map((i) => i[1]);
   }
   const rssName = convertToValidFilename(rss.title);
-  const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
-  const fss: FolderWithUrl[] = rssItems.map((items, index) => {
+  const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || rss["itunes:image"]?.["@href"] || "";
   const fss: FolderWithUrlOrData[] = rssItems.map((items, index) => {
     const name = rssItems.length > 1
       ? `${rssName} ${
@@ -120,7 +122,7 @@ async function getFolderWithUrlFromRssUrl(
       thumbnailUrl: opt.rssUseImageAsThumbnail
         ? items.find((item) => item["itunes:image"]?.["@href"])
           ?.["itunes:image"]?.["@href"]
-        : undefined,
+        : imgUrl,
       metadata: { ...metadata, title: name },
     };
   });
