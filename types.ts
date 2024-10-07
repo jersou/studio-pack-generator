@@ -55,4 +55,5 @@ export type ModOptions = {
   gui?: boolean;
   customScript?: string;
   customModule?: CustomModule;
+  i18n?:Record<string, string>
 };

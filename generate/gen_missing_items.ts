@@ -59,7 +59,7 @@ export async function genMissingItems(
     }
     if (!opt.skipAudioItemGen && isRoot && !getNightModeAudioItem(folder)) {
       await generateAudio(
-        i18next.t("NightModeTransition"),
+        opt.i18n?.['NightModeTransition'] || i18next.t("NightModeTransition"),
         `${rootpath}/0-night-mode.wav`,
         lang,
         opt,

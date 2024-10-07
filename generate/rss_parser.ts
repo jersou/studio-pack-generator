@@ -12,6 +12,7 @@ import { blue, green } from "@std/fmt/colors";
 import { exists } from "@std/fs";
 import { parse } from "@libs/xml";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
+import { sprintf } from "@std/fmt/printf";
 import type { File, Metadata } from "../serialize/serialize-types.ts";
 import type { ModOptions } from "../types.ts";
 import { convertImage } from "./gen_image.ts";
@@ -112,8 +113,8 @@ async function getFolderWithUrlFromRssUrl(
     const name = rssItems.length > 1
       ? `${rssName} ${
         seasonIds[index] === "0"
-          ? i18next.t("special")
-          : i18next.t("season") + " " + seasonIds[index]
+          ? opt.i18n?.['special'] || i18next.t("special")
+          : sprintf(opt.i18n?.['season'] ||  i18next.t("season"), seasonIds[index])
       }`
       : rssName;
     return {
@@ -168,7 +169,7 @@ async function getFolderOfStories(
   opt: ModOptions,
 ): Promise<FolderWithUrlOrData> {
   return {
-    name: i18next.t("storyQuestion"),
+    name: opt.i18n?.['storyQuestion'] || i18next.t("storyQuestion"),
     files: (await Promise.all(items.map(async (item) => {
       const itemFiles = [{
         name: getItemFileName(item, opt),
@@ -209,9 +210,9 @@ async function getFolderParts(
   }
 
   return {
-    name: i18next.t("partQuestion"),
+    name: opt.i18n?.['partQuestion'] || i18next.t("partQuestion"),
     files: await Promise.all(parts.map(async (part, index) => ({
-      name: `${i18next.t("partTitle")} ${index + 1}`,
+      name: sprintf( i18next.t("partTitle"),index + 1),
       files: [await getFolderOfStories(part, opt)],
     }))),
   };

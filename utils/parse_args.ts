@@ -319,6 +319,13 @@ export async function parseArgs(args: string[]) {
       type: "string",
       describe: "custom script to be used for custom image... handling",
     })
+    .option("i18n", {
+      demandOption: false,
+      boolean: false,
+      default: undefined,
+      type: "object",
+      describe: "custom translation options",
+    })
     .version(false)
     .demandCommand(1)
     .parse();

@@ -4,18 +4,18 @@ import { yellow } from "@std/fmt/colors";
 import $ from "@david/dax";
 
 const en = {
-  season: "Season",
+  season: "Season %d",
   special: "Special",
   partQuestion: "Choose your part",
-  partTitle: "Part",
+  partTitle: "Part %d",
   storyQuestion: "Choose your story",
   NightModeTransition: "Want to listen to a new story?",
 };
 const fr = {
-  season: "Saison",
+  season: "Saison %d",
   special: "Hors-Série",
   partQuestion: "Choisis ta partie",
-  partTitle: "Partie",
+  partTitle: "Partie %d",
   storyQuestion: "Choisis ton histoire",
   NightModeTransition: "Tu veux écouter une nouvelle histoire ?",
 };
