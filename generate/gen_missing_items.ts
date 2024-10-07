@@ -14,6 +14,7 @@ import { generateImage } from "./gen_image.ts";
 import { generateAudio } from "./gen_audio.ts";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
 import { join } from "@std/path";
+import { exists } from "@std/fs";
 
 import type { ModOptions } from "../types.ts";
 
@@ -35,7 +36,7 @@ export async function genMissingItems(
   if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
     await checkRunPermission();
     if (!opt.skipImageItemGen && !getFolderImageItem(folder)) {
-      if (isRoot && opt.useThumbnailAsRootImage) {
+      if (isRoot && opt.useThumbnailAsRootImage && await exists(join(rootpath, "thumbnail.png")))  {
         await Deno.copyFile(
           join(rootpath, "thumbnail.png"),
           `${rootpath}/0-item.png`,
@@ -75,16 +76,27 @@ export async function genMissingItems(
           opt,
         );
       } else if (isStory(file)) {
+        let title = getTitle(getNameWithoutExt(file.name));
+        const metadataPath  =join(rootpath, getNameWithoutExt(file.name)+ "-metadata.json");
+        console.log('metadataPath', metadataPath, await exists(metadataPath))
+        if (await exists(metadataPath)) {
+          try {
+            const metadata =JSON.parse(await Deno.readTextFile(metadataPath))
+            title = metadata?.title ?? title
+          } catch (error) {
+            console.error(`error reading json metadata: ${metadataPath}`, error);
+          }
+        }
         if (!opt.skipImageItemGen && !getFileImageItem(file, folder)) {
           await generateImage(
-            getTitle(getNameWithoutExt(file.name)),
+            title,
             `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.png`,
             opt.imageItemGenFont,
           );
         }
         if (!opt.skipAudioItemGen && !getFileAudioItem(file, folder)) {
           await generateAudio(
-            getTitle(getNameWithoutExt(file.name)),
+            title,
             `${rootpath}/${getNameWithoutExt(file.name)}-generated.item.wav`,
             lang,
             opt,

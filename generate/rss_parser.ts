@@ -46,20 +46,22 @@ export type RssItem = {
     "@href": string;
   };
 };
-export type FolderWithUrl = {
+export type FolderWithUrlOrData = {
   name: string;
-  files: (FolderWithUrl | FileWithUrl)[];
+  files: (FolderWithUrlOrData | FileWithUrlOrData)[];
   metadata?: Metadata;
   thumbnailUrl?: string;
 };
-export type FileWithUrl = File & {
-  url: string;
+export type FileWithUrlOrData = File & {
+  url?: string;
+} & {
+  data?: any;
 };
 
 async function getFolderWithUrlFromRssUrl(
   url: string,
   opt: ModOptions,
-): Promise<FolderWithUrl[]> {
+): Promise<FolderWithUrlOrData[]> {
   console.log(green(`→ url = ${url}`));
 
   const resp = await fetch(url);
@@ -104,6 +106,7 @@ async function getFolderWithUrlFromRssUrl(
   const rssName = convertToValidFilename(rss.title);
   const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] || "";
   const fss: FolderWithUrl[] = rssItems.map((items, index) => {
+  const fss: FolderWithUrlOrData[] = rssItems.map((items, index) => {
     const name = rssItems.length > 1
       ? `${rssName} ${
         seasonIds[index] === "0"
@@ -161,13 +164,17 @@ export function fixUrl(url: string): string {
 async function getFolderOfStories(
   items: RssItem[],
   opt: ModOptions,
-): Promise<FolderWithUrl> {
+): Promise<FolderWithUrlOrData> {
   return {
     name: i18next.t("storyQuestion"),
     files: (await Promise.all(items.map(async (item) => {
       const itemFiles = [{
         name: getItemFileName(item),
         url: fixUrl(item.enclosure["@url"]),
+        sha1: "",
+      }, {
+        name: getNameWithoutExt(getItemFileName(item)) + '-metadata.json',
+        data:{...item, title: item['itunes:subtitle'] || item.title},
         sha1: "",
       }];
       const imageUrl = opt.customModule?.fetchRssItemImage ? await opt.customModule?.fetchRssItemImage(item, opt):  item["itunes:image"]?.["@href"];
@@ -189,7 +196,7 @@ async function getFolderOfStories(
 async function getFolderParts(
   items: RssItem[],
   opt: ModOptions,
-): Promise<FolderWithUrl> {
+): Promise<FolderWithUrlOrData> {
   const partCount = Math.ceil(items.length / 10);
   const parts: RssItem[][] = [];
   for (let i = 0; i < partCount; i++) {
@@ -208,13 +215,13 @@ async function getFolderParts(
   };
 }
 
-async function writeFolderWithUrl(folder: FolderWithUrl, parentPath: string) {
+async function writeFolderWithUrl(folder: FolderWithUrlOrData, parentPath: string) {
   const path = join(parentPath, folder.name);
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
     isFolder(file)
-      ? await writeFolderWithUrl(file as FolderWithUrl, path)
-      : await writeFileWithUrl(file as FileWithUrl, path);
+      ? await writeFolderWithUrl(file as FolderWithUrlOrData, path)
+      : await writeFileWithUrl(file as FileWithUrlOrData, path);
   }
 }
 

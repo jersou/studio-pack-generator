@@ -211,7 +211,8 @@ export function rmDiacritic(s: string) {
 }
 
 export function convertToValidFilename(name: string): string {
-  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").trim();
+  // first we remove all unwanted chars. Then we "trim" the spaces
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").replace(/\s{1,}/, " ").trim();
 }
 
 export function cleanStageName(name: string): string {
