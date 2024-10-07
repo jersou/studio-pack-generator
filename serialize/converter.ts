@@ -56,7 +56,7 @@ export async function folderToPack(
         options: [
           firstSubFolder
             ? await folderToMenu(firstSubFolder, "")
-            : await fileToStory(firstStoryFile(folder)!),
+            : fileToStory(firstStoryFile(folder)!),
         ],
       },
     },
@@ -114,7 +114,7 @@ export async function folderToMenu(
             : isStory(f as File)
             ? await fileToStoryItem(f as File, folder)
             : isZipFile(f as File)
-            ? await fileToZipMenu(`${path}/${folder.name}/${f.name}`)
+            ? fileToZipMenu(`${path}/${folder.name}/${f.name}`)
             : null
         )))
         .filter((f) => f) as (Menu | ZipMenu | StoryItem)[],
