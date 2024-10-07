@@ -227,21 +227,30 @@ async function writeFolderWithUrl(folder: FolderWithUrlOrData, parentPath: strin
   }
 }
 
-async function writeFileWithUrl(fileWithUrl: FileWithUrl, parentPath: string) {
-  const filePath = join(parentPath, fileWithUrl.name);
-  console.log(blue(`Download ${fileWithUrl.url}\n    → ${filePath}`));
+async function writeFileWithUrl(fileWithUrlOrData: FileWithUrlOrData, parentPath: string) {
+  const filePath = join(parentPath, fileWithUrlOrData.name);
+  console.log(blue(`Download ${fileWithUrlOrData.url}\n    → ${filePath}`));
 
   if (await exists(filePath)) {
     console.log(green(`   → skip`));
-  } else {
-    if (fileWithUrl.url.startsWith('http')) {
-      const resp = await fetch(fileWithUrl.url);
+  } else if (fileWithUrlOrData.url) {
+    if (fileWithUrlOrData.url.startsWith('http')) {
+      const resp = await fetch(fileWithUrlOrData.url);
       const file = await Deno.open(filePath, { create: true, write: true });
       await resp.body?.pipeTo(file.writable);
     } else {
       const file = await Deno.open(filePath, { create: true, write: true });
-      await (await Deno.open(fileWithUrl.url)).readable.pipeTo(file.writable);
+      await (await Deno.open(fileWithUrlOrData.url)).readable.pipeTo(file.writable);
     }
+  } else if (fileWithUrlOrData.data) {
+    let toWrite = fileWithUrlOrData.data;
+    if (typeof toWrite === 'object') {
+      toWrite = JSON.stringify(toWrite);
+    }
+    if (typeof toWrite === 'string') {
+      toWrite = new TextEncoder().encode(toWrite)
+    }
+    await Deno.writeFile(filePath, toWrite);
   }
 }
 
