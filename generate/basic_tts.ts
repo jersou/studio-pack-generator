@@ -37,23 +37,7 @@ export async function generate_audio_basic_tts(
 ) {
   console.log(blue(`Generate basic TTS to ${outputPath}`));
 
-  if (opt.useCoquiTts) {
-    const args = [
-      "--text",
-      title,
-      "--model_name",
-      opt.coquiTtsModel,
-      "--out_path",
-      convertPath(outputPath),
-    ].concat(
-      opt.coquiTtsLanguageIdx
-        ? ["--language_idx", opt.coquiTtsLanguageIdx]
-        : [],
-    ).concat(
-      opt.coquiTtsSpeakerIdx ? ["--speaker_idx", opt.coquiTtsSpeakerIdx] : [],
-    );
-    await $`tts ${args}`;
-  } else if (
+  if (
     Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))
   ) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
@@ -72,7 +56,7 @@ export async function generate_audio_basic_tts(
   } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
     const args = [
       "-o",
-      convertPath(outputPath),
+      convertPath(outputPath, opt),
       "--file-format",
       "WAVE",
       "--data-format",
@@ -87,7 +71,7 @@ export async function generate_audio_basic_tts(
       "-l",
       lang,
       "-w",
-      convertPath(outputPath),
+      convertPath(outputPath, opt),
       ` . ${title} . `,
     ];
     await $`${cmd}`.noThrow();

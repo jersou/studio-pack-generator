@@ -10,7 +10,7 @@ import {
 import { join } from "@std/path";
 import { blue, green } from "@std/fmt/colors";
 import { exists } from "@std/fs";
-import { parse } from "https://deno.land/x/xml@2.1.3/mod.ts";
+import { parse } from "@libs/xml";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
 import type { File, Metadata } from "../serialize/serialize-types.ts";
 import type { ModOptions } from "../types.ts";
