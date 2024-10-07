@@ -1,9 +1,10 @@
-### v0.5.8 / ??.??.??
+### v0.5.8 / 2024.10.07
 
 - feat: cache generated TTS file
 - feat: custom script and more #30
   - feat: add custom i18n in config
   - feat: add "Use rss items subtitle as title"
+- fix: use ttsCachePath
 
 ### v0.5.7 / 2024.10.06
 
