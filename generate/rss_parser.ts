@@ -130,7 +130,7 @@ async function getFolderWithUrlFromRssUrl(
     const fs = fss[index];
     if (imgUrl) {
       fs.files.push({
-        name: `0-item-to-resize.${getExtension(imgUrl)}`,
+        name: opt.skipImageConvert ? `0-item.${getExtension(imgUrl)}` : `0-item-to-resize.${getExtension(imgUrl)}`,
         url: imgUrl,
         sha1: "",
       });
