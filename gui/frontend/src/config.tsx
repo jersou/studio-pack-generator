@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDropDown";
-import type { ModOptions } from "../../../types.ts";
+import type { CliOptions } from "../../../common-types.ts";
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -26,8 +26,8 @@ export function Config({
   opt,
   setOpt,
 }: {
-  opt: Partial<ModOptions>;
-  setOpt: (o: Partial<ModOptions>) => unknown;
+  opt: Partial<CliOptions>;
+  setOpt: (o: Partial<CliOptions>) => unknown;
 }) {
   const update = useCallback(
     (type: string) => (event: ChangeEvent<HTMLInputElement>) =>
@@ -175,6 +175,24 @@ export function Config({
           <FormControlLabel
             control={
               <Checkbox
+                checked={!!opt.skipReadTtsCache}
+                onChange={update("skipReadTtsCache")}
+              />
+            }
+            label="Disable the TTS cache usage"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!!opt.skipWriteTtsCache}
+                onChange={update("skipWriteTtsCache")}
+              />
+            }
+            label="Disable the TTS cache write"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={!!opt.skipZipGeneration}
                 onChange={update("skipZipGeneration")}
               />
@@ -222,6 +240,12 @@ export function Config({
             value={opt.outputFolder || ""}
             onChange={update("outputFolder")}
             label="Zip output folder"
+          ></TextField>
+          <TextField
+            variant="standard"
+            value={opt.ttsCachePath || ""}
+            onChange={update("ttsCachePath")}
+            label="Path to the TTS cache"
           ></TextField>
 
           <FormControl style={{ gridColumn: "1 / 3" }}>

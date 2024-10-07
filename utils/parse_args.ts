@@ -5,8 +5,8 @@ import { generatePack } from "../gen_pack.ts";
 import { PackExtractor } from "../extract_pack.ts";
 import { openGui } from "../gui/gui.ts";
 import type { ModOptions } from "../types.ts";
-import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../types.ts";
 import { getDefaultTtsPath } from "../generate/tts_cache.ts";
+import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../common-types.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs

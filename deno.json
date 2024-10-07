@@ -11,7 +11,8 @@
     "pre-commit": "deno task fmt --check && deno task lint && deno task test && deno task check",
     "start": "deno run -A --unstable studio_pack_generator.ts",
     "test": "deno test -A --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
-    "test-watch": "deno test -A --watch --unstable --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor"
+    "test-watch": "deno test -A --watch --unstable --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
+    "update-frontend-assets": "cd gui/frontend && npm run build && ../gui.ts updateAssets"
   },
   "imports": {
     "@david/dax": "jsr:@david/dax@^0.42.0",

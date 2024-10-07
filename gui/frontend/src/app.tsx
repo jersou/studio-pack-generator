@@ -18,7 +18,7 @@ import { OpenFolder } from "./openFolder.tsx";
 import { StageNode } from "./stageNode.tsx";
 import { Pack } from "../../../serialize/serialize-types";
 import { enqueueSnackbar } from "notistack";
-import type { ModOptions } from "../../../types.ts";
+import type { CliOptions } from "../../../common-types.ts";
 import { Loader } from "./loader.tsx";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -125,7 +125,7 @@ export function App() {
       audio: null,
     },
   });
-  const [opt, setOpt] = useState<Partial<ModOptions>>({});
+  const [opt, setOpt] = useState<Partial<CliOptions>>({});
   const [inProgress, setInProgress] = useState(false);
   const [updatePackInProgress, setUpdatePackInProgress] = useState(false);
 
