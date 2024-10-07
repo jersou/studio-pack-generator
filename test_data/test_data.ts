@@ -260,6 +260,7 @@ export const expectedMoyPack: Pack = {
                     {
                       class: "StageNode-Story",
                       audio: "46fe70d98b9763ab70b7e7cea4627e4f8b7c585a.ogg",
+                      duration: undefined,
                       image: null,
                       name: "city",
                       okTransition: null,
@@ -286,6 +287,7 @@ export const expectedMoyPack: Pack = {
                       class: "StageNode-Story",
                       name: "alice-jungle",
                       audio: "f493d4e986a1278ca7db3f7c65bf8ee32535b2e4.ogg",
+                      duration: undefined,
                       image: null,
                       okTransition: null,
                     },
@@ -903,6 +905,7 @@ export const expectedFullPack: Pack = {
                                   class: "StageNode-Story",
                                   audio:
                                     "46fe70d98b9763ab70b7e7cea4627e4f8b7c585a.ogg",
+                                  duration: undefined,
                                   image: null,
                                   name: "city",
                                   okTransition: null,
@@ -933,6 +936,7 @@ export const expectedFullPack: Pack = {
                                   class: "StageNode-Story",
                                   audio:
                                     "f493d4e986a1278ca7db3f7c65bf8ee32535b2e4.ogg",
+                                  duration: undefined,
                                   image: null,
                                   name: "alice-jungle",
                                   okTransition: null,
@@ -999,6 +1003,7 @@ export const expectedFullPack: Pack = {
                                   class: "StageNode-Story",
                                   audio:
                                     "90304af3b9d81fb1590ad367df796e791ea78750.ogg",
+                                  duration: undefined,
                                   image: null,
                                   name: "bob-city",
                                   okTransition: null,
@@ -1028,6 +1033,7 @@ export const expectedFullPack: Pack = {
                                   audio:
                                     "084c25abd45f62e50aed566e74ae3317bf844d6c.ogg",
                                   image: null,
+                                  duration: undefined,
                                   name: "jungle",
                                   okTransition: null,
                                 },

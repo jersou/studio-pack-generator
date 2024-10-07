@@ -76,7 +76,7 @@ export function getFolderImageItem(folder: Folder) {
 }
 
 export function getFileAudioItem(file: File, parent: Folder) {
-  const nameWithoutExt = getNameWithoutExt(file.name);
+  const nameWithoutExt = rmDiacritic(getNameWithoutExt(file.name));
   const audioItem = parent.files.find(
     (f) =>
       getNameWithoutExt(rmDiacritic(f.name)).replace(
@@ -216,7 +216,11 @@ export function rmDiacritic(s: string) {
 }
 
 export function convertToValidFilename(name: string): string {
-  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").trim();
+  // first we remove all unwanted chars. Then we "trim" the spaces
+  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").replace(
+    /\s{1,}/,
+    " ",
+  ).trim();
 }
 
 export function cleanStageName(name: string): string {
@@ -233,7 +237,7 @@ export function groupBy<T>(
 }
 
 export function cleanOption(opt: ModOptions): ModOptions {
-  const cleanOpt: { [k: string]: string | number | boolean } = {};
+  const cleanOpt: { [k: string]: string | number | boolean | object } = {};
   Object.entries(opt).filter(([key]) =>
     key.length > 1 && !key.includes("-") && key != "$0"
   )

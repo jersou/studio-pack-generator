@@ -388,7 +388,14 @@ File format (all the properties are optionals) :
   "port": 5555,
   "skipWriteTtsCache": false,
   "skipReadTtsCache": false,
-  "ttsCachePath": "/tmp/spg-tts-cache"
+  "ttsCachePath": "/tmp/spg-tts-cache",
+  "i18n": {
+    "special": "Special",
+    "season": "Season %d",
+    "storyQuestion": "Choose your story",
+    "partQuestion": "Choose your part",
+    "NightModeTransition": "Want to listen to a new story?"
+  }
 }
 ```
 

@@ -34,6 +34,14 @@ export async function parseArgs(args: string[]) {
           opts = { ...opts, ...optsFromFile, storyPath: opts.storyPath };
         }
 
+        if (opts.customScript) {
+          try {
+            opts.customModule = await import(opts.customScript);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
         if (opts.extract) {
           return await new PackExtractor(opts).extractPack();
         } else if (opts.gui) {
@@ -173,6 +181,12 @@ export async function parseArgs(args: string[]) {
       type: "number",
       default: 0,
       describe: "RSS min episode duration",
+    })
+    .option("rss-use-subtitle-as-title", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "Use rss items subtitle as title",
     })
     .option("rss-use-image-as-thumbnail", {
       demandOption: false,
@@ -317,6 +331,13 @@ export async function parseArgs(args: string[]) {
       default: getDefaultTtsPath().toString(),
       type: "string",
       describe: "path to the TTS cache",
+    })
+    .option("custom-script", {
+      demandOption: false,
+      boolean: false,
+      default: undefined,
+      type: "string",
+      describe: "custom script to be used for custom image... handling",
     })
     .version(false)
     .demandCommand(1)

@@ -1,3 +1,4 @@
+import type { ModOptions } from "../types.ts";
 import { fixUrl, getItemFileName } from "./rss_parser.ts";
 import { assert, assertEquals } from "@std/assert";
 
@@ -7,7 +8,7 @@ Deno.test("getItemFileName", () => {
       pubDate: "0",
       title: 'a\\z/e:r*t?y"u<i>o|p',
       enclosure: { "@url": "" },
-    }).endsWith(" - a z e r t y u i o p."),
+    }, {} as ModOptions).endsWith(" - a z e r t y u i o p."),
   );
 });
 

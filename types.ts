@@ -1,3 +1,5 @@
+import type { RssItem } from "./generate/rss_parser.ts";
+
 export const OPEN_AI_VOICES = [
   "alloy",
   "echo",
@@ -7,6 +9,10 @@ export const OPEN_AI_VOICES = [
   "shimmer",
 ] as const;
 export const OPEN_AI_MODELS = ["tts-1", "tts-1-hd"] as const;
+
+export interface CustomModule {
+  fetchRssItemImage?: (item: RssItem, opt: ModOptions) => Promise<string>;
+}
 export type ModOptions = {
   storyPath: string;
   lang: string;
@@ -14,6 +20,7 @@ export type ModOptions = {
   rssSplitSeasons?: boolean;
   rssMinDuration: number;
   rssUseImageAsThumbnail?: boolean;
+  rssUseSubtitleAsTitle?: boolean;
   skipImageItemGen?: boolean;
   thumbnailFromFirstItem: boolean;
   useThumbnailAsRootImage?: boolean;
@@ -49,4 +56,7 @@ export type ModOptions = {
   skipWriteTtsCache?: boolean;
   skipReadTtsCache?: boolean;
   ttsReadCachePath?: string;
+  customScript?: string;
+  customModule?: CustomModule;
+  i18n?: Record<string, string>;
 };
