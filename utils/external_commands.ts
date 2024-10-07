@@ -101,6 +101,29 @@ or install pico2wave : sudo apt install -y libttspico-utils
   return pico2waveCommand;
 }
 
+let coquiCommand: string[] = [];
+export async function getCoquiCommand(): Promise<string[]> {
+  if (coquiCommand.length === 0) {
+    if (
+      Deno.build.os === "windows" && await checkCommand(["wsl", "tts", "-h"], 0)
+    ) {
+      coquiCommand = ["wsl", "tts"];
+    } else if (await checkCommand(["tts", "-h"], 0)) {
+      coquiCommand = ["tts"];
+    } else {
+      console.error(
+        `
+Command tts (from coqui-tts) not found,
+use --skip-audio-item-gen to skip audio item generation
+or install coqui-tts : pip install coqui-tts
+`,
+      );
+      Deno.exit(3);
+    }
+  }
+  return coquiCommand;
+}
+
 let convertCommand: string[] = [];
 
 export async function getConvertCommand(): Promise<string[]> {

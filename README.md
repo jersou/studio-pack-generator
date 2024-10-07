@@ -298,6 +298,14 @@ To use OpenAI TTS, use `--use-open-ai-tts` option, and you must set the API key:
 - or use --open-ai-api-key parameter
 - or enter the key when the program prompt
 
+## Coqui TTS
+
+Coqui is "a deep learning toolkit for Text-to-Speech":
+https://github.com/idiap/coqui-ai-TTS
+
+[To install coqui](https://github.com/idiap/coqui-ai-TTS?tab=readme-ov-file#installation)
+: `pip install coqui-tts`
+
 ## Reverse process : extract pack from zip
 
 Extract a file stucture from zip pack :
@@ -377,20 +385,20 @@ story folder. It can be use for the next run :
 
 Some dev command are listed in the deno.json file :
 
-- bundle: bundle the project and its dependencies to
-  `dist/studio_pack_generator.js`
 - fmt: format the code
 - gen-bin: generate the binaries
 - gen-cov: generate the test coverage
+- check: deno check studio_pack_generator.ts
 - lint: lint the code
-- pre-commit: fmt && lint && test
-- pre-commit-fast: parallel pre-commit task
+- pre-commit: fmt && lint && test && check
 - start: run studio_pack_generator.ts
 - test: launch tests
 - test-watch: launch tests on file change
-- vendor: vendor the dependencies to `vendor`
 
 Usage : `deno task <command>`, ex : `deno task fmt`
+
+Note: some dependencies are vendored in `vendor/` folder, it's to publish on JSR
+(which does not allow http imports).
 
 ## Possible improvements
 

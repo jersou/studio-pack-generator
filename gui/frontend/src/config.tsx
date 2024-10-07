@@ -47,7 +47,6 @@ export function Config({
       ? "coqui"
       : "os";
   const onTtsChange = (event: any) => {
-    console.log(event.target.value);
     switch (event.target.value) {
       case "os":
         setOpt({
