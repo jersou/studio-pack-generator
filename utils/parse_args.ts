@@ -6,6 +6,7 @@ import { PackExtractor } from "../extract_pack.ts";
 import { openGui } from "../gui/gui.ts";
 import type { ModOptions } from "../types.ts";
 import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "../types.ts";
+import { getDefaultTtsPath } from "../generate/tts_cache.ts";
 
 export async function parseArgs(args: string[]) {
   // @ts-ignore yargs
@@ -311,6 +312,25 @@ export async function parseArgs(args: string[]) {
       default: false,
       hidden: true,
       describe: "true if compiled with deno compile",
+    })
+    .option("skip-read-tts-cache", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "disable the TTS cache usage",
+    })
+    .option("skip-write-tts-cache", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "disable the TTS cache write",
+    })
+    .option("tts-cache-path", {
+      demandOption: false,
+      boolean: false,
+      default: getDefaultTtsPath().toString(),
+      type: "string",
+      describe: "path to the TTS cache",
     })
     .option("custom-script", {
       demandOption: false,

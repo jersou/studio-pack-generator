@@ -1,4 +1,4 @@
-# Studio-Pack-Generator
+# Studio-Pack-Generator (SPG)
 
 This project convert a folder or a RSS URL to
 [Studio](https://github.com/marian-m12l/studio) pack zip for Lunii device, see
@@ -245,6 +245,9 @@ Options:
   -u, --gui                          open GUI (on localhost:5555)                             [boolean] [default: false]
       --port                         port of GUI server                                         [number] [default: 5555]
       --config-file                  json config file                                                           [string]
+      --skip-read-tts-cache          disable the TTS cache usage                              [boolean] [default: false]
+      --skip-write-tts-cache         disable the TTS cache write                              [boolean] [default: false]
+      --tts-cache-path               path to the TTS cache                [string] [default: "<SPG dir>/.spg-TTS-cache"]
 ```
 
 Separate options by spaces, ex :
@@ -290,6 +293,11 @@ All key/value are optional, ex:
 }
 ```
 
+## TTS cache
+
+A folder `<studio-pack-generator install dir>/.spg-TTS-cache/` is used to keep
+the generated audio files.
+
 ## OpenAI TTS
 
 To use OpenAI TTS, use `--use-open-ai-tts` option, and you must set the API key:
@@ -328,6 +336,10 @@ studio-pack-generator -x -o output/dir  2-full.zip
 
 Note: it doesn't work well with "menu" nodes and with pack without "question"
 stage.
+
+## TTS cache
+
+To speed up / save CPU
 
 ## json config file
 
@@ -373,7 +385,10 @@ File format (all the properties are optionals) :
   "coquiTtsModel": "tts_models/multilingual/multi-dataset/xtts_v2",
   "coquiTtsLanguageIdx": "fr",
   "coquiTtsSpeakerIdx": "Abrahan Mack",
-  "port": 5555
+  "port": 5555,
+  "skipWriteTtsCache": false,
+  "skipReadTtsCache": false,
+  "ttsCachePath": "/tmp/spg-tts-cache"
 }
 ```
 
