@@ -230,6 +230,9 @@ async function exploreStageNode(
   if (((stageNode as Story).duration !== undefined)) {
     serializedStageNode.duration = (stageNode as Story).duration;
   }
+  if (opt.rssEpisodeNumbers && ((stageNode as Story).episode !== undefined)) {
+    serializedStageNode.episode = (stageNode as Story).episode;
+  }
   if (
     serializedStageNode.okTransition === null &&
     stageNode.class === "StageNode-Story" &&
