@@ -31,7 +31,7 @@ export async function parseArgs(args: string[]) {
           const optsFromFile = JSON.parse(
             await Deno.readTextFile(opts.configFile),
           );
-          opts = { ...opts, ...optsFromFile, storyPath: opts.storyPath };
+          opts = { ...opts, storyPath: opts.storyPath, ...optsFromFile };
         }
 
         if (opts.customScript) {
