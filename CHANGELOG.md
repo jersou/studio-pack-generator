@@ -1,15 +1,53 @@
-### v0.5.9 / 2024.10.07
+## [0.5.9](https://github.com/jersou/studio-pack-generator/compare/v0.5.7...v0.5.9) (2024-10-07)
 
-- feat: cache generated TTS file
-- feat: custom script and more #30
-  - feat: add custom i18n in config
-  - feat: add "Use rss items subtitle as title"
-- fix: use ttsCachePath
+### Features
 
-### v0.5.7 / 2024.10.06
+- cache generated TTS file
+  ([4c669a8](https://github.com/jersou/studio-pack-generator/commit/4c669a8abe632f9b53ee4842edff05e5a36a0c05))
+- story.json export now uses metadata title instead of filename. Ensures all
+  characters are there. Also added audio duration (for players needing story
+  duration)
+  ([0919273](https://github.com/jersou/studio-pack-generator/commit/091927305dc1a5b72b3f0efb1b3eb0e30191d794))
+- update GUI with cache options
+  ([40750bc](https://github.com/jersou/studio-pack-generator/commit/40750bc305d767c403fa0d6b8ca87a0b35db91d1))
+- you can now customize i18n from command line / config
+  ([a04ddda](https://github.com/jersou/studio-pack-generator/commit/a04ddda533750aeda57de11c960aae7e8ebd96ed))
 
-- fix: coqui-tts error on windows
-- fix: the GUI config is not used by the backend
+### Bug Fixes
+
+- all generateImage to have custom arguments
+  ([f7cc943](https://github.com/jersou/studio-pack-generator/commit/f7cc943de5125c59a87d0de4d565b4afd69057d4))
+- basic custom module support. For now only for image query
+  ([92ac916](https://github.com/jersou/studio-pack-generator/commit/92ac916cfc7b981839ac86c75cd94f2fe726aba3))
+- better handling of rss image
+  ([8fc4d7f](https://github.com/jersou/studio-pack-generator/commit/8fc4d7f25e2070e2e3a0c9c4c72a936771db3b70))
+- fix for when using `skipImageConvert`
+  ([b4f0134](https://github.com/jersou/studio-pack-generator/commit/b4f0134efc1f5aaa6cfce4443a38bd58384e32e3))
+- fix tests
+  ([d9ca768](https://github.com/jersou/studio-pack-generator/commit/d9ca76872750b97a1dcabbef800e0dc382151c9e))
+- if there is a itunes:subtitle use that as item title
+  ([b109177](https://github.com/jersou/studio-pack-generator/commit/b109177d82d54658ab04a83fe608ac62fa4a7107))
+- regression fix for generated images names (would trigger tts again and again)
+  ([3a3dbbb](https://github.com/jersou/studio-pack-generator/commit/3a3dbbb97ae473eb4b5440aa4d8fb86a810959fa))
+- remove i18n from cli, but keep in the config file
+  ([48e4861](https://github.com/jersou/studio-pack-generator/commit/48e48614739c61b301f8650e9e465e85bc552cac))
+- store rss items metadata and use that to get the text to tts. this ensure we
+  dont rely on file name for tts which will help tts with caracters which would
+  have been removed from file name
+  ([b3312a1](https://github.com/jersou/studio-pack-generator/commit/b3312a116f53eabe6ccab28165231c66ec86cf4c))
+- use ttsCachePath
+  ([041d209](https://github.com/jersou/studio-pack-generator/commit/041d2099c32a18a67803641c93f1ba445f658f14))
+- deno publish
+  ([066b18c](https://github.com/jersou/studio-pack-generator/commit/066b18cf4b140df8cb00b473fec6cdf414248171))
+
+## [0.5.7](https://github.com/jersou/studio-pack-generator/compare/v0.5.6...v0.5.7) (2024-10-06)
+
+### Bug Fixes
+
+- coqui error on windows
+  ([2421902](https://github.com/jersou/studio-pack-generator/commit/242190256f9e12716cef06cfff7e184628c0f8b6))
+- **GUI:** the GUI config is not used by the backend
+  ([9a41b26](https://github.com/jersou/studio-pack-generator/commit/9a41b267b51645007197fd2c6a26e1d41611fa82))
 
 ### v0.5.6 / 2024.10.06
 
@@ -171,7 +209,7 @@ as generated in the name for easier filtering (should not break anything).
 
 ### v0.1.10 / 2021.12.19
 
-- fix(rss/windows): remove Windows forbidden characters \:*?<>|
+- fix(rss/windows): remove Windows forbidden characters \:\*?<>|
 
 ### v0.1.9 / 2021.12.19
 

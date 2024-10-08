@@ -9,9 +9,11 @@
     "check": "deno check studio_pack_generator.ts",
     "lint": "deno lint --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
     "pre-commit": "deno task fmt --check && deno task lint && deno task test && deno task check",
+    "publish-dry-run": "deno publish --dry-run",
     "start": "deno run -A --unstable studio_pack_generator.ts",
     "test": "deno test -A --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
     "test-watch": "deno test -A --watch --unstable --ignore=gui/assets_bundle.json,gui/frontend,tmp,dist,.cov_profile,vendor",
+    "update-changelog": "conventional-changelog -p conventionalcommits --same-file  -i CHANGELOG.md -k deno.json && deno task fmt",
     "update-frontend-assets": "cd gui/frontend && npm run build && ../gui.ts updateAssets"
   },
   "imports": {
@@ -33,5 +35,11 @@
     "https://deno.land/std/": "./vendor/deno.land/std@0.216.0/"
   },
   "exports": "./studio_pack_generator.ts",
-  "publish": { "exclude": ["tools", "gui/frontend/src", "test_data/"] }
+  "publish": {
+    "exclude": [
+      "tools",
+      "gui/frontend/src",
+      "test_data/"
+    ]
+  }
 }
