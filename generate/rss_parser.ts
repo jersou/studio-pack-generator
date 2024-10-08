@@ -76,6 +76,7 @@ async function getFolderWithUrlFromRssUrl(
   const metadata = {
     title: rss.title,
     description: rss.description,
+    podcast: true // can be used by players to know if that pack is a podcast
   } as Metadata;
   if (opt.rssMinDuration > 0) {
     rss.item = rss.item.filter((i) => {
@@ -128,7 +129,15 @@ async function getFolderWithUrlFromRssUrl(
         ? items.find((item) => item["itunes:image"]?.["@href"])
           ?.["itunes:image"]?.["@href"]
         : imgUrl,
-      metadata: { ...metadata, title: name },
+      metadata: {
+        ...metadata,
+        title: name,
+        ...(opt.rssEpisodeNumbers
+          ? {
+            episodeCount: items.length,
+          }
+          : {}),
+      },
     };
   });
   for (let index = 0; index < fss.length; index++) {
@@ -147,7 +156,7 @@ async function getFolderWithUrlFromRssUrl(
     );
     console.log(blue(`→ ${items.length} items`));
     if (items.length <= opt.rssSplitLength) {
-      fs.files.push(await getFolderOfStories(items, opt));
+      fs.files.push(await getFolderOfStories(items, opt, 0));
     } else {
       fs.files.push(await getFolderParts(items, opt));
     }
@@ -175,10 +184,11 @@ export function fixUrl(url: string): string {
 async function getFolderOfStories(
   items: RssItem[],
   opt: ModOptions,
+  deltaIndex: number,
 ): Promise<FolderWithUrlOrData> {
   return {
     name: opt.i18n?.["storyQuestion"] || i18next.t("storyQuestion"),
-    files: (await Promise.all(items.map(async (item) => {
+    files: (await Promise.all(items.map(async (item, index) => {
       const itemFiles = [{
         name: getItemFileName(item, opt),
         url: fixUrl(item.enclosure["@url"]),
@@ -191,6 +201,8 @@ async function getFolderOfStories(
             ? await opt.customModule?.fetchRssItemTitle(item, opt)
             : (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
               item.title,
+          episode: item["itunes:episode"] || item["podcast:episode"] ||
+            deltaIndex + index + 1,
         },
         sha1: "",
       }];
@@ -229,7 +241,13 @@ async function getFolderParts(
     name: opt.i18n?.["partQuestion"] || i18next.t("partQuestion"),
     files: await Promise.all(parts.map(async (part, index) => ({
       name: sprintf(i18next.t("partTitle"), index + 1),
-      files: [await getFolderOfStories(part, opt)],
+      files: [
+        await getFolderOfStories(
+          part,
+          opt,
+          parts.slice(0, index).reduce((acc, val) => acc + val.length, 0),
+        ),
+      ],
     }))),
   };
 }

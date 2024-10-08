@@ -31,7 +31,7 @@ export async function parseArgs(args: string[]) {
           const optsFromFile = JSON.parse(
             await Deno.readTextFile(opts.configFile),
           );
-          opts = { ...opts, ...optsFromFile, storyPath: opts.storyPath };
+          opts = { ...opts, storyPath: opts.storyPath, ...optsFromFile };
         }
 
         if (opts.customScript) {
@@ -174,6 +174,12 @@ export async function parseArgs(args: string[]) {
       boolean: true,
       default: false,
       describe: "RSS create different packs per season",
+    })
+    .option("rss-episode-numbers", {
+      demandOption: false,
+      boolean: true,
+      default: false,
+      describe: "add RSS episode number to stages",
     })
     .option("rss-min-duration", {
       demandOption: false,

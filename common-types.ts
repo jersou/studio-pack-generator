@@ -15,6 +15,7 @@ export type CliOptions = {
   lang: string;
   rssSplitLength: number;
   rssSplitSeasons?: boolean;
+  rssEpisodeNumbers?: boolean;
   rssMinDuration: number;
   rssUseImageAsThumbnail?: boolean;
   rssUseSubtitleAsTitle?: boolean;

@@ -239,6 +239,7 @@ Options:
   -s, --skip-not-rss                 skip all except download RSS files                       [boolean] [default: false]
       --rss-split-length             RSS will be split in parts of N length                       [number] [default: 10]
       --rss-split-seasons            RSS create different packs per season                    [boolean] [default: false]
+      --rss-episode-numbers          add RSS episode number to stages                         [boolean] [default: false]
       --rss-min-duration             RSS min episode duration                                      [number] [default: 0]
       --rss-use-subtitle-as-title    Use rss items subtitle as title                          [boolean] [default: false]
       --rss-use-image-as-thumbnail   Use rss image (first item with image) as thumbnail       [boolean] [default: false]
@@ -362,6 +363,7 @@ Usage : `--custom-script=<path>`
 ```
 export interface CustomModule {
    fetchRssItemImage?: (item: RssItem, opt: ModOptions) => Promise<string>;
+   fetchRssItemTitle?: (item: RssItem, opt: ModOptions) => Promise<string>;
 }
 ```
 
@@ -405,6 +407,7 @@ File format (all the properties are optionals) :
   "rssMinDuration": 0,
   "rssUseImageAsThumbnail": false,
   "useThumbnailAsRootImage": false,
+  "rssEpisodeNumbers": false,
   "useCoquiTts": false,
   "coquiTtsModel": "tts_models/multilingual/multi-dataset/xtts_v2",
   "coquiTtsLanguageIdx": "fr",
