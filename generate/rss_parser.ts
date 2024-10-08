@@ -188,9 +188,9 @@ async function getFolderOfStories(
         data: {
           ...item,
           title: opt.customModule?.fetchRssItemTitle
-          ? await opt.customModule?.fetchRssItemTitle(item, opt)
-          : (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
-            item.title,
+            ? await opt.customModule?.fetchRssItemTitle(item, opt)
+            : (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
+              item.title,
         },
         sha1: "",
       }];
