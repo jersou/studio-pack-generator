@@ -187,7 +187,9 @@ async function getFolderOfStories(
         name: getNameWithoutExt(getItemFileName(item, opt)) + "-metadata.json",
         data: {
           ...item,
-          title: (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
+          title: opt.customModule?.fetchRssItemTitle
+          ? await opt.customModule?.fetchRssItemTitle(item, opt)
+          : (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
             item.title,
         },
         sha1: "",

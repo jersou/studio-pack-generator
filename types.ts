@@ -3,6 +3,7 @@ import type { CliOptions } from "./common-types.ts";
 
 export interface CustomModule {
   fetchRssItemImage?: (item: RssItem, opt: ModOptions) => Promise<string>;
+  fetchRssItemTitle?: (item: RssItem, opt: ModOptions) => Promise<string>;
 }
 
 export type ModOptions = CliOptions & {
