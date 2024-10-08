@@ -76,6 +76,7 @@ async function getFolderWithUrlFromRssUrl(
   const metadata = {
     title: rss.title,
     description: rss.description,
+    podcast: true // can be used by players to know if that pack is a podcast
   } as Metadata;
   if (opt.rssMinDuration > 0) {
     rss.item = rss.item.filter((i) => {
