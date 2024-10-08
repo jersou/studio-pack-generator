@@ -7,5 +7,13 @@ export interface CustomModule {
 
 export type ModOptions = CliOptions & {
   customModule?: CustomModule;
+  metadata?: {
+    title?: string;
+    description?: string;
+    format?: string;
+    version?: number;
+    nightModeAvailable?: boolean;
+    [k: string]: string | number | boolean | undefined | object;
+  };
   i18n?: Record<string, string>;
 };

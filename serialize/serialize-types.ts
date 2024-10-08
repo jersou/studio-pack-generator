@@ -16,6 +16,7 @@ export type Pack = {
   version: number;
   nightModeAvailable: boolean;
   entrypoint: Entrypoint;
+  extraMetadata?: object;
 };
 
 export type Entrypoint = Omit<Menu, "class"> & {
@@ -30,6 +31,7 @@ export type Menu = {
   audioPath?: string;
   imagePath?: string;
   duration?: number;
+  episode?: number;
   audioTimestamp?: number;
   imageTimestamp?: number;
   pathTimestamp?: number;
@@ -55,6 +57,7 @@ export type StoryAction = {
 export type Story = {
   class: "StageNode-Story";
   audio: string;
+  episode?: number;
   duration?: number;
   image: null;
   name: string;
@@ -66,6 +69,7 @@ export type StageNode = {
   uuid: string;
   squareOne: boolean;
   type: string;
+  episode?: number;
   duration?: number;
   name: string;
   homeTransition: { actionNode: string; optionIndex: number } | null;

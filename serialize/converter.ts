@@ -32,16 +32,18 @@ export async function folderToPack(
   folder: Folder,
   metadata?: Metadata,
 ): Promise<Pack> {
+  const { title, description, format, version, nightMode, ...otherMetadata } =
+    metadata || {};
   const firstSubFolder = folder.files.find((f) => isFolder(f)) as Folder;
   const audio = getFolderAudioItem(folder);
   const image = getFolderImageItem(folder);
   const folderPath = folder.path + "/";
   const res: Pack = {
-    title: metadata?.title ?? folder.name,
-    description: metadata?.description ?? "",
-    format: metadata?.format ?? "v1",
-    version: metadata?.version ?? 1,
-    nightModeAvailable: !!(metadata?.nightMode),
+    title: title ?? folder.name,
+    description: description ?? "",
+    format: format ?? "v1",
+    version: version ?? 1,
+    nightModeAvailable: !!nightMode,
     entrypoint: {
       class: "StageNode-Entrypoint",
       name: "Cover node",
@@ -59,6 +61,9 @@ export async function folderToPack(
             : fileToStory(firstStoryFile(folder)!),
         ],
       },
+      ...((otherMetadata && Object.keys(otherMetadata).length > 0)
+        ? { extraMetadata: otherMetadata }
+        : {}),
     },
   };
 
@@ -145,6 +150,11 @@ export async function fileToStoryItem(
   const audio = getFileAudioItem(file, parent);
   const image = getFileImageItem(file, parent);
   let name = cleanStageName(file.name);
+  let metadata: {
+    title?: string;
+    episode?: number;
+    [k: string]: string | number | undefined;
+  } = {};
   if (parent.path) {
     const metadataPath = join(
       parent.path!,
@@ -152,7 +162,7 @@ export async function fileToStoryItem(
     );
     if (await exists(metadataPath)) {
       try {
-        const metadata = JSON.parse(await Deno.readTextFile(metadataPath));
+        metadata = JSON.parse(await Deno.readTextFile(metadataPath));
         name = metadata?.title ?? name;
       } catch (error) {
         console.error(`error reading json metadata: ${metadataPath}`, error);
@@ -181,6 +191,7 @@ export async function fileToStoryItem(
           image: null,
           name,
           okTransition: null,
+          ...(metadata.episode ? { episode: metadata.episode } : {}),
         },
       ],
     },
