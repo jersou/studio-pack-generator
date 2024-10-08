@@ -128,9 +128,15 @@ async function getFolderWithUrlFromRssUrl(
         ? items.find((item) => item["itunes:image"]?.["@href"])
           ?.["itunes:image"]?.["@href"]
         : imgUrl,
-      metadata: { ...metadata, title: name, ...(opt.rssEpisodeNumbers ? {
-        episodeCount: items.length
-      } :{}) },
+      metadata: {
+        ...metadata,
+        title: name,
+        ...(opt.rssEpisodeNumbers
+          ? {
+            episodeCount: items.length,
+          }
+          : {}),
+      },
     };
   });
   for (let index = 0; index < fss.length; index++) {
@@ -190,6 +196,8 @@ async function getFolderOfStories(
         name: getNameWithoutExt(getItemFileName(item, opt)) + "-metadata.json",
         data: {
           ...item,
+          episode: item["itunes:episode"] || item["podcast:episode"] ||
+            deltaIndex + index + 1,
           title: (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
             item.title,
         },
@@ -230,7 +238,13 @@ async function getFolderParts(
     name: opt.i18n?.["partQuestion"] || i18next.t("partQuestion"),
     files: await Promise.all(parts.map(async (part, index) => ({
       name: sprintf(i18next.t("partTitle"), index + 1),
-      files: [await getFolderOfStories(part, opt, parts.slice(0, index).reduce((acc, val) => acc + val.length, 0))],
+      files: [
+        await getFolderOfStories(
+          part,
+          opt,
+          parts.slice(0, index).reduce((acc, val) => acc + val.length, 0),
+        ),
+      ],
     }))),
   };
 }

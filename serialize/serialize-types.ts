@@ -16,6 +16,7 @@ export type Pack = {
   version: number;
   nightModeAvailable: boolean;
   entrypoint: Entrypoint;
+  extraMetadata?: object;
 };
 
 export type Entrypoint = Omit<Menu, "class"> & {
