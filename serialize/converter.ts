@@ -61,10 +61,10 @@ export async function folderToPack(
             : fileToStory(firstStoryFile(folder)!),
         ],
       },
-      ...((otherMetadata && Object.keys(otherMetadata).length > 0)
-        ? { extraMetadata: otherMetadata }
-        : {}),
     },
+    ...((otherMetadata && Object.keys(otherMetadata).length > 0)
+      ? { extraMetadata: otherMetadata }
+      : {}),
   };
 
   if (folder.path) {
