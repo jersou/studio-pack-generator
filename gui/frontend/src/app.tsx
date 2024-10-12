@@ -16,7 +16,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import SyncIcon from "@mui/icons-material/Sync";
 import { OpenFolder } from "./openFolder.tsx";
 import { StageNode } from "./stageNode.tsx";
-import { Pack } from "../../../serialize/serialize-types";
+import { Pack } from "../../../serialize/serialize-types.ts";
 import { enqueueSnackbar } from "notistack";
 import type { CliOptions } from "../../../common-types.ts";
 import { Loader } from "./loader.tsx";
@@ -196,7 +196,7 @@ export function App() {
           >
             <Stack alignItems="center" direction="row" gap={2}>
               <SyncIcon />
-              <Typography style={{ fontSize: 25 }}> Live preview</Typography>
+              <Typography style={{ fontSize: 25 }}>Live preview</Typography>
             </Stack>
           </AccordionSummary>
           <AccordionDetails>
