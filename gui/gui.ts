@@ -189,7 +189,13 @@ class StudioPackGeneratorGui {
   ] as const;
 
   #sendWs(data: string | ArrayBufferLike | Blob | ArrayBufferView) {
-    this.#sockets.forEach((s) => s.send(data));
+    this.#sockets.forEach((s) => {
+      try {
+        s.send(data);
+      } catch (e) {
+        console.error(e);
+      }
+    });
   }
 
   async #watchStoryPath(path: string) {

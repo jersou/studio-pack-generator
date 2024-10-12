@@ -187,7 +187,7 @@ export async function fileToStoryItem(
         {
           class: "StageNode-Story",
           audio: getFileAudioStory(file)?.assetName ?? null,
-          duration: file.path ? (await duration(file.path)) : undefined,
+          duration: file.path ? await getDuration(file.path) : undefined,
           image: null,
           name,
           okTransition: null,
@@ -197,6 +197,15 @@ export async function fileToStoryItem(
     },
   };
   return res;
+}
+
+async function getDuration(path: string) {
+  try {
+    return await duration(path);
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
 }
 
 export function fileToStory(file: File): Story {
