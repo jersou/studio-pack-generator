@@ -10,8 +10,7 @@ import {
   expectedMoyPackSerialized,
 } from "../test_data/test_data.ts";
 import { serializePack } from "./serializer.ts";
-
-import type { ModOptions } from "../types.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 type Obj = {
   id?: string;
@@ -58,7 +57,7 @@ function clone(object: any) {
   return cloneObj;
 }
 
-const emptyOpt: ModOptions = {
+const emptyOpt = {
   lang: "fr",
   storyPath: "",
   imageItemGenFont: "Arial",
@@ -66,7 +65,7 @@ const emptyOpt: ModOptions = {
   thumbnailFromFirstItem: false,
   rssSplitLength: 10,
   skipRssImageDl: false,
-};
+} as StudioPackGenerator;
 
 Deno.test("serializePack-min", async () => {
   const pack = await serializePack(expectedMinPack, emptyOpt);
@@ -112,7 +111,7 @@ Deno.test("serializePack-next-menu", async () => {
     thumbnailFromFirstItem: false,
     rssSplitLength: 10,
     skipRssImageDl: false,
-  });
+  } as StudioPackGenerator);
   assertEquals(
     clearIds(clone(pack)),
     clearIds(clone(expectedMoyPackNextMenuSerialized)),

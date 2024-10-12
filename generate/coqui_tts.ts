@@ -1,12 +1,12 @@
-import type { ModOptions } from "../types.ts";
 import { cacheTtsFile, useCachedTtsFile } from "./tts_cache.ts";
 import { getCoquiCommand } from "../utils/external_commands.ts";
 import $ from "@david/dax";
 import { bgRed } from "@std/fmt/colors";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export async function generate_audio_with_coqui(
   title: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
   outputPath: string,
 ) {
   const cacheKey = [
@@ -17,7 +17,8 @@ export async function generate_audio_with_coqui(
     opt.coquiTtsModel,
   ];
   if (
-    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+    opt.skipReadTtsCache ||
+    !(await useCachedTtsFile(outputPath, cacheKey, opt))
   ) {
     const coquiCommand = await getCoquiCommand();
     const cmd = [

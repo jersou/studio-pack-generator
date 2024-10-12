@@ -362,8 +362,8 @@ Usage : `--custom-script=<path>`
 
 ```
 export interface CustomModule {
-   fetchRssItemImage?: (item: RssItem, opt: ModOptions) => Promise<string>;
-   fetchRssItemTitle?: (item: RssItem, opt: ModOptions) => Promise<string>;
+   fetchRssItemImage?: (item: RssItem, opt: StudioPackGenerator) => Promise<string>;
+   fetchRssItemTitle?: (item: RssItem, opt: StudioPackGenerator) => Promise<string>;
 }
 ```
 

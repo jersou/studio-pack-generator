@@ -2,19 +2,20 @@ import OpenAI from "https://deno.land/x/openai@v4.67.1/mod.ts";
 import { bgRed, blue } from "@std/fmt/colors";
 import $ from "@david/dax";
 
-import type { ModOptions } from "../types.ts";
 import { cacheTtsFile, useCachedTtsFile } from "./tts_cache.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 let openAI_client: OpenAI;
 
 export async function generate_audio_with_openAI(
   title: string,
   outputPath: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   const cacheKey = ["OpenAiTts", title, opt.openAiVoice, opt.openAiModel];
   if (
-    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+    opt.skipReadTtsCache ||
+    !(await useCachedTtsFile(outputPath, cacheKey, opt))
   ) {
     if (!openAI_client) {
       if (opt?.openAiApiKey) {

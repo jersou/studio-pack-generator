@@ -12,16 +12,15 @@ import { fsToFolder } from "../serialize/fs.ts";
 import type { Metadata } from "../serialize/serialize-types.ts";
 import { folderToPack } from "../serialize/converter.ts";
 import { throttle } from "@es-toolkit/es-toolkit";
-import type { ModOptions } from "../types.ts";
 import { contentType } from "@std/media-types";
 import { red } from "@std/fmt/colors";
-import { cleanOption } from "../utils/utils.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 type Assets = {
   [k: string]: { type: string; content: Uint8Array; route: URLPattern };
 };
 
-export function openGui(opt: ModOptions) {
+export function openGui(opt: StudioPackGenerator) {
   if (!opt.storyPath) {
     console.log("No story path → exit");
     Deno.exit(5);
@@ -40,15 +39,15 @@ export function openGui(opt: ModOptions) {
   return uiApp.main();
 }
 
-async function getPack(opt: ModOptions) {
+async function getPack(opt: StudioPackGenerator) {
   const folder = await fsToFolder(opt.storyPath, false);
   const metadata: Metadata = await getMetadata(opt.storyPath, opt);
   return await folderToPack(folder, metadata);
 }
 
-async function runSpg(opt: ModOptions) {
+async function runSpg(opt: StudioPackGenerator) {
   try {
-    await generatePack({ ...opt });
+    await generatePack(opt);
     return true;
   } catch (error) {
     console.error(error);
@@ -96,7 +95,7 @@ async function openFolder(path: string) {
 }
 
 class StudioPackGeneratorGui {
-  setStudioPackGeneratorOpt(opt: ModOptions) {
+  setStudioPackGeneratorOpt(opt: StudioPackGenerator) {
     this.#opt = opt;
   }
   hostname = "localhost";
@@ -106,7 +105,7 @@ class StudioPackGeneratorGui {
   openInBrowserAppMode: boolean | string = false;
   update: boolean | string = false;
   _update_desc = "update assets_bundle.json";
-  #opt?: ModOptions;
+  #opt?: StudioPackGenerator;
   #watcher?: Deno.FsWatcher;
   #server: Deno.HttpServer | undefined;
   #sockets = new Set<WebSocket>();
@@ -133,7 +132,6 @@ class StudioPackGeneratorGui {
       route: new URLPattern({ pathname: "/api/runSpg" }),
       exec: async (_match: URLPatternResult, request: Request) => {
         const opt = await request.json();
-        const optFiltered = cleanOption(opt);
         console.log(`Run SPG on ${this.#opt!.storyPath}`);
 
         (async () => {
@@ -142,7 +140,7 @@ class StudioPackGeneratorGui {
 
           try {
             const res = await runSpg({
-              ...optFiltered,
+              ...opt,
               storyPath: this.#opt!.storyPath,
             });
             console.log("SPG end");
@@ -257,7 +255,7 @@ class StudioPackGeneratorGui {
   async main(storyPath?: string) {
     console.log("GUI options", this.#opt);
     if (storyPath) {
-      this.#opt = { storyPath } as ModOptions;
+      this.#opt = { storyPath } as StudioPackGenerator;
     }
     if (!this.#opt?.storyPath) {
       console.log("No story path → exit");

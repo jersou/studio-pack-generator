@@ -1,13 +1,13 @@
 import { generate_audio_basic_tts } from "./basic_tts.ts";
 import { generate_audio_with_openAI } from "./openai_tts.ts";
-import type { ModOptions } from "../types.ts";
 import { generate_audio_with_coqui } from "./coqui_tts.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export async function generateAudio(
   title: string,
   outputPath: string,
   lang: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   if (opt.useOpenAiTts) {
     const output = outputPath.replace(/\.wav/i, ".mp3");

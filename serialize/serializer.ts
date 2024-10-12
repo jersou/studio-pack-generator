@@ -12,8 +12,7 @@ import type {
   ZipMenu,
 } from "./serialize-types.ts";
 import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
-
-import type { ModOptions } from "../types.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 type SerializePackOption = {
   autoNextStoryTransition?: boolean;
@@ -27,21 +26,21 @@ type Entry = {
 
 export async function serializePack(
   pack: Pack,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
   serializePackOption?: SerializePackOption,
 ): Promise<SerializedPack> {
   const serialized: SerializedPack = {
     title: opt.metadata?.title || pack.title,
-    version: (opt.metadata?.version) || pack.version,
+    version: opt.metadata?.version || pack.version,
     description: opt.metadata?.description || pack.description,
     format: opt.metadata?.format || pack.format,
     nightModeAvailable: opt.metadata?.nightModeAvailable ||
       pack.nightModeAvailable,
-    ...(Object.assign(
+    ...Object.assign(
       {},
       pack.extraMetadata ?? {},
       opt.metadata?.extraMetadata || {},
-    )),
+    ),
     actionNodes: [],
     stageNodes: [],
   };
@@ -170,7 +169,7 @@ async function exploreStageNode(
   groups: Groups,
   storyPath: string,
   nightActionId: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   const uuid = crypto.randomUUID();
   if (stageNode.class === "StageNode-Story") {
@@ -201,7 +200,8 @@ async function exploreStageNode(
   }
   const homeTransition = homeTransitionRelativeIndex === -1 ? null : {
     actionNode:
-      actionHistory[actionHistory.length - homeTransitionRelativeIndex].id,
+      actionHistory[actionHistory.length - homeTransitionRelativeIndex]
+        .id,
     optionIndex:
       actionHistory[actionHistory.length - homeTransitionRelativeIndex]
         .optionIndex,
@@ -233,10 +233,10 @@ async function exploreStageNode(
     type: "stage",
     uuid,
   };
-  if (((stageNode as Story).duration !== undefined)) {
+  if ((stageNode as Story).duration !== undefined) {
     serializedStageNode.duration = (stageNode as Story).duration;
   }
-  if (opt.rssEpisodeNumbers && ((stageNode as Story).episode !== undefined)) {
+  if (opt.rssEpisodeNumbers && (stageNode as Story).episode !== undefined) {
     serializedStageNode.episode = (stageNode as Story).episode;
   }
   if (
@@ -283,7 +283,7 @@ async function exploreZipMenu(
     { useWebWorkers: false },
   );
 
-  const entries = await zipReader.getEntries() as Entry[];
+  const entries = (await zipReader.getEntries()) as Entry[];
   const storyEntry = entries.find(
     // deno-lint-ignore no-explicit-any
     (entry: any) => entry.filename === "story.json",
@@ -356,7 +356,7 @@ async function exploreActionNode(
   groups: Groups,
   storyPath: string,
   nightActionId: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   const id = crypto.randomUUID();
 
@@ -364,11 +364,14 @@ async function exploreActionNode(
 
   for (const stageNode of actionNode.options) {
     {
-      const histo = [...actionHistory, {
-        id,
-        optionIndex: options.length,
-        size: actionNode.options.length,
-      }];
+      const histo = [
+        ...actionHistory,
+        {
+          id,
+          optionIndex: options.length,
+          size: actionNode.options.length,
+        },
+      ];
       if (stageNode.class == "ZipMenu") {
         options.push(
           await exploreZipMenu(stageNode, serialized, histo, storyPath),

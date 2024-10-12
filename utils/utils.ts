@@ -3,7 +3,7 @@ import { bgBlue, bgGreen, bgRed } from "@std/fmt/colors";
 import $ from "@david/dax";
 
 import { getFfmpegCommand } from "./external_commands.ts";
-import type { ModOptions } from "../types.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
@@ -82,9 +82,7 @@ export function getFileAudioItem(file: File, parent: Folder) {
       getNameWithoutExt(rmDiacritic(f.name)).replace(
           /(-generated)?.item$/,
           "",
-        ) ===
-        rmDiacritic(nameWithoutExt) &&
-      fileAudioItemRegEx.test(f.name),
+        ) === rmDiacritic(nameWithoutExt) && fileAudioItemRegEx.test(f.name),
   ) as File;
   if (audioItem) {
     return {
@@ -100,10 +98,11 @@ export function getFileImageItem(file: File, parent: Folder) {
   const nameWithoutExt = getNameWithoutExt(file.name);
   const ImageItem = parent.files.find(
     (f) =>
-      getNameWithoutExt(rmDiacritic(f.name))
-          .replace(/(-generated)?.item$/, "") === // TODO handle all cases of .item ! all ItemRegEx... all generations
-        rmDiacritic(nameWithoutExt) &&
-      fileImageItemRegEx.test(f.name),
+      getNameWithoutExt(rmDiacritic(f.name)).replace(
+          /(-generated)?.item$/,
+          "",
+        ) === // TODO handle all cases of .item ! all ItemRegEx... all generations
+        rmDiacritic(nameWithoutExt) && fileImageItemRegEx.test(f.name),
   ) as File;
   if (ImageItem) {
     return {
@@ -153,8 +152,8 @@ export function firstStoryFile(folder: Folder) {
   ) as File;
 }
 
-export function convertPath(path: string, opt: ModOptions) {
-  return (Deno.build.os === "windows" && !opt.skipWsl)
+export function convertPath(path: string, opt: StudioPackGenerator) {
+  return Deno.build.os === "windows" && !opt.skipWsl
     ? convWindowsWslPath(path)
     : path;
 }
@@ -184,7 +183,7 @@ export async function convertToImageItem(
 
   const cmd = [
     ffmpegCommand,
-    ...(ffmpegCommand.splice(1)),
+    ...ffmpegCommand.splice(1),
     "-i",
     inputPath,
     "-vf",
@@ -217,33 +216,29 @@ export function rmDiacritic(s: string) {
 
 export function convertToValidFilename(name: string): string {
   // first we remove all unwanted chars. Then we "trim" the spaces
-  return name.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ").replace(
-    /\s{1,}/,
-    " ",
-  ).trim();
+  return name
+    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9_\-.,()'! ]/g, " ")
+    .replace(/\s{1,}/, " ")
+    .trim();
 }
 
 export function cleanStageName(name: string): string {
-  return name.replace(/^\d* *-? */g, "").replace(/\.[^/.]+$/, "").trim();
+  return name
+    .replace(/^\d* *-? */g, "")
+    .replace(/\.[^/.]+$/, "")
+    .trim();
 }
 export function groupBy<T>(
   array: T[],
   predicate: (value: T, index: number, array: T[]) => string,
 ) {
-  return array.reduce((acc, value, index, array) => {
-    (acc[predicate(value, index, array)] ||= []).push(value);
-    return acc;
-  }, {} as { [key: string]: T[] });
-}
-
-export function cleanOption(opt: ModOptions): ModOptions {
-  const cleanOpt: { [k: string]: string | number | boolean | object } = {};
-  Object.entries(opt).filter(([key]) =>
-    key.length > 1 && !key.includes("-") && key != "$0"
-  )
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .forEach(([k, v]) => (cleanOpt[k] = v));
-  return cleanOpt as ModOptions;
+  return array.reduce(
+    (acc, value, index, array) => {
+      (acc[predicate(value, index, array)] ||= []).push(value);
+      return acc;
+    },
+    {} as { [key: string]: T[] },
+  );
 }
 
 export function getSpgDirPath() {

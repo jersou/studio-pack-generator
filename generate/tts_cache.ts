@@ -3,7 +3,7 @@ import { crypto } from "@std/crypto/crypto";
 import { encodeHex } from "@std/encoding/hex";
 import $ from "@david/dax";
 import { green, yellow } from "@std/fmt/colors";
-import type { ModOptions } from "../types.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export function getDefaultTtsPath() {
   return getSpgDirPath().resolve(".spg-TTS-cache");
@@ -11,18 +11,19 @@ export function getDefaultTtsPath() {
 
 export function getCachePath(
   key: (string | boolean | undefined)[],
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   const data = new TextEncoder().encode(JSON.stringify(key));
   const sum = encodeHex(crypto.subtle.digestSync("MD5", data));
   return (opt.ttsCachePath ? $.path(opt.ttsCachePath) : getDefaultTtsPath())
-    .join(sum.substring(0, 2)).join(sum);
+    .join(sum.substring(0, 2))
+    .join(sum);
 }
 
 export async function cacheTtsFile(
   output: string,
   key: (string | undefined | boolean)[],
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   const cachePath = getCachePath(key, opt);
   await cachePath.resolve("..").mkdir({ recursive: true });
@@ -32,7 +33,7 @@ export async function cacheTtsFile(
 export async function useCachedTtsFile(
   output: string,
   key: (string | undefined | boolean)[],
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ): Promise<boolean> {
   const cachePath = getCachePath(key, opt);
   if (await cachePath.exists()) {

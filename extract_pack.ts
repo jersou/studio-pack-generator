@@ -8,8 +8,8 @@ import type {
   SerializedPack,
   StageNode,
 } from "./serialize/serialize-types.ts";
-import type { ModOptions } from "./types.ts";
 import { Queue } from "./utils/queue.ts";
+import type { StudioPackGenerator } from "./studio_pack_generator.ts";
 
 type StageType = "STORY" | "FOLDER" | "ITEM";
 export class PackExtractor {
@@ -30,7 +30,7 @@ export class PackExtractor {
   transitionCount = new Map<string, number>();
   nightAction?: string;
   questions = new Set<string>();
-  constructor(opt: ModOptions) {
+  constructor(opt: StudioPackGenerator) {
     this.packPath = opt.storyPath;
     this.outputPath = opt.outputFolder ?? opt.storyPath + "-extract";
   }
@@ -240,10 +240,10 @@ export class PackExtractor {
 }
 
 if (import.meta.main) {
-  // await extractPack({ storyPath: "test_data/zip/2-full.zip" } as ModOptions);
+  // await extractPack({ storyPath: "test_data/zip/2-full.zip" } as StudioPackGenerator);
   const opt = {
     storyPath: Deno.args[0] ??
       "test_data/zip/2-full.zip",
-  } as ModOptions;
+  } as StudioPackGenerator;
   await (new PackExtractor(opt).extractPack());
 }
