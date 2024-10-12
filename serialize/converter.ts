@@ -62,7 +62,7 @@ export async function folderToPack(
         ],
       },
     },
-    ...((otherMetadata && Object.keys(otherMetadata).length > 0)
+    ...(otherMetadata && Object.keys(otherMetadata).length > 0
       ? { extraMetadata: otherMetadata }
       : {}),
   };
@@ -70,18 +70,19 @@ export async function folderToPack(
   if (folder.path) {
     try {
       if (audio) {
-        res.entrypoint.audioTimestamp = Deno.statSync(folder.path + "/" + audio)
-          .mtime
-          ?.getTime();
+        res.entrypoint.audioTimestamp = Deno.statSync(
+          folder.path + "/" + audio,
+        ).mtime?.getTime();
       }
       if (image) {
-        res.entrypoint.imageTimestamp = Deno.statSync(folder.path + "/" + image)
-          .mtime
-          ?.getTime();
+        res.entrypoint.imageTimestamp = Deno.statSync(
+          folder.path + "/" + image,
+        ).mtime?.getTime();
       }
       if (folder.path) {
-        res.entrypoint.pathTimestamp = Deno.statSync(folder.path).mtime
-          ?.getTime();
+        res.entrypoint.pathTimestamp = Deno.statSync(
+          folder.path,
+        ).mtime?.getTime();
       }
     } catch (_) {
       //
@@ -112,17 +113,19 @@ export async function folderToMenu(
     okTransition: {
       class: "ActionNode",
       name: folder.name,
-      options: (await Promise.all(folder.files
-        .map(async (f) =>
-          isFolder(f)
-            ? await folderToMenu(f as Folder, path + "/" + f.name)
-            : isStory(f as File)
-            ? await fileToStoryItem(f as File, folder)
-            : isZipFile(f as File)
-            ? fileToZipMenu(`${path}/${folder.name}/${f.name}`)
-            : null
-        )))
-        .filter((f) => f) as (Menu | ZipMenu | StoryItem)[],
+      options: (
+        await Promise.all(
+          folder.files.map(async (f) =>
+            isFolder(f)
+              ? await folderToMenu(f as Folder, path + "/" + f.name)
+              : isStory(f as File)
+              ? await fileToStoryItem(f as File, folder)
+              : isZipFile(f as File)
+              ? fileToZipMenu(`${path}/${folder.name}/${f.name}`)
+              : null
+          ),
+        )
+      ).filter((f) => f) as (Menu | ZipMenu | StoryItem)[],
     },
   };
   return res;
