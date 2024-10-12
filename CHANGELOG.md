@@ -1,3 +1,22 @@
+## [0.5.10](https://github.com/jersou/studio-pack-generator/compare/v0.5.9...v0.5.10) (2024-10-12)
+
+### Features
+
+- customScript fetchRssItemTitle
+  ([abc6a62](https://github.com/jersou/studio-pack-generator/commit/abc6a62e8ac97a3c1ffa8ea38d7e6ebbd023efca))
+- rssEpisodeNumbers: add RSS episode number to stages
+  ([cd5b112](https://github.com/jersou/studio-pack-generator/commit/cd5b1126261ea3badfac66f8b666d6c836183170))
+- upgrade to deno 2.0.0
+
+### Bug Fixes
+
+- add podcast metadata to generated story.json
+  ([6bd7d48](https://github.com/jersou/studio-pack-generator/commit/6bd7d489263a27513cc9792b9b86593451b2921e))
+- catch duration & websocket errors
+  ([a7d2db2](https://github.com/jersou/studio-pack-generator/commit/a7d2db254e5b0a1f2ce918b1303e0cdd290292f6))
+- extra metadata was not added correctly to story.json
+  ([3a26e08](https://github.com/jersou/studio-pack-generator/commit/3a26e08e132735bb4ff6f2cddc6a1250212658f8))
+
 ## [0.5.9](https://github.com/jersou/studio-pack-generator/compare/v0.5.7...v0.5.9) (2024-10-07)
 
 ### Features
