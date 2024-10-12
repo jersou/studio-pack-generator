@@ -8,7 +8,8 @@ export default {
     readFileSync: (path: string) => {
       try {
         return Deno.readTextFileSync(path)
-      } catch (err) {
+        // deno-lint-ignore no-explicit-any
+      } catch (err: any) {
         // Fake the same error as Node.js, so that it does not bubble.
         err.code = 'ENOENT'
         throw err

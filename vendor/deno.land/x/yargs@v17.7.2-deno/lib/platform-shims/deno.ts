@@ -44,7 +44,8 @@ const path = {
   relative: (p1: string, p2: string) => {
     try {
       return posix.relative(p1, p2);
-    } catch (err) {
+      // deno-lint-ignore no-explicit-any
+    } catch (err: any) {
       // Some yargs featuers require read access to the file system,
       // e.g., support for multiple locales.
       if (err.name !== 'PermissionDenied') {
