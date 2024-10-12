@@ -2,7 +2,7 @@ name: Deno
 
 on:
   push:
-    branches: ['*']
+    branches: ["*"]
     tags:
       - v*
   pull_request:
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.46.3
+          deno-version: v2.0.0
 
       - name: Verify formatting
         run: deno task fmt
@@ -43,7 +43,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.46.3
+          deno-version: v2.0.0
 
       - name: check version
         run: test v$(./utils/version.ts) = ${GITHUB_REF##*/}
