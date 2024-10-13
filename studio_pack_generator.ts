@@ -182,7 +182,7 @@ export class StudioPackGenerator {
   customModule?: CustomModule;
 
   @help("Metadata of the pack")
-  @type("[object]")
+  @type("object")
   metadata?: {
     title?: string;
     description?: string;
@@ -192,7 +192,7 @@ export class StudioPackGenerator {
     [k: string]: string | number | boolean | undefined | object;
   };
   @help("Custom i18n")
-  @type("[object]")
+  @type("object")
   i18n?: Record<string, string>;
 
   // deno-lint-ignore no-explicit-any
