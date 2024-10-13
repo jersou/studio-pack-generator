@@ -13,17 +13,16 @@ import { bgRed } from "@std/fmt/colors";
 import { basename, join } from "@std/path";
 import {
   checkRunPermission,
-  cleanOption,
   convertToImageItem,
+  fileImageItemRegEx,
   folderImageItemRegEx,
   getNightModeAudioItem,
   isFolder,
 } from "./utils/utils.ts";
 import { getLang, initI18n } from "./utils/i18n.ts";
 import { convertImageOfFolder } from "./utils/convert_image.ts";
-import { fileImageItemRegEx } from "./utils/utils.ts";
-import type { ModOptions } from "./types.ts";
 import $ from "@david/dax";
+import type { StudioPackGenerator } from "./studio_pack_generator.ts";
 
 async function genThumbnail(
   folder: Folder,
@@ -60,9 +59,10 @@ async function genThumbnail(
   }
 }
 
-export async function generatePack(opt: ModOptions) {
+export async function generatePack(opt: StudioPackGenerator) {
   if (
-    opt.nightMode && (opt.autoNextStoryTransition || opt.selectNextStoryAtEnd)
+    opt.nightMode &&
+    (opt.autoNextStoryTransition || opt.selectNextStoryAtEnd)
   ) {
     console.log(
       bgRed(
@@ -92,13 +92,7 @@ export async function generatePack(opt: ModOptions) {
         await genThumbnail(folder, storyPath, opt.thumbnailFromFirstItem);
       }
       if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
-        await genMissingItems(
-          folder,
-          lang,
-          true,
-          storyPath,
-          opt,
-        );
+        await genMissingItems(folder, lang, true, storyPath, opt);
         folder = await fsToFolder(storyPath, false);
       }
       if (!opt.skipAudioConvert) {
@@ -123,7 +117,9 @@ export async function generatePack(opt: ModOptions) {
           nightModeAudioItemName,
         });
         const assets = getAssetsPaths(serializedPack, folder);
-        const date = new Date().toISOString().substring(0, 19)
+        const date = new Date()
+          .toISOString()
+          .substring(0, 19)
           .replace("T", "--")
           .replaceAll(":", "-");
         const zipPath = opt.outputFolder
@@ -138,14 +134,14 @@ export async function generatePack(opt: ModOptions) {
       }
     }
     await $.path(`${storyPath}/0-config.json`).writeText(
-      JSON.stringify(cleanOption(opt), null, " "),
+      JSON.stringify(opt, null, " "),
     );
   }
 }
 
 export async function getMetadata(
   storyPath: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ): Promise<Metadata> {
   const metadataPath = `${storyPath}/metadata.json`;
   if (await exists(metadataPath)) {

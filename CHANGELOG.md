@@ -1,3 +1,5 @@
+- BREAKING : `--skip-extract-image-from-mp3` → `--skip-extract-image-from-mp-3`
+
 ## [0.5.10](https://github.com/jersou/studio-pack-generator/compare/v0.5.9...v0.5.10) (2024-10-12)
 
 ### Features

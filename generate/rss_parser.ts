@@ -14,8 +14,8 @@ import { parse } from "@libs/xml";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
 import { sprintf } from "@std/fmt/printf";
 import type { File, Metadata } from "../serialize/serialize-types.ts";
-import type { ModOptions } from "../types.ts";
 import { convertImage } from "./gen_image.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export type Rss = {
   title: string;
@@ -64,7 +64,7 @@ export type FileWithUrlOrData = File & {
 
 async function getFolderWithUrlFromRssUrl(
   url: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ): Promise<FolderWithUrlOrData[]> {
   console.log(green(`→ url = ${url}`));
 
@@ -82,12 +82,15 @@ async function getFolderWithUrlFromRssUrl(
     rss.item = rss.item.filter((i) => {
       const duration = i["itunes:duration"];
       if (duration) {
-        return duration.split(":")
-          .reduce(
-            (acc, val, index) =>
-              acc + Math.pow(60, 2 - index) * parseInt(val, 10),
-            0,
-          ) >= opt.rssMinDuration;
+        return (
+          duration
+            .split(":")
+            .reduce(
+              (acc, val, index) =>
+                acc + Math.pow(60, 2 - index) * parseInt(val, 10),
+              0,
+            ) >= opt.rssMinDuration
+        );
       } else {
         return true;
       }
@@ -109,8 +112,10 @@ async function getFolderWithUrlFromRssUrl(
     rssItems = sorted.map((i) => i[1]);
   }
   const rssName = convertToValidFilename(rss.title);
-  const imgUrl = rss.image?.url || rss.itunes?.image?.["@href"] ||
-    rss["itunes:image"]?.["@href"] || "";
+  const imgUrl = rss.image?.url ||
+    rss.itunes?.image?.["@href"] ||
+    rss["itunes:image"]?.["@href"] ||
+    "";
   const fss: FolderWithUrlOrData[] = rssItems.map((items, index) => {
     const name = rssItems.length > 1
       ? `${rssName} ${
@@ -126,8 +131,9 @@ async function getFolderWithUrlFromRssUrl(
       name,
       files: [],
       thumbnailUrl: opt.rssUseImageAsThumbnail
-        ? items.find((item) => item["itunes:image"]?.["@href"])
-          ?.["itunes:image"]?.["@href"]
+        ? items.find((item) => item["itunes:image"]?.["@href"])?.[
+          "itunes:image"
+        ]?.["@href"]
         : imgUrl,
       metadata: {
         ...metadata,
@@ -165,9 +171,9 @@ async function getFolderWithUrlFromRssUrl(
   return fss;
 }
 
-export function getItemFileName(item: RssItem, opt: ModOptions) {
+export function getItemFileName(item: RssItem, opt: StudioPackGenerator) {
   const title = convertToValidFilename(
-    (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"] || item.title)!,
+    ((opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) || item.title)!,
   );
   return (
     new Date(item.pubDate).getTime() +
@@ -183,50 +189,61 @@ export function fixUrl(url: string): string {
 
 async function getFolderOfStories(
   items: RssItem[],
-  opt: ModOptions,
+  opt: StudioPackGenerator,
   deltaIndex: number,
 ): Promise<FolderWithUrlOrData> {
   return {
     name: opt.i18n?.["storyQuestion"] || i18next.t("storyQuestion"),
-    files: (await Promise.all(items.map(async (item, index) => {
-      const itemFiles = [{
-        name: getItemFileName(item, opt),
-        url: fixUrl(item.enclosure["@url"]),
-        sha1: "",
-      }, {
-        name: getNameWithoutExt(getItemFileName(item, opt)) + "-metadata.json",
-        data: {
-          ...item,
-          title: opt.customModule?.fetchRssItemTitle
-            ? await opt.customModule?.fetchRssItemTitle(item, opt)
-            : (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
-              item.title,
-          episode: item["itunes:episode"] || item["podcast:episode"] ||
-            deltaIndex + index + 1,
-        },
-        sha1: "",
-      }];
-      const imageUrl = opt.customModule?.fetchRssItemImage
-        ? await opt.customModule?.fetchRssItemImage(item, opt)
-        : item["itunes:image"]?.["@href"];
-      if (!opt.skipRssImageDl && imageUrl) {
-        itemFiles.push({
-          name: `${getNameWithoutExt(getItemFileName(item, opt))}.item.${
-            getExtension(imageUrl)
-          }`,
-          url: imageUrl,
-          sha1: "",
-        });
-      }
+    files: (
+      await Promise.all(
+        items.map(async (item, index) => {
+          const itemFiles = [
+            {
+              name: getItemFileName(item, opt),
+              url: fixUrl(item.enclosure["@url"]),
+              sha1: "",
+            },
+            {
+              name: getNameWithoutExt(getItemFileName(item, opt)) +
+                "-metadata.json",
+              data: {
+                ...item,
+                title: opt.customModule?.fetchRssItemTitle
+                  ? await opt.customModule?.fetchRssItemTitle(item, opt)
+                  : (opt.rssUseSubtitleAsTitle && item["itunes:subtitle"]) ||
+                    item.title,
+                episode: item["itunes:episode"] ||
+                  item["podcast:episode"] ||
+                  deltaIndex + index + 1,
+              },
+              sha1: "",
+            },
+          ];
+          const imageUrl = opt.customModule?.fetchRssItemImage
+            ? await opt.customModule?.fetchRssItemImage(item, opt)
+            : item["itunes:image"]?.["@href"];
+          if (!opt.skipRssImageDl && imageUrl) {
+            itemFiles.push({
+              name: `${getNameWithoutExt(getItemFileName(item, opt))}.item.${
+                getExtension(
+                  imageUrl,
+                )
+              }`,
+              url: imageUrl,
+              sha1: "",
+            });
+          }
 
-      return itemFiles;
-    }))).flat(),
+          return itemFiles;
+        }),
+      )
+    ).flat(),
   };
 }
 
 async function getFolderParts(
   items: RssItem[],
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ): Promise<FolderWithUrlOrData> {
   const partCount = Math.ceil(items.length / 10);
   const parts: RssItem[][] = [];
@@ -239,16 +256,18 @@ async function getFolderParts(
 
   return {
     name: opt.i18n?.["partQuestion"] || i18next.t("partQuestion"),
-    files: await Promise.all(parts.map(async (part, index) => ({
-      name: sprintf(i18next.t("partTitle"), index + 1),
-      files: [
-        await getFolderOfStories(
-          part,
-          opt,
-          parts.slice(0, index).reduce((acc, val) => acc + val.length, 0),
-        ),
-      ],
-    }))),
+    files: await Promise.all(
+      parts.map(async (part, index) => ({
+        name: sprintf(i18next.t("partTitle"), index + 1),
+        files: [
+          await getFolderOfStories(
+            part,
+            opt,
+            parts.slice(0, index).reduce((acc, val) => acc + val.length, 0),
+          ),
+        ],
+      })),
+    ),
   };
 }
 
@@ -281,9 +300,9 @@ async function writeFileWithUrl(
       await resp.body?.pipeTo(file.writable);
     } else {
       const file = await Deno.open(filePath, { create: true, write: true });
-      await (await Deno.open(fileWithUrlOrData.url)).readable.pipeTo(
-        file.writable,
-      );
+      await (
+        await Deno.open(fileWithUrlOrData.url)
+      ).readable.pipeTo(file.writable);
     }
   } else if (fileWithUrlOrData.data) {
     let toWrite = fileWithUrlOrData.data;
@@ -300,7 +319,7 @@ async function writeFileWithUrl(
 export async function downloadRss(
   url: string,
   parentPath: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   const fss = await getFolderWithUrlFromRssUrl(url, opt);
   const result = [];
@@ -311,10 +330,10 @@ export async function downloadRss(
     if (fs.thumbnailUrl) {
       const thumbnailFileName = `thumbnail.${getExtension(fs.thumbnailUrl)}`;
       const resp = await fetch(fs.thumbnailUrl);
-      const file = await Deno.open(
-        join(storyPath, thumbnailFileName),
-        { create: true, write: true },
-      );
+      const file = await Deno.open(join(storyPath, thumbnailFileName), {
+        create: true,
+        write: true,
+      });
       await resp.body?.pipeTo(file.writable);
       if (!thumbnailFileName.endsWith(".png")) {
         await convertImage(

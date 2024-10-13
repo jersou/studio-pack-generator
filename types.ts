@@ -1,20 +1,23 @@
 import type { RssItem } from "./generate/rss_parser.ts";
-import type { CliOptions } from "./common-types.ts";
+import type { StudioPackGenerator } from "./studio_pack_generator.ts";
 
 export interface CustomModule {
-  fetchRssItemImage?: (item: RssItem, opt: ModOptions) => Promise<string>;
-  fetchRssItemTitle?: (item: RssItem, opt: ModOptions) => Promise<string>;
+  fetchRssItemImage?: (
+    item: RssItem,
+    opt: StudioPackGenerator,
+  ) => Promise<string>;
+  fetchRssItemTitle?: (
+    item: RssItem,
+    opt: StudioPackGenerator,
+  ) => Promise<string>;
 }
 
-export type ModOptions = CliOptions & {
-  customModule?: CustomModule;
-  metadata?: {
-    title?: string;
-    description?: string;
-    format?: string;
-    version?: number;
-    nightModeAvailable?: boolean;
-    [k: string]: string | number | boolean | undefined | object;
-  };
-  i18n?: Record<string, string>;
-};
+export const OPEN_AI_VOICES = [
+  "alloy",
+  "echo",
+  "fable",
+  "onyx",
+  "nova",
+  "shimmer",
+] as const;
+export const OPEN_AI_MODELS = ["tts-1", "tts-1-hd"] as const;

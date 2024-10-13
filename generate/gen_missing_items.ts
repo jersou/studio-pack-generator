@@ -15,8 +15,7 @@ import { generateAudio } from "./gen_audio.ts";
 import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
 import { join } from "@std/path";
 import { exists } from "@std/fs";
-
-import type { ModOptions } from "../types.ts";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 function getTitle(name: string): string {
   if (/^[0-9]* *-? *$/.test(name)) {
@@ -31,14 +30,15 @@ export async function genMissingItems(
   lang: string,
   isRoot: boolean,
   rootpath: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   if (!opt.skipImageItemGen || !opt.skipAudioItemGen) {
     await checkRunPermission();
     if (!opt.skipImageItemGen && !getFolderImageItem(folder)) {
       if (
-        isRoot && opt.useThumbnailAsRootImage &&
-        await exists(join(rootpath, "thumbnail.png"))
+        isRoot &&
+        opt.useThumbnailAsRootImage &&
+        (await exists(join(rootpath, "thumbnail.png")))
       ) {
         await Deno.copyFile(
           join(rootpath, "thumbnail.png"),

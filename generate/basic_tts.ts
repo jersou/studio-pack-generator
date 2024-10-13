@@ -1,4 +1,4 @@
-import { blue } from "@std/fmt/colors";
+import { bgRed, blue } from "@std/fmt/colors";
 import $ from "@david/dax";
 
 import { convertPath } from "../utils/utils.ts";
@@ -6,9 +6,8 @@ import {
   checkCommand,
   getPico2waveCommand,
 } from "../utils/external_commands.ts";
-import type { ModOptions } from "../types.ts";
 import { cacheTtsFile, useCachedTtsFile } from "./tts_cache.ts";
-import { bgRed } from "@std/fmt/colors";
+import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 let hasPico2waveWslCache: undefined | boolean;
 
@@ -35,12 +34,13 @@ export async function generate_audio_basic_tts(
   title: string,
   outputPath: string,
   lang: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
 ) {
   console.log(blue(`Generate basic TTS to ${outputPath}`));
 
   if (
-    Deno.build.os === "windows" && (opt.skipWsl || !(await hasPico2waveWsl()))
+    Deno.build.os === "windows" &&
+    (opt.skipWsl || !(await hasPico2waveWsl()))
   ) {
     await windows_tts(outputPath, opt, title);
   } else if (Deno.build.os === "darwin" && !(await hasPico2wave())) {
@@ -50,11 +50,16 @@ export async function generate_audio_basic_tts(
   }
 }
 
-async function windows_tts(outputPath: string, opt: ModOptions, title: string) {
+async function windows_tts(
+  outputPath: string,
+  opt: StudioPackGenerator,
+  title: string,
+) {
   const cacheKey = ["windows_tts", title];
 
   if (
-    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+    opt.skipReadTtsCache ||
+    !(await useCachedTtsFile(outputPath, cacheKey, opt))
   ) {
     const audioFormat = "[System.Speech.AudioFormat.SpeechAudioFormatInfo]::" +
       "new(8000,[System.Speech.AudioFormat.AudioBitsPerSample]" +
@@ -79,10 +84,15 @@ async function windows_tts(outputPath: string, opt: ModOptions, title: string) {
   }
 }
 
-async function macos_tts(outputPath: string, opt: ModOptions, title: string) {
+async function macos_tts(
+  outputPath: string,
+  opt: StudioPackGenerator,
+  title: string,
+) {
   const cacheKey = ["macos_tts", title];
   if (
-    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+    opt.skipReadTtsCache ||
+    !(await useCachedTtsFile(outputPath, cacheKey, opt))
   ) {
     const args = [
       "-o",
@@ -107,17 +117,18 @@ async function macos_tts(outputPath: string, opt: ModOptions, title: string) {
 async function pico2wave_tts(
   lang: string,
   outputPath: string,
-  opt: ModOptions,
+  opt: StudioPackGenerator,
   title: string,
 ) {
   const cacheKey = ["pico2wave_tts", title, lang];
   if (
-    opt.skipReadTtsCache || !await useCachedTtsFile(outputPath, cacheKey, opt)
+    opt.skipReadTtsCache ||
+    !(await useCachedTtsFile(outputPath, cacheKey, opt))
   ) {
     const pico2waveCommand = await getPico2waveCommand();
     const cmd = [
       pico2waveCommand[0],
-      ...(pico2waveCommand.splice(1)),
+      ...pico2waveCommand.splice(1),
       "-l",
       lang,
       "-w",
