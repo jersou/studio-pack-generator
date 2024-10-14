@@ -141,6 +141,9 @@ export class StudioPackGenerator {
   @help("use coqui TTS")
   useCoquiTts = false;
 
+  @help("use coqui TTS")
+  coquiTtsUseCuda = false;
+
   @help("coqui TTS model")
   coquiTtsModel = "tts_models/multilingual/multi-dataset/xtts_v2";
 
