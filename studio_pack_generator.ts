@@ -141,7 +141,7 @@ export class StudioPackGenerator {
   @help("use coqui TTS")
   useCoquiTts = false;
 
-  @help("use coqui TTS")
+  @help("enable CUDA in coqui TTS")
   coquiTtsUseCuda = false;
 
   @help("coqui TTS model")

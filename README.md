@@ -253,7 +253,7 @@ Options:
  -g, --open-ai-model                OpenAi model : tts-1, tts-1-hd                                [default: "tts-1"]
  -p, --open-ai-voice                OpenAi voice : alloy, echo, fable, onyx, nova, shimmer         [default: "onyx"]
      --use-coqui-tts                use coqui TTS                                                   [default: false]
-     --use-coqui-tts                use coqui TTS                                         [boolean] [default: false]
+     --coqui-tts-use-cuda           enable CUDA in coqui TTS                                        [default: false]
      --coqui-tts-model              coqui TTS model       [default: "tts_models/multilingual/multi-dataset/xtts_v2"]
      --coqui-tts-language-idx       coqui TTS language_idx                                           [default: "fr"]
      --coqui-tts-speaker-idx        coqui TTS speaker_idx                                  [default: "Abrahan Mack"]
