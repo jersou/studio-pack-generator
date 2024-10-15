@@ -33,6 +33,9 @@ export async function generate_audio_with_coqui(
     if (opt.coquiTtsLanguageIdx) {
       cmd.push("--language_idx", opt.coquiTtsLanguageIdx);
     }
+    if (opt.coquiTtsUseCuda) {
+      cmd.push("--use_cuda", "1");
+    }
     if (opt.coquiTtsSpeakerIdx) {
       cmd.push("--speaker_idx", opt.coquiTtsSpeakerIdx);
     }
