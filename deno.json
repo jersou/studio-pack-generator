@@ -20,7 +20,7 @@
     "@david/dax": "jsr:@david/dax@^0.42.0",
     "@dbushell/audio-duration": "jsr:@dbushell/audio-duration@^0.6.0",
     "@es-toolkit/es-toolkit": "jsr:@es-toolkit/es-toolkit@^1.23.0",
-    "@jersou/clite": "jsr:@jersou/clite@^0.6.3",
+    "@jersou/clite": "jsr:@jersou/clite@^0.6.5",
     "@libs/xml": "jsr:@libs/xml@^6.0.0",
     "@std/assert": "jsr:@std/assert@^1.0.6",
     "@std/crypto": "jsr:@std/crypto@^1.0.3",
