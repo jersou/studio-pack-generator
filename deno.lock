@@ -7,7 +7,7 @@
     "jsr:@dbushell/audio-duration@*": "0.6.0",
     "jsr:@dbushell/audio-duration@0.6": "0.6.0",
     "jsr:@es-toolkit/es-toolkit@^1.23.0": "1.23.0",
-    "jsr:@jersou/clite@~0.6.5": "0.6.5",
+    "jsr:@jersou/clite@0.7": "0.7.0",
     "jsr:@libs/typing@3": "3.1.0",
     "jsr:@libs/xml@6": "6.0.0",
     "jsr:@std/assert@0.216": "0.216.0",
@@ -73,8 +73,8 @@
     "@es-toolkit/es-toolkit@1.24.0": {
       "integrity": "6d5310d36a47270aec7f59dada5b767fa0fee15befe4bd756d1464e873ede6c8"
     },
-    "@jersou/clite@0.6.5": {
-      "integrity": "6052f49eb31f7f9b75006b725d34d7d127ea00aa0bdf59232081af3487a71f1a",
+    "@jersou/clite@0.7.0": {
+      "integrity": "f148a2206583eaf84889c4369988a9a78c854b1ac4a3ee7db035e49536494dad",
       "dependencies": [
         "jsr:@std/cli",
         "jsr:@std/fmt@^1.0.2",
@@ -172,7 +172,7 @@
       "jsr:@david/dax@0.42",
       "jsr:@dbushell/audio-duration@0.6",
       "jsr:@es-toolkit/es-toolkit@^1.23.0",
-      "jsr:@jersou/clite@~0.6.5",
+      "jsr:@jersou/clite@0.7",
       "jsr:@libs/xml@6",
       "jsr:@std/assert@^1.0.6",
       "jsr:@std/crypto@^1.0.3",
