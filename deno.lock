@@ -6,8 +6,8 @@
     "jsr:@david/which@~0.4.1": "0.4.1",
     "jsr:@dbushell/audio-duration@*": "0.6.0",
     "jsr:@dbushell/audio-duration@0.6": "0.6.0",
-    "jsr:@es-toolkit/es-toolkit@^1.23.0": "1.23.0",
-    "jsr:@jersou/clite@0.7": "0.7.0",
+    "jsr:@es-toolkit/es-toolkit@^1.23.0": "1.25.2",
+    "jsr:@jersou/clite@~0.7.3": "0.7.3",
     "jsr:@libs/typing@3": "3.1.0",
     "jsr:@libs/xml@6": "6.0.0",
     "jsr:@std/assert@0.216": "0.216.0",
@@ -16,7 +16,7 @@
     "jsr:@std/bytes@0.221": "0.221.0",
     "jsr:@std/bytes@1.0": "1.0.2",
     "jsr:@std/bytes@^1.0.2": "1.0.2",
-    "jsr:@std/cli@^1.0.6": "1.0.6",
+    "jsr:@std/cli@1.0.6": "1.0.6",
     "jsr:@std/crypto@^1.0.3": "1.0.3",
     "jsr:@std/encoding@^1.0.5": "1.0.5",
     "jsr:@std/fmt@1": "1.0.2",
@@ -33,7 +33,7 @@
     "jsr:@std/path@1": "1.0.6",
     "jsr:@std/path@^1.0.6": "1.0.6",
     "jsr:@std/streams@0.221": "0.221.0",
-    "jsr:@std/text@^1.0.7": "1.0.7",
+    "jsr:@std/text@1.0.7": "1.0.7",
     "jsr:@zip-js/zip-js@^2.7.52": "2.7.52"
   },
   "jsr": {
@@ -73,11 +73,14 @@
     "@es-toolkit/es-toolkit@1.24.0": {
       "integrity": "6d5310d36a47270aec7f59dada5b767fa0fee15befe4bd756d1464e873ede6c8"
     },
-    "@jersou/clite@0.7.0": {
-      "integrity": "f148a2206583eaf84889c4369988a9a78c854b1ac4a3ee7db035e49536494dad",
+    "@es-toolkit/es-toolkit@1.25.2": {
+      "integrity": "90f17bcdad02f6dc16c705f65ddb83a2fe439045727e108b5075744ae8f8209e"
+    },
+    "@jersou/clite@0.7.3": {
+      "integrity": "94fd4472cfee9b5a98164a283e2eb2ac4467836480023c6d86270668bb09aece",
       "dependencies": [
         "jsr:@std/cli",
-        "jsr:@std/fmt@^1.0.2",
+        "jsr:@std/fmt@1.0.2",
         "jsr:@std/text"
       ]
     },
@@ -172,7 +175,7 @@
       "jsr:@david/dax@0.42",
       "jsr:@dbushell/audio-duration@0.6",
       "jsr:@es-toolkit/es-toolkit@^1.23.0",
-      "jsr:@jersou/clite@0.7",
+      "jsr:@jersou/clite@~0.7.3",
       "jsr:@libs/xml@6",
       "jsr:@std/assert@^1.0.6",
       "jsr:@std/crypto@^1.0.3",
