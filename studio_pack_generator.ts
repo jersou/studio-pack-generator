@@ -157,6 +157,9 @@ export class StudioPackGenerator {
   @alias("x")
   extract = false;
 
+  @help("disable night mode in extract mode")
+  extractDisableNightMode = false;
+
   @help("open GUI (on localhost:5555)")
   @alias("u")
   gui = false;

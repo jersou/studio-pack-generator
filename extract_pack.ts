@@ -30,9 +30,11 @@ export class PackExtractor {
   transitionCount = new Map<string, number>();
   nightAction?: string;
   questions = new Set<string>();
+  opt: StudioPackGenerator;
   constructor(opt: StudioPackGenerator) {
     this.packPath = opt.storyPath;
     this.outputPath = opt.outputFolder ?? opt.storyPath + "-extract";
+    this.opt = opt;
   }
   async init() {
     this.zipReader = new ZipReader(
@@ -47,7 +49,7 @@ export class PackExtractor {
     this.story.stageNodes.forEach((s) => this.stageMap.set(s.uuid, s));
     this.story.actionNodes.forEach((a) => this.actionMap.set(a.id, a));
 
-    if (this.story.nightModeAvailable) {
+    if (this.story.nightModeAvailable && !this.opt.extractDisableNightMode) {
       this.story.stageNodes.forEach((s) => {
         const dest = s.okTransition?.actionNode;
         if (dest) {
@@ -145,7 +147,8 @@ export class PackExtractor {
       "description": this.story?.description ?? "",
       "format": this.story?.format ?? "",
       "version": this.story?.version ?? 0,
-      "nightMode": !!this.story?.nightModeAvailable,
+      "nightMode": !!this.story?.nightModeAvailable &&
+        !this.opt.extractDisableNightMode,
     };
     await Deno.writeTextFile(
       `${this.outputPath}/metadata.json`,

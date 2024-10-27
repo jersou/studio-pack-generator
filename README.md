@@ -258,6 +258,7 @@ Options:
      --coqui-tts-language-idx       coqui TTS language_idx                                           [default: "fr"]
      --coqui-tts-speaker-idx        coqui TTS speaker_idx                                  [default: "Abrahan Mack"]
  -x, --extract                      extract a zip pack (reverse mode)                               [default: false]
+     --extract-disable-night-mode   disable night mode in extract mode                              [default: false]
  -u, --gui                          open GUI (on localhost:5555)                                    [default: false]
      --port                         port of GUI server                                               [default: 5555]
      --skip-read-tts-cache          disable the TTS cache usage                                     [default: false]
