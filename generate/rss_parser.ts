@@ -67,12 +67,16 @@ async function getFolderWithUrlFromRssUrl(
   opt: StudioPackGenerator,
 ): Promise<FolderWithUrlOrData[]> {
   console.log(green(`→ url = ${url}`));
-
-  const resp = await fetch(url);
-  const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
-  // @ts-ignore rss conv
-  // deno-lint-ignore no-explicit-any
-  const rss: Rss = (parse(xml).rss as any).channel;
+  let rss: Rss;
+  if (opt.customModule?.fetchRssItems) {
+    rss = await opt.customModule?.fetchRssItems(url, opt);
+  } else {
+    const resp = await fetch(url);
+    const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
+    // @ts-ignore rss conv
+    // deno-lint-ignore no-explicit-any
+    rss = (parse(xml).rss as any).channel;
+  }
   const metadata = {
     title: rss.title,
     description: rss.description,
@@ -83,13 +87,14 @@ async function getFolderWithUrlFromRssUrl(
       const duration = i["itunes:duration"];
       if (duration) {
         return (
-          duration
-            .split(":")
-            .reduce(
-              (acc, val, index) =>
-                acc + Math.pow(60, 2 - index) * parseInt(val, 10),
-              0,
-            ) >= opt.rssMinDuration
+          (typeof duration === "string"
+            ? duration.split(":")
+              .reduce(
+                (acc, val, index) =>
+                  acc + Math.pow(60, 2 - index) * parseInt(val, 10),
+                0,
+              )
+            : duration) >= opt.rssMinDuration
         );
       } else {
         return true;
@@ -136,8 +141,8 @@ async function getFolderWithUrlFromRssUrl(
         ]?.["@href"]
         : imgUrl,
       metadata: {
-        ...metadata,
         title: name,
+        ...metadata,
         ...(opt.rssEpisodeNumbers
           ? {
             episodeCount: items.length,
