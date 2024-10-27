@@ -1,4 +1,4 @@
-import type { RssItem } from "./generate/rss_parser.ts";
+import type { Rss, RssItem } from "./generate/rss_parser.ts";
 import type { StudioPackGenerator } from "./studio_pack_generator.ts";
 
 export interface CustomModule {
@@ -10,6 +10,10 @@ export interface CustomModule {
     item: RssItem,
     opt: StudioPackGenerator,
   ) => Promise<string>;
+  fetchRssItems?: (
+    url: string,
+    opt: StudioPackGenerator,
+  ) => Promise<Rss>;
 }
 
 export const OPEN_AI_VOICES = [
