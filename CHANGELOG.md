@@ -1,3 +1,21 @@
+## [0.5.11](https://github.com/jersou/studio-pack-generator/compare/v0.5.10...v0.5.11) (2024-10-27)
+
+### Features
+
+- extract: add --extract-disable-night-mode
+  ([4e1f2cf](https://github.com/jersou/studio-pack-generator/commit/4e1f2cf20518615efa0b046c0ff3f8d5d8dda8d6))
+- fetchRssItems for custom script.
+  ([afae95e](https://github.com/jersou/studio-pack-generator/commit/afae95ef0e18bc0b26c01c3617a618a66fec28e3))
+
+### Bug Fixes
+
+- added `--coqui-tts-use-cuda` option
+  ([48e8f4e](https://github.com/jersou/studio-pack-generator/commit/48e8f4e554e2f6168fb4faf736b25b4016ff8718))
+- upgrade to clite 0.7.4
+  ([c26feec](https://github.com/jersou/studio-pack-generator/commit/c26feec41656b125dcdd54030746906ef7a46dec))
+
+### BREAKING
+
 - BREAKING : `--skip-extract-image-from-mp3` → `--skip-extract-image-from-mp-3`
 
 ## [0.5.10](https://github.com/jersou/studio-pack-generator/compare/v0.5.9...v0.5.10) (2024-10-12)
