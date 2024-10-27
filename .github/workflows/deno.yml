@@ -19,7 +19,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.0.0
+          deno-version: v2.0.3
 
       - name: Verify formatting
         run: deno task fmt
@@ -43,7 +43,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.0.0
+          deno-version: v2.0.3
 
       - name: check version
         run: test v$(./utils/version.ts) = ${GITHUB_REF##*/}
