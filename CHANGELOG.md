@@ -1,3 +1,10 @@
+## [0.5.12](https://github.com/jersou/studio-pack-generator/compare/v0.5.11...v0.5.12) (2024-11-03)
+
+### Bug Fixes
+
+- The option "is-compiled" doesn't exist
+  ([6c0d676](https://github.com/jersou/studio-pack-generator/commit/6c0d676a8cc6f10faf267b02765e30a292d34c69))
+
 ## [0.5.11](https://github.com/jersou/studio-pack-generator/compare/v0.5.10...v0.5.11) (2024-10-27)
 
 ### Features
