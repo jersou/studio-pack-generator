@@ -201,6 +201,10 @@ export class StudioPackGenerator {
   @type("object")
   i18n?: Record<string, string>;
 
+  // used by gen-bin.sh
+  @hidden()
+  isCompiled = false;
+
   // deno-lint-ignore no-explicit-any
   async main(storyPath: string): Promise<any> {
     if (!this.storyPath) { // don't set if set by config file or --storyPath
