@@ -6,12 +6,12 @@ import { getFfmpegCommand } from "./external_commands.ts";
 import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
-export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3)$/i;
-export const nightModeAudioItemRegEx = /^0-night-mode\.(ogg|opus|wav|mp3)$/i;
+export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3|m4a)$/i;
+export const nightModeAudioItemRegEx = /^0-night-mode\.(ogg|opus|wav|mp3|m4a)$/i;
 export const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
-export const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3)$/i;
+export const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3|m4a)$/i;
 export const fileImageItemRegEx = /\.item\.(png|jpg|jpeg|bmp)$/i;
-export const storyRegEx = /\.(ogg|opus|wav|mp3)$/i;
+export const storyRegEx = /\.(ogg|opus|wav|mp3|m4a)$/i;
 export const itemsRegEx = [
   folderAudioItemRegEx,
   folderImageItemRegEx,
