@@ -76,8 +76,8 @@ async function getFolderWithUrlFromRssUrl(
     const resp = await fetch(url);
     const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
     // @ts-ignore rss conv
-    // deno-lint-ignore no-explicit-any
     const parsed = parse(xml);
+    // deno-lint-ignore no-explicit-any
     rss = (parsed.rss as any)?.channel;
   }
   const metadata = {
@@ -86,7 +86,7 @@ async function getFolderWithUrlFromRssUrl(
     podcast: true, // can be used by players to know if that pack is a podcast
   } as Metadata;
   if (opt.rssMinDuration > 0) {
-    rss.item = (rss.item).filter((i) => {
+    rss.item = rss.item.filter((i) => {
       const duration = i["itunes:duration"];
       if (duration) {
         return (
@@ -205,13 +205,13 @@ async function getFolderOfStories(
     files: (
       await Promise.all(
         items.map(async (item, index) => {
-        const itemFileName = opt.customModule?.fetchRssItemFileName
-          ? await opt.customModule?.fetchRssItemFileName(item, opt)
-          : getItemFileName(item, opt);
-        const itemUrl = opt.customModule?.fetchRssItemUrl
-          ? await opt.customModule?.fetchRssItemUrl(item, opt)
-          : item.enclosure["@url"];
-        const itemFiles = [
+          const itemFileName = opt.customModule?.fetchRssItemFileName
+            ? await opt.customModule?.fetchRssItemFileName(item, opt)
+            : getItemFileName(item, opt);
+          const itemUrl = opt.customModule?.fetchRssItemUrl
+            ? await opt.customModule?.fetchRssItemUrl(item, opt)
+            : item.enclosure["@url"];
+          const itemFiles = [
             {
               name: itemFileName,
               url: fixUrl(itemUrl),
@@ -311,7 +311,11 @@ async function writeFileWithUrl(
     console.log(green(`   → skip`));
   } else if (fileWithUrlOrData.url) {
     if (opt.customModule?.writeFileWithUrl) {
-      await opt.customModule?.writeFileWithUrl(fileWithUrlOrData.url, filePath, opt);
+      await opt.customModule?.writeFileWithUrl(
+        fileWithUrlOrData.url,
+        filePath,
+        opt,
+      );
     } else if (fileWithUrlOrData.url.startsWith("http")) {
       const resp = await fetch(fileWithUrlOrData.url);
       const file = await Deno.open(filePath, { create: true, write: true });
