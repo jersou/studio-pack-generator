@@ -17,6 +17,7 @@
     "update-frontend-assets": "cd gui/frontend && npm run build && ../gui.ts updateAssets"
   },
   "imports": {
+    "uuid-by-string": "npm:uuid-by-string",
     "@david/dax": "jsr:@david/dax@^0.42.0",
     "@dbushell/audio-duration": "jsr:@dbushell/audio-duration@^0.6.0",
     "@es-toolkit/es-toolkit": "jsr:@es-toolkit/es-toolkit@^1.23.0",

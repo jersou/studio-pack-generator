@@ -11,6 +11,7 @@ import type {
   StoryItem,
   ZipMenu,
 } from "./serialize-types.ts";
+import getUuid from "uuid-by-string";
 import { BlobReader, BlobWriter, ZipReader } from "@zip-js/zip-js";
 import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
@@ -30,6 +31,7 @@ export async function serializePack(
   serializePackOption?: SerializePackOption,
 ): Promise<SerializedPack> {
   const serialized: SerializedPack = {
+    uuid: getUuid(opt.storyPath),
     title: opt.metadata?.title || pack.title,
     version: opt.metadata?.version || pack.version,
     description: opt.metadata?.description || pack.description,

@@ -96,6 +96,7 @@ export type ActionNode = {
 };
 
 export type SerializedPack = {
+  uuid: string;
   title: string;
   description: string;
   format: string;
