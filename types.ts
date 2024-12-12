@@ -10,6 +10,19 @@ export interface CustomModule {
     item: RssItem,
     opt: StudioPackGenerator,
   ) => Promise<string>;
+  fetchRssItemFileName?: (
+    item: RssItem,
+    opt: StudioPackGenerator,
+  ) => Promise<string>;
+  fetchRssItemUrl?: (
+    item: RssItem,
+    opt: StudioPackGenerator,
+  ) => Promise<string>;
+  writeFileWithUrl?: (
+    url: string,
+    filePath: string,
+    opt: StudioPackGenerator,
+  ) => Promise<Rss>;
   fetchRssItems?: (
     url: string,
     opt: StudioPackGenerator,

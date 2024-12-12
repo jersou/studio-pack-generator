@@ -32,8 +32,11 @@ export function getNameWithoutExt(name: string): string {
   return /(.*)\.[^.]+$/.test(name) ? /(.*)\.[^.]+$/.exec(name)![1] : name;
 }
 
-export function getExtension(name: string): string {
-  return extensionRegEx.exec(name)?.[1] || "";
+export function getExtension(name: string | undefined): string {
+  if (name) {
+    return extensionRegEx.exec(name)?.[1] || "";
+  }
+  return "";
 }
 
 export function getFolderAudioItem(folder: Folder) {
