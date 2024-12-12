@@ -69,6 +69,7 @@ export const expectedMinPack: Pack = {
 };
 
 export const expectedMinPackSerialized = {
+  uuid: "fccee86d-4b6d-5ef5-b990-55c51e7e36fe",
   title: "0-min",
   description: "",
   format: "v1",
@@ -308,6 +309,7 @@ export const expectedMoyPack: Pack = {
 };
 
 export const expectedMoyPackSerialized = {
+  uuid: "fccee86d-4b6d-5ef5-b990-55c51e7e36fe",
   title: "1-moy",
   version: 1,
   description: "",
@@ -515,6 +517,7 @@ export const expectedMoyPackSerialized = {
 };
 
 export const expectedMoyPackNextMenuSerialized = {
+  uuid: "fccee86d-4b6d-5ef5-b990-55c51e7e36fe",
   title: "1-moy",
   version: 1,
   description: "",
@@ -1195,6 +1198,7 @@ export const expectedAssetPaths = [
 ];
 
 export const expectedFullPackSerialized: SerializedPack = {
+  uuid: "c75247f5-7ed7-520f-a520-2c21d7f206a1",
   title: "2-full",
   version: 1,
   description: "",
@@ -1672,6 +1676,7 @@ export const expectedFullPackSerialized: SerializedPack = {
 };
 
 export const expectedFullPackNightSerialized = {
+  uuid: "c75247f5-7ed7-520f-a520-2c21d7f206a1",
   title: "2-full",
   version: 1,
   description: "",
