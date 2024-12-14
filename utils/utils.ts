@@ -7,7 +7,8 @@ import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 export const extensionRegEx = /\.([^.?]+)(\?.*)?$/i;
 export const folderAudioItemRegEx = /^0-item\.(ogg|opus|wav|mp3|m4a)$/i;
-export const nightModeAudioItemRegEx = /^0-night-mode\.(ogg|opus|wav|mp3|m4a)$/i;
+export const nightModeAudioItemRegEx =
+  /^0-night-mode\.(ogg|opus|wav|mp3|m4a)$/i;
 export const folderImageItemRegEx = /^0-item\.(png|jpg|jpeg|bmp)$/i;
 export const fileAudioItemRegEx = /\.item\.(ogg|opus|wav|mp3|m4a)$/i;
 export const fileImageItemRegEx = /\.item\.(png|jpg|jpeg|bmp)$/i;
@@ -32,8 +33,11 @@ export function getNameWithoutExt(name: string): string {
   return /(.*)\.[^.]+$/.test(name) ? /(.*)\.[^.]+$/.exec(name)![1] : name;
 }
 
-export function getExtension(name: string): string {
-  return extensionRegEx.exec(name)?.[1] || "";
+export function getExtension(name: string | undefined): string {
+  if (name) {
+    return extensionRegEx.exec(name)?.[1] || "";
+  }
+  return "";
 }
 
 export function getFolderAudioItem(folder: Folder) {

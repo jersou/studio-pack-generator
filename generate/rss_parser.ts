@@ -37,6 +37,8 @@ export type Rss = {
 export type RssItem = {
   title?: string;
   pubDate: string;
+  link?: string;
+  description?: string;
   enclosure: {
     "@url": string;
   };
@@ -74,8 +76,9 @@ async function getFolderWithUrlFromRssUrl(
     const resp = await fetch(url);
     const xml = (await resp.text()).replace(/<\?xml-stylesheet [^>]+\?>/, "");
     // @ts-ignore rss conv
+    const parsed = parse(xml);
     // deno-lint-ignore no-explicit-any
-    rss = (parse(xml).rss as any).channel;
+    rss = (parsed.rss as any)?.channel;
   }
   const metadata = {
     title: rss.title,
@@ -182,7 +185,7 @@ export function getItemFileName(item: RssItem, opt: StudioPackGenerator) {
   );
   return (
     new Date(item.pubDate).getTime() +
-    ` - ${title}.${getExtension(item.enclosure["@url"])}`
+    ` - ${title}.${getExtension(item.enclosure?.["@url"])}`
   );
 }
 
@@ -202,14 +205,20 @@ async function getFolderOfStories(
     files: (
       await Promise.all(
         items.map(async (item, index) => {
+          const itemFileName = opt.customModule?.fetchRssItemFileName
+            ? await opt.customModule?.fetchRssItemFileName(item, opt)
+            : getItemFileName(item, opt);
+          const itemUrl = opt.customModule?.fetchRssItemUrl
+            ? await opt.customModule?.fetchRssItemUrl(item, opt)
+            : item.enclosure["@url"];
           const itemFiles = [
             {
-              name: getItemFileName(item, opt),
-              url: fixUrl(item.enclosure["@url"]),
+              name: itemFileName,
+              url: fixUrl(itemUrl),
               sha1: "",
             },
             {
-              name: getNameWithoutExt(getItemFileName(item, opt)) +
+              name: getNameWithoutExt(itemFileName) +
                 "-metadata.json",
               data: {
                 ...item,
@@ -229,7 +238,7 @@ async function getFolderOfStories(
             : item["itunes:image"]?.["@href"];
           if (!opt.skipRssImageDl && imageUrl) {
             itemFiles.push({
-              name: `${getNameWithoutExt(getItemFileName(item, opt))}.item.${
+              name: `${getNameWithoutExt(itemFileName)}.item.${
                 getExtension(
                   imageUrl,
                 )
@@ -279,19 +288,21 @@ async function getFolderParts(
 async function writeFolderWithUrl(
   folder: FolderWithUrlOrData,
   parentPath: string,
+  opt: StudioPackGenerator,
 ) {
   const path = join(parentPath, folder.name);
   await Deno.mkdir(path, { recursive: true });
   for (const file of folder.files) {
     isFolder(file)
-      ? await writeFolderWithUrl(file as FolderWithUrlOrData, path)
-      : await writeFileWithUrl(file as FileWithUrlOrData, path);
+      ? await writeFolderWithUrl(file as FolderWithUrlOrData, path, opt)
+      : await writeFileWithUrl(file as FileWithUrlOrData, path, opt);
   }
 }
 
 async function writeFileWithUrl(
   fileWithUrlOrData: FileWithUrlOrData,
   parentPath: string,
+  opt: StudioPackGenerator,
 ) {
   const filePath = join(parentPath, fileWithUrlOrData.name);
   console.log(blue(`Download ${fileWithUrlOrData.url}\n    → ${filePath}`));
@@ -299,7 +310,13 @@ async function writeFileWithUrl(
   if (await exists(filePath)) {
     console.log(green(`   → skip`));
   } else if (fileWithUrlOrData.url) {
-    if (fileWithUrlOrData.url.startsWith("http")) {
+    if (opt.customModule?.writeFileWithUrl) {
+      await opt.customModule?.writeFileWithUrl(
+        fileWithUrlOrData.url,
+        filePath,
+        opt,
+      );
+    } else if (fileWithUrlOrData.url.startsWith("http")) {
       const resp = await fetch(fileWithUrlOrData.url);
       const file = await Deno.open(filePath, { create: true, write: true });
       await resp.body?.pipeTo(file.writable);
@@ -330,7 +347,7 @@ export async function downloadRss(
   const result = [];
   for (let index = 0; index < fss.length; index++) {
     const fs = fss[index];
-    await writeFolderWithUrl(fs, parentPath);
+    await writeFolderWithUrl(fs, parentPath, opt);
     const storyPath = join(parentPath, fs.name);
     if (fs.thumbnailUrl) {
       const thumbnailFileName = `thumbnail.${getExtension(fs.thumbnailUrl)}`;
