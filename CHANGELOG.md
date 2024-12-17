@@ -4,6 +4,8 @@
 
 - fetchRssItemFileName, fetchRssItemUrl, writeFileWithUrl #40
   ([40a98b3](https://github.com/jersou/studio-pack-generator/commit/40a98b332dcf40376e6a66549183c06ae3d031e6))
+- upgrade to deno 2.1.4
+  ([ed9393d](https://github.com/jersou/studio-pack-generator/commit/ed9393d4bdbf74669004fc9799177d4650b238ba))
 
 ### Bug Fixes
 
