@@ -1,3 +1,17 @@
+## [0.5.13](https://github.com/jersou/studio-pack-generator/compare/v0.5.12...v0.5.13) (2024-12-17)
+
+### Features
+
+- fetchRssItemFileName, fetchRssItemUrl, writeFileWithUrl #40
+  ([40a98b3](https://github.com/jersou/studio-pack-generator/commit/40a98b332dcf40376e6a66549183c06ae3d031e6))
+
+### Bug Fixes
+
+- bad default ttsCachePath with tripple dots : use folder in homedir
+  ([7ab09f5](https://github.com/jersou/studio-pack-generator/commit/7ab09f569f549643bd8850877b68a9ec2bec9b28))
+- m4a files support #38
+  ([f205541](https://github.com/jersou/studio-pack-generator/commit/f20554157d72a92de7cdc4dc9d881e8369c067d7))
+
 ## [0.5.12](https://github.com/jersou/studio-pack-generator/compare/v0.5.11...v0.5.12) (2024-11-03)
 
 ### Bug Fixes
