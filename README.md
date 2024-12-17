@@ -263,7 +263,7 @@ Options:
      --port                         port of GUI server                                               [default: 5555]
      --skip-read-tts-cache          disable the TTS cache usage                                     [default: false]
      --skip-write-tts-cache         disable the TTS cache write                                     [default: false]
-     --tts-cache-path               path to the TTS cache    [default: "<Studio-Pack-Generator dir>/.spg-TTS-cache"]
+     --tts-cache-path               path to the TTS cache    [default: "<home dir>/.Studio-Pack-Generator/TTS-cache"]
      --custom-script                custom script to be used for custom image... handling                   [string]
      --metadata                     Metadata of the pack                                                    [object]
      --i-18-n                       Custom i18n                                                             [object]

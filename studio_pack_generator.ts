@@ -175,7 +175,7 @@ export class StudioPackGenerator {
   skipWriteTtsCache = false;
 
   @help("path to the TTS cache")
-  @defaultHelp("<Studio-Pack-Generator dir>/.spg-TTS-cache")
+  @defaultHelp("<home dir>/.Studio-Pack-Generator/TTS-cache")
   ttsCachePath: string = `${homedir}/.Studio-Pack-Generator/TTS-cache`;
 
   @type("string")
