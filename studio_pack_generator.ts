@@ -17,6 +17,7 @@ import { openGui } from "./gui/gui.ts";
 import { generatePack } from "./gen_pack.ts";
 import type { CustomModule } from "./types.ts";
 import { OPEN_AI_MODELS, OPEN_AI_VOICES } from "./types.ts";
+import { homedir } from "node:os";
 
 // CLI of https://github.com/jersou/studio-pack-generator
 
@@ -175,7 +176,7 @@ export class StudioPackGenerator {
 
   @help("path to the TTS cache")
   @defaultHelp("<Studio-Pack-Generator dir>/.spg-TTS-cache")
-  ttsCachePath = ".../Studio-Pack-Generator/.spg-TTS-cache";
+  ttsCachePath: string = `${homedir}/.Studio-Pack-Generator/TTS-cache`;
 
   @type("string")
   @help("custom script to be used for custom image... handling")
