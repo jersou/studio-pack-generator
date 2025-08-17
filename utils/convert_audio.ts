@@ -1,3 +1,7 @@
+import $ from "@david/dax";
+import { bgRed, blue, green } from "@std/fmt/colors";
+import { exists } from "@std/fs";
+import { join } from "@std/path";
 import {
   checkRunPermission,
   getExtension,
@@ -6,10 +10,6 @@ import {
   isFolder,
   isStory,
 } from "./utils.ts";
-import { bgRed, blue, green } from "@std/fmt/colors";
-import { exists } from "@std/fs";
-import { join } from "@std/path";
-import $ from "@david/dax";
 
 import type { File, Folder } from "../serialize/serialize-types.ts";
 import { getFfmpegCommand } from "./external_commands.ts";
@@ -18,7 +18,7 @@ export async function convertAudioOfFolder(
   rootpath: string,
   folder: Folder,
   addDelay: boolean,
-  seekStory: string | undefined,
+  seekStory: string | undefined
 ) {
   await checkRunPermission();
   for (const file of folder.files) {
@@ -27,7 +27,7 @@ export async function convertAudioOfFolder(
         join(rootpath, file.name),
         file as Folder,
         addDelay,
-        seekStory,
+        seekStory
       );
     } else if (isStory(file as File) || isAudioItem(file as File)) {
       const inputPath = join(rootpath, file.name);
@@ -62,7 +62,7 @@ async function convertAudioFile(
   maxDb: number,
   outputPath: string,
   addDelay: boolean,
-  seek: string | undefined,
+  seek: string | undefined
 ) {
   console.log(blue(`Convert file ${inputPath} → ${outputPath}`));
   const cmd = [
@@ -71,9 +71,7 @@ async function convertAudioFile(
     inputPath,
     "-af",
     // FIXME adelay=all doesn't work
-    `volume=${maxDb}dB,dynaudnorm${
-      addDelay ? ",adelay=1000|1000|1000|1000|1000|1000,apad=pad_dur=1s" : ""
-    }`,
+    `volume=${maxDb}dB,dynaudnorm${addDelay ? ",adelay=1000|1000" : ""}`,
     "-ac",
     "1",
     "-ar",
@@ -92,10 +90,7 @@ async function convertAudioFile(
   ];
   console.log(blue('"' + cmd.join('" "') + '"'));
 
-  const result = await $`${cmd}`
-    .noThrow()
-    .stdout("null")
-    .stderr("null");
+  const result = await $`${cmd}`.noThrow().stdout("null").stderr("null");
 
   if (result.code === 0) {
     console.log(green("→ OK"));
@@ -141,7 +136,7 @@ async function checkAudioFormat(filePath: string) {
   const info = await getFfmpegInfo(filePath);
   const isOk = /^ *Stream #0:0: Audio: mp3, 44100 Hz, mono,.*$/m.test(info);
   console.log(
-    blue(`checkAudioFormat of ${filePath} : Format is ${isOk ? "OK" : "KO"}`),
+    blue(`checkAudioFormat of ${filePath} : Format is ${isOk ? "OK" : "KO"}`)
   );
   return isOk;
 }
