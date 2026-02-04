@@ -293,7 +293,7 @@ async function exploreZipMenu(
     console.error(
       `The zip file '${storyPath}/${zipMenu.path}' is not Studio pack zip !`,
     );
-    Deno.exit(6);
+    throw new Error(`The zip file '${storyPath}/${zipMenu.path}' is not Studio pack zip !`);
   }
 
   const blobWriter = new BlobWriter("application/json");

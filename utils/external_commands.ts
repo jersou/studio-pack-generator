@@ -48,7 +48,7 @@ use --skip-extract-image-from-mp3 to skip image item generation
 or check your install, ffmpeg should be present in studio-pack-generator/tools/ffmpeg.exe
 `,
         );
-        Deno.exit(3);
+        throw new Error("ffmpeg not found");
       }
     } else if (await checkCommand(["ffmpeg", "-version"], 0)) {
       ffmpegCommand = ["ffmpeg"];
@@ -60,7 +60,7 @@ use --skip-image-item-gen to skip image item generation
 or install ffmpeg : sudo apt install -y ffmpeg
 `,
       );
-      Deno.exit(3);
+      throw new Error("ffmpeg not found");
     }
   }
   return ffmpegCommand;
@@ -83,7 +83,7 @@ or install pico2wave :
        wsl sudo apt install -y libttspico-utils
 `,
         );
-        Deno.exit(3);
+        throw new Error("pico2wave not found");
       }
     } else if (await checkCommand(["pico2wave", "--version"], 1)) {
       pico2waveCommand = ["pico2wave"];
@@ -95,7 +95,7 @@ use --skip-audio-item-gen to skip audio item generation
 or install pico2wave : sudo apt install -y libttspico-utils
 `,
       );
-      Deno.exit(3);
+      throw new Error("pico2wave not found");
     }
   }
   return pico2waveCommand;
@@ -118,7 +118,7 @@ use --skip-audio-item-gen to skip audio item generation
 or install coqui-tts : pip install coqui-tts
 `,
       );
-      Deno.exit(3);
+      throw new Error("coqui-tts not found");
     }
   }
   return coquiCommand;
@@ -140,7 +140,7 @@ use --skip-image-item-gen to skip image item generation
 or check your install, ImageMagick should be present in studio-pack-generator/tools/convert.exe
 `,
         );
-        Deno.exit(3);
+        throw new Error("convert not found");
       }
     } else if (await checkCommand(["convert", "--version"], 0)) {
       convertCommand = ["convert"];
@@ -152,7 +152,7 @@ use --skip-image-item-gen to skip image item generation
 or install ImageMagick : sudo apt install -y imagemagick
 `,
       );
-      Deno.exit(3);
+      throw new Error("convert not found");
     }
   }
   return convertCommand;

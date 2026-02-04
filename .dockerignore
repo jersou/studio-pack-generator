@@ -1,0 +1,10 @@
+.git
+node_modules
+dist
+tmp
+.idea
+.vscode
+.DS_Store
+gui/frontend/dist
+gui/frontend/node_modules
+server/tmp
