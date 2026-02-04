@@ -1,0 +1,31 @@
+export interface CliOptions {
+  addDelay?: boolean;
+  autoNextStoryTransition?: boolean;
+  selectNextStoryAtEnd?: boolean;
+  nightMode?: boolean;
+  skipAudioConvert?: boolean;
+  skipImageConvert?: boolean;
+  skipAudioItemGen?: boolean;
+  skipExtractImageFromMp3?: boolean;
+  skipImageItemGen?: boolean;
+  skipWsl?: boolean;
+  skipReadTtsCache?: boolean;
+  skipWriteTtsCache?: boolean;
+  skipZipGeneration?: boolean;
+  thumbnailFromFirstItem?: boolean;
+  useThumbnailAsRootImage?: boolean;
+  imageItemGenFont?: string;
+  lang?: string;
+  seekStory?: string;
+  outputFolder?: string;
+  ttsCachePath?: string;
+  useOpenAiTts?: boolean;
+  openAiApiKey?: string;
+  openAiModel?: string;
+  openAiVoice?: string;
+  useCoquiTts?: boolean;
+  coquiTtsModel?: string;
+  coquiTtsLanguageIdx?: string;
+  coquiTtsSpeakerIdx?: string;
+  storyPath?: string;
+}

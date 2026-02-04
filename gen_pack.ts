@@ -69,7 +69,7 @@ export async function generatePack(opt: StudioPackGenerator) {
         "The night mode is incompatible with auto-next-story-transition or select-next-story-at-end options",
       ),
     );
-    Deno.exit(4);
+    throw new Error("The night mode is incompatible with auto-next-story-transition or select-next-story-at-end options");
   }
 
   const start = Date.now();
