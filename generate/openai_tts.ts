@@ -1,8 +1,8 @@
-import OpenAI from "https://deno.land/x/openai@v4.67.1/mod.ts";
+import OpenAI from "openai";
 import { bgRed, blue } from "@std/fmt/colors";
 import $ from "@david/dax";
 
-import { cacheTtsFile, useCachedTtsFile } from "./tts_cache.ts";
+import { useCachedTtsFile } from "./tts_cache.ts";
 import type { StudioPackGenerator } from "../studio_pack_generator.ts";
 
 let openAI_client: OpenAI;
@@ -39,9 +39,12 @@ export async function generate_audio_with_openAI(
     if (result.ok) {
       console.log(blue(`OpenAI gen OK of "${title}" in ${outputPath}`));
       const file = await Deno.open(outputPath, { create: true, write: true });
-      await result.body!.pipeTo(file.writable);
-      if (!opt.skipWriteTtsCache) {
-        await cacheTtsFile(outputPath, cacheKey, opt);
+      try {
+        for await (const chunk of result.body!) {
+          await file.write(chunk as Uint8Array);
+        }
+      } finally {
+        file.close();
       }
     } else {
       console.log(bgRed(`OpenAI gen KO for "${title}"`), result);

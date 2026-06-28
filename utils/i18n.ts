@@ -1,4 +1,4 @@
-import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
+import i18next from "i18next";
 
 import { yellow } from "@std/fmt/colors";
 import $ from "@david/dax";
@@ -40,7 +40,8 @@ export async function getLang() {
     if (Deno.build.os === "windows") {
       LANG =
         await $`powershell -NoProfile "Get-UICulture|select -ExpandProperty Name"`
-          .noThrow().text();
+          .noThrow()
+          .text();
     } else if (
       (await Deno.permissions.query({ name: "env" })).state === "granted"
     ) {

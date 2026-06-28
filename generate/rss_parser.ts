@@ -11,7 +11,7 @@ import { join } from "@std/path";
 import { blue, green } from "@std/fmt/colors";
 import { exists } from "@std/fs";
 import { parse } from "@libs/xml";
-import i18next from "https://deno.land/x/i18next@v23.15.1/index.js";
+import i18next from "i18next";
 import { sprintf } from "@std/fmt/printf";
 import type { File, Metadata } from "../serialize/serialize-types.ts";
 import { convertImage } from "./gen_image.ts";
@@ -91,7 +91,8 @@ async function getFolderWithUrlFromRssUrl(
       if (duration) {
         return (
           (typeof duration === "string"
-            ? duration.split(":")
+            ? duration
+              .split(":")
               .reduce(
                 (acc, val, index) =>
                   acc + Math.pow(60, 2 - index) * parseInt(val, 10),
@@ -218,8 +219,7 @@ async function getFolderOfStories(
               sha1: "",
             },
             {
-              name: getNameWithoutExt(itemFileName) +
-                "-metadata.json",
+              name: getNameWithoutExt(itemFileName) + "-metadata.json",
               data: {
                 ...item,
                 title: opt.customModule?.fetchRssItemTitle

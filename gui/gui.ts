@@ -58,7 +58,7 @@ async function runSpg(opt: StudioPackGenerator) {
 function getAccessControlAllowOrigin(request: Request): Record<string, string> {
   const origin = request.headers.get("Origin");
   if ((origin ?? "").startsWith("http://localhost:")) {
-    return { "Access-Control-Allow-Origin": (origin ?? "http://localhost") };
+    return { "Access-Control-Allow-Origin": origin ?? "http://localhost" };
   } else {
     return {};
   }
@@ -337,7 +337,10 @@ class StudioPackGeneratorGui {
       for (const file of Object.values(this.#assets ?? {})) {
         if (file.route?.exec(request.url)) {
           const headers = { "Content-Type": file.type };
-          return new Response(file.content, { status: 200, headers });
+          return new Response(file.content as unknown as BodyInit, {
+            status: 200,
+            headers,
+          });
         }
       }
       if (this.#wsRoute.exec(request.url)) {
@@ -376,7 +379,8 @@ class StudioPackGeneratorGui {
       console.log(`a client disconnected! ${this.#sockets.size} clients`);
       if (
         (this.notExitIfNoClient === false ||
-          this.notExitIfNoClient === "false") && this.#sockets.size === 0
+          this.notExitIfNoClient === "false") &&
+        this.#sockets.size === 0
       ) {
         console.log(`→ ExitIfNoClient → shutdown server !`);
         // this.#server?.shutdown();
@@ -388,7 +392,8 @@ class StudioPackGeneratorGui {
 
   async updateAssets() {
     console.log("update assets_bundle.json");
-    const frontendPath = $.path(import.meta.url).resolve(`../frontend/dist/`)
+    const frontendPath = $.path(import.meta.url)
+      .resolve(`../frontend/dist/`)
       .toString();
     for await (const entry of walk(frontendPath, { includeDirs: false })) {
       assert(entry.path.startsWith(frontendPath));
@@ -404,16 +409,22 @@ class StudioPackGeneratorGui {
     const assets: Assets = {};
     paths.forEach((path) => (assets[path] = this.#assets[path]));
     await Deno.writeTextFile(
-      $.path(import.meta.url).resolve("../assets_bundle.json").toString(),
-      JSON.stringify(assets, (key, value) => {
-        if (key === "content") {
-          return encodeBase64(value as Uint8Array);
-        } else if (key === "route") {
-          return (value as URLPattern).pathname;
-        } else {
-          return value;
-        }
-      }, "  "),
+      $.path(import.meta.url)
+        .resolve("../assets_bundle.json")
+        .toString(),
+      JSON.stringify(
+        assets,
+        (key, value) => {
+          if (key === "content") {
+            return encodeBase64(value as Uint8Array);
+          } else if (key === "route") {
+            return (value as URLPattern).pathname;
+          } else {
+            return value;
+          }
+        },
+        "  ",
+      ),
     );
   }
 
