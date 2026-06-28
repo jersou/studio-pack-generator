@@ -1,5 +1,5 @@
 {
-  "version": "0.5.14",
+  "version": "0.5.15",
   "license": "MIT",
   "name": "@jersou/studio-pack-generator",
   "tasks": {
@@ -31,8 +31,6 @@
     "@std/media-types": "jsr:@std/media-types@^1.0.3",
     "@std/path": "jsr:@std/path@^1.0.6",
     "@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.52/data-uri",
-    "https://deno.land/": "./vendor/deno.land/",
-    "https://deno.land/std/": "./vendor/deno.land/std@0.216.0/",
     "i18next": "npm:i18next@^26.3.3",
     "openai": "npm:openai@4.67.1"
   },

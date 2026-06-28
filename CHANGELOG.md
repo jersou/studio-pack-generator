@@ -1,3 +1,18 @@
+## [0.5.15](https://github.com/jersou/studio-pack-generator/compare/v0.5.14...v0.5.15) (2026-06-28)
+
+### Features
+
+- **audio:** encode mp3 at libmp3lame VBR -q:a 5 instead of the 64 kb/s default
+  ([77802b2](https://github.com/jersou/studio-pack-generator/commit/77802b21d4dcba68af20b5f921143c5a1d5cc5ea))
+
+### Bug Fixes
+
+- **audio:** target -14 LUFS with a true-peak limiter instead of peak-to-0dBFS +
+  dynaudnorm
+  ([d1e7223](https://github.com/jersou/studio-pack-generator/commit/d1e7223492f32c40da7cc24b55143113c7a7b3ff))
+
+Thanks to @Hugs11!
+
 ## [0.5.14](https://github.com/jersou/studio-pack-generator/compare/v0.5.13...v0.5.14) (2025-01-04)
 
 ### Bug Fixes

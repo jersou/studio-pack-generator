@@ -68,10 +68,10 @@ or  studio-pack-generator-aarch64-apple       "my story folder or a rss url"
 or  studio-pack-generator-x86_64-apple        "my story folder or a rss url"
 ```
 
-#### Or clone the repo and run with [Deno](https://deno.land/) :
+#### Or clone the repo and run with [Deno](https://deno.com/) :
 
-This project is written in Typescript for [deno](https://deno.land/) runtime.
-Install deno : https://deno.land/
+This project is written in Typescript for [deno](https://deno.com/) runtime.
+Install deno : https://deno.com/
 
 ```
 git clone https://github.com/jersou/studio-pack-generator
