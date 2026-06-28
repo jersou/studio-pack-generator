@@ -2,7 +2,7 @@
 
 import $ from "@david/dax";
 import { decodeBase64, encodeBase64 } from "@std/encoding";
-import { cliteRun } from "@jersou/clite";
+import { clinfer } from "@jersou/clinfer";
 import assetsFromJson from "./assets_bundle.json" with { type: "json" };
 import { walk } from "@std/fs";
 import { assert } from "@std/assert";
@@ -448,5 +448,5 @@ class StudioPackGeneratorGui {
 }
 
 if (import.meta.main) {
-  cliteRun(new StudioPackGeneratorGui());
+  clinfer(new StudioPackGeneratorGui());
 }

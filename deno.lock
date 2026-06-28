@@ -3,11 +3,11 @@
   "specifiers": {
     "jsr:@david/dax@0.42": "0.42.0",
     "jsr:@david/path@0.2": "0.2.0",
-    "jsr:@david/which@~0.4.1": "0.4.1",
+    "jsr:@david/which@~0.4.1": "0.4.2",
     "jsr:@dbushell/audio-duration@*": "0.6.0",
     "jsr:@dbushell/audio-duration@0.6": "0.6.0",
     "jsr:@es-toolkit/es-toolkit@^1.23.0": "1.25.2",
-    "jsr:@jersou/clite@~0.7.4": "0.7.4",
+    "jsr:@jersou/clinfer@~0.9.9": "0.9.9",
     "jsr:@libs/typing@3": "3.1.0",
     "jsr:@libs/xml@6": "6.0.0",
     "jsr:@std/assert@0.216": "0.216.0",
@@ -16,24 +16,27 @@
     "jsr:@std/bytes@0.221": "0.221.0",
     "jsr:@std/bytes@1.0": "1.0.2",
     "jsr:@std/bytes@^1.0.2": "1.0.2",
-    "jsr:@std/cli@1.0.6": "1.0.6",
+    "jsr:@std/cli@1.0.30": "1.0.30",
+    "jsr:@std/collections@^1.2.0": "1.2.0",
     "jsr:@std/crypto@^1.0.3": "1.0.3",
     "jsr:@std/encoding@^1.0.5": "1.0.5",
-    "jsr:@std/fmt@1": "1.0.2",
-    "jsr:@std/fmt@1.0.2": "1.0.2",
-    "jsr:@std/fmt@^1.0.2": "1.0.2",
-    "jsr:@std/fs@1": "1.0.4",
-    "jsr:@std/fs@^1.0.4": "1.0.4",
+    "jsr:@std/fmt@1": "1.0.10",
+    "jsr:@std/fmt@1.0.10": "1.0.10",
+    "jsr:@std/fmt@^1.0.2": "1.0.10",
+    "jsr:@std/fs@1": "1.0.24",
+    "jsr:@std/fs@^1.0.4": "1.0.24",
+    "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/internal@^1.0.4": "1.0.4",
     "jsr:@std/io@0.221": "0.221.0",
     "jsr:@std/io@0.224": "0.224.9",
     "jsr:@std/io@~0.224.9": "0.224.9",
     "jsr:@std/media-types@^1.0.3": "1.0.3",
     "jsr:@std/path@0.216": "0.216.0",
-    "jsr:@std/path@1": "1.0.6",
-    "jsr:@std/path@^1.0.6": "1.0.6",
+    "jsr:@std/path@1": "1.1.5",
+    "jsr:@std/path@^1.0.6": "1.1.5",
+    "jsr:@std/path@^1.1.5": "1.1.5",
     "jsr:@std/streams@0.221": "0.221.0",
-    "jsr:@std/text@1.0.7": "1.0.7",
+    "jsr:@std/text@1.0.19": "1.0.19",
     "jsr:@zip-js/zip-js@^2.7.52": "2.7.52",
     "npm:@types/node@*": "18.19.130",
     "npm:i18next@^26.3.3": "26.3.3",
@@ -59,8 +62,8 @@
         "jsr:@std/path@1"
       ]
     },
-    "@david/which@0.4.1": {
-      "integrity": "896a682b111f92ab866cc70c5b4afab2f5899d2f9bde31ed00203b9c250f225e"
+    "@david/which@0.4.2": {
+      "integrity": "440ee262bc0673b57a39ad4d0dc5673e515ddd41c049a55b2588a0881e5d4a8c"
     },
     "@dbushell/audio-duration@0.6.0": {
       "integrity": "477ab528eec95f344c5fe84020b7556a97885fcb4b150e3c06ecdf97c00ccc9c",
@@ -79,11 +82,12 @@
     "@es-toolkit/es-toolkit@1.25.2": {
       "integrity": "90f17bcdad02f6dc16c705f65ddb83a2fe439045727e108b5075744ae8f8209e"
     },
-    "@jersou/clite@0.7.4": {
-      "integrity": "d9ead13dd84fb5e47df124e9a46c56cb23d489f58e70cc03c7542ffa3ea979ff",
+    "@jersou/clinfer@0.9.9": {
+      "integrity": "76ac2094e954b845e5a7bd9fcf75330ec37a2b528e3d754353d86f5aff59252a",
       "dependencies": [
         "jsr:@std/cli",
-        "jsr:@std/fmt@1.0.2",
+        "jsr:@std/collections",
+        "jsr:@std/fmt@1.0.10",
         "jsr:@std/text"
       ]
     },
@@ -105,7 +109,7 @@
     "@std/assert@1.0.6": {
       "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.4"
       ]
     },
     "@std/bytes@0.221.0": {
@@ -114,8 +118,11 @@
     "@std/bytes@1.0.2": {
       "integrity": "fbdee322bbd8c599a6af186a1603b3355e59a5fb1baa139f8f4c3c9a1b3e3d57"
     },
-    "@std/cli@1.0.6": {
-      "integrity": "d22d8b38c66c666d7ad1f2a66c5b122da1704f985d3c47f01129f05abb6c5d3d"
+    "@std/cli@1.0.30": {
+      "integrity": "769446536522d0417d7127ebcabcafac1ab0ce6766d0eb3fca1d36326fe98d13"
+    },
+    "@std/collections@1.2.0": {
+      "integrity": "47627a21d3a13138b77fd0e4d790ba9d2e603c3510b686cde6b132fe9aa98a88"
     },
     "@std/crypto@1.0.3": {
       "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
@@ -123,17 +130,21 @@
     "@std/encoding@1.0.5": {
       "integrity": "ecf363d4fc25bd85bd915ff6733a7e79b67e0e7806334af15f4645c569fefc04"
     },
-    "@std/fmt@1.0.2": {
-      "integrity": "87e9dfcdd3ca7c066e0c3c657c1f987c82888eb8103a3a3baa62684ffeb0f7a7"
+    "@std/fmt@1.0.10": {
+      "integrity": "90dfba288802ac6de82fb31d0917eb9e4450b9925b954d5e51fc29ac07419db5"
     },
-    "@std/fs@1.0.4": {
-      "integrity": "2907d32d8d1d9e540588fd5fe0ec21ee638134bd51df327ad4e443aaef07123c",
+    "@std/fs@1.0.24": {
+      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
       "dependencies": [
-        "jsr:@std/path@^1.0.6"
+        "jsr:@std/internal@^1.0.14",
+        "jsr:@std/path@^1.1.5"
       ]
     },
     "@std/internal@1.0.4": {
       "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
     },
     "@std/io@0.221.0": {
       "integrity": "faf7f8700d46ab527fa05cc6167f4b97701a06c413024431c6b4d207caa010da",
@@ -157,8 +168,11 @@
         "jsr:@std/assert@0.216"
       ]
     },
-    "@std/path@1.0.6": {
-      "integrity": "ab2c55f902b380cf28e0eec501b4906e4c1960d13f00e11cfbcd21de15f18fed"
+    "@std/path@1.1.5": {
+      "integrity": "ccea00982ea28c36becaf6e62f855406c76a8c32d462f66f415bbb7d83a271bc",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.14"
+      ]
     },
     "@std/streams@0.221.0": {
       "integrity": "47f2f74634b47449277c0ee79fe878da4424b66bd8975c032e3afdca88986e61",
@@ -166,8 +180,8 @@
         "jsr:@std/io@0.221"
       ]
     },
-    "@std/text@1.0.7": {
-      "integrity": "344a820af99fde81ae1d4f9ce586da3f47a58cda25ac4c4dd688166cf5ed97f1"
+    "@std/text@1.0.19": {
+      "integrity": "003a0e032d360e8c3a4e0410fb792c77a66bd6553fee9d60c6ec1bce30d29223"
     },
     "@zip-js/zip-js@2.7.52": {
       "integrity": "c8d9fd23b1965fdf58071e886b3b8dbd32a68f780ccb60cb256cfc41b4423e32"
@@ -301,7 +315,7 @@
       "jsr:@david/dax@0.42",
       "jsr:@dbushell/audio-duration@0.6",
       "jsr:@es-toolkit/es-toolkit@^1.23.0",
-      "jsr:@jersou/clite@~0.7.4",
+      "jsr:@jersou/clinfer@~0.9.9",
       "jsr:@libs/xml@6",
       "jsr:@std/assert@^1.0.6",
       "jsr:@std/crypto@^1.0.3",

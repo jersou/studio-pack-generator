@@ -3,13 +3,13 @@
 import denoJson from "./deno.json" with { type: "json" };
 import {
   alias,
-  cliteRun,
+  clinfer,
   defaultHelp,
   help,
   hidden,
   type,
   usage,
-} from "@jersou/clite";
+} from "@jersou/clinfer";
 
 import $ from "@david/dax";
 import { PackExtractor } from "./extract_pack.ts";
@@ -133,11 +133,11 @@ export class StudioPackGenerator {
 
   @help("OpenAi model : " + OPEN_AI_MODELS.join(", "))
   @alias("g")
-  openAiModel: typeof OPEN_AI_MODELS[number] = "tts-1";
+  openAiModel: (typeof OPEN_AI_MODELS)[number] = "tts-1";
 
   @help("OpenAi voice : " + OPEN_AI_VOICES.join(", "))
   @alias("p")
-  openAiVoice: typeof OPEN_AI_VOICES[number] = "onyx";
+  openAiVoice: (typeof OPEN_AI_VOICES)[number] = "onyx";
 
   @help("use coqui TTS")
   useCoquiTts = false;
@@ -208,13 +208,14 @@ export class StudioPackGenerator {
 
   // deno-lint-ignore no-explicit-any
   async main(storyPath: string): Promise<any> {
-    if (!this.storyPath) { // don't set if set by config file or --storyPath
+    if (!this.storyPath) {
+      // don't set if set by config file or --storyPath
       this.storyPath = storyPath;
     }
     if (!this.storyPath) {
       throw new Error(
         "The story path is not defined ! separate option and story path by --",
-        { cause: { clite: true } },
+        { cause: { clinfer: true } },
       );
     }
 
@@ -239,7 +240,7 @@ export class StudioPackGenerator {
 if (import.meta.main) {
   $.setPrintCommand(true);
   console.log({ version: denoJson.version, ...Deno.version });
-  cliteRun(StudioPackGenerator, {
+  clinfer(StudioPackGenerator, {
     noCommand: true,
     configCli: "The json config file",
   });
